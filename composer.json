@@ -1,0 +1,7 @@
+{
+  "require" : {
+    "aws/aws-sdk-php": "^3.52",
+    "eelkevdbos/firebase-php": "dev-master",
+    "facebook/graph-sdk": "^5.6"
+  }
+}

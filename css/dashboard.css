@@ -1,0 +1,437 @@
+   body{
+	font-family: Roboto;
+  }
+  .mainBanner{ 
+    background: url(../img/1.png) no-repeat center center;
+	background-size: cover ;
+	align-items: center;
+	height: auto;
+	padding:220px 0;
+  }
+  .bannerCenter{
+	font-size: 28px;
+	color: white;
+	font-weight: 100;
+  }  
+  .Center{
+	position: absolute;
+    top: 50%;
+    left: 50%; 
+	text-align: center;
+    transform: translateX(-50%) translateY(-50%);
+  }
+  .bannerHeader{
+	font-size: 85px; 
+    margin: 4% 0% 5% 0%;	
+  }
+  .bannerDay{
+	font-size: 48px;    
+  }
+  .bannerButton{
+	background-color: white;
+	color: #34495e;
+	font-weight: 600;
+	font-size: 24px;
+    border-top-right-radius: 25px;
+    border-top-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+	padding: 6px 34px 6px 34px;
+	border-width: 0px;
+  }
+  .Margins{
+	margin: 28px 11% 28px 11%;
+	-webkit-margin: 28px 11% 28px 11%;
+	// margin: 28px 15% 28px 15%;
+  }
+  .startCard{
+	background: url(../img/button_bg.png) no-repeat center center;
+	background-size: cover ;
+	align-items: center;
+	padding: 1% 0% 0% 0%;
+	margin-bottom: 60px;
+  }
+  .cardtitles{
+	  color: #34495e;
+	  margin-bottom: 3%;
+	  font-size: 38px;
+  }
+  .cardtexts{
+	  color: #9c9c9c;
+	  align-text: center;
+	  font-size: 38px;
+	  margin-bottom: 0rem;
+	  padding: 0px 60px 0px 60px
+  }
+  .MainMenu{
+	color: #34495e;
+	font-weight: 600;
+    margin-right: 8px;
+	letter-spacing: 3px;
+	font-size: 26px;
+    margin: 1% 0% -5% 0%;	
+  }
+  .learnMorestyle{
+	color: #864aa1;
+	letter-spacing: 3px;
+	font-size: 14px;
+  }
+  .exploreMore{
+	cursor:pointer;
+	background-color:#7DD3D5 !important;
+	border-color:#7DD3D5 !important;
+	outline:none;
+    	color:#864aa1;
+	width: 26%;
+	text-decoration:none;
+	item-align:center;
+	text-align: center;
+    /*text-decoration:underline;*/
+  }
+   .exploreMore1{
+	cursor:pointer;
+	background-color:#7DD3D5 !important;
+	border-color:#7DD3D5 !important;
+	outline:none;
+    	color:#864aa1;
+	width: 30%;
+	text-decoration:none;
+	item-align:center;
+	text-align: center;
+    /*text-decoration:underline;*/
+  }
+    .exploreMore2{
+	cursor:pointer;
+	background-color:#7DD3D5 !important;
+	border-color:#7DD3D5 !important;
+	outline:none;
+    	color:#864aa1;
+	width: 30%;
+	text-decoration:none;
+	item-align:center;
+	text-align: center;
+    /*text-decoration:underline;*/
+  }
+  .hiddens{
+	display: none;
+  }
+  .hiddens1{
+	display: none;
+  }
+  .hiddens2{
+	display: none;
+  }
+  .boxStyle{
+	color: #fff;
+	font-size: 22px;
+	height: 250px;
+}
+  .bottomCard{
+	background: #000 url(../img/button_bg.png) no-repeat center center;
+	background-size: cover ;
+	align-items: center;
+	margin: 4% 0% 0% 0%;
+	font-size: 48px;
+	padding: 8% 0% 8% 0%;
+  }
+  .bottomCardButton{
+	font-size: 22px;
+	color: #FFF;
+	letter-spacing: 3px;
+	padding: 1% 3% 1% 3%;
+	background-color: #7dd3d5;
+	border-width: 0px;
+	border-radius: 5px;
+
+  }
+  hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1.5px solid #d5d4d473;
+    margin: 1em;
+    padding: 0;
+    }
+	
+.loader {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url('http://www.downgraf.com/wp-content/uploads/2014/09/01-progress.gif?e44397') 50% 50% no-repeat rgb(249,249,249);
+}
+	
+	@media screen and (max-width: 425px){ 
+	  .bannerCenter{
+	   font-size: 18px;
+	   font-weight: 100;
+      } 
+      .bannerDay{
+	   font-size: 20px;
+	   margin-bottom: 0rem;
+      }
+      .bannerHeader{
+	    font-size: 26px;
+      }	  
+      .bannerButton{
+	    background-color: white;
+	    color: #34495e;
+	    font-weight: 600;
+	    font-size: 14px;
+        border-top-right-radius: 25px;
+        border-top-left-radius: 25px;
+        border-bottom-right-radius: 25px;
+        border-bottom-left-radius: 25px;
+	    padding: 4.5px 30px 4.5px 30px;
+	    border-width: 1px;
+      } 
+      .cardtitles{
+	    color: #34495e;
+	    font-size: 16px;
+      }
+      .cardtexts{
+	    color: #9c9c9c;
+	    align-text: center;
+	    font-size: 16px;
+	    padding: 0px 5px 0px 5px
+      }	  	  
+      .bottomCard{
+	    font-size: 20px;
+    	padding: 8% 0% 8% 0%;
+      }
+      .bottomCardButton{
+    	font-size: 18px;
+      }
+      .MainMenu{
+	    font-size: 18px;
+        position: absolute;
+        margin: 10% 0% -10% 0%;
+
+      }
+      .learnMorestyle{
+	    letter-spacing: 3px;
+	    font-size: 8px;
+      }
+    }
+	@media screen and (min-width: 425px) and (max-width: 760px){
+	  .bannerCenter{
+	   font-size: 18px;
+	   font-weight: 100;
+      } 
+      .bannerDay{
+	   font-size: 24px;
+      }
+      .bannerHeader{
+	    font-size: 32px 
+      }	  
+      .bannerButton{
+	    background-color: white;
+	    color: #34495e;
+	    font-weight: 600;
+	    font-size: 22px;
+        border-top-right-radius: 25px;
+        border-top-left-radius: 25px;
+        border-bottom-right-radius: 25px;
+        border-bottom-left-radius: 25px;
+	    padding: 6px 34px 6px 34px;
+	    border-width: 1px;
+      }  
+      .cardtitles{
+	    color: #34495e;
+	    font-size: 18px;
+      }
+      .cardtexts{
+	    color: #9c9c9c;
+	    align-text: center;
+	    font-size: 18px;
+	    padding: 0px 20px 0px 20px;
+      }
+      .bottomCard{
+	    font-size: 26px;
+    	padding: 8% 0% 8% 0%;
+      }
+      .bottomCardButton{
+    	font-size: 19px;
+      }
+    }
+
+	@media screen and (min-width: 760px) and (max-width: 842px){
+	  .bannerCenter{
+	   font-size: 18px;
+	   font-weight: 100;
+      } 
+	.exploreMore{
+	width:37% !important;
+	}
+	.exploreMore1{
+	width:37% !important;
+	}
+	.exploreMore2{
+	width:37% !important;
+	}
+      .bannerDay{
+	   font-size: 38px;
+      }
+      .bannerHeader{
+	    font-size: 62px;
+      }
+      .cardtitles{
+	    color: #34495e;
+	    font-size: 30px;
+      }
+      .cardtexts{
+	    color: #9c9c9c;
+	    align-text: center;
+	    font-size: 30px;
+	    padding: 0px 40px 0px 40px
+      }	  
+      .bottomCard{
+	    font-size: 30px;
+      }
+      .bottomCardButton{
+    	font-size: 18px;
+      }
+
+    }
+	@media screen and (min-width: 842px) and (max-width: 1042px){ 
+      .bannerCenter{
+	   font-size: 20px;
+	   font-weight: 100;
+      } 
+      .bannerDay{
+	   font-size: 40px;
+      }
+      .bannerHeader{
+	    font-size: 68px;  
+      }
+      .cardtitles{
+	    color: #34495e;
+	    font-size: 34px;
+      }
+      .cardtexts{
+	    color: #9c9c9c;
+	    align-text: center;
+	    font-size: 34px;
+	    padding: 0px 50px 0px 50px
+      }	  
+      .boxStyle{
+	    font-size: 20px;
+	    height: 200px;
+      }
+      .bottomCard{
+	    font-size: 36px;
+      }
+      .bottomCardButton{
+    	font-size: 20px;
+      }
+    }
+	@media screen and (max-width: 1200px){ 
+	  .boxStyle{
+	    font-size: 20px;
+	    height: 200px;
+      }
+	
+    }
+	@media screen and (max-width: 991px){ 
+	  .boxStyle{
+	    font-size: 20px;
+	    height: 160px;
+      }
+    }
+	@media screen and (max-width: 767px){ 
+	  .boxStyle{
+	    font-size: 20px;
+	    height: 280px;
+      }
+    }
+	@media screen and (max-width: 425px){ 
+	  .boxStyle{
+	    font-size: 18px;
+	    height: 252px;
+      }
+.exploreMore{
+	width:89% !important;
+	}
+.exploreMore1{
+	width:94% !important;
+	}
+.exploreMore2{
+	width:94% !important;
+	}
+    }
+	@media screen and (max-width: 320px){ 
+	  .boxStyle{
+	    font-size: 18px;
+	    height: 200px;
+      }
+.exploreMore{
+	width:104% !important;
+	}
+.exploreMore1{
+	width:94% !important;
+	}
+.exploreMore2{
+	width:94% !important;
+	}
+        }
+	
+
+.box-slider h3 {font-size: 28px; 
+	         letter-spacing: 3px;
+	         margin-bottom: 24px;
+             padding-left: 0px;}
+	
+	.box p {font-size: 24px;}
+	
+	
+.card1 {
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 0;
+  border-radius: 0;
+}
+	
+.card-img1 {
+  width: 100%;
+  border-radius: 0;
+}
+
+.card-img-overlay1 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+	left: 0;
+}
+
+
+
+.MainMenu1{
+	color: #34495e;
+	font-weight: 600;
+    margin-right: 8px;
+	letter-spacing: 3px;
+	font-size: 26px;
+	 margin: 1% 0% -5% 0%;	
+}
+.pad {padding-left:100px;}
+
+@media screen and (max-width: 425px){ 
+	.MainMenu1{
+	    font-size: 18px;
+        position: absolute;
+		margin: 3% 0% -10% 0%;}
+
+      }

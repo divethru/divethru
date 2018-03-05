@@ -1,0 +1,172 @@
+@media (min-width: 1281px) {
+  
+.txtpos{
+  text-align: left;
+}
+  .btnpos{
+    position: relative;
+     right: 31%;
+  }
+  .plystr{
+    position: relative; 
+    right: 20%;
+    top:24px;
+  }
+  .plystr1{
+    position: relative; 
+    right: 22%;
+    margin-left: 5%;
+    top:24px;
+  }
+  .sm-text{
+    color: #727272; 
+    font-weight: 400; 
+    //font-size: 1.50rem; 
+    font-size: 24px; 
+    text-align:left;
+  }
+
+}
+
+/* 
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+
+@media (min-width: 1025px) and (max-width: 1280px) {
+  
+  .plystr1{
+    margin-left: 5%;
+  }
+  .sm-text{
+    color: #727272; 
+    font-weight: 400; 
+    //font-size: 1.50rem;
+    font-size: 24px; 
+    text-align:left;
+  }
+}
+
+/* 
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  
+ .plystr1{
+    margin-left: 5%;
+  }
+  .sm-text{
+    color: #727272; 
+    font-weight: 400; 
+    font-size: 24px; 
+    //font-size: 1.50rem;
+    text-align:left;
+  }
+}
+
+/* 
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: 
+
+landscape) {
+  
+  .plystr1{
+    margin-left: 5%;
+  }
+  .clintpro{
+    text-align: center;
+  }
+   .sm-text{
+    color: #727272; 
+    font-weight: 400; 
+    font-size: 24px; 
+//    font-size: 1.50rem;
+    text-align:left;
+  }
+}
+
+/* 
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+
+@media (min-width: 425px) and (max-width: 767px) {
+  
+ .plystr1{
+    margin-left: 5%;
+  }
+.imgpos{
+    margin-left: 24%;
+  }
+.top1{
+    margin-top: 5%;
+    margin-left: -15px;
+    padding: 2% 6% 2% 6%;
+
+  }.top2{
+    margin-top: 5%;
+    margin-left: -15px;
+    padding: 2% 6% 2% 6%;
+
+  }
+   .sm-text{
+    color: #727272; 
+    font-weight: 400; 
+    font-size: 24px; 
+    //font-size: 1.50rem; 
+    text-align:left;
+  }
+}
+
+/* 
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+
+@media (min-width: 320px) and (max-width: 424px) {
+  .clintpro{
+    text-align: center;
+  }
+ .btnpos{
+  padding: 3% 6% 3% 6%;
+
+}
+
+  .top{
+    margin-top: 5%;
+    margin-left: -15px;
+    padding: 3% 6% 3% 6%;
+
+  } .top1{
+    margin-top: 5%;
+    margin-left: -24px;
+    padding: 3% 8% 3% 8%;
+
+  }.top2{
+    margin-top: 5%;
+    margin-left: -25px;
+    padding: 3% 10% 3% 10%;
+
+  }
+
+  .tbutton{
+     padding: 3% 6% 3% 6%;
+  }
+    
+  .btn-primary{
+    width: 100%;
+  }
+  
+    .sm-text{
+    color: #727272; 
+    font-weight: 400; 
+  //  font-size: 19px; 
+    font-size: 1.25rem; 
+    text-align:left;
+  }
+}

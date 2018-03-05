@@ -1,0 +1,705 @@
+
+<!-- saved from url=(0036)http://localhost/DiveThru2/index.php -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Required meta tags -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./Dive Thru_files/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="./Dive Thru_files/reg.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="./Dive Thru_files/font-awesome.min.css">
+     <link rel="shortcut icon" href="http://localhost/DiveThru2/img/feb.ico">
+    <link rel="stylesheet" type="text/css" href="./Dive Thru_files/formvalid.css">
+    <script id="facebook-jssdk" src="./Dive Thru_files/sdk.js.download"></script><script type="text/javascript" src="./Dive Thru_files/register_user.js.download"></script>
+    <script src="./Dive Thru_files/jquery.min.js.download"></script>
+    <script type="text/javascript" src="./Dive Thru_files/simplehttpsserver.js.download"></script>
+    <script src="./Dive Thru_files/jquery-1.10.2.js.download"></script>
+	<link href="./Dive Thru_files/jquery-ui.css" rel="stylesheet">
+	<script src="./Dive Thru_files/jquery-ui.js.download"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.bdate').datepicker({
+			dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true,
+                yearRange: "-100:+0",
+                minDate: new Date(1980, 1, 1),
+                maxDate: "+0M +0D"
+			});
+		});
+	</script>
+	<!-- Firebase Start -->
+		
+<script src="./Dive Thru_files/firebase.js.download"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDBWdYDtGJsilqNGOqYMNalE9s-IAGPnTw",
+    authDomain: "divethru-71c56.firebaseapp.com",
+    databaseURL: "https://divethru-71c56.firebaseio.com",
+    projectId: "divethru-71c56",
+    storageBucket: "divethru-71c56.appspot.com",
+    messagingSenderId: "53159239409"
+  };
+  firebase.initializeApp(config);
+</script>
+
+	<!-- Firebase End -->
+   
+    <title>Dive Thru</title>
+  <script type="text/javascript" src="chrome-extension://aadgmnobpdmgmigaicncghmmoeflnamj/ng-inspector.js"></script><style type="text/css">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_reposition{overflow:hidden;position:relative}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}.fb_link img{border:none}@keyframes fb_transform{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}.fb_animate{animation:fb_transform .3s forwards}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_reset .fb_dialog_legacy{overflow:visible}.fb_dialog_advanced{padding:10px;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}.fb_dialog_content{background:#fff;color:#333}.fb_dialog_close_icon{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{top:5px;left:5px;right:auto}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent}.fb_dialog_close_icon:active{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent}.fb_dialog_loader{background-color:#f6f7f9;border:1px solid #606060;font-size:24px;padding:20px}.fb_dialog_top_left,.fb_dialog_top_right,.fb_dialog_bottom_left,.fb_dialog_bottom_right{height:10px;width:10px;overflow:hidden;position:absolute}.fb_dialog_top_left{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 0;left:-10px;top:-10px}.fb_dialog_top_right{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 -10px;right:-10px;top:-10px}.fb_dialog_bottom_left{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 -20px;bottom:-10px;left:-10px}.fb_dialog_bottom_right{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ye/r/8YeTNIlTZjm.png) no-repeat 0 -30px;right:-10px;bottom:-10px}.fb_dialog_vert_left,.fb_dialog_vert_right,.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{position:absolute;background:#525252;filter:alpha(opacity=70);opacity:.7}.fb_dialog_vert_left,.fb_dialog_vert_right{width:10px;height:100%}.fb_dialog_vert_left{margin-left:-10px}.fb_dialog_vert_right{right:0;margin-right:-10px}.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{width:100%;height:10px}.fb_dialog_horiz_top{margin-top:-10px}.fb_dialog_horiz_bottom{bottom:0;margin-bottom:-10px}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #365899;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{-webkit-transform:none;height:100%;margin:0;overflow:visible;position:absolute;top:-10000px;left:0;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{width:auto;height:auto;min-height:initial;min-width:initial;background:none}.fb_dialog.fb_dialog_mobile.loading.centered #fb_dialog_loader_spinner{width:100%}.fb_dialog.fb_dialog_mobile.loading.centered .fb_dialog_content{background:none}.loading.centered #fb_dialog_loader_close{color:#fff;display:block;padding-top:20px;clear:both;font-size:18px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .45);position:absolute;bottom:0;left:0;right:0;top:0;width:100%;min-height:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_content .dialog_header{-webkit-box-shadow:white 0 1px 1px -1px inset;background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#738ABA), to(#2C4987));border-bottom:1px solid;border-color:#1d4088;color:#fff;font:14px Helvetica, sans-serif;font-weight:bold;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{-webkit-font-smoothing:subpixel-antialiased;height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#4966A6), color-stop(.5, #355492), to(#2A4887));border:1px solid #29487d;-webkit-background-clip:padding-box;-webkit-border-radius:3px;-webkit-box-shadow:rgba(0, 0, 0, .117188) 0 1px 1px inset, rgba(255, 255, 255, .167969) 0 1px 0;display:inline-block;margin-top:3px;max-width:85px;line-height:18px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{border:none;background:none;color:#fff;font:12px Helvetica, sans-serif;font-weight:bold;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #555;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f6f7f9;border:1px solid #555;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_button{text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}#fb_dialog_loader_spinner{animation:rotateSpinner 1.2s linear infinite;background-color:transparent;background-image:url(https://static.xx.fbcdn.net/rsrc.php/v3/yD/r/t-wz8gw1xG1.png);background-repeat:no-repeat;background-position:50% 50%;height:24px;width:24px}@keyframes rotateSpinner{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_fluid_desktop,.fb_iframe_widget_fluid_desktop span,.fb_iframe_widget_fluid_desktop iframe{max-width:100%}.fb_iframe_widget_fluid_desktop iframe{min-width:220px;position:relative}.fb_iframe_widget_lift{z-index:1}.fb_hide_iframes iframe{position:relative;left:-10000px}.fb_iframe_widget_loader{position:relative;display:inline-block}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}.fb_iframe_widget_loader iframe{min-height:32px;z-index:2;zoom:1}.fb_iframe_widget_loader .FB_Loader{background:url(https://static.xx.fbcdn.net/rsrc.php/v3/y9/r/jKEcVPZFk-2.gif) no-repeat;height:32px;width:32px;margin-left:-16px;position:absolute;left:50%;z-index:4}
+.fb_customer_chat_bounce_in{animation-duration:250ms;animation-name:fb_bounce_in}.fb_customer_chat_bounce_out{animation-duration:250ms;animation-name:fb_fade_out}.fb_invisible_flow{display:inherit;height:0;overflow-x:hidden;width:0}.fb_mobile_overlay_active{height:100%;overflow:hidden;position:fixed;width:100%}@keyframes fb_fade_out{from{opacity:1}to{opacity:0}}@keyframes fb_bounce_in{0%{opacity:0;transform:scale(.8, .8);transform-origin:100% 100%}10%{opacity:.1}20%{opacity:.2}30%{opacity:.3}40%{opacity:.4}50%{opacity:.5}60%{opacity:.6}70%{opacity:.7}80%{opacity:.8;transform:scale(1.03, 1.03)}90{opacity:.9}100%{opacity:1;transform:scale(1, 1)}}</style></head>
+  <body background="./Dive Thru_files/banner.png" style="background-repeat: no-repeat;">
+    
+ 		
+<nav class="navbar navbar-expand-lg navbar-light bg-white" style="padding: 9px 100px 9px 10px; box-shadow: 0 0px 37px 0 rgba(0,2,0,0.1)">
+			  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+			    <span class="navbar-toggler-icon"></span>
+			  </button> 
+			  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			  <img class="navbar-brand" src="./Dive Thru_files/logo.png" style="float: left; height: 100px; width: 90px; ">
+
+			  <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+			    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+			      <li class="nav-item  ">
+			        <a class="nav-link" style="padding-right: 1.5rem; padding-left: 1.5rem;       color:#34495e;" href="http://localhost/DiveThru2/index.php#" onmouseover="this.style.color=&quot;#7dd3d5&quot;" onmouseout="this.style.color=&quot;#34495e&quot;">WHY DIVE THRU <span class="sr-only">(current)</span></a>
+			      </li>
+			      <li class="nav-item ">
+			        <a class="nav-link" style="padding-right: 1.5rem; color: #34495e; padding-left: 1.5rem;" href="http://localhost/DiveThru2/index.php#" onmouseover="this.style.color=&quot;#7dd3d5&quot;" onmouseout="this.style.color=&quot;#34495e&quot;">BLOG <span class="sr-only">(current)</span></a>
+			      </li>
+			      <li class="nav-item ">
+			        <a class="nav-link " style="padding-right: 1.5rem; color: #34495e; padding-left: 1.5rem;" href="http://localhost/DiveThru2/index.php#" onmouseover="this.style.color=&quot;#7dd3d5&quot;" onmouseout="this.style.color=&quot;#34495e&quot;">ABOUT<span class="sr-only">(current)</span></a>
+			      </li>
+			      <li class="nav-item ">
+			        <a class="nav-link " style="padding-right: 1.5rem; color: #34495e; padding-left: 1.5rem;" href="http://localhost/DiveThru2/index.php#" onmouseover="this.style.color=&quot;#7dd3d5&quot;" onmouseout="this.style.color=&quot;#34495e&quot;">SUPPORT<span class="sr-only">(current)</span></a>
+			      </li>
+				  <li style="
+    border: 0.5px solid lightgray;
+    height: 40px;
+"></li>
+			      <li class="nav-item ">
+			        <a class="nav-link " style="padding-right: 1.5rem; color: #34495e; padding-left: 1.5rem;" href="http://localhost/DiveThru2/login.php" onmouseover="this.style.color=&quot;#7dd3d5&quot;" onmouseout="this.style.color=&quot;#34495e&quot;">LOGIN<span class="sr-only">(current)</span></a>
+			      </li>
+			      <li class="nav-item ">
+			        <a class="nav-link btn btn-default" style="padding-right: 2.5rem;  padding-left: 2.5rem; " href="http://localhost/DiveThru2/index.php">JOIN FOR FREE<span class="sr-only">(current)</span></a>
+			      </li>
+			    </ul>
+			    
+			  </div>
+		</nav>
+		<div class="container">
+			<div class="row justify-content-md-center">
+					<div class=" col-md-3 col-sm-2 col-xs-12"></div>
+					<div class="col-md-6 col-sm-8 col-xs-12 ">
+						<br><br>
+                        
+						<div class="card" style=" box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
+						  <div class="card-body">
+						    <h2 class="card-title" style="text-align: center; color: #34495e; ">Registration</h2>
+						    	
+					 <form>
+						    			<p id="head" style="text-align: center;" class="p1"></p>
+						    			
+						    		  <div class="form-group-log">
+                                        <input type="text" class="form-control-log" name="first_name" id="first_name" placeholder="First name" onchange="inputfAlphabet(first_name, &#39;* For your First name please use alphabets only &#39;);">
+									    <p id="p1" class="p1"></p>
+									  </div>
+
+									  <div class="form-group-log">
+                                        <input type="text" class="form-control-log" name="last_name" id="last_name" aria-describedby="emailHelp" placeholder="Last name" onchange="inputlAlphabet(last_name, &#39;* For your Last name please use alphabets only &#39;);">
+									    <p id="p2" class="p1"></p>
+									  </div>
+									  <div class="form-group-log">
+                                        <input type="text" class="form-control-log" id="email" name="email" aria-describedby="emailHelp" placeholder="Email address" onchange="emailValidation(email, &#39;* Please enter a valid email address &#39;)">
+									    <p id="p3" class="p1"></p>
+									  </div>
+                                      <div class="form-group-log">
+                                        <div class="pwstrength_viewport_progress"></div>
+                                        <input type="password" class="form-control-log" name="password" id="password" onkeyup="CheckPasswordStrength(this.value)" placeholder="Password"><div class="password-progress"><div data-name="password" class="progress-bar" style="width: 0%;"></div></div>
+                                      <p id="password_strength" class="p1"></p>
+                                        
+                                      </div>
+                                      <div class="form-group-log">
+                                        <input type="password" class="form-control-log" name="confirm_password" id="confirmpassword" placeholder="Confirm password" onchange="PasswordConfirm();">
+									   <p id="boldStuff" class="p1"></p>
+									  </div>
+									 
+									  <div class="form-group-log">
+                                        <input type="text" name="dob" class="form-control-log bdate hasDatepicker" id="birthdate" placeholder="Date of birth" onchange="_calculateAge();">
+										<p id="bdt" class="p1"></p>
+									  </div>
+									  
+                                     <div class="form-group-log">
+                                        <input type="text" class="form-control-log" name="access_code" id="access_code" placeholder="Access Code (Optional)">
+ 
+                                      </div>
+
+									<div class="form-group-log">
+							            <label>Gender : </label>
+							             <div class="gender text-mute"> <p>
+							                <input type="radio" id="test1" name="gender" value="Male">
+							                <label for="test1" class="gen">Male</label>
+							              </p>
+							              <p>
+							                <input type="radio" id="test2" name="gender" value="Female">
+							                <label for="test2" class="gen">Female</label>
+							              </p>
+							              <p>
+							                <input type="radio" id="test3" name="gender" value="Other">
+							                <label for="test3" class="gen">Other</label>
+							              </p>
+                                      </div></div>
+                                     <br>
+                                          <div><p id="gender" class="p1"></p></div>
+							         
+							           <div class="form-group-log">
+									  <button type="button" id="submit" onclick="btnclick();" name="login" class="form-control btn btn-primary " style="background-color: #7dd3d5; letter-spacing: 4; border: none; border-radius: unset;  line-height: 27px;color: white;"><i class="fa fa-spinner fa-spin" style="display: none;"></i>GET STARTED</button>
+                                         <br><br>
+                                    <center><img src="./Dive Thru_files/or.png" style="width: 100%" class="img-responsive"></center>
+       								</div>
+									
+									<!-- <a href="fblogin.php">-->
+									<button type="button" class=" form-control btn btn-primary  fb-font" style="background-color: #3b5998; border: none;  border-radius: 3px; letter-spacing: 3;line-height: 27px;" onclick="fbsave_user();"><i class="fa fa-facebook-official fa-lg" style="color:white"></i>&nbsp;CONTINUE WITH FACEBOOK</button><!---</a>-->
+
+									   <br><br>
+        							
+								</form>
+                                <p style="text-align: center;">By signing up, you agree to Dive thru<br> <a href="http://localhost/DiveThru2/index.php#" style="color:#5191d6;">  Terms &amp; Conditions</a> And <a href="http://localhost/DiveThru2/index.php#" style="color:#5191d6;">Privacy Policy</a></p>
+						  </div>
+
+						</div>
+                        
+					</div>
+					<div class=" col-md-3 col-sm-2 col-xs-12"></div>
+			</div>
+		</div>
+		<br><br>
+		<style>
+@import url(https://fonts.googleapis.com/css?family=Lato);
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css);
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+p > a:hover{
+    color: #d9d9d9;
+    text-decoration:  underline;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin:  1% 0 1% 0;
+}
+._12 {
+    font-size: 1.2em;
+}
+._14 {
+    font-size: 1.4em;
+}
+ul {
+    padding:0;
+    float: right;
+    list-style: none;
+}
+.footer-social-icons {
+    width: 10px;
+    display:block;
+    margin: 0 auto;
+}
+.social-icon {
+    color: #fff;
+}
+ul.social-icons {
+    margin-top: 10px;
+}
+.social-icons li {
+    vertical-align: top;
+    display: inline;
+    height: 50px;
+}
+.social-icons a {
+    color: #fff;
+    text-decoration: none;
+}
+.fa-facebook     {
+    padding:10px 12px;
+    -o-transition:.5s;
+    -ms-transition:.5s;
+    -moz-transition:.5s;
+    -webkit-transition:.5s;
+    transition: .5s;
+    background-color: #ffffff2e;
+}
+.fa-facebook:hover {
+    background-color: #3d5b99;
+}
+.fa-twitter {
+    padding:10px 12px;
+    -o-transition:.5s;
+    -ms-transition:.5s;
+    -moz-transition:.5s;
+    -webkit-transition:.5s;
+    transition: .5s;
+    background-color: #ffffff2e;
+}
+.fa-twitter:hover {
+    background-color: #00aced;
+}
+.fa-instagram:hover {
+    background-color: red;
+}
+.fa-apple:hover {
+    background-color: gray;
+}
+.fa-android:hover {
+    background-color: green;
+}
+.fa-instagram {
+    padding:10px 12px;
+    -o-transition:.5s;
+    -ms-transition:.5s;
+    -moz-transition:.5s;
+    -webkit-transition:.5s;
+    transition: .5s;
+    background-color: #ffffff2e;
+}
+.fa-apple {
+    padding:10px 12px;
+    -o-transition:.5s;
+    -ms-transition:.5s;
+    -moz-transition:.5s;
+    -webkit-transition:.5s;
+    transition: .5s;
+    background-color: #ffffff2e;
+}
+.fa-android {
+    padding:10px 12px;
+    -o-transition:.5s;
+    -ms-transition:.5s;
+    -moz-transition:.5s;
+    -webkit-transition:.5s;
+    transition: .5s;
+    background-color: #ffffff2e;
+}
+.fa-linkedin:hover {
+    background-color: #0073a4;
+}
+.fa-google-plus {
+    padding:10px 9px;
+    -o-transition:.5s;
+    -ms-transition:.5s;
+    -moz-transition:.5s;
+    -webkit-transition:.5s;
+    transition: .5s;
+    background-color: #322f30;
+}
+.fa-google-plus:hover {
+    background-color: #e25714;
+}
+</style>
+
+<footer class="page-footer stylish-color-dark" style="background-image: url(&#39;img/footer.png&#39;); color: #FFF;">
+
+    <!--Footer Links-->
+    <div class="container">
+
+        <!-- Footer links -->
+        <div class="row text-center text-md-left mt-3 pb-3">
+
+            <!--First column-->
+            <div class="col-md-2 col-lg-2 col-xl-2 mx-auto mt-3" style="padding-top: 3%;">
+               <h6 class="title mb-4 font-bold">COMMUNITY</h6>
+                 <hr color="#7dd3d5" width="30%" style=" height: 1px; margin-left: 1px;">
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot"> Blog</a></p>
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot">Facebook Group</a></p>
+            </div>
+            <!--/.First column-->
+
+            <hr class="w-100 clearfix d-md-none">
+
+            <!--Second column-->
+            <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mt-3" style="padding-top: 3%;">
+                <h6 class="title mb-4 font-bold">DIVE THRU</h6>
+                <hr color="#7dd3d5" width="30%" style=" height: 1px; margin-left: 1px;">
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF; " class="font-foot">Join</a></p>
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot">Why Dive Thru</a></p>
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot">Dive Thru For Corporate</a></p>
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot"> Dive Thru For Youth</a></p>
+                 <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot"> Gift </a></p>
+                
+            </div>
+            <!--/.Second column-->
+
+            <hr class="w-100 clearfix d-md-none">
+
+            <!--Third column-->
+            <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mt-3" style="padding-top: 3%;">
+               <h6 class="title mb-4 font-bold">ABOUT</h6>
+                <hr color="#7dd3d5" width="30%" style=" height: 1px;  margin-left: 1px;">
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot">About Dive Thru</a></p>
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot">Press</a></p>
+                
+            </div>
+            <!--/.Third column-->
+
+            <hr class="w-100 clearfix d-md-none">
+
+            <!--Fourth column-->
+            <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-3" style="padding-top: 3%;">
+               <h6 class="title mb-4 font-bold">HELP</h6>
+                 <hr color="#7dd3d5" width="30%" style=" height: 1px; margin-left: 1px;">
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot"> Support</a></p>
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot">Contact Us</a></p>
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot">Terms &amp; Conditions</a></p>
+                <p><a href="http://localhost/DiveThru2/index.php#!" style="text-decoration: none; color: #FFF;" class="font-foot">Privacy</a></p>
+            </div>
+            <!--/.Fourth column-->
+
+        </div>
+        <!-- Footer links -->
+
+       
+
+        <div class="row  d-flex align-items-center">
+
+            <!--Grid column-->
+            <div class="col-md-8 col-lg-9">
+
+                <!--Copyright-->
+                
+                <!--/.Copyright-->
+
+            </div>
+            <!--Grid column-->
+
+            <!--Grid column-->
+            <div class="col-md-12 col-lg-12 ml-lg-0">
+      
+        
+          
+          
+                <!--Social buttons-->
+                <div class="social-section text-center text-md-left">
+                   
+                    <ul class="social-icons">
+                        <a href="http://localhost/DiveThru2/index.php#" class="social-icon" style="text-decoration: none; color: #FFF;"><i class="fa fa-facebook fa-lg white-text mr-md-3"> </i></a>
+                    <!--Twitter-->
+                  <a href="http://localhost/DiveThru2/index.php#" class="social-icon" style="text-decoration: none; color: #FFF; "><i class="fa fa-twitter fa-lg white-text mr-md-3"> </i></a>
+                    <!--Instagram-->
+               <a href="http://localhost/DiveThru2/index.php#" class="social-icon" style="text-decoration: none; color: #FFF; "><i class="fa fa-instagram fa-lg white-text mr-md-3"> </i></a>
+                    <!--Apple-->
+                   <a href="http://localhost/DiveThru2/index.php#" class="social-icon" style="text-decoration: none; color: #FFF; "><i class="fa fa-apple fa-lg white-text mr-md-3"> </i></a>
+                     <!--Android-->
+                    <a href="http://localhost/DiveThru2/index.php#" class="social-icon" tyle="text-decoration: none; text-align: center; color: #FFF;     "><i class="fa fa-android fa-lg white-text mr-md-4"> </i></a>
+
+                    </ul>
+                    </div>
+                </div>
+                
+                <!--/.Social buttons-->
+
+            </div>
+            <!--Grid column-->
+
+        </div>
+
+    
+
+</footer>    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+ <script type="text/javascript" src="./Dive Thru_files/passwordStrength.js.download"></script>
+    <script src="./Dive Thru_files/bootstrap.min.js.download" type="text/JavaScript"></script>
+
+    <script type="text/javascript">
+    $(function () {
+$(".fa-spinner").hide();
+        $('#password').passwordStrength();
+
+        $("#submit").click(function () {
+            var password = $("#password").val();
+            var confirmPassword = $("#confirmpassword").val();
+            if (password != confirmPassword) {
+               //alert("Passwords do not match.");
+                document.getElementById('boldStuff').innerHTML = '* Your password and confirmation password do not match.';
+                return false;
+            }
+            return true;
+        });
+    });
+</script>
+
+<script type="text/javascript">
+
+        function PasswordConfirm(){
+             var password = $("#password").val();
+            var confirmPassword = $("#confirmpassword").val();
+            if (password != confirmPassword) {
+               //alert("Passwords do not match.");
+                document.getElementById('boldStuff').innerHTML = '* Your password and confirmation password do not match.';
+                return false;
+            }else{
+                 document.getElementById('boldStuff').innerHTML = '';
+            }
+            return true;
+        }
+
+    function CheckPasswordStrength(password) {
+        var password_strength = document.getElementById("password_strength");
+ 
+        //TextBox left blank.
+        if (password.length == 0) {
+            password_strength.innerHTML = "* Please Password Is Required.";
+             password_strength.style.color =  "red";
+            return;
+        }
+        else if(password.length < 8){
+        	password_strength.innerHTML = " * Your password must be atleast 8 character long";
+             password_strength.style.color =  "red";
+            return;
+        }
+ 
+        //Regular Expressions.
+        var regex = new Array();
+        regex.push("[A-Z]"); //Uppercase Alphabet.
+        regex.push("[a-z]"); //Lowercase Alphabet.
+        regex.push("[0-9]"); //Digit.
+        regex.push("[$@$!%*#?&]"); //Special Character.
+        var passed = 0;
+ 
+        //Validate for each Regular Expression.
+        for (var i = 0; i < regex.length; i++) {
+            if (new RegExp(regex[i]).test(password)) {
+                passed++;
+            }
+        }
+ 
+        //Validate for length of Password.
+        if (passed > 2 && password.length > 8) {
+            passed++;
+        }
+ 		
+        //Display status.
+        var color = "";
+        var strength = "";
+        switch (passed) {
+            case 0:
+            case 1:
+                strength = "Weak";
+                color = "red";
+                break;
+            case 2:
+                strength = "Medium";
+                color = "darkorange";
+                break;
+            case 3:
+            case 4:
+                strength = "Strong";
+                color = "green";
+                break;
+            case 5:
+                strength = "Very Strong";
+                color = "darkgreen";
+                break;
+        }
+        password_strength.innerHTML = strength;
+        password_strength.style.color = color;
+    }
+
+    
+    
+</script>
+<script type="text/javascript">
+	function formValidation() {
+// Make quick references to our fields.
+var Fname = document.getElementById('first_name').value;
+var Lname = document.getElementById('last_name').value;
+var Email = document.getElementById('email').value;
+var pwd = document.getElementById('password').value;
+var birthdate = document.getElementById('birthdate').value;
+var cpwd = document.getElementById('confirmpassword').value;
+
+var fname_status = 0;
+var lname_status = 0;
+var email_status = 0;
+var pwd_status = 0;
+var birthdate_status = 0;
+
+var confirmPassword = $("#confirmpassword").val();
+var password1 = $("#password").val();
+
+
+
+
+// To check empty form fields.
+if($('input[name=gender]:checked').length<=0)
+{
+        document.getElementById('gender').innerHTML = "* Please select your gender";
+   
+}
+
+if(!Fname){
+    document.getElementById('p1').innerHTML = "* Firstaname is require";
+    document.getElementById('head').innerHTML = '';
+}else{
+    fname_status =1;
+}
+
+if(!Lname){
+    document.getElementById('p2').innerHTML = "* Lastaname is require";
+      document.getElementById('head').innerHTML = '';
+      $("#submit").attr("disabled", "disabled");
+}else{
+    lname_status = 1;
+}
+
+
+if(!Email){
+    document.getElementById('p3').innerHTML = "* Email is require";
+      document.getElementById('head').innerHTML = '';
+      $("#submit").attr("disabled", "disabled");
+}else{
+    email_status = 1;
+}
+
+if(!pwd){
+    document.getElementById('password_strength').innerHTML = "* Password is require";
+      document.getElementById('head').innerHTML = '';
+}else{
+    pwd_status = 1;
+}
+
+if(!birthdate){
+    document.getElementById('bdt').innerHTML = "* Birthdate is require";
+      document.getElementById('head').innerHTML = '';
+      $("#submit").attr("disabled", "disabled");
+}else{
+    birthdate_status = 1;
+}
+
+if(!cpwd){
+    document.getElementById('boldStuff').innerHTML = "* Confirm Password is require";
+      document.getElementById('head').innerHTML = '';
+      $("#submit").attr("disabled", "disabled");
+}
+
+
+
+
+
+/*
+if (first_name.value.length == 0  && last_name.value.length == 0 && email.value.length == 0 && password.value.length == 0  ) {
+//document.getElementById('head').innerHTML = "* All fields are mandatory *"; // This segment displays the validation rule for all fields
+
+
+return false;
+}*/
+if(password1 != confirmPassword){
+    return false;
+}else{
+    pwd_status = 1;
+}
+// Check each input in the order that it appears in the form.
+if (inputfAlphabet(first_name, "* For your First name please use alphabets only ")) {
+if (inputlAlphabet(last_name, "* For your Last name please use alphabets only ")) {
+if (emailValidation(email, "* Please enter a valid email address ")) {
+    $("#submit").removeAttr("disabled");
+return true;
+}
+}
+}	
+
+    /*if(fname_status===1 && lname_status===1 && email_status === 1 && birthdate_status === 1 && pwd_status === 1)
+    {
+        alert('ss');
+        
+    }*/
+return false;
+
+}
+
+// Function that checks whether input text is an alphabetic character or not.
+function inputfAlphabet(inputtext, alertMsg) {
+var alphaExp = /^[a-zA-Z]+$/;
+
+/*
+if(inputtext.value.length < 3){
+document.getElementById('p1').innerText = "* First name shuold not less than 3 word"; // This segment displays the validation rule for name.
+inputtext.focus();
+return false;
+    
+}else{
+document.getElementById('p1').innerText = ""; // This segment displays the validation rule for name.
+    
+}*/
+
+
+if (inputtext.value.match(alphaExp)) {
+        document.getElementById('p1').innerText = '';
+
+return true;
+} else {
+document.getElementById('p1').innerText = alertMsg; // This segment displays the validation rule for name.
+//alert(alertMsg);
+inputtext.focus();
+return false;
+}
+}
+// Function that checks whether input text is an alphabetic character or not.
+function inputlAlphabet(inputtext, alertMsg) {
+        
+var alphaExp = /^[a-zA-Z]+$/;
+
+/*    if(inputtext.value.length < 3){
+        document.getElementById('p2').innerText = "* First name shuold not less than 3 word"; // This segment displays the validation rule for name.
+        inputtext.focus();
+        return false;
+        
+    }else{
+        document.getElementById('p2').innerText = ""; // This segment displays the validation rule for name.
+        
+    }*/
+
+
+
+    if (inputtext.value.match(alphaExp)) {
+            document.getElementById('p2').innerText = '';
+            return true;
+    } else {
+            document.getElementById('p2').innerText = alertMsg; // This segment displays the validation rule for name.
+            //alert(alertMsg);
+            inputtext.focus();
+        return false;
+    }
+}
+
+
+// Function that checks whether an user entered valid email address or not and displays alert message on wrong email address format.
+function emailValidation(inputtext, alertMsg) {
+var emailExp =  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+if (inputtext.value.match(emailExp)) {
+    document.getElementById('p3').innerText = "";
+return true;
+} else {
+document.getElementById('p3').innerText = alertMsg; // This segment displays the validation rule for email.
+inputtext.focus();
+return false;
+}
+}
+function btnclick() {
+	var chk = formValidation();
+    if(chk){
+        save_user();
+    }
+	
+        
+}
+</script>
+  
+<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div><div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe name="fb_xdm_frame_http" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" id="fb_xdm_frame_http" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tabindex="-1" src="./Dive Thru_files/lY4eZXm_YWu.html" style="border: none;"></iframe><iframe name="fb_xdm_frame_https" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no" id="fb_xdm_frame_https" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tabindex="-1" src="./Dive Thru_files/lY4eZXm_YWu(1).html" style="border: none;"></iframe></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div></div></div></div></body></html>
