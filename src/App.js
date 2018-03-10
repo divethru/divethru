@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, StatusBar, Platform } from 'react-native';
 import { ThemeProvider } from 'react-native-material-ui';
 import WalkThroughScreen from './containers/WalkThroughScreen';
 import LoginScreen from './containers/LoginScreen';
@@ -25,7 +25,7 @@ export default class App extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     AsyncStorage.getItem('user_id').then((value) => {
       this.setState({ id: value });
     });

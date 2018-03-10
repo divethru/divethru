@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
 import FormData from 'FormData';
-import { View, Text, TextInput, Image, TouchableOpacity, Platform, AsyncStorage } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, Platform, AsyncStorage, StatusBar, Dimensions } from 'react-native';
 import { Button } from 'react-native-material-ui';
 // import RadioButton from 'radio-button-react-native';
 import DatePicker from 'react-native-datepicker';
@@ -215,6 +215,12 @@ class RegistrationScreen extends Component {
       }
 
       const currentDate = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+      let deviceToken = '';
+      AsyncStorage.getItem('deviceToken').then((value) => {
+        if (value != null) {
+          deviceToken = value;
+        }
+      }).done();
 
       firebaseApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password.value)
       .then((user) => {
@@ -231,7 +237,7 @@ class RegistrationScreen extends Component {
           activated_on: '',
           login_via: 'email',
           device_type: Platform.OS,
-          device_token: '',
+          device_token: deviceToken,
           fb_id: '',
           registered_on: currentDate,
           lastUpdated_on: currentDate,
@@ -275,11 +281,12 @@ class RegistrationScreen extends Component {
     })
     .then((response => response.json()))
     .then((responseData) => {
-      if (responseData.error_code === 0) {
+      // if (responseData.error_code === 0) {
         this.dropdown.alertWithType('success', '', 'A link to verify your email address has been sent. Please check your email to proceed further.');
-      } else {
-        this.props.navigation.goBack();
-      }
+      // } else {
+      //   this.dropdown.alertWithType('error', '', 'Something went wrong');
+      //   // this.props.navigation.goBack();
+      // }
     })
     .done();
   }
@@ -301,6 +308,13 @@ class RegistrationScreen extends Component {
             
               const currentDate = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
+              let deviceToken = '';
+              AsyncStorage.getItem('deviceToken').then((value) => {
+                if (value != null) {
+                  deviceToken = value;
+                }
+              }).done();
+
               // Login with the credential
               firebaseApp.auth().signInWithCredential(credential).then((response) => {
                 const ref = firebaseApp.database().ref('Users').child(response.uid);
@@ -319,7 +333,7 @@ class RegistrationScreen extends Component {
                       activated_on: '',
                       login_via: 'facebook',
                       device_type: Platform.OS,
-                      device_token: '',
+                      device_token: deviceToken,
                       fb_id: json.id,
                       registered_on: currentDate,
                       lastUpdated_on: currentDate,
@@ -412,11 +426,16 @@ class RegistrationScreen extends Component {
 
     const passwordHelperText = (this.state.password.value === '') ? <Text style={styles.helperText}>{this.state.inputPasswordError}</Text> : null;
     const isSetPassword = (this.state.password.value !== '') ? true : false;
-
+    const width = Dimensions.get('window').width;
     return (
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
           <KeyboardAwareScrollView>
+            <StatusBar
+              backgroundColor="rgba(0, 0, 0, 0.30)"
+              animated
+              hidden={false}
+            />
             <View style={styles.innerContainer}>
               <Text style={styles.helperText}>{this.state.errorMessage}</Text>
 
@@ -542,7 +561,23 @@ class RegistrationScreen extends Component {
                     dateInput: {
                       borderColor: colors.transparent,
                       borderWidth: 0.0,
+                      marginRight: width > 320 ? '73%' : '62%'
                     },
+                    btnTextConfirm: {
+                      color: '#7dd3d5',
+                      height: 30,
+                      marginTop: 30,
+                      marginBottom: 20
+                    },
+                    btnTextCancel:{
+                      color: colors.black,
+                      height: 30,
+                      marginTop: 30,
+                      marginBottom: 20
+                    },
+                    placeholderText:{
+                      color: colors.grey500,
+                    }
                   }}
                   onDateChange={(dateOfBirth) => { this.validateDateOfBirth(dateOfBirth); }}
                 />

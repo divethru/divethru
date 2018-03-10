@@ -1,0 +1,142 @@
+import { StyleSheet } from 'react-native';
+import { colors } from './theme';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 10,
+    backgroundColor: colors.white,
+  },
+  mainheadingtext: {
+    fontSize: 28,
+    fontWeight: '400',
+    color: colors.black,
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  headtext: {
+    fontSize: 16,
+    color: colors.grey700,
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  text: {
+    fontSize: 14,
+    color: colors.grey700,
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 25,
+  },
+  image: {
+    height: 20,
+    width: 20,
+  },
+  closebtn: {
+    height: 20,
+    width: 20,
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    marginTop: 20,
+  },
+  // closebtn: {
+  //   height: 20,
+  //   width: 20,
+  //   marginLeft: 280,
+  //   marginTop: 20,
+  // },
+  headingtext: {
+    fontSize: 18,
+    fontWeight: '400',
+    color: colors.black,
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  imageicon: {
+    height: 70,
+    width: 70,
+  },
+  txt: {
+    fontSize: 25,
+    fontWeight: '400',
+    color: colors.black,
+    textAlign: 'center',
+  },
+  txtsubscription: {
+    color: colors.grey900,
+    textAlign: 'center',
+    marginBottom: 15,
+    marginTop: 15,
+  },
+  // imagebox: {
+  //   height: 180,
+  //   width: 145,
+  //   borderRadius: 5,
+  //   borderColor: '#a25ad6',
+  //   borderWidth: 2,
+  //   margin: 3,
+  // },
+  innerContainer: {
+    height: 180,
+    width: 145,
+    borderRadius: 5,
+    margin: 5,
+  },
+  innerContainerFocus: {
+    height: 180,
+    width: 145,
+    borderRadius: 5,
+    margin: 5,
+    borderColor: '#a25ad6',
+    borderWidth: 2,
+  },
+  // imgbox: {
+  //   height: 165,
+  //   width: 130,
+  //   borderRadius: 5,
+  // },
+  imagebckground: {
+    height: 165,
+    width: 130,
+    borderRadius: 5,
+    margin: 6,
+  },
+  imagetxt1: {
+    position: 'absolute',
+    marginTop: 25,
+    // marginLeft: 25,
+    textAlign: 'center',
+    alignSelf: 'center',
+    fontSize: 15,
+    color: '#fff',
+    fontWeight: '300',
+  },
+  imagetxt2: {
+    position: 'absolute',
+    marginTop: 73,
+    textAlign: 'center',
+    alignSelf: 'center',
+    fontSize: 30,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  imagetxt3: {
+    position: 'absolute',
+    marginTop: 140,
+    textAlign: 'center',
+    alignSelf: 'center',
+    fontSize: 12,
+    color: '#fff',
+    fontWeight: '300',
+  },
+  rtext: {
+    textAlign: 'center',
+    paddingBottom: 20,
+    paddingTop: 20,
+    color: colors.grey500,
+    fontSize: 15,
+  },
+});
+
+export default styles;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TextInput, Image, TouchableOpacity, AsyncStorage } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, AsyncStorage, StatusBar } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import firebase from 'firebase';
 import { Button } from 'react-native-material-ui';
@@ -95,6 +95,13 @@ class LoginScreen extends Component {
 
   loginButtonClicked = () => {
     // this.props.navigation.navigate('Tutorial');
+
+    let deviceToken = '';
+    AsyncStorage.getItem('deviceToken').then((value) => {
+      if (value != null) {
+        deviceToken = value;
+      }
+    }).done();
     this.setState({ loading: true });
     if (this.state.email !== undefined && this.state.password !== undefined) {
       const { email, password } = this.state;
@@ -104,19 +111,24 @@ class LoginScreen extends Component {
             ref.once('value').then((dataSnapshot) => {
               this.setState({ loading: false });
               const data = dataSnapshot.val();
-              // this.props.navigation.navigate('Tutorial');
-              if (data.activated_on !== '') {
-                // console.log('CURRENT USER data-->' + JSON.stringify(data.user_id));
-                AsyncStorage.setItem('user_id', data.user_id);
-                AsyncStorage.getItem('isMarketingLaunched').then((value) => {
-                  if (value === 'yes') {
-                    this.props.navigation.navigate('TabScreen');
-                  } else {
-                    this.props.navigation.navigate('Tutorial');
-                  }
-                });
+              if(data != null){
+                if (data.activated_on !== '') {
+                  // console.log('CURRENT USER data-->' + JSON.stringify(data.user_id));
+                  AsyncStorage.setItem('user_id', data.user_id);
+                  AsyncStorage.getItem('isMarketingLaunched').then((value) => {
+                    const ref = firebaseApp.database().ref('Users').child(data.user_id);
+                    ref.update({ device_token: deviceToken });
+                    if (value === 'yes') {
+                      this.props.navigation.navigate('TabScreen');
+                    } else {
+                      this.props.navigation.navigate('Tutorial');
+                    }
+                  });
+                } else {
+                  this.showErrorAlertView('Please verify your email to proceed further.');
+                }
               } else {
-                this.showErrorAlertView('Please verify your email to proceed further.');
+                this.showErrorAlertView('Something went wrong. Please contact at divethru@gmail.com');
               }
             });
           })
@@ -131,6 +143,12 @@ class LoginScreen extends Component {
   }
 
   fbAuth = () => {
+    let deviceToken = '';
+    AsyncStorage.getItem('deviceToken').then((value) => {
+      if (value != null) {
+        deviceToken = value;
+      }
+    }).done();
     LoginManager.logInWithReadPermissions(['public_profile', 'email']).then((result) => {
       if (result.isCancelled) {
         alert('Login cancelled');
@@ -154,6 +172,8 @@ class LoginScreen extends Component {
                   if (userData != null) {
                     AsyncStorage.getItem('isMarketingLaunched').then((value) => {
                       if (value === 'yes') {
+                        const ref = firebaseApp.database().ref('Users').child(data.user_id);
+                        ref.update({ device_token: deviceToken });
                         this.props.navigation.navigate('TabScreen');
                       } else {
                         this.props.navigation.navigate('Tutorial');
@@ -185,6 +205,11 @@ class LoginScreen extends Component {
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
           <KeyboardAwareScrollView>
+            <StatusBar
+              backgroundColor="rgba(0, 0, 0, 0.30)"
+              animated
+              hidden={false}
+            />
             <View style={styles.loginContainer}>
               <Text style={styles.helperText}>{this.state.errorMessage}</Text>
 

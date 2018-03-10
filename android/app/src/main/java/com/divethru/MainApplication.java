@@ -9,11 +9,12 @@ import android.util.Log;
 
 import com.facebook.react.ReactApplication;
 import com.zmxv.RNSound.RNSoundPackage;
+import com.evollu.react.fcm.FIRMessagingPackage;
+import com.calendarevents.CalendarEventsPackage;
 // import fm.indiecast.rnaudiostreamer.RNAudioStreamerPackage;
 import com.horcrux.svg.SvgPackage;
 // import br.com.arauk.reactnative.audioplayer.ReactNativeAudioPlayerPackage;
 // import com.zmxv.RNSound.RNSoundPackage;
-import com.brentvatne.react.ReactVideoPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -49,13 +50,14 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
-            new RNSoundPackage(),
-            // new RNAudioStreamerPackage(),
             new SvgPackage(),
+            new RNSoundPackage(),
+            new FIRMessagingPackage(),
+            new CalendarEventsPackage(),
+            // new RNAudioStreamerPackage(),
             // new ReactNativeAudioPlayerPackage(),
         // new RNSoundPackage(),
         // new ReactNativeAudioStreamingPackage(),
-        new ReactVideoPackage(),
         new VectorIconsPackage(),
         new ReactVideoPackage(),
         new FBSDKPackage(mCallbackManager)

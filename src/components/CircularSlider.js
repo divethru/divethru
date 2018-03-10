@@ -25,8 +25,9 @@ class CircularSlider extends Component {
       angle: this.props.angle,
     };
   }
-  componentWillMount = () => {
-    // this._panResponder = PanResponder.create({
+
+  componentWillMount() {
+     // this._panResponder = PanResponder.create({
     //   onStartShouldSetPanResponder: () => true,
     //   onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
     //   onMoveShouldSetPanResponder: () => true,

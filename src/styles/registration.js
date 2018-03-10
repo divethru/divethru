@@ -21,7 +21,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   datePickerBox: {
-    marginLeft: -20,
+    // marginLeft: -20,
+    // backgroundColor: colors.red100,
+    width: '100%',
   },
   datepicker: {
     marginLeft: 10,

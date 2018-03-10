@@ -6,6 +6,8 @@ import ProfileScreen from './ProfileScreen';
 import HomeScreen from './HomeScreen';
 import PlayerScreen from './PlayerScreen';
 import SessionDescriptionScreen from './SessionDescriptionScreen';
+import SubscribeNowScreen from './SubscribeNowScreen';
+import CalenderReminderScreen from './CalenderReminderScreen';
 import { uiTheme } from '../../styles/theme';
 
 const components = {
@@ -13,6 +15,8 @@ const components = {
     Home: { screen: HomeScreen },
     Player: { screen: PlayerScreen },
     SessionDescription: { screen: SessionDescriptionScreen },
+    SubscribeNowScreen: { screen: SubscribeNowScreen },
+    CalenderReminderScreen: { screen: CalenderReminderScreen },
   }, {
     headerMode: 'none',
   }) },

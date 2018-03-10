@@ -15,10 +15,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   text: {
-    fontSize: 18,
+    fontSize: 14,
     color: colors.grey500,
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 20,
+    marginRight: 20,
+    textAlign: 'center',
   },
   seperator: {
     alignItems: 'center',
@@ -30,14 +33,14 @@ const styles = StyleSheet.create({
   closebtn: {
     height: 20,
     width: 20,
-    // left: 130,
     alignSelf: 'flex-end',
   },
   headingtext: {
-    fontSize: 21,
+    fontSize: 18,
     color: colors.black,
     letterSpacing: 2,
     paddingRight: 9,
+    textAlign: 'center',
   },
   image: {
     height: 20,
@@ -93,8 +96,8 @@ export const learnMoreButtonStyles = StyleSheet.create({
     fontStyle: 'italic',
   },
   container: {
-    marginTop: 20,
-    height: 10,
+    marginTop: 10,
+    height: 20,
     backgroundColor: colors.transparent,
   },
 });

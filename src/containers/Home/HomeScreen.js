@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity, ScrollView, ImageBackground, ListView, Dimensions, AsyncStorage } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, Platform, ImageBackground, ListView, Dimensions, AsyncStorage, Animated, RefreshControl, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Button } from 'react-native-material-ui';
-import Pagination from 'react-native-pagination';
 import * as Progress from 'react-native-progress';
 import firebaseApp from '../../components/constant';
 import InfoPopup from '../../components/InfoPopup';
+import PaginatedListView from '../../components/PaginatedListView';
 import PromptedPopup from '../../components/PromptedPopup';
 import Spinner from '../../components/Spinner';
 import styles, { learnMoreButtonStyles, buttonStyles } from '../../styles/home';
@@ -14,51 +14,11 @@ import dashboardBG from '../../assets/images/Dashboard_bg.png';
 import dashboardQuotesBG from '../../assets/images/Dashboard_QuotesBG.png';
 import subscribeNowBG from '../../assets/images/SubscribeNow_bg.png';
 import Home from '../../assets/images/ic_home.png';
-import walkThroughBg2 from '../../assets/images/reminder_button_2.png';
 
 const width = Dimensions.get('window').width;
 
-const data = [
-  {
-    imageUrl: 'http://wallpapercave.com/wp/pwQMS6f.jpg',
-    title: 'Breath',
-    subTitle: '1 min',
-    color: '#66348b',
-  },
-  {
-    imageUrl: 'http://all4desktop.com/data_images/original/4236532-background-images.jpg',
-    title: 'Unwind',
-    subTitle: '1 min',
-    color: '#139e8c',
-  },
-  {
-    imageUrl: 'http://wallpapercave.com/wp/pwQMS6f.jpg',
-    title: 'Restore',
-    subTitle: '1 min',
-    color: '#b679d3',
-  },
-  {
-    imageUrl: 'http://all4desktop.com/data_images/original/4236532-background-images.jpg',
-    title: 'Smile',
-    subTitle: '1 min',
-    color: '#5fb399',
-  },
-  {
-    imageUrl: 'http://wallpapercave.com/wp/pwQMS6f.jpg',
-    title: 'Sad',
-    subTitle: '1 min',
-    color: '#66348b',
-  },
-  {
-    imageUrl: 'http://all4desktop.com/data_images/original/4236532-background-images.jpg',
-    title: 'Calm',
-    subTitle: '1 min',
-    color: '#139e8c',
-  },
-];
-
 class HomeScreen extends Component {
-  static navigationOptions = () => ({
+  static navigationOptions = ({navigation}) => ({
     header: null,
     tabBarLabel: 'Home',
     tabBarIcon: ({ tintColor }) => <Image source={Home} style={{ tintColor }} />,
@@ -80,11 +40,21 @@ class HomeScreen extends Component {
       dataSourceForQuickDive: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2,
       }),
+      refreshing: false,
     };
+    this.onRefresh = false;
+    this.quickDivesItem = 0;
+    this.deepDivesItem = 0;
+    this.openDivesItem = 0;
+    this.scrollX = new Animated.Value(0);
+    this.scrollX1 = new Animated.Value(0);
+    this.scrollX2 = new Animated.Value(0);
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    StatusBar.setHidden(false);
     this.setState({ loading: true });
+
     this.fetchUserLastConversationData().then(() => {
       this.fetch10DayProgramData().then(() => {
         this.fetchQuotesData().then(() => {
@@ -155,10 +125,11 @@ class HomeScreen extends Component {
             meditation_audio: value.meditation_audio[0],
           });
         });
+        
         const size = 6;
-        const items = sessionData.slice(0, size);
+        this.openDivesItem = sessionData.slice(0, size);
         this.setState({
-          session: sessionData, dataSourceFor10Day: this.state.dataSourceFor10Day.cloneWithRows(items),
+          session: sessionData, dataSourceFor10Day: this.state.dataSourceFor10Day.cloneWithRows(this.openDivesItem),
         });
       }
     }).catch(() => { });
@@ -185,19 +156,20 @@ class HomeScreen extends Component {
             session_img: value.bundle_img,
             session_id: value.bundle_id,
             session_description: value.bundle_description,
+
           });
         });
         const size = 6;
-        const items = sessionData.slice(0, size);
+        this.quickDivesItem = sessionData.slice(0, size);
         this.setState({
-          dataSourceForQuickDive: this.state.dataSourceForQuickDive.cloneWithRows(items),
+          dataSourceForQuickDive: this.state.dataSourceForQuickDive.cloneWithRows(this.quickDivesItem),
         });
       }
     }).catch(() => { });
   }
 
   fetchDeepDiveData() {
-    const ref = firebaseApp.database().ref('Category').child('Deep Dive');
+    const ref = firebaseApp.database().ref('Category').child('Deep Dives');
     return ref.once('value').then((dataSnapshot) => {
       if (dataSnapshot.exists()) {
         const sessionData = [];
@@ -220,9 +192,9 @@ class HomeScreen extends Component {
           });
         });
         const size = 6;
-        const items = sessionData.slice(0, size);
+        this.deepDivesItem = sessionData.slice(0, size);
         this.setState({
-          dataSourceForDeepDive: this.state.dataSourceForDeepDive.cloneWithRows(items),
+          dataSourceForDeepDive: this.state.dataSourceForDeepDive.cloneWithRows(this.deepDivesItem),
         });
       }
     }).catch(() => { });
@@ -271,14 +243,14 @@ class HomeScreen extends Component {
     this.setState({ isPrompted: false }, () => {
       this.timer = setInterval(() => {
         this.redirectToPlayer();
-      }, 1000);
-      // this.redirectToPlayer();
+      }, 500);
     });
-    // this.setState({ isPrompted: false });
   }
 
   onContinueWithSubscription = () => {
-    this.setState({ isPrompted: false });
+    this.setState({ isPrompted: false }, () => {
+        // this.props.navigation.navigate('SubscribeNowScreen');
+    });
   }
 
   renderProgram(category) {
@@ -294,6 +266,23 @@ class HomeScreen extends Component {
         </View>
       </TouchableOpacity>
     );
+  }
+
+  onRefreshClicked() {
+    this.onRefresh = true;
+    this.setState({ refreshing: true });
+    this.fetchUserLastConversationData().then(() => {
+      this.fetch10DayProgramData().then(() => {
+        this.fetchQuotesData().then(() => {
+          this.fetchQuickDiveData().then(() => {
+            this.fetchDeepDiveData().then(() => {
+              this.onRefresh = false;
+              this.setState({ refreshing: false });
+            }).catch(() => { });
+          }).catch(() => { });
+        }).catch(() => { });
+      }).catch(() => { });
+    }).catch(() => { });
   }
 
   render() {
@@ -315,7 +304,18 @@ class HomeScreen extends Component {
     return (
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
-          <ScrollView>
+          <ScrollView refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={() => { this.onRefreshClicked(); }}
+            />
+          }>
+           <StatusBar
+              translucent
+              backgroundColor="rgba(0, 0, 0, 0.010)"
+              animated
+              hidden={false}
+            />
             <View style={styles.introContainer}>
               <ImageBackground
                 source={dashboardBG}
@@ -370,12 +370,23 @@ class HomeScreen extends Component {
                 <View style={styles.diveInnerContainer}>
                   <ListView
                     horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { x: this.scrollX } } }],
+                    )}
+                    scrollEventThrottle={16}
                     dataSource={this.state.dataSourceForQuickDive}
                     renderRow={category => this.renderProgram(category)}
                     style={styles.listView}
                   />
                 </View>
               </View>
+
+              <PaginatedListView
+                listScrollId={this.scrollX}
+                totalLength={this.quickDivesItem.length}
+              />
 
               <View style={styles.categoryInnerContainer}>
                 <Text style={styles.categoryTitle}>D E E P  D I V E S</Text>
@@ -390,14 +401,25 @@ class HomeScreen extends Component {
 
               <View style={styles.diveContainer}>
                 <View style={styles.diveInnerContainer}>
-                  <ListView
+                <ListView
                     horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { x: this.scrollX1 } } }],
+                    )}
+                    scrollEventThrottle={16}
                     dataSource={this.state.dataSourceForDeepDive}
                     renderRow={category => this.renderProgram(category)}
                     style={styles.listView}
                   />
                 </View>
               </View>
+
+              <PaginatedListView
+                listScrollId={this.scrollX1}
+                totalLength={this.deepDivesItem.length}
+              />
 
               <View style={styles.categoryInnerContainer}>
                 <Text style={styles.categoryTitle}>O P E N  D I V E S</Text>
@@ -412,14 +434,25 @@ class HomeScreen extends Component {
 
               <View style={styles.diveContainer}>
                 <View style={styles.diveInnerContainer}>
-                  <ListView
+                <ListView
                     horizontal
+                    onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { x: this.scrollX2 } }}],
+                    )}
+                    scrollEventThrottle={16}
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    onEndReachedThreshold={10}
                     dataSource={this.state.dataSourceFor10Day}
                     renderRow={category => this.renderProgram(category)}
                     style={styles.listView}
                   />
                 </View>
               </View>
+              <PaginatedListView
+                listScrollId={this.scrollX2}
+                totalLength={this.openDivesItem.length}
+              />
             </View>
 
             <View style={[styles.dailyQuotesContainer, { marginTop: 20 }]}>

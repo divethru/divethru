@@ -18,6 +18,7 @@ class InfoPopup extends Component {
 
   render() {
     const { animationType, supportedOrientation, transparent } = this.props;
+
     return (
       <Modal
         animationType={animationType}

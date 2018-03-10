@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Image, ImageBackground, Text, TouchableOpacity, TouchableHighlight, AsyncStorage } from 'react-native';
+import { View, Image, ImageBackground, Text, TouchableOpacity, TouchableHighlight, AsyncStorage, Platform, PanResponder, Dimensions, StatusBar } from 'react-native';
 import VideoPlayer from 'react-native-video-player';
 import { Button } from 'react-native-material-ui';
-// import AudioPlayer from 'react-native-play-audio';
-// import { ReactNativeAudioStreaming } from 'react-native-audio-streaming';
-// import { G, Path } from 'react-native-svg';
+import Svg, { Path, Circle, G } from 'react-native-svg';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { IndicatorViewPager, PagerDotIndicator } from 'rn-viewpager';
 import Sound from 'react-native-sound';
 import firebaseApp from '../components/constant';
-// react-native-circle-slider
-// import CircularSlider from 'react-native-circular-slider';
-// import SvgUri from 'react-native-svg-uri';
 import CircularSlider from '../components/CircularSlider';
 import walkThroughBg from '../assets/images/TransperantBG.png';
 import walkThroughBg1 from '../assets/images/reminder_button_1.png';
@@ -23,8 +19,6 @@ import vlogo from '../assets/images/V_Logo.png';
 import styles, { buttonStyles, reminderButtonStyles } from '../styles/tutorial';
 import { colors } from '../styles/theme';
 import IC_WHITE_CLOSE from '../assets/images/ic_white_close.png';
-// import SVGDraw from '../components/SVGDraw';
-// import svgLogo from '../assets/images/V_Logo.svg';
 
 const AudioStatePlay = 'play';
 const AudioStatePause = 'pause';
@@ -54,7 +48,40 @@ export default class Tutorial extends Component {
   }
 
   componentWillMount() {
+    StatusBar.setHidden(true);
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (e, gs) => true,
+      onStartShouldSetPanResponderCapture: (e, gs) => true,
+      onMoveShouldSetPanResponder: (e, gs) => true,
+      onMoveShouldSetPanResponderCapture: (e, gs) => true,
+      onPanResponderMove: (e, gs) => {
+        const xOrigin = this.props.xCenter - (this.props.dialRadius + this.props.btnRadius);
+        const yOrigin = this.props.yCenter - (this.props.dialRadius + this.props.btnRadius);
+        const a = this.cartesianToPolar(gs.moveX - xOrigin, gs.moveY - yOrigin);
+        this.setState({ progress: a });
+        this.sliderValueChange(a);
+        // this.angle = a;
+        // this.props.onValueChange(a);
+      },
+      // onPanResponderRelease: (e, gs) => {
+      //   const xOrigin = this.props.xCenter - (this.props.dialRadius + this.props.btnRadius);
+      //   const yOrigin = this.props.yCenter - (this.props.dialRadius + this.props.btnRadius);
+      //   const a = this.cartesianToPolar(gs.moveX, gs.moveY);
+      //   alert('callled' + a);
+      //   this.props.angle = a;
+      //   // this.setState({ angle: a });
+      //   this.props.onValueChange(a);
+      //   // this.props.angle = a;
+      // },
+    });
+  }
+
+  componentDidMount() {
     this.fetch10DayProgramData();
+  }
+
+  componentWillUnmount() {
+    StatusBar.setHidden(false);
   }
 
   _renderDotIndicator = () => (
@@ -84,6 +111,7 @@ export default class Tutorial extends Component {
           if (e) {
             console.log('error loading track:', e);
           } else {
+            this.session.setCategory('Playback');
             this.setState({ isLoaded: true });
           }
         });
@@ -153,7 +181,7 @@ export default class Tutorial extends Component {
           this.setState({ progress: 0 });
         }
       });
-    }, 0);
+    }, 1000);
   }
 
   clearTimer() {
@@ -164,44 +192,11 @@ export default class Tutorial extends Component {
   }
 
   sliderValueChange(value) {
-    // this.setState({ progress: value, isPlaying: true });
-    // const seek = value * (this.session.getDuration() / 360);
-    // // alert(seek);
-    // this.session.setCurrentTime(seek);
-    // this.audioState = AudioStatePlay;
-    // this.play();
-    // this.whoosh.play();
-    // this.session.play((success) => {
-    //   // alert(success);
-    //   if (success) {
-    //     // this.setState({ isPlaying: false });
-    //     this.stop();
-    //   }
-    // });
-    // this.playProgress();
-  }
-
-  changePlayState() {
-    // if (!this.enable) return;
-    if (this.state.isPlaying) {
-      this.setState({ isPlaying: false });
-      this.pause();
-    } else {
-      if (this.session.isLoaded() === true) {
-        if (this.state.halted > 0.0) {
-          this.session.setCurrentTime(this.state.halted);
-          const seek = this.state.halted * (360 / this.session.getDuration());
-          this.setState({ progress: seek });
-        } else {
-          this.setState({ isPlaying: true });
-          this.play();
-        }
-      }
-    }
-    // this.enable = false;
-    // setTimeout(() => {
-    //   this.enable = true;
-    // }, 500);
+    this.setState({ progress: value, isPlaying: true });
+    const seek = value * (this.session.getDuration() / 360);
+    this.session.setCurrentTime(seek);
+    this.audioState = AudioStatePlay;
+    this.play();
   }
 
   updatePage(myPage) {
@@ -223,17 +218,110 @@ export default class Tutorial extends Component {
     if (e.position === 6) {
       this.setState({ isPlaying: false });
       this.pause();
+    } else if (e.position === 5) {
+      this.player.pause();
     }
+  }
+
+  changePlayState() {
+    if (this.state.isPlaying) {
+      this.setState({ isPlaying: false });
+      this.pause();
+    } else {
+      if (this.session.isLoaded() === true) {
+        if (this.state.halted > 0.0) {
+          this.session.setCurrentTime(this.state.halted);
+          const seek = this.state.halted * (360 / this.session.getDuration());
+          this.setState({ progress: seek, isPlaying: true });
+          this.play();
+        } else {
+          this.setState({ isPlaying: true });
+          this.play();
+        }
+      }
+    }
+  }
+
+  polarToCartesian(angle) {
+    const r = this.props.dialRadius;
+    const hC = this.props.dialRadius + this.props.btnRadius;
+    const a = (angle - 90) * Math.PI / 180.0;
+
+    const x = hC + (r * Math.cos(a));
+    const y = hC + (r * Math.sin(a));
+    return { x, y };
+  }
+
+  cartesianToPolar(x, y) {
+    const hC = this.props.dialRadius + this.props.btnRadius;
+
+    if (x === 0) {
+      return y > hC ? 0 : 180;
+    } else if (y === 0) {
+      return x > hC ? 90 : 270;
+    } else {
+      return (Math.round((Math.atan((y - hC) / (x - hC))) * 180 / Math.PI) +
+        (x > hC ? 90 : 270));
+    }
+  }
+
+  renderPlayer() {
+    const width = (this.props.dialRadius + this.props.btnRadius) * 2;
+    const bR = this.props.btnRadius;
+    const dR = this.props.dialRadius;
+    const startCoord = this.polarToCartesian(0);
+    const endCoord = this.polarToCartesian(this.state.progress);
+    return (<Svg
+      width={150}
+      height={150}
+      style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', marginTop: 35, marginBottom: 40, backgroundColor: colors.transparent }}
+    >
+      <Circle
+        cx={width / 2}
+        cy={width / 2}
+        r={dR}
+        stroke={colors.white}
+        strokeWidth={16}
+        fill="none"
+        opacity="0.2"
+      />
+      <Circle
+        cx={width / 2}
+        cy={width / 2}
+        r={52}
+        stroke="#eee"
+        strokeWidth={0}
+        fill={colors.white}
+      />
+      { Platform.OS === 'ios'
+          ? (
+            <View style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: 70, height: 70, backgroundColor: colors.transparent }} >
+              <Icon name={this.state.isPlaying ? 'pause' : 'play-arrow'} size={50} style={{ color: colors.grey700, position: 'absolute' }} />
+            </View>
+          )
+        : null }
+      <Path
+        stroke={colors.white}
+        opacity="0.5"
+        strokeWidth={16}
+        fill="none"
+        d={`M${startCoord.x} ${startCoord.y} A ${dR} ${dR} 0 ${this.state.progress > 180 ? 1 : 0} 1 ${endCoord.x} ${endCoord.y}`}
+      />
+      <G x={endCoord.x - bR} y={endCoord.y - bR}>
+        <Circle
+          r={bR}
+          cx={bR}
+          cy={bR}
+          fill={colors.transparent}
+          {...this._panResponder.panHandlers}
+        />
+      </G>
+    </Svg>);
   }
 
   render() {
     return (
       <View style={{ flex: 1 }}>
-        {/* <Image
-          source={walkThroughBg}
-          style={styles.backImage}
-        /> */}
-
         <IndicatorViewPager
           ref={viewPager => { this.viewPager = viewPager; }}
           style={styles.pagerContainer}
@@ -262,8 +350,6 @@ export default class Tutorial extends Component {
                 style={buttonStyles}
               />
             </View>
-            {/* <SVGDraw /> */}
-            {/* <SvgUri width="150" height="150" source={svgLogo} /> */}
           </View>
 
           <View style={styles.container2}>
@@ -400,14 +486,33 @@ export default class Tutorial extends Component {
                   </Text>
                   <View style={styles.PlayerView}>
                     <View style={styles.VLogoContainer}>
-                      <CircularSlider
-                        width={120}
-                        height={120}
-                        meterColor={colors.white}
-                        value={this.state.progress}
-                        playState={this.state.isPlaying ? 'pause' : 'play-arrow'}
-                        onValueChange={(value) => { this.sliderValueChange(value); }}
-                      />
+                    { Platform.OS === 'ios'
+                      ? (
+                        <TouchableOpacity
+                          onPress={() => { this.changePlayState(); }}
+                        >
+                          <View style={styles.playerContainer}>
+                            <Text style={styles.text}>
+                              {this.state.sessionName}
+                            </Text>
+                            <View style={styles.sliderContainer}>
+                              {this.renderPlayer()}
+                            </View>
+                          </View>
+                        </TouchableOpacity>
+                      )
+                      : (
+                        <View style={styles.playerContainer}>
+                          <Text style={styles.text}>
+                            {this.state.sessionName}
+                          </Text>
+                          <View style={styles.sliderContainer}>
+                            {this.renderPlayer()}
+                            <Icon onPress={() => { this.changePlayState(); }} name={this.state.isPlaying ? 'pause' : 'play-arrow'} size={50} style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }} />
+                          </View>
+                        </View>
+                      )
+                    }
                     </View>
                   </View>
                   { this.state.isLoaded
@@ -431,7 +536,6 @@ export default class Tutorial extends Component {
           </View>
 
           <View style={styles.container7}>
-            {/* <TouchableOpacity onPress={() => { this.updatePage(0); }} style={styles.container7}> */}
               <ImageBackground
                 source={walkThroughBg}
                 style={styles.backImage}
@@ -444,16 +548,6 @@ export default class Tutorial extends Component {
                   style={reminderButtonStyles}
                 />
               </ImageBackground>
-            {/* </TouchableOpacity> */}
-            {/* <View style={styles.bottomContainer}>
-              <Button
-                primary
-                title=""
-                text="T A P  A N Y W H E R E  T O  C O N T I N U E"
-                onPress={() => { }}
-                style={buttonStyles}
-              />
-            </View> */}
           </View>
 
         </IndicatorViewPager>
@@ -469,6 +563,33 @@ export default class Tutorial extends Component {
   }
 }
 
+Tutorial.defaultProps = {
+  meterColor: colors.red100,
+  textColor: colors.blue100,
+  onTouchUp: undefined,
+  playState: 'play-arrow',
+  btnRadius: 15,
+  dialRadius: 60,
+  dialWidth: 5,
+  textSize: 10,
+  value: 0,
+  angle: 0,
+  xCenter: Dimensions.get('window').width / 2,
+  yCenter: Dimensions.get('window').height / 2,
+};
+
 Tutorial.propTypes = {
   navigation: PropTypes.object.isRequired,
+  dialRadius: PropTypes.number,
+  btnRadius: PropTypes.number,
+  dialWidth: PropTypes.number,
+  xCenter: PropTypes.number,
+  yCenter: PropTypes.number,
+  onValueChange: PropTypes.func,
+  onTouchUp: PropTypes.func,
+  textSize: PropTypes.number,
+  value: PropTypes.number,
+  meterColor: PropTypes.string,
+  textColor: PropTypes.string,
+  playState: PropTypes.string,
 };

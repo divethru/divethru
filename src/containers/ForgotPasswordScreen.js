@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Image, TouchableOpacity, StatusBar } from 'react-native';
 import { Button } from 'react-native-material-ui';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -92,6 +92,11 @@ class ForgotPasswordScreen extends Component {
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
           <KeyboardAwareScrollView>
+            <StatusBar
+              backgroundColor="rgba(0, 0, 0, 0.30)"
+              animated
+              hidden={false}
+            />
             <View style={styles.innerContainer}>
               <View style={styles.lockIconContainer}>
                 <Image source={IC_LOCK} style={styles.lockIcon} />

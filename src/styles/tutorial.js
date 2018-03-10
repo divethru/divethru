@@ -3,26 +3,18 @@ import { colors } from './theme';
 
 const styles = StyleSheet.create({
   container1: {
-    // justifyContent: 'center',
-    // alignItems: 'center',
     flex: 1,
     backgroundColor: '#66348b',
   },
   container2: {
-    justifyContent: 'center',
-    alignItems: 'center',
     flex: 1,
     backgroundColor: '#139e8c',
   },
   container3: {
-    justifyContent: 'center',
-    alignItems: 'center',
     flex: 1,
     backgroundColor: '#b679d3',
   },
   container4: {
-    justifyContent: 'center',
-    alignItems: 'center',
     flex: 1,
     backgroundColor: '#5fb399',
   },
@@ -131,6 +123,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 250,
     marginTop: '5%',
+  },
+  playerContainer: {
+    width: '100%',
+    height: '90%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  sliderContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
   },
   playerContainerText: {
     fontSize: Platform.OS === 'ios' ? 16 : 20,

@@ -20,8 +20,8 @@ class SessionDescriptionScreen extends Component {
     };
   }
 
-  componentWillMount() {
-    StatusBar.setHidden(true);
+  componentDidMount() {
+    StatusBar.setHidden(false);
     const { params } = this.props.navigation.state;
     const sessionData = params ? params.sessionData : undefined;
 
@@ -33,17 +33,22 @@ class SessionDescriptionScreen extends Component {
   }
 
   componentWillUnmount() {
-    StatusBar.setHidden(false);
+    StatusBar.setHidden(true);
   }
 
   render() {
     return (
       <View style={styles.container}>
         <ScrollView>
+          <StatusBar
+            backgroundColor="rgba(0, 0, 0, 0.30)"
+            animated
+            hidden={false}
+          />
           <View style={styles.container}>
             <TouchableOpacity onPress={() => { this.props.navigation.goBack(); }}>
               <Image
-                style={{ height: 20, width: 20, alignSelf: 'flex-end', marginRight: 20, marginTop: 20 }}
+                style={{ height: 20, width: 20, alignSelf: 'flex-end', marginRight: 20, marginTop: 40 }}
                 source={IC_WHITE_CLOSE}
               />
             </TouchableOpacity>
@@ -57,7 +62,7 @@ class SessionDescriptionScreen extends Component {
             </View>
           </View>
           <View style={styles.descContainer}>
-            <Text style={styles.subText}>Basic</Text>
+            <Text style={styles.subText}>10 Day Program</Text>
             <Text style={styles.descText}>{this.state.sessionDesc}</Text>
             <Button
               primary
