@@ -4,6 +4,7 @@ import { View, Text, TextInput, Image, TouchableOpacity, AsyncStorage, StatusBar
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import firebase from 'firebase';
 import { Button } from 'react-native-material-ui';
+import FCM from 'react-native-fcm';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DropdownAlert from 'react-native-dropdownalert';
 import { palette, colors } from '../styles/theme';
@@ -97,11 +98,19 @@ class LoginScreen extends Component {
     // this.props.navigation.navigate('Tutorial');
 
     let deviceToken = '';
-    AsyncStorage.getItem('deviceToken').then((value) => {
-      if (value != null) {
-        deviceToken = value;
+    // AsyncStorage.getItem('deviceToken').then((value) => {
+    //   if (value != null) {
+    //     deviceToken = value;
+    //   }
+    // }).done();
+    
+    FCM.getFCMToken().then(token => {
+      console.log('HelloNewToken: '+token);
+      if(token !== undefined){
+        deviceToken = token;
       }
-    }).done();
+    });
+
     this.setState({ loading: true });
     if (this.state.email !== undefined && this.state.password !== undefined) {
       const { email, password } = this.state;
@@ -144,11 +153,19 @@ class LoginScreen extends Component {
 
   fbAuth = () => {
     let deviceToken = '';
-    AsyncStorage.getItem('deviceToken').then((value) => {
-      if (value != null) {
-        deviceToken = value;
+    // AsyncStorage.getItem('deviceToken').then((value) => {
+    //   if (value != null) {
+    //     deviceToken = value;
+    //   }
+    // }).done();
+
+    FCM.getFCMToken().then(token => {
+      console.log('HelloNewToken: '+token);
+      if(token !== undefined){
+        deviceToken = token;
       }
-    }).done();
+    });
+
     LoginManager.logInWithReadPermissions(['public_profile', 'email']).then((result) => {
       if (result.isCancelled) {
         alert('Login cancelled');

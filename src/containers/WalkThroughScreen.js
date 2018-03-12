@@ -70,11 +70,11 @@ export default class WalkThroughScreen extends Component {
 
   componentDidMount() {
     StatusBar.setHidden(true);
-
-    FCM.requestPermissions().then(()=>console.log('granted')).catch(()=>console.log('notification permission rejected'));
-    FCM.getFCMToken().then(token => {
-      console.log(token)
-      AsyncStorage.setItem('deviceToken', token);
+    FCM.requestPermissions().then(() => {
+      console.log('granted');
+    })
+    .catch(()=> { 
+      console.log('notification permission rejected')
     });
   }
 

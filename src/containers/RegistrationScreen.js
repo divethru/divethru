@@ -5,6 +5,7 @@ import FormData from 'FormData';
 import { View, Text, TextInput, Image, TouchableOpacity, Platform, AsyncStorage, StatusBar, Dimensions } from 'react-native';
 import { Button } from 'react-native-material-ui';
 // import RadioButton from 'radio-button-react-native';
+import FCM from 'react-native-fcm';
 import DatePicker from 'react-native-datepicker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -216,11 +217,18 @@ class RegistrationScreen extends Component {
 
       const currentDate = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       let deviceToken = '';
-      AsyncStorage.getItem('deviceToken').then((value) => {
-        if (value != null) {
-          deviceToken = value;
+      // AsyncStorage.getItem('deviceToken').then((value) => {
+      //   if (value != null) {
+      //     deviceToken = value;
+      //   }
+      // }).done();
+
+      FCM.getFCMToken().then(token => {
+        console.log('HelloNewToken: '+token);
+        if(token !== undefined){
+          deviceToken = token;
         }
-      }).done();
+      });
 
       firebaseApp.auth().createUserWithEmailAndPassword(this.state.email, this.state.password.value)
       .then((user) => {
@@ -309,11 +317,18 @@ class RegistrationScreen extends Component {
               const currentDate = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
 
               let deviceToken = '';
-              AsyncStorage.getItem('deviceToken').then((value) => {
-                if (value != null) {
-                  deviceToken = value;
+              // AsyncStorage.getItem('deviceToken').then((value) => {
+              //   if (value != null) {
+              //     deviceToken = value;
+              //   }
+              // }).done();
+
+              FCM.getFCMToken().then(token => {
+                console.log('HelloNewToken: '+token);
+                if(token !== undefined){
+                  deviceToken = token;
                 }
-              }).done();
+              });
 
               // Login with the credential
               firebaseApp.auth().signInWithCredential(credential).then((response) => {
