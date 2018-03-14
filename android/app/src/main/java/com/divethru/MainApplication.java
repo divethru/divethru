@@ -8,6 +8,9 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import co.apptailor.googlesignin.RNGoogleSigninPackage;
+// import co.apptailor.googlesignin.RNGoogleSigninPackage;
+import com.dooboolab.RNIap.RNIapPackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.evollu.react.fcm.FIRMessagingPackage;
 import com.calendarevents.CalendarEventsPackage;
@@ -50,6 +53,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
         new MainReactPackage(),
+            new RNGoogleSigninPackage(),
+            // new RNGoogleSigninPackage(),
+            new RNIapPackage(),
             new SvgPackage(),
             new RNSoundPackage(),
             new FIRMessagingPackage(),

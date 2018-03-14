@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
-import FormData from 'FormData';
-import { View, Text, Image, Switch, TextInput, TouchableOpacity, Alert, StatusBar, Platform, AsyncStorage, Dimensions } from 'react-native';
+import { View, Text, Image, Switch, TextInput, TouchableOpacity, StatusBar, Platform, AsyncStorage, Dimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from 'react-native-material-ui';
 import DropdownAlert from 'react-native-dropdownalert';
@@ -18,25 +17,25 @@ import IC_PREVIOUS from '../../assets/images/ic_previous.png';
 class CalenderReminderScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     headerLeft:
-    <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.goBack()}>
-      <Image
-        style={{ height: 20, width: 20, margin: 10 }}
-        source={IC_BACK}
-      />
-    </TouchableOpacity>,
-      title: 'R E M I N D E R S  T O  D I V E',
-      headerStyle: {
-        backgroundColor: colors.white,
-        elevation: 0,
-        shadowOpacity: 0,
-        borderBottomWidth: 0,
-        paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight + 5
-      },
-      headerTitleStyle: {
-        alignSelf: 'center',
-        color: colors.grey500,
-        fontSize: 12,
-      },
+  <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.goBack()}>
+    <Image
+      style={{ height: 20, width: 20, margin: 10 }}
+      source={IC_BACK}
+    />
+  </TouchableOpacity>,
+    title: 'R E M I N D E R S  T O  D I V E',
+    headerStyle: {
+      backgroundColor: colors.white,
+      elevation: 0,
+      shadowOpacity: 0,
+      borderBottomWidth: 0,
+      paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight + 5,
+    },
+    headerTitleStyle: {
+      alignSelf: 'center',
+      color: colors.grey500,
+      fontSize: 12,
+    },
     headerRight: (<View />),
     tabBarVisible: false,
   });
@@ -62,12 +61,6 @@ class CalenderReminderScreen extends Component {
     StatusBar.setHidden(true);
   }
 
-  ShowAlert = (value) => {
-    this.setState({
-      SwitchOnValueHolder: value
-    });
-  }
-
   onDateChange(date) {
     if (!date) {
       this.setState({
@@ -78,7 +71,7 @@ class CalenderReminderScreen extends Component {
         dateText: date,
       });
     }
-    this.setState({ date, dateText: date, });
+    this.setState({ date, dateText: date });
   }
 
   onTimeChange(time) {
@@ -88,7 +81,7 @@ class CalenderReminderScreen extends Component {
     } else {
       this.setState({
         time,
-        timeText: time
+        timeText: time,
       });
     }
     this.setState({ time, timeText: time });
@@ -99,15 +92,21 @@ class CalenderReminderScreen extends Component {
       notes: this.state.description,
       description: this.state.description,
       startDate: reminderDate,
-      endDate: reminderDate
+      endDate: reminderDate,
     })
     .then(id => {
-      this.dropdown.alertWithType('success', '', 'Your reminder is set. You will be notified at ' + this.state.time + ' On ' + this.state.date );
+      this.dropdown.alertWithType('success', '', 'Your reminder is set. You will be notified at ' + this.state.time + ' On ' + this.state.date);
       console.log('success');
     })
-    .catch(error => {
+    .catch((error) => {
       // handle error
       console.log('error' + error);
+    });
+  }
+
+  ShowAlert = (value) => {
+    this.setState({
+      SwitchOnValueHolder: value,
     });
   }
 
@@ -116,43 +115,42 @@ class CalenderReminderScreen extends Component {
     const reminderDate = new Date(date);
 
     RNCalendarEvents.authorizationStatus()
-    .then(status => {
-      if(status === "authorized") {
+    .then((status) => {
+      if (status === 'authorized') {
         this.setEventToCalendar(reminderDate);
-      } else if(status === 'undetermined') {
+      } else if (status === 'undetermined') {
         // if we made it this far, we need to ask the user for access 
         RNCalendarEvents.authorizeEventStore()
         .then((out) => {
-          if(out == 'authorized') {
+          if (out === 'authorized') {
             this.setEventToCalendar(reminderDate);
           }
-        })
+        });
       }
     })
-    .catch(error => {
+    .catch((error) => {
       console.log('error' + error);
-    })
+    });
   }
 
   onSubmitReminder() {
-    if(this.state.date !== undefined && this.state.time !== undefined && this.state.description !== ''){
+    if (this.state.date !== undefined && this.state.time !== undefined && this.state.description !== '') {
       this.setState({ loading: true });
-      const date = Moment(this.state.date+ " "+this.state.time, "MMM D, YYYY LT").format("YYYY-MM-DDTHH:mm:ssZ")
+      const date = Moment(this.state.date + " " + this.state.time, 'MMM D, YYYY LT').format('YYYY-MM-DDTHH:mm:ssZ');
       const reminderDate = new Date(date);
-      // const rDate = Moment.utc(reminderDate, "YYYY-MM-DDTHH:mm:ssZ").format("YYYY-MM-DD HH:mm:ss")
-      const rDate = Moment.utc(reminderDate, "YYYY-MM-DDTHH:mm:ssZ").format()
-      const rd = new Date(rDate);
-      const timestamp = Moment(rd).format("X");
+      const rDate = Moment.utc(reminderDate, 'YYYY-MM-DDTHH:mm:ssZ').format('YYYY-MM-DD HH:mm');
+      // const rDate = Moment.utc(reminderDate, "YYYY-MM-DDTHH:mm:ssZ").format()
+      // const rd = new Date(rDate);
+      // const timestamp = Moment(rd).format("X");
 
-      const userID = '';
-      const formData = new FormData();
+      let userID = '';
       AsyncStorage.getItem('user_id').then((value) => {
         if (value != null) {
           userID = value;
           const data = {
             userId: userID,
-            datewithTime: timestamp,
-            message: this.state.description
+            datewithTime: rDate,
+            message: this.state.description,
           };
                 
           const ref = firebaseApp.database().ref().child('Reminder').push().key;
@@ -163,7 +161,7 @@ class CalenderReminderScreen extends Component {
     
           firebaseApp.database().ref().update(updates).then((dataSnapshot) => {
             this.setState({ loading: false });
-            if(this.state.SwitchOnValueHolder === true) {
+            if (this.state.SwitchOnValueHolder === true) {
               this.addEventInCalendar();
             } else {
               this.dropdown.alertWithType('success', '', 'Your reminder is set. You will be notified at ' + this.state.time + ' On ' + this.state.date );
@@ -171,7 +169,7 @@ class CalenderReminderScreen extends Component {
           })
           .catch((error) => {
             console.log('Error' + JSON.stringify(error));
-            this.setState({ loading: false });    
+            this.setState({ loading: false });
           });
         }
       });
@@ -233,8 +231,8 @@ class CalenderReminderScreen extends Component {
                 <Text style={styles.textrem}>Dive Thru at </Text>
                 <Text style={styles.txtunderline}>{this.state.timeText}</Text>
               </View>
-              {this.state.dateText 
-                ?  (
+              {this.state.dateText
+                ? (
                   <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={styles.textrem}>On </Text>
                     <Text style={styles.txtunderline}>{this.state.dateText}</Text>
@@ -268,17 +266,17 @@ class CalenderReminderScreen extends Component {
                     color: '#7dd3d5',
                     height: 30,
                     marginTop: 30,
-                    marginBottom: 20
+                    marginBottom: 20,
                   },
-                  btnTextCancel:{
+                  btnTextCancel: {
                     color: colors.black,
                     height: 30,
                     marginTop: 30,
-                    marginBottom: 20
+                    marginBottom: 20,
                   },
                   dateText: {
-                    marginLeft: width > 320 ? 7 : -5,
-                  }
+                    marginLeft: width > 320 ? 5 : -5,
+                  },
                 }}
                 onDateChange={(date) => { this.onDateChange(date); }}
               />
@@ -305,23 +303,23 @@ class CalenderReminderScreen extends Component {
                         dateInput: {
                           borderColor: colors.transparent,
                           borderWidth: 0.0,
-                          marginRight: width > 320 ? '72%' : '62%'
+                          marginRight: width > 320 ? '72%' : '62%',
                         },
                         btnTextConfirm: {
                           color: '#7dd3d5',
                           height: 30,
                           marginTop: 30,
-                          marginBottom: 20
+                          marginBottom: 20,
                         },
-                        btnTextCancel:{
+                        btnTextCancel: {
                           color: colors.black,
                           height: 30,
                           marginTop: 30,
-                          marginBottom: 20
+                          marginBottom: 20,
                         },
                         dateText: {
-                          marginLeft: width > 320 ? 10 : -7,
-                        }
+                          marginLeft: width > 320 ? -5 : -7,
+                        },
                       }}
                       onDateChange={(time) => { this.onTimeChange(time); }}
                     />
@@ -359,7 +357,7 @@ class CalenderReminderScreen extends Component {
             <View style={{ flexDirection: 'row' }}>
               <Text style={styles.txt}>Put it on my calender</Text>
               <Switch
-                onValueChange={(value) => this.ShowAlert(value)}
+                onValueChange={(value) => { this.ShowAlert(value); }}
                 style={{ justifyContent: 'center' }}
                 value={this.state.SwitchOnValueHolder}
               />

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, ListView, StatusBar } from 'react-native';
 import PropTypes from 'prop-types';
+import * as RNIap from 'react-native-iap';
 import IC_LOCK from '../../assets/images/ic_lock.png';
 import IC_HAND from '../../assets/images/ic_hand.png';
 import IC_WEB from '../../assets/images/ic_web.png';
@@ -44,6 +45,17 @@ const data = [
   },
 ];
 
+const itemSkus = {
+  ios: [
+    'com.meditation.divethru.mothlyTest',
+    'com.meditation.divethru.yearlyTest',
+  ],
+  android: [
+    'com.meditation.divethru.mothlyTest',
+    'com.meditation.divethru.yearlyTest',
+  ],
+};
+
 class SubscribeNowScreen extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -62,6 +74,14 @@ class SubscribeNowScreen extends Component {
 
   componentDidMount() {
     StatusBar.setHidden(true);
+    try {
+      const message = RNIap.prepareAndroid().then(() => {
+        const items = RNIap.getItems(itemSkus)
+        this.setState({ items })
+      });
+    } catch(errorCode) {
+    
+    }
     this.fetchData();
   }
 

@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   circle: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { colors } from './theme';
 
 const styles = StyleSheet.create({
@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    backgroundColor: 'transparent', // colors.red100,
   },
   iconContainer: {
     flexDirection: 'row',
@@ -54,6 +55,20 @@ const styles = StyleSheet.create({
   playerContainer: {
     width: '100%',
     height: '90%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  timeContainer: {
+    width: '60%',
+    height: '10%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    marginTop: 10,
+  },
+  timeInnerContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
@@ -155,5 +170,25 @@ export const buttonStyles = StyleSheet.create({
   },
 });
 
+export const timeButtonStyles = StyleSheet.create({
+  text: {
+    fontSize: 14,
+    color: colors.white,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'Roboto',
+  },
+  container: {
+    flex: 1,
+    height: Platform.OS === 'ios' ? 40 : 45,
+    margin: 10,
+    marginTop: 0,
+    backgroundColor: colors.transparent,
+    justifyContent: 'center',
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+});
 
 export default styles;

@@ -227,8 +227,11 @@ class HomeScreen extends Component {
 
   onBegin = () => {
     if (this.state.session.length > 0) {
-      if (this.state.last_conversation_id >= 8) {
+      if (this.state.last_conversation_id >= 8 && this.state.last_conversation_id !== 10) {
         this.setState({ isPrompted: true });
+      } else if (this.state.last_conversation_id == 10) {
+        console.log('10 Day program over');
+        this.props.navigation.navigate('SubscribeNowScreen');
       } else {
         this.redirectToPlayer();
       }
@@ -249,7 +252,7 @@ class HomeScreen extends Component {
 
   onContinueWithSubscription = () => {
     this.setState({ isPrompted: false }, () => {
-        // this.props.navigation.navigate('SubscribeNowScreen');
+      this.props.navigation.navigate('SubscribeNowScreen');
     });
   }
 
@@ -286,7 +289,13 @@ class HomeScreen extends Component {
   }
 
   render() {
-    const day = this.state.last_conversation_id + 1;
+    let day = 0;
+    if(this.state.last_conversation_id <= 9) {
+      day = this.state.last_conversation_id + 1;
+    } else {
+      day = 10;
+    }
+
     const progress = day / 10;
     let title = '';
     let description = '';

@@ -2,6 +2,7 @@ import { StackNavigator, TabNavigator, TabBarTop } from 'react-navigation';
 import { COLOR as colors } from 'react-native-material-ui';
 import ReminderScreen from './ReminderScreen';
 import DiveThruScreen from './DiveThruScreen';
+// import DiveThruPlayerScreen from '../DiveThru/DiveThruPlayerScreen';
 import ProfileScreen from './ProfileScreen';
 import HomeScreen from './HomeScreen';
 import PlayerScreen from './PlayerScreen';
@@ -22,6 +23,7 @@ const components = {
   }) },
   Reminder: { screen: ReminderScreen },
   DiveThru: { screen: DiveThruScreen },
+  // DiveThru: { screen: DiveThruPlayerScreen },
   Profile: { screen: ProfileScreen },
 };
 

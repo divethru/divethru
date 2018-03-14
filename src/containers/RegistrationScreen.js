@@ -4,6 +4,7 @@ import Moment from 'moment';
 import FormData from 'FormData';
 import { View, Text, TextInput, Image, TouchableOpacity, Platform, AsyncStorage, StatusBar, Dimensions } from 'react-native';
 import { Button } from 'react-native-material-ui';
+import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 // import RadioButton from 'radio-button-react-native';
 import FCM from 'react-native-fcm';
 import DatePicker from 'react-native-datepicker';
@@ -75,6 +76,26 @@ class RegistrationScreen extends Component {
         isValid: false,
       },
     };
+  }
+
+  componentDidMount() {
+    GoogleSignin.hasPlayServices({ autoResolve: true }).then(() => {
+      // play services are available. can now configure library
+    })
+    .catch((err) => {
+      console.log("Play services error", err.code, err.message);
+    })
+
+    GoogleSignin.configure({
+      iosClientId: '53159239409-9nevpupur18e4ur2k0n80smhq9698p0i.apps.googleusercontent.com', // only for iOS
+    })
+    .then(() => {
+      GoogleSignin.currentUserAsync().then((user) => {
+        console.log('USER', user);
+        this.setState({user: user});
+      }).done();
+      // you can now call currentUserAsync()
+    });
   }
 
   onClose(data) {
@@ -247,6 +268,7 @@ class RegistrationScreen extends Component {
           device_type: Platform.OS,
           device_token: deviceToken,
           fb_id: '',
+          google_id: '',
           registered_on: currentDate,
           lastUpdated_on: currentDate,
           user_id: user.uid,
@@ -315,14 +337,8 @@ class RegistrationScreen extends Component {
               const credential = provider.credential(accessToken);
             
               const currentDate = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-
               let deviceToken = '';
-              // AsyncStorage.getItem('deviceToken').then((value) => {
-              //   if (value != null) {
-              //     deviceToken = value;
-              //   }
-              // }).done();
-
+             
               FCM.getFCMToken().then(token => {
                 console.log('HelloNewToken: '+token);
                 if(token !== undefined){
@@ -350,6 +366,7 @@ class RegistrationScreen extends Component {
                       device_type: Platform.OS,
                       device_token: deviceToken,
                       fb_id: json.id,
+                      google_id: '',
                       registered_on: currentDate,
                       lastUpdated_on: currentDate,
                       user_id: response.uid,
@@ -372,7 +389,7 @@ class RegistrationScreen extends Component {
                     });
                   } else {
                     this.setState({ loading: false });
-                    this.showErrorAlertView('User with this email address already exist.')
+                    this.showErrorAlertView('User with this email address already exist.');
                   }
                 });
               });
@@ -389,6 +406,165 @@ class RegistrationScreen extends Component {
         alert('Login fail with error: ' + error);
       },
     );
+  }
+
+  googleAuth() {
+    GoogleSignin.signIn()
+    .then((token) => {
+      alert(token);
+      // const accessToken = firebase.auth.GoogleAuthProvider.credential(token);
+      // const currentDate = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+      // let deviceToken = '';
+     
+      // FCM.getFCMToken().then((fcmtoken) => {
+      //   if (fcmtoken !== undefined) {
+      //     deviceToken = fcmtoken;
+      //   }
+      // });
+
+      // Login with the credential
+      // firebaseApp.auth().signInWithCredential(accessToken).then((response) => {
+      //   alert('RESPONSE -->' + JSON.stringify(response));
+      //   const ref = firebaseApp.database().ref('Users').child(response.uid);
+      //   ref.once('value').then((dataSnapshot) => {
+      //     const dataUser = dataSnapshot.val();
+          
+          // if (dataUser == null) {
+          //   const userData = {
+          //     first_name: json.first_name,
+          //     last_name: json.last_name,
+          //     email: json.email,
+          //     gender: '',
+          //     birthdate: '',
+          //     membership_type: 'Free',
+          //     activation_code: '',
+          //     activated_on: '',
+          //     login_via: 'facebook',
+          //     device_type: Platform.OS,
+          //     device_token: deviceToken,
+          //     fb_id: json.id,
+          //     registered_on: currentDate,
+          //     lastUpdated_on: currentDate,
+          //     user_id: response.uid,
+          //     access_code: '',
+          //     last_free_conversation_id: 0,
+          //     halted: 0.0,
+          //   };
+
+          //   const updates = {};
+          //   updates['/Users/' + response.uid] = userData;
+          //   firebaseApp.database().ref().update(updates).then(() => {
+          //     this.setState({ loading: false });
+          //     AsyncStorage.setItem('user_id', response.uid);
+          //     this.props.navigation.navigate('Tutorial');
+          //   })
+          //   .catch((error) => {
+          //     console.log('Error' + JSON.stringify(error));
+          //     this.setState({ loading: false });
+          //     // this.showErrorAlertView(error.message);
+          //   });
+          // } else {
+          //   this.setState({ loading: false });
+          //   this.showErrorAlertView('User with this email address already exist.')
+          // }
+      //   });
+      // })
+      // .catch((error) => {
+      //   const errorCode = error.code;
+      //   if (errorCode === 'auth/account-exists-with-different-credential') {
+      //     this.setState({ loading: false });
+      //     this.showErrorAlertView('Email already associated with another account.');
+      //   }
+      // });
+    })
+    .catch((err) => {
+      // this.setState({ loading: false });
+      alert('Login fail with error: ' + err);
+    })
+    .done();
+  }
+
+  _signIn() {
+    // this.setState({ loading: true });
+    GoogleSignin.signIn()
+    .then((user) => {
+      // alert(JSON.stringify(user));
+      
+      this.setState({user: user});
+      const accessToken = firebase.auth.GoogleAuthProvider.credential(user.idToken, user.accessToken);
+      const currentDate = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+      let deviceToken = '';
+     
+      FCM.getFCMToken().then((fcmtoken) => {
+        if (fcmtoken !== undefined) {
+          deviceToken = fcmtoken;
+        }
+      });
+
+      // alert('accessToken->' + JSON.stringify(accessToken))
+
+      // Login with the credential
+      firebaseApp.auth().signInWithCredential(accessToken).then((response) => {
+        // alert('RESPONSE -->' + JSON.stringify(response));
+        const ref = firebaseApp.database().ref('Users').child(response.uid);
+        ref.once('value').then((dataSnapshot) => {
+          const dataUser = dataSnapshot.val();
+          
+          if (dataUser == null) {
+            const userData = {
+              first_name: user.name,
+              last_name: '',
+              email: user.email,
+              gender: '',
+              birthdate: '',
+              membership_type: 'Free',
+              activation_code: '',
+              activated_on: '',
+              login_via: 'google',
+              device_type: Platform.OS,
+              device_token: deviceToken,
+              fb_id: '',
+              google_id: user.id,
+              registered_on: currentDate,
+              lastUpdated_on: currentDate,
+              user_id: response.uid,
+              access_code: '',
+              last_free_conversation_id: 0,
+              halted: 0.0,
+            };
+
+            const updates = {};
+            updates['/Users/' + response.uid] = userData;
+            firebaseApp.database().ref().update(updates).then(() => {
+              this.setState({ loading: false });
+              AsyncStorage.setItem('user_id', response.uid);
+              this.props.navigation.navigate('Tutorial');
+            })
+            .catch((error) => {
+              console.log('Error' + JSON.stringify(error));
+              this.setState({ loading: false });
+              // this.showErrorAlertView(error.message);
+            });
+          } else {
+            this.setState({ loading: false });
+            this.showErrorAlertView('User with this email address already exist.')
+          }
+        });
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        alert(error);
+        if (errorCode === 'auth/account-exists-with-different-credential') {
+          this.setState({ loading: false });
+          this.showErrorAlertView('Email already associated with another account.');
+        }
+      });
+    })
+    .catch((err) => {
+      alert('er->' + err)
+      console.log('WRONG SIGNIN', err);
+    })
+    .done();
   }
 
   render() {
@@ -691,6 +867,29 @@ class RegistrationScreen extends Component {
                     />
                   </View>
                   <Text style={styles.btnText}>C O N T I N U E  W I T H  F A C E B O O K</Text>
+                </View>
+              </TouchableOpacity>
+
+              {/* <GoogleSigninButton
+                style={{width: 48, height: 48}}
+                size={GoogleSigninButton.Size.Icon}
+                color={GoogleSigninButton.Color.Dark}
+                onPress={this._signIn.bind(this)}
+              /> */}
+
+              <TouchableOpacity
+                onPress={this._signIn.bind(this)}
+              >
+                <View style={styles.googleContainer}>
+                  <View style={styles.googleLogo}>
+                    <Icon
+                      name="google"
+                      size={15}
+                      color="#db4437"
+                      style={styles.btnIcon}
+                    />
+                  </View>
+                  <Text style={styles.btnText}>C O N T I N U E  W I T H  G O O G L E</Text>
                 </View>
               </TouchableOpacity>
 
