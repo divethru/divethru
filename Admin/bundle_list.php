@@ -117,6 +117,7 @@ foreach($category as $k => $v){
   firebase.initializeApp(config);
 		</script>
 			    <script type="text/javascript" src="../register_user.js"></script>
+                <script src="js/check_login.js "></script>
 </head>
 
 <body class="theme-red">
@@ -216,7 +217,7 @@ foreach($category as $k => $v){
                                             
                                                 ?>
                                                 
-                                               <td><a href='#' onclick='edit("<?php echo $u['bundle_id'];?>","<?php echo $sub[$ky];?>");'><i class="material-icons">mode_edit</i></a> &nbsp;  <a href='#' onclick='del("<?php echo $u['bundle_id'];?>","<?php echo $sub[$ky];?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
+                                               <td><a href='#' onclick='edit("<?php echo $u['bundle_id'];?>","<?php echo $sub[$ky];?>","<?php echo $cat[$ky];?>");'><i class="material-icons">mode_edit</i></a> &nbsp;  <a href='#' onclick='del("<?php echo $u['bundle_id'];?>","<?php echo $sub[$ky];?>","<?php echo $cat[$ky]?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
                                                 <?php 
                                             echo "</tr>";
                                             
@@ -273,17 +274,15 @@ foreach($category as $k => $v){
     <script src="js/demo.js"></script>
 	<script type="text/javascript">
 		
-        function edit(bundle,subcat){
+       function edit(bundle,subcat,cat){
             
-             $.redirect("bundle_edit.php",{'id':bundle,'subcat':subcat},"POST",null,null,true);
+             $.redirect("bundle_edit.php",{'id':bundle,'subcat':subcat,"cat":cat},"POST",null,null,true);
              
              }
         
-        
-            function del(key,s){
+          function del(key,s,c){
                 //console.log($("#simg").attr("src"));
             ////var ref = firebase.database().ref('Users');
-
             swal({
                     title: "Are you sure?",
                     text: "You will not be able to recover this!",
@@ -293,14 +292,14 @@ foreach($category as $k => $v){
                     confirmButtonText: "Yes, delete it!",
                     closeOnConfirm: false
                 }, function (isConfirm) {
-                        console.log(key);
                         var id = key;
                         if(s!=0){
-                            var ref = firebase.database().ref().child('/Category/Deep Dive/SubCategory/'+s+'/Bundle/'+ id).remove();
+                            var ref = firebase.database().ref().child('/Category/'+c+'/SubCategory/'+s+'/Bundle/'+ id).remove();
                         }else{
                             
-                            var ref = firebase.database().ref().child('/Category/Quick Dive/Bundle/'+id).remove();
+                            var ref = firebase.database().ref().child('/Category/'+c+'/Bundle/'+id).remove();
                         }
+                    //  var ref = firebase.database().ref().child('/session/' + id).remove();
                         if(ref){
                             
                                     //alert('This category Deleted Sucessfully');
@@ -313,9 +312,10 @@ foreach($category as $k => $v){
                         }
                 });
 
-                     //   window.location.reload();
+            
         }
-		
+        
+           
 		$(function () {
 
 	

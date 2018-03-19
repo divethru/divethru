@@ -34,7 +34,7 @@ return $nodeGetContent;
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Blank Page | Bootstrap Based Admin Template - Material Design</title>
+    <title>Quotes | DievThru Admin </title>
     <!-- Favicon-->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
@@ -82,8 +82,9 @@ return $nodeGetContent;
   };*/
   firebase.initializeApp(config);
         </script>
-          <!---  <script type="text/javascript" src="../register_user.js"></script>-->
-            <script type="text/javascript" src="../js/dashboard.js"></script>
+
+          <script type="text/javascript" src="js/check_login.js"></script>
+     
 
 </head>
 
@@ -134,7 +135,7 @@ return $nodeGetContent;
     <section class="content">
         <div class="container-fluid">
             <div class="block-header">
-                <h2>Dail Quotes</h2>
+                <h2>Daily Quotes</h2>
             </div>
             
              <!-- Basic Examples -->
@@ -218,6 +219,7 @@ return $nodeGetContent;
          <script src="js/pages/forms/form-validation.js"></script>
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
+           <script type="text/javascript" src="/js/upload.js"></script>
 
     <!-- Demo Js -->
     <script src="js/demo.js"></script>

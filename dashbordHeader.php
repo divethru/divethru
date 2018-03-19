@@ -14,7 +14,7 @@
             <li class="nav-item dropdown ">
               <a class="nav-link dropdown-toggle dropdown-toggle1" href="#" data-toggle="dropdown">DEEP DIVE</a>
              <div class="dropdown-menu dropdown1">
-                <a class="dropdown-item" href="#">MAIN</a>
+                <a class="dropdown-item" href="DeepMain.php">MAIN</a>
                 
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">INDIVIDUAL</a>

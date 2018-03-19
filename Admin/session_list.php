@@ -39,7 +39,7 @@ foreach($category as $k => $v){
                 foreach($c['Bundle'] as $b => $bl){
                     if($bl['Session'] != ''){
                         
-                        foreach($bl['Session'] as $b => $v2){
+                        foreach($bl['Session'] as $sn => $v2){
                             $session[] = $v2;
                 $cat[] = $s;
                 $bdn[] = $b;
@@ -51,7 +51,7 @@ foreach($category as $k => $v){
         
     }else if($v['Bundle'] != ''){
         foreach($v['Bundle'] as $b2 => $bl2){
-                    if($bl['Session'] != ''){
+                    if($bl2['Session'] != ''){
                         
                         foreach($bl2['Session'] as $b3 => $v3){
                              $session[] = $v3;
@@ -132,7 +132,7 @@ die;*/
   };*/
   firebase.initializeApp(config);
         </script>
-                <script type="text/javascript" src="../register_user.js"></script>
+                   <script type="text/javascript" src="js/check_login.js"></script>
 </head>
 
 <body class="theme-red">
@@ -213,6 +213,7 @@ die;*/
                                         <tr>
                                             <th>Session Name</th>
                                             <th>Session Description</th>
+                                           
                                            <!-- <th>Subcription Type</th>-->    
                                             <th>Image</th>
                                             <th>Action</th>
@@ -231,6 +232,7 @@ die;*/
                                                 echo "<td>";
                                                 echo !empty($u['session_description'])?$u['session_description']:'-';
                                                 echo "</td>";
+                                                
                                             /*  echo "<td>".$u['session_subcription_type']."</td>";*/
                                                 echo "<td><img src='";
                                                 echo !empty($u['session_img'])?$u['session_img']:'#';
@@ -238,7 +240,7 @@ die;*/
                                             
                                                 ?>
                                                 
-                                                <td><a href='#' onclick='edit("<?php echo $u['session_id'];?>","<?php echo $bdn[$ky];?>","<?php echo $cat[$ky];?>");'><i class="material-icons">mode_edit</i></a> &nbsp;  <a href='#' onclick='del("<?php echo $u['session_id'];?>","<?php echo $bdn[$ky];?>","<?php echo $cat[$ky];?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
+                                                <td><!--<a href='#' onclick='edit("<?php //echo $u['session_id'];?>","<?php //echo $bdn[$ky];?>","<?php //echo $cat[$ky];?>");'><i class="material-icons">mode_edit</i></a>--> &nbsp;  <a href='#' onclick='del("<?php echo $u['session_id'];?>","<?php echo $bdn[$ky];?>","<?php echo $cat[$ky];?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
                                                 <?php 
                                             echo "</tr>";
                                             
@@ -288,7 +290,7 @@ die;*/
     <script src="plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
     <script src="plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script> 
    <script type="text/javascript" src="js/jquery.redirect.js"></script>
-
+                <script type="text/javascript" src="js/upload.js"></script>
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
 
@@ -330,7 +332,7 @@ die;*/
                             //     alert('NOt');
                             // }
                             if(s!=0){               
-                            var ref = firebase.database().ref().child('/Category/Deep Dive/SubCategory/'+s+'/Bundle/'+b+'/Session/' + id).remove();
+                            var ref = firebase.database().ref().child('/Category/Deep Dives/SubCategory/'+s+'/Bundle/'+b+'/Session/' + id).remove();
                             }else if(b!=0){
                                 var ref = firebase.database().ref().child('/Category/Quick Dive/Bundle/'+b+'/Session/' + id).remove();
                             }else{

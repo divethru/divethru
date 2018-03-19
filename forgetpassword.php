@@ -26,14 +26,33 @@
 </script>
     
     <title>Dive Thru</title>
+    <style type="text/css">
+    	.btn2 {
+  display: inline-block;
+  font-weight: 400;
+  color: #FFF;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 1.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+    </style>
   </head>
   <body background="img/banner.png" style="background-repeat: no-repeat;">
     
  		<?php include'header.php'; ?>
 		<div class="container-fluid">
 			<div class="row">
-					<div class="col-sm-4 col-md-4  col-xs-12"></div>
-					<div class=" col-sm-4 col-md-4  col-xs-12">
+					<div class="col-md-3 col-sm-3 col-xs-12 col-xl-4"></div>
+					<div class="col-md-6 col-sm-6 col-xs-12 col-xl-4">
 						<br><br>
 						<div class="card" style=" box-shadow: 0 0px 37px 0 rgba(0,2,0,0.1);" >
 						  <div class="card-body">
@@ -55,7 +74,7 @@
 						  </div>
 						</div>
 					</div>
-					<div class="col-sm-4 col-md-4 col-xs-12"></div>
+					<div class="col-md-3 col-sm-3 col-xs-12 col-xl-4"></div>
 			</div>
 		</div>
 		<br><br>

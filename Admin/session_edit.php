@@ -1,4 +1,4 @@
-﻿
+
 <?php
 //define('FIREBASE_URL','https://divethrutest.firebaseio.com/');
 //define('FIREBASE_SECRET','gxp2ItQwCsropnMYSEtsqPxEKeJam2G5LTxoaMoE'); 
@@ -59,25 +59,29 @@ foreach($category as $k => $v){
 	}else if($v['SubCategory'] != ''){
 		
 			foreach($v['SubCategory'] as $s=> $c){
+                if($c['Bundle']!=''){
 				foreach($c['Bundle'] as $b => $bl){
+                    $bundle[] = $bl;
 					if($bl['Session'] != ''){
 						
 						foreach($bl['Session'] as $b => $v2){
-							$bundle[] = $bl;
+							
 				//$cat[] = $s;
 				//$bdn[] = $bl['bundle_id'];
 						}
 					}
 					//die;
 				}
+                }
 			} 
 		
-	}else if($v['Bundle'] != ''){
+	}else if($v['Bundle'] != '' && $v == $cate){
 		foreach($v['Bundle'] as $b2 => $bl2){
+            $bundle[] = $bl2;
 					if($bl['Session'] != ''){
 						
 						foreach($bl2['Session'] as $b3 => $v3){
-							 $bundle[] = $bl2;
+							 
 							 	//			$cat[] = 0;
 							//$bdn[] = $v3['budle_id'];
 						}
@@ -118,12 +122,11 @@ return $nodeGetContent;
 //die;
 $ele = '';
 foreach($session['meditation_audio'] as $s){
-//echo $s;
 	
+	//var lastslashindex = .lastIndexOf('/');
 	$whatIWant = substr($s, strrpos($s, '/') + 1);
 $a[]= $whatIWant;
-	//$whatIWant = substr($s, strpos($s, "F") + 1);   
-	//$a[] = substr($whatIWant,0 , strpos($whatIWant,"?"));
+	echo substr($whatIWant,0 , strpos($whatIWant,"/"));
 }
 //print_r($a);
 //die;
@@ -162,11 +165,13 @@ $mp3 = implode($a,',');
     <link href="plugins/animate-css/animate.css" rel="stylesheet" />
      <link href="plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
 	     <!-- Bootstrap Tags Input Plugin Js -->
-    <link href="plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet
-  <!-- JQuery DataTable Css -->
+    <link href="plugins/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
+  <!-- JQuery DataTable Css-->
     <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
     <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
@@ -193,6 +198,29 @@ $mp3 = implode($a,',');
         </script>
             
 <script src="js/check_login.js "></script>
+<style type="text/css">
+    .flex-style{
+ display: flex;
+}
+
+.input-file{
+ opacity: 0;
+ margin-left: -40px;
+ width: 40px;
+ height: 45px;
+}
+
+.icon{
+ width: 48px;
+ height: 45px;
+ background:url(images/upload-black.png); 
+}
+.icon1{
+ width: 48px;
+ height: 45px;
+ background:url(images/audio.png); 
+}
+</style>
 </head>
 
 <body class="theme-red">
@@ -349,7 +377,7 @@ $mp3 = implode($a,',');
                                         if($bundle){
                                             
                                             foreach($bundle as $b){
-												if($b['bundle_name'] == $bundle1){
+												if($b['bundle_id'] == $bundle1){
 													
                                                 echo "<option value=".$b['bundle_id']." selected>".$b["bundle_name"]."</option>";
 												}else{
@@ -375,7 +403,11 @@ $mp3 = implode($a,',');
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                                                <input name="session" class="form-control" id="sessionimage" type="file" onchange="uplaodsimgfile()" accept="image/*" />
+                                                <div class='flex-style'>
+                                                <div class='icon'></div>
+                                                <input name="session" class=" form-control input-file" id="sessionimage" type="file" onchange="uplaodsimgfile()" accept="image/*" />
+                                                </div>
+                                                <br>
 												<img src="<?php echo $session['session_img'];?>" id="oldsimg" width="50" height="50">
                                                 <input type="hidden" id="simgurl">
                                         <!--    </div> -->
@@ -406,7 +438,11 @@ $mp3 = implode($a,',');
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                                                <input name="meditaion" class="form-control" id="maudio" type="file"  accept="audio/*" multiple/>
+                                                 <div class='flex-style'>
+                                                <div class='icon1'></div>
+                                                <input name="meditaion" class="form-control input-file" id="maudio" type="file"  accept="audio/*" multiple/>
+                                                </div>
+                                                <br>
                                                 <input type="hidden" id="murl">
 												<input type="text" id="audio" class="form-control" data-role="tagsinput" value="<?php echo $mp3;?>">
                                         <!--    </div> -->
@@ -427,7 +463,7 @@ $mp3 = implode($a,',');
                                     <input type="checkbox" id="checkbox" name="checkbox" aria-required="true">
                                     <label for="checkbox">I have read and accept the terms</label>
                                <label id="checkbox-error" class="error" for="checkbox">This field is required.</label></div>-->
-                                <button class="btn btn-primary waves-effect sessionedit" type="submit">SUBMIT</button>
+                                <button class="btn btn-primary waves-effect sessionedit" type="submit"><i class="fa fa-spinner fa-spin"></i>SUBMIT</button>
                             </form>
                         </div>
                     </div>
@@ -473,8 +509,10 @@ $mp3 = implode($a,',');
 
          <script type="text/javascript" src="../register_user.js"></script>
     <!-- Custom Js -->
-    <script src="js/admin.js"></script>
 
+      <
+    <script src="js/admin.js"></script>
+    <script type="text/javascript" src="js/upload.js"></script>
 	<script type="text/javascript">
 		
 			function del(key){
@@ -490,7 +528,26 @@ $mp3 = implode($a,',');
 		}
 		
 		$(function () {
+
+           // $(".fa-spinner").hide();
 			
+            var category_name_edit = $("#cat option:selected").text();
+             //alert(category_name_edit);
+             if(category_name_edit=="Deep Dive"){
+                $(".sub").show();
+                $(".bnd").show();
+                //alert(category_name_edit);
+             }
+             else if(category_name_edit=="Quick Dive"){
+                $(".sub").hide();
+                $(".bnd").show();
+                //alert(category_name_edit);
+             }
+             else{
+                 $(".sub").hide();
+                $(".bnd").hide();
+                //alert(category_name_edit);
+             }
 			/*
 			$(".dropdown-menu.inner li").each(function( index ) {
   console.log( index + ": " + $( this ).html() );
@@ -578,8 +635,9 @@ $('select').selectpicker('refresh');
 		
 		var op = "";
 		if($("#cat option:selected").text() == 'Deep Dive'){
-			alert(55);
+			//alert(55);
 			$(".bnd").show();
+            $(".sub").show();
 		}else if($("#cat option:selected").text() == 'Quick Dive'){
 			$(".sub").hide();
 			$(".bnd").show();
@@ -610,6 +668,18 @@ $('select').selectpicker('refresh');
 	//	 $('.mdb-select').material_select('destroy'); 
 					$('select').selectpicker('refresh');
 			}
+             if(childSnapshot.key == 'Bundle' && c == "Quick Dive"){
+                //console.log( Object.values(childData));
+                var t = Object.values(childData);
+                    console.log(t);
+                    op = "<option value=''>Nothing selected</option>";
+                    $.map(t, function(value, index) {
+                       // console.log(value.subcategory_id);
+                        op += "<option value="+value.bundle_id+">"+value.bundle_name+"</option>";
+                    });
+                        $("#bundle").empty().html(op);
+                    $('select').selectpicker('refresh');
+            }
 
 				// Do what you want with these key/values here*/
 			});
@@ -671,37 +741,42 @@ $('select').selectpicker('refresh');
 			});
 		});
 	});
-	
-	$(".sessionedit").click(function(){
-		
-        $('#form_validation_session').validate({
+     $.validator.addMethod("regex", function(value, element, regexpr) {          
+                 return regexpr.test(value);
+               }, "Please enter Only characters"); 
+	$('#form_validation_session').validate({
                 rules: {
                     'name': {
                         required: true,
                         minlength: 6,
-                        maxlength: 15
+                        maxlength: 15,
+                        regex:  /^[a-zA-Z]+$/
                     }, 
                     'description': {
                         required: true
                     }, 
-                    'session': {
-                        required: true,
-                        accept: "image/jpeg, image/png,image/gif"
-                    }, 
-                    'meditaion': {
-                        required: true,
-                        accept: "audio/aac, audio/ogg,audio/mp3,audio/mpeg,audio/mpeg3"
-                    }, 
                     'cat':{
                         required:true
                     },
-                    // 'bundle':{
-                    //     required:true
-                    // },
-                    // 'subcat':{
-                    //     required:true
-                    // },
-                    
+                    'session': {
+                        
+                        accept: "image/jpeg, image/png,image/gif"
+                    }, 
+                    'meditaion': {
+                        
+                        accept: "audio/aac, audio/ogg,audio/mp3,audio/mpeg,audio/mpeg3"
+                    }, 
+                    'bundle':{
+		          		 required: function() {
+                              return $("#cat option:selected").text() != 'Open Dive';
+                 	    }
+                 	},
+                    'subcat':{
+		          		 required: function() {
+                              return $("#cat option:selected").text() == 'Deep Dive';
+                 	    }
+                 	},
+           
                     
                 },
                 messages: {
@@ -710,18 +785,18 @@ $('select').selectpicker('refresh');
                     minlength: "Enter name must be at least 6 characters long",
                     maxlength: "Enter name maximum 15 characters allow"
                     },
+                    description:"Please enter Description",
+                  cat:"Please Select category",
                   meditaion: {
-                    required:"Please Select Any audio",
+                   
                     accept: "Select only mp3,ogg,mpeg file formate only!!"
                     },
                   session: {
-                    required:"Please Select Any image",
+                    
                     accept: "Select only jpeg,png,gif file formate only!!"
                     },
-                  //bundle:"Please Select Bundle",
-                  description:"Please enter Description",
-                  cat:"Please Select category",
-                  //subcat:"Please Select Subcategory",
+                  bundle:"Please Select Bundle",
+                  subcat:"Please Select Subcategory",
                     
                   
                 },
@@ -735,118 +810,206 @@ $('select').selectpicker('refresh');
                     $(element).parents('.form-group').append(error);
                 },
                 submitHandler: function(form) {
-            		//var selc = $("#catnm").val();
-            		//var bundleid = $("#bid").val();
-            		//var subcatid = $("#subid").val();
-            		
-            		var sessionid = $("#sid").val();
-            		  var desc = $('#ckeditor').val();
-            		 var sessionnm = $("#sessionname").val();
-            		 var simg = $("#simgurl").val();
-            		 var murl = $("#murl").val();
-            		 var subname = $("#subname").val();
-            		 var sid = $("#sid").val();
-            		 var bundle = $("#bundle").val();
-            		
-            		 var cat = $("#cat option:selected").val();
-            		 var catnm = $("#cat option:selected").text();
-            		 var audio = murl.split(',');
-            		  
-            		  if($("#cat option:selected").val() != $("#catnm").val()){
-            			  var cat = $("#cat option:selected").val();
-            			  //updates['Category/Deep Dive/SubCategory/'+subcatid+'/Bundle/'+bundleid+'/Session/' +sessionid]
-            		  }else{
-            			  var cat = $("#catnm").val();
-            //var subcat = $("#subid").val();			  
-            		  }
-            		  
-            		  if($("#subcat").val() != $("#subid").val()){
-            			  var subcatid = $("#subcat").val();
-            			  //updates['Category/Deep Dive/SubCategory/'+subcatid+'/Bundle/'+bundleid+'/Session/' +sessionid]
-            		  }else{
-            			  var subcatid = $("#subid").val();			  
-            		  }
-            		  
-            		  if($("#bundle").val() != $("#bid").val()){
-            //alert(bundle+"="+bundleid);
-            			  var bundleid = $("#bundle").val();
-            			  
-            		  }else{
-            			  var bundleid = $("#bid").val();
-            		  }
-            		  
-            	/*	  
-            		 var data = {
-            			session_name: sessionnm,
-            			session_description: desc,
-            			session_img: simg,
-            			 meditation_audio: audio,
-            			budle_id: bundle,
-            			session_id: sid
-            		 };
-            		var updates = {};*/
-            		
-            		
-            		if(subcatid != 0 && $("#cat option:selected").text() == 'Deep Dive'){
-            			var booksRef = firebase.database().ref('Category/'+catnm+'/SubCategory/'+subcatid+'/Bundle/'+bundleid+'/Session/');
-            			console.log('Category/Deep Dive/SubCategory/'+subcatid+'/Bundle/'+bundleid+'/Session/' +sessionid);
-            			// updates['Category/Deep Dive/SubCategory/'+subcatid+'/Bundle/'+bundleid+'/Session/' +sessionid] = data;
+                }
+            });
+	
+	$(".sessionedit").click(function(){
 
-            		//alert(subcatid+"="+sessionid+"="+bundleid+"="+selc);
-            		}else if(bundleid != 0 && $("#cat option:selected").text() == 'Quick Dive' ){
-            			var booksRef = firebase.database().ref('Category/'+catnm+'/Bundle/'+bundleid+'/Session/');
-            			console.log('Category/Quick Dive/Bundle/'+bundleid+'/Session/' +sessionid);
-            			 //updates['Category/Quick Dive/Bundle/'+bundleid+'/Session/' +sessionid] = data;
-            		}else{
-            			var booksRef = firebase.database().ref('Category/'+catnm+'/Session/');
-            			console.log('Category/Open Dive/Session/' +sessionid);
-            			//updates['Category/Open Dive/Session/' +sessionid] = data;
-            		}
+		var temp=$('#form_validation_session').valid();
+		if(temp==true){
+		        	 	
+
+
+
+						var old = $("#catnm").val();
+		var booksRef = '';
+		var Ref = '';
+		var ref = '';
+		var sub = $("#subid").val();
+		var bnd = $("#bid").val();
+		var s = $("#sid").val();
+	 
+
+		//var t = '';
+	 
+		var fireref  =  firebase.database().ref('Category');
+		fireref.once('value', function(snapshot) {
+			/*Fetching all value from Category node*/
+			
+			 snapshot.forEach(function(childSnapshot) {
+								// ref ='Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/';
+		//t = 5;
+				/*Comparing old and new value from database */
+					if(sub!=0 && childSnapshot.hasChild("SubCategory") && $("#cat option:selected").text() == childSnapshot.key){
+									 booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/');
+								}else if(bnd!=0 && childSnapshot.hasChild("Bundle") && $("#cat option:selected").text() == childSnapshot.key){
+									booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/Bundle/'+bnd+'/Session/');
+								}else if(sub==0 && bnd==0 && $("#cat option:selected").text() == childSnapshot.key){
+									 booksRef = firebase.database().ref('Category/Open Dive/Session/');
+								}
+					if(old == $("#cat option:selected").val()){
+									//alert('opne');
+							/*Checking SubCategory exist or not for know deep dive category */
+							if(childSnapshot.hasChild("SubCategory")) {
+								
+								
+								
+								/* Checking subcategory or bundle change or not */
+								
+								if(sub != $("#subcat option:selected").val()){
+									
+									var n = $("#subcat option:selected").val(); // new subcategory
+									/*Referance for fetching old value for update */
+								
+									/*Referance add data to new seletecd value*/
+								 Ref = firebase.database().ref('Category/'+childSnapshot.key+'/SubCategory/'+n+'/Bundle/'+bnd+'/Session/');
+								 
+								}else if(sub != $("#subcat option:selected").val() && bnd != $("#bundle option:selected").val()){
+									
+									var n = $("#subcat option:selected").val(); // new subcategory
+									var nw = $("#bundle").val();   // new bundle
+									/*Referance for fetching old value for update */
+								// booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/');
+									/*Referance add data to new seletecd value*/
+								 Ref = firebase.database().ref('Category/'+childSnapshot.key+'/SubCategory/'+n+'/Bundle/'+nw+'/Session/');
+								 ref ='Category/'+childSnapshot.key+'/SubCategory/'+n+'/Bundle/'+nw+'/Session/';
+									
+								}else{
+															
+									/*Referance for fetching old value for update */
+		//booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/');
+								 ref ='Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/';
+								}
+							//	  Ref = firebase.database().ref('Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/');
+							}else if(childSnapshot.hasChild("Bundle")) {
+								
+								if(bnd != $("#bundle option:selected").val()){
+									
+									var nw = $("#bundle").val(); // new bundle
+									
+									/*Referance add data to new seletecd value*/
+								 Ref = firebase.database().ref('Category/'+childSnapshot.key+'/Bundle/'+nw+'/Session/');
+									/*Referance for fetching old value for update */
+								// booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/Bundle/'+bnd+'/Session/');
+								  ref = 'Category/'+childSnapshot.key+'/Bundle/'+nw+'/Session/'+s;
+								}else{
+									
+									/*Referance for fetching old value for update  */
+		//booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/Bundle/'+bnd+'/Session/');
+								  ref = 'Category/'+childSnapshot.key+'/Bundle/'+bnd+'/Session/'+s;
+								}
+								//  Ref = firebase.database().ref('Category/'+childSnapshot.key+'/Bundle/'+bnd+'/Session/');
+							}else{
+								  //Ref = firebase.database().ref('Category/'+childSnapshot.key+'/Session/');
+									/*Referance for fetching old value for update  */
+								// booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/Session/');
+								ref = 'Category/'+childSnapshot.key+'/Session/'+s;
+							}
+					}
+					if(old != $("#cat option:selected").text() ){
+							if(childSnapshot.hasChild("SubCategory") && $("#cat option:selected").text() == "Deep Dive") {
+								//if(sub != $("#subact option:selected").val()){
+									var n = $("#subact option:selected").val();
+								  Ref = firebase.database().ref('Category/'+childSnapshot.key+'/SubCategory/'+n+'/Bundle/'+bnd+'/Session/');
+							/*	}else{
+									
+								  Ref = firebase.database().ref('Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/');
+								}*/
+		//						 booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/');
+								 ref ='Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/';
+							}else if(childSnapshot.hasChild("Bundle") && $("#cat option:selected").text() == "Quick Dive") {
+							//	if(bnd != $("#bundle option:selected").val()){
+								//alert(5);
+									var nw = $("#bundle").val();
+								  Ref = firebase.database().ref('Category/'+childSnapshot.key+'/Bundle/'+nw+'/Session/');
+								/*}else{
+								  Ref = firebase.database().ref('Category/'+childSnapshot.key+'/Bundle/'+bnd+'/Session/');
+									
+								}*/
+			//					 booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/Bundle/'+bnd+'/Session/');
+								  ref = 'Category/'+childSnapshot.key+'/Bundle/'+nw+'/Session/';
+							}else if($("#cat option:selected").text() == "Open Dive"){
+			//alert($("#cat option:selected").text()+'='+childSnapshot.key);
+								  Ref = firebase.database().ref('Category/'+childSnapshot.key+'/Session/');
+				//				 booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/Session/');
+								ref = 'Category/'+childSnapshot.key+'/Session/'+s;
+							}
+					}
+					var childKey = childSnapshot.key;
+					var childData = childSnapshot.val();
+			 });
+			// alert(Ref);
+		// alert(booksRef);
+
+			  booksRef.child(s).once('value').then(function(snap) {
+								var sessionid = $("#sid").val();
+								var desc = $('#ckeditor').val();
+								var sessionnm = $("#sessionname").val();
+								var subname = $("#subname").val();
+								var sid = $("#sid").val();
+								var bundle = $("#bundle").val();
+							
+								var cat = $("#cat option:selected").val();
+								var catnm = $("#cat option:selected").text();
+								
+								if($("#simgurl").val()){
+								 var simg = $("#simgurl").val();
+									 
+								 }else{
+								 var simg = $("#oldsimg").attr('src');
+									 
+								 }
+							var data = snap.val();
+							console.log(data);
+							data.session_name = $("#sessionname").val();
+							data.session_description = desc;
+							data.session_img = simg;
+							if($("#murl").val()){	
+									var murl = $("#murl").val();
+									var audio = murl.split(',');
+							 data.meditation_audio = audio;
+							}
+							data.budle_id = bundle;
+			  //data.bookInfo.bookTitle = newTitle;
+						var update = {};
+						update[s] = null;
+			//  alert(old+"="+$("#cat option:selected").text());
+					if(old != $("#cat option:selected").text()){
+							console.log("in"+data);
+
+								var p = Ref.push();
+								var k = p.key;
+								data.session_id = k;
+							//	data.session_id = k;
+								Ref.child(k).set(data);
+					}else if(old == $("#cat option:selected").text() && sub != $("#subcat option:selected").text() && sub != 0){
+				console.log(sub+"=="+$("#subcat option:selected").text());
+						var p = Ref.push();
+								var k = p.key;
+								data.session_id = k;
+								//data.session_id = k;
+								Ref.child(k).set(data);
+					}else if(old == $("#cat option:selected").text() && sub == $("#subcat option:selected").text() && bnd != $("#bundle option:selected").text() && sub != 0 && bnd != 0)
+					{
+							console.log(data);
+							var p = Ref.push();
+								var k = p.key;
+								data.session_id = k;
+								Ref.child(k).set(data);
+					}else{
+							console.log(data);
+						
+						//data.session_id = sessionid;
+						update[sessionid] = data;
+					}
+					return booksRef.update(update);
+			  
+			});
+		});
+		
+
+            		 
             		
-            	booksRef.child(sessionid).once('value').then(function(snap) {
-            					var sessionid = $("#sid").val();
-            					var desc = $('#ckeditor').val();
-            					var sessionnm = $("#sessionname").val();
-            				//	var simg = $("#simgurl").val();
-            					var murl = $("#murl").val();
-            					var subname = $("#subname").val();
-            					var sid = $("#sid").val();
-            					var bundle = $("#bundle").val();
-            				
-            					var cat = $("#cat option:selected").val();
-            					var catnm = $("#cat option:selected").text();
-            					var audio = murl.split(',');
-            					
-            					if($("#simgurl").val()){
-            					 var simg = $("#bimgurl").val();
-            						 
-            					 }else{
-            					 var simg = $("#oldsimg").attr('src');
-            						 
-            					 }
-            					// alert(bid);
-            					 //var pcat = $("#pcat").val();
-            				//	var olds = $("#olds").val();
-            		 
-            		 //var cid = $("#cid").val();
-            		// var oldc = $("#c").val();
-            				  var data = snap.val();
-            						 console.log(data);
-            				  data.session_name = sessionnm;
-            				  data.session_description = desc;
-            				 data.session_img = simg;
-            				 if($("#murl").val()){					 
-            				  data.meditation_audio = audio;
-            				 }
-            				  data.budle_id = bundle;
-            				  data.session_id = sessionid;
-            				  var update = {};
-            				  update[sessionid] = null;
-            				  update[sessionid] = data;
-            		return booksRef.update(update);
-            	});
-            		 
-            		booksRef.on("child_changed", function(data) {
                            swal({
                                 title: "Updated!",
                                 text: "Session has been Updated.",
@@ -860,7 +1023,7 @@ $('select').selectpicker('refresh');
                                 
                                   window.location.href = "session_list.php";
                             });
-                        }); 
+                     
             	
              
             		 
@@ -880,9 +1043,8 @@ $('select').selectpicker('refresh');
             			category_id: catId
             		});
             		//alert(cimg);*/
-                }
-            });
-	
+               
+	}
 		
 		
 	});

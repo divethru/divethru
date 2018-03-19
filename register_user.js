@@ -337,7 +337,7 @@ function save_user() {
                              "device_token" : "123456789",
                              "fb_id": "",
                              "visited":"",
-
+							"membership_type":"Free",
                         }
                         var updates = {};
                         updates['/Users/' + uid] = data;
@@ -351,6 +351,21 @@ function save_user() {
                                               $(".fa-spinner").hide();
                             document.getElementById('head').innerHTML = "A link to verify your email address has been sent. Please Check your email to proceed further.";
                         document.getElementById('head').style.color = "green";
+                        document.getElementById('first_name').value="";
+                        document.getElementById('last_name').value="";
+                        document.getElementById('email').value="";
+                        document.getElementById('password').value="";
+                        document.getElementById('confirmpassword').value="";
+                        document.getElementById('birthdate').value="";
+                        document.getElementById('access_code').value="";
+                          var x = document.getElementsByName("gender");
+                  var s;
+                  for (var i = 0, length = x.length; i < length; i++)
+                  {
+                   x[i].checked = false;
+                
+                  }
+
 							//window.location.href="http://34.215.40.163/login.php";
                         //alert('This User Created Sucessfully');
                         });
@@ -500,6 +515,7 @@ $(".subcatadd").removeAttr("disabled");
 
 
 function uplaodsimgfile() {
+	
     document.getElementsByClassName("sessionadd").disabled = true;
 
 $(".sessionadd").attr("disabled","disabled");
@@ -551,6 +567,8 @@ $(".sessionadd").removeAttr("disabled");
             console.log(data); // display response from the PHP script, if any
         }
      });
+	 
+	 
 }   
 
 function uplaodbimgfile() {
@@ -663,6 +681,10 @@ if(document.getElementById("maudio")){
 document.getElementById("maudio").addEventListener('change', function(e){ 
     //Get files
 //alert(5);
+            $(".fa-spinner").show();
+ $(".sessionadd").attr("disabled","disabled");
+document.getElementsByClassName("sessionadd").disabled = true;
+
 var audio = []; 
     for (var i = 0; i < e.target.files.length; i++) {
         var File = e.target.files[i];
@@ -683,7 +705,9 @@ var audio = [];
         type: 'post',
         success: function(data){
             audio.push("http://34.215.40.163/Admin/"+data);
+             document.getElementsByClassName("sessionadd").disabled = false;
             $(".sessionadd").removeAttr("disabled");
+                        $(".fa-spinner").hide();
             $("#murl").val(audio);
             console.log(data); // display response from the PHP script, if any
         }
@@ -852,40 +876,40 @@ var metadata = {contentType: File.type};
 // }
 
 function fbsave_user(){
-    
-    //alert(55);
-    var provider = new firebase.auth.FacebookAuthProvider();
-//  provider.addScope('email');
-provider.addScope('user_birthday');
-    firebase.auth().signInWithPopup(provider).then(function(result) {
-        var fbuser = firebase.auth().currentUser
-        if(fbuser){
-             window.location.href = "http://34.215.40.163/login.php";
-            }else{
+	
+	//alert(55);
+	var provider = new firebase.auth.FacebookAuthProvider();
+//	provider.addScope('email');
+	provider.addScope('user_birthday');
+	firebase.auth().signInWithPopup(provider).then(function(result) {
+		var fbuser = firebase.auth().currentUser
+		//if(fbuser){
+			// window.location.href = "http://localhost/DiveThru/login.php";
+			//}else{
   // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-                var token = result.credential.accessToken;
+  				var token = result.credential.accessToken;
   // The signed-in user info.
   //console.log();
-              var user = result.user;
-              var uid = user.uid;
-              var detail = result.additionalUserInfo.profile;
-              var first_name = detail.first_name;
-              var last_name = detail.last_name;
-              var gender = detail.gender;
-              var fbid = detail.id;
-              var birthday = detail.birthday;
-              var loginvia = "Facebook";
-  //var membership_type = "free";
-            // ...
-        save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender);
-    }
+  		 	  var user = result.user;
+  			  var uid = user.uid;
+ 			  var detail = result.additionalUserInfo.profile;
+ 		  	  var first_name = detail.first_name;
+           	  var last_name = detail.last_name;
+           	  var gender = detail.gender;
+  		   	  var fbid = detail.id;
+  		      var birthday = detail.birthday;
+  		      var loginvia = "Facebook";
+			  //var membership_type = "free";
+  			// ...
+		save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender);
+	//}
 });
 }
 
     
 function save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender) {
 
-            //alert(uid);
+           // alert(uid);
             //return;
             var currentdate = new Date(); 
             var datetime = 

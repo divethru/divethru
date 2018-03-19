@@ -213,8 +213,8 @@ margin-left: 50px;}
          color:#fff;}
 
 .get-button {background-color: #7dd3d5;
-             padding-left: 25px;
-             padding-right: 25px;
+             padding-left: 15px;
+             padding-right: 15px;
              margin-bottom: 40px;}
 
 .box-slider h3 {font-size: 28px; 
@@ -227,9 +227,19 @@ margin-left: 50px;}
 
 .b2 p {font-size: 24px;}
 
-.b2 h6 {padding-top: 180px;}
+.b2 h6 {padding-top: 93px;}
+@media (min-width: 375px){
 
+.b2 h6 {padding-top: 130px;}
+} 
+@media (min-width: 425px){
 
+.b2 h6 {padding-top: 160px;}
+} 
+@media (min-width: 1024px){
+
+.b2 h6 {padding-top: 30px !important;}
+}
 /*FOOTER*/
 
 .footer-bg {background-image:url(../img/footer.png);
@@ -283,7 +293,7 @@ margin-left: 50px;}
   }
   .plystr{
     position: relative; 
-    right: 20%;
+    right: 21%;
     top:24px;
   }
   .plystr1{
@@ -462,49 +472,27 @@ margin-right:0;}
 	
 	.b2 p {font-size: 14px;}
 
-.b2 h6 {padding-top: 30px;}
+.b2 h6 {padding-top: 14px;}
 	
-	.box-slider h3 {
+	.box-slider h3 {;
              padding-left: 60px;}
 	
 }
-@media (min-width: 1024px){
-	.box-slider h3 {
-    	padding-left: 105px !important;
-	}
-}
-@media (min-width: 1440px){
-	.box-slider h3 {
-    	padding-left: 171px !important;
-	}
-}
-@media (min-width: 1600px){
-	.box-slider h3 {
-    	padding-left: 200px !important;
-	}
-}
+
 @media (max-width:411px){
 
 	.heading h2 {
             font-size: 31px;}
 	
 }
-@media (min-width:375px){
-.b2 h6 {padding-top: 226px;}	
-}
-@media (min-width:768px){
-.b2 h6 {padding-top: 20px;}	
-}
-@media (min-width:1024px){
-.b2 h6 {padding-top: 60px;}	
-}
+
 @media (min-width:1200px){
 	
 	.b1 p {font-size: 22px;}
 	
 	.b2 p {font-size: 24px;}
 
-.b2 h6 {padding-top: 120px;}
+.b2 h6 {padding-top: 55px;}
 	
 }
 
@@ -516,4 +504,33 @@ margin-right:0;}
 @media (min-width:993px) and (max-width:1199px){
 	
 	.b3 p {font-size: 20px;}
+}
+
+@media(max-width:425px){
+.box2 h4 {
+          padding-top: 20px;}
+
+.box2 h2 {padding: 20px 0;}
+
+.box2 p {padding-bottom: 20px;}
+        
+.box1 h4 {
+          padding-top: 20px;}
+
+.box1 h2 {
+         padding: 20px 0;}
+
+.box1 p {
+         padding-bottom: 20px;}
+        
+.box3 h4 {
+          padding-top: 20px;}
+
+.box3 h2 {
+         padding: 20px 0;}
+
+.box3 p {
+         padding-bottom: 20px;}
+
+        
 }

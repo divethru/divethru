@@ -81,6 +81,7 @@ return $nodeGetContent;
   };*/
   firebase.initializeApp(config);
 		</script>
+        <script src="js/check_login.js "></script>
 </head>
 
 <body class="theme-red">
@@ -172,7 +173,7 @@ return $nodeGetContent;
                                         <?php
 
                                        
-										foreach($category as $u){
+										foreach($category as $k=>$u){
 											echo "<tr>";
 												echo "<td>".$u['category_name']."</td>";
 												echo "<td>".$u['category_description']."</td>";
@@ -181,7 +182,7 @@ return $nodeGetContent;
 											
 												?>
 												
-												<td><a href='#' onclick='edit("<?php echo $u['category_name'];?>");'><i class="material-icons">mode_edit</i></a> &nbsp;  <a href='#' class="js-sweetalert" onclick='del("<?php echo $u['category_name'];?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
+												<td><a href='#' onclick='edit("<?php echo $k;?>");'><i class="material-icons">mode_edit</i></a> &nbsp;  <a href='#' class="js-sweetalert" onclick='del("<?php echo $k;?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
 												<?php 
 											echo "</tr>";
 										}

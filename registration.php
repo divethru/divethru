@@ -84,6 +84,21 @@
   border-radius: 1.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+::-webkit-input-placeholder {
+   text-transform: initial;
+}
+
+:-moz-placeholder { 
+   text-transform: initial;
+}
+
+::-moz-placeholder {  
+   text-transform: initial;
+}
+
+:-ms-input-placeholder { 
+   text-transform: initial;
+}
 </style>
   </head>
   <body background="img/banner.png" style="background-repeat: no-repeat;">
@@ -104,21 +119,21 @@
 						    			<p id="head"  style="text-align: center;" class="p1"></p>
 						    			
 						    		  <div class="form-group-log">
-                                        <input type="text" class="form-control-log" name="first_name" id="first_name"  placeholder="First name" onchange="inputfAlphabet();">
+                                        <input type="text" class="form-control-log" name="first_name" id="first_name"  placeholder="First name" style="text-transform: capitalize;" onchange="inputfAlphabet();">
 									    <p id="p1" class="p1"></p>
 									  </div>
 
 									  <div class="form-group-log">
-                                        <input type="text" class="form-control-log" name="last_name" id="last_name" aria-describedby="emailHelp" placeholder="Last name" onchange="inputlAlphabet();">
+                                        <input type="text" class="form-control-log" name="last_name" id="last_name" aria-describedby="emailHelp" style="text-transform: capitalize;" placeholder="Last name" onchange="inputlAlphabet();">
 									    <p id="p2" class="p1"></p>
 									  </div>
 									  <div class="form-group-log">
-                                        <input type="text" class="form-control-log"  id="email" name="email" aria-describedby="emailHelp" placeholder="Email address" onchange="emailValidation()">
+                                        <input type="text" class="form-control-log"  id="email" name="email" aria-describedby="emailHelp" style="text-transform: lowercase;" placeholder="Email address" onchange="emailValidation()">
 									    <p id="p3" class="p1"></p>
 									  </div>
                                       <div class="form-group-log">
                                         <div class="pwstrength_viewport_progress"></div>
-                                        <input type="password" class="form-control-log" name="password" id="password" onkeyup="CheckPasswordStrength(this.value)" placeholder="Password" >
+                                        <input type="password" class="form-control-log" name="password" id="password" onkeyup="CheckPasswordStrength();" placeholder="Password" >
                                       <p id="password_strength" class="p1"></p>
                                         
                                       </div>
@@ -134,6 +149,7 @@
 									  
                                      <div class="form-group-log">
                                         <input type="text" class="form-control-log" name="access_code" id="access_code"  placeholder="Access Code (Optional)" >
+                                        <p id="p5" class="p1"></p>
  
                                       </div>
 
@@ -141,15 +157,15 @@
 							            <label >Gender : </label>
 							             <div class="gender">
 										 <p>
-							                <input type="radio" id="test1" name="gender" value="Male">
+							                <input type="radio" id="test1" name="gender" value="Male" class="gen">
 							                <label for="test1" class="gen">Male</label>
 							              </p>
 							              <p>
-							                <input type="radio" id="test2" name="gender" value="Female">
+							                <input type="radio" id="test2" name="gender" value="Female" class="gen">
 							                <label for="test2" class="gen">Female</label>
 							              </p>
 							              <p>
-							                <input type="radio" id="test3" name="gender" value="Other">
+							                <input type="radio" id="test3" name="gender" value="Other" class="gen">
 							                <label for="test3" class="gen">Other</label>
 							              </p>
                                       </div></div>
@@ -186,6 +202,11 @@
 
     <script type="text/javascript">
     $(function () {
+
+      $( ".gen" ).change(function() {
+        $('#gender').html("");
+      });
+
 $(".fa-spinner").hide();
         $('#password').passwordStrength();
 
@@ -200,9 +221,21 @@ $(".fa-spinner").hide();
                 return false;
             }else{
                 document.getElementById('boldStuff').innerHTML = '';
-            }
             return true;
+            }
         });
+
+$("form").keypress(function(e) {
+      if(e.which == 13) {
+      //  alert('You pressed enter!');
+      //$("#go").click();
+        save_user();
+        //$(this).reset();  // Reset all form data
+      }
+    });
+
+
+
     });
 </script>
 
@@ -222,21 +255,57 @@ $(".fa-spinner").hide();
             return true;
         }
 
-    function CheckPasswordStrength(password) {
+    function CheckPasswordStrength() {
         var password_strength = document.getElementById("password_strength");
+        var psd = document.getElementById('password').value;
+        //var psdExp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&];
+        var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+
  		 $(".password-progress").show(); // show password indicator when inputed password
         
         //TextBox left blank.
-        if (password.length == 0) {
+        var test;
+        if (psd.length == 0) {
             password_strength.innerHTML = "* Please Password Is Required.";
              password_strength.style.color =  "red";
-            return;
+             test=false;
+            return ;
         }
-        else if(password.length < 8){
-        	password_strength.innerHTML = " * Your password must be atleast 8 character long";
+        else if(psd.length < 8){
+        	password_strength.innerHTML = " * Your password must be atleast 8 characters long";
              password_strength.style.color =  "red";
-            return;
+             test=false;
+            return ;
         }
+         else if(psd.length > 20){
+          password_strength.innerHTML = " * Your password not be more then 20 characters";
+             password_strength.style.color =  "red";
+             test=false;
+            return ;
+        }else{
+          test=true;
+          
+        }
+       // alert(test);
+       if(test==true){
+         if(strongRegex.test(psd)){
+         
+          password_strength.innerHTML = " ";
+            return true;
+           
+          }
+          else{
+            
+            password_strength.innerHTML = " * Passwords must have uppercase letters, lowercase letters, numbers, and symbols.";
+             password_strength.style.color =  "red";
+            return false;
+            
+          }
+        }
+      
+
+
+
  
         //Regular Expressions.
         var regex = new Array();
@@ -439,8 +508,8 @@ document.getElementById('p1').innerText = ""; // This segment displays the valid
 
 
 if (Fname.match(alphaExp)) {
-  if(Fname.length < 8){
-      document.getElementById('p1').innerHTML = " * Your First name must be atleast 8 character long";
+  if(Fname.length < 4){
+      document.getElementById('p1').innerHTML = " * Your First name must be atleast 4 character long";
       document.getElementById('first_name').focus();     
       return false;
   }
@@ -481,8 +550,8 @@ var Lname = document.getElementById('last_name').value;
 
 
     if (Lname.match(alphaExp)) {
-      if(Lname.length < 8 ){
-          document.getElementById('p2').innerHTML = " * Your Last name must be atleast 8  character long";
+      if(Lname.length < 4 ){
+          document.getElementById('p2').innerHTML = " * Your Last name must be atleast 4  character long";
           document.getElementById('last_name').focus();
           return false;
       }else if(Lname.length > 15){
@@ -517,17 +586,17 @@ document.getElementById('email').focus();
 return false;
 }
 }
+
 function btnclick() {
 	 var chk = formValidation();
    var chk1= inputlAlphabet();
    var chk2= inputfAlphabet();
    var chk3 = emailValidation();
-    
-    if(chk==true && chk1==true && chk2==true && chk3==true ){
+   
+      if(chk==true && chk1==true && chk2==true && chk3==true ){
          save_user();
-    }
-    return false;
-	
+      }
+   
         
 }
 </script>

@@ -1,5 +1,11 @@
 
 function uplaodfile() {
+	//catagory Image Validation Start
+	
+
+		
+	//catagory Image Validation End
+	
     document.getElementsByClassName("catadd").disabled = true;
 
 $(".catadd").attr("disabled","disabled");
@@ -56,6 +62,13 @@ $(".catadd").removeAttr("disabled");
 }
 
 function uplaodsubimgfile() {
+	
+	//Subcatagory Image Validation Start
+	
+
+		
+	//Subcatagory Image Validation End	
+	
    // document.getElementsByClassName("catadd").disabled = true;
 
 $(".subcatadd").attr("disabled","disabled");
@@ -112,6 +125,11 @@ $(".subcatadd").removeAttr("disabled");
 
 
 function uplaodsimgfile() {
+	//Session Image Validation Start
+	
+
+		
+	//Session Image Validation Start	
     document.getElementsByClassName("sessionadd").disabled = true;
 
 $(".sessionadd").attr("disabled","disabled");
@@ -144,6 +162,7 @@ $(".sessionadd").attr("disabled","disabled");
         
 $(".sessionadd").removeAttr("disabled");
     });*/
+	
     var file_data = $('#sessionimage').prop('files')[0];
     console.log(file_data);
     var form_data = new FormData();                  
@@ -166,6 +185,10 @@ $(".sessionadd").removeAttr("disabled");
 }   
 
 function uplaodbimgfile() {
+	
+	//
+	//Bundle Image Validation End
+	
     //document.getElementsByClassName("sessionadd").disabled = true;
 
 $(".bundleadd").attr("disabled","disabled");
@@ -271,17 +294,38 @@ $(".sessionadd").attr("disabled","disabled");
     
     
 }
+var audio = []; 
 if(document.getElementById("maudio")){
 document.getElementById("maudio").addEventListener('change', function(e){ 
     //Get files
 //alert(5);
-var audio = []; 
+$(".sessionadd").attr("disabled", "disabled");
+    document.getElementsByClassName("sessionadd").disabled = true;
+ $(".fa-spinner").show();
+$("#maudio").after("");
+ for (var j = 0; j < e.target.files.length; j++) {
+ var File = e.target.files[j];
+obUrl = URL.createObjectURL(File);
+       var aud = new Audio();
+aud.src = obUrl;
+        console.log(obUrl);          
+                    //Now lets play the music
+                    aud.onloadedmetadata = function() {
+  //return aud.duration;
+var ti = Math.round(aud.duration/60);
+$("#maudio").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
+  //$(".meditaoion").append(m);
+};
+ audio_time(File);
+ }
     for (var i = 0; i < e.target.files.length; i++) {
         var File = e.target.files[i];
 //console.log(imageFile);
        // uploadImageAsPromise(File,audio);
+        
        var file_data = File;   
-    console.log(file_data.type);
+       
+    console.log(File);
     var form_data = new FormData();                  
     form_data.append('meditation', file_data);
  //   alert(form_data);                             
@@ -294,9 +338,21 @@ var audio = [];
         data: form_data,                         
         type: 'post',
         success: function(data){
-            audio.push("http://34.215.40.163/Admin/"+data);
-            $(".sessionadd").removeAttr("disabled");
+            if(data){
+                    //You could also do
+                    
+                
+            /*$.post("test.php", {"path": 'http://34.215.40.163/Admin/'+data.replace(/\n/g, '')}, function(result){
+                console.log(result);
+            });*/
+            }
+            audio.push("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
             $("#murl").val(audio);
+            if($("#cat option:selected").text() == 'Open Dive'){
+
+                        $(".fa-spinner").hide();
+            $(".sessionadd").removeAttr("disabled");
+            }
             console.log(data); // display response from the PHP script, if any
         }
      });
@@ -305,6 +361,148 @@ var audio = [];
 });
 
 }
+if(document.getElementById("maudio2")){
+document.getElementById("maudio2").addEventListener('change', function(e){ 
+    //Get files
+//alert(5);
+$(".sessionadd").attr("disabled", "disabled");
+    document.getElementsByClassName("sessionadd").disabled = true;
+        $(".fa-spinner").show();
+ for (var j = 0; j < e.target.files.length; j++) {
+ var File = e.target.files[j];
+obUrl = URL.createObjectURL(File);
+       var aud = new Audio();
+aud.src = obUrl;
+        console.log(obUrl);          
+                    //Now lets play the music
+                    aud.onloadedmetadata = function() {
+  //return aud.duration;
+var ti = Math.round(aud.duration/60);
+$("#maudio2").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
+  //$(".meditaoion").append(m);
+};
+
+ audio_time(File);
+ }
+    for (var i = 0; i < e.target.files.length; i++) {
+        var File = e.target.files[i];
+//console.log(imageFile);
+       // uploadImageAsPromise(File,audio);
+        
+       var file_data = File;   
+       
+    console.log(File);
+    var form_data = new FormData();                  
+    form_data.append('meditation', file_data);
+ //   alert(form_data);                             
+    $.ajax({
+        url: 'action.php', // point to server-side PHP script 
+        dataType: 'text',  // what to expect back from the PHP script, if anything
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: form_data,                         
+        type: 'post',
+        success: function(data){
+            if(data){
+                    //You could also do
+                    
+                
+            /*$.post("test.php", {"path": 'http://34.215.40.163/Admin/'+data.replace(/\n/g, '')}, function(result){
+                console.log(result);
+            });*/
+            }
+            audio.push("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
+            $("#murl").val(audio);
+              //          $(".fa-spinner").hide();
+            //$(".sessionadd").removeAttr("disabled");
+            console.log(data); // display response from the PHP script, if any
+        }
+     });
+        
+    }
+});
+
+}
+if(document.getElementById("maudio3")){
+document.getElementById("maudio3").addEventListener('change', function(e){ 
+    //Get files
+//alert(5);
+$(".sessionadd").attr("disabled", "disabled");
+    document.getElementsByClassName("sessionadd").disabled = true;
+ $(".fa-spinner").show();
+ for (var j = 0; j < e.target.files.length; j++) {
+ var File = e.target.files[j];
+obUrl = URL.createObjectURL(File);
+       var aud = new Audio();
+aud.src = obUrl;
+        console.log(obUrl);          
+                    //Now lets play the music
+                    aud.onloadedmetadata = function() {
+  //return aud.duration;
+var ti = Math.round(aud.duration/60);
+$("#maudio3").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
+  //$(".meditaoion").append(m);
+};
+
+ audio_time(File);
+ }
+    for (var i = 0; i < e.target.files.length; i++) {
+        var File = e.target.files[i];
+//console.log(imageFile);
+       // uploadImageAsPromise(File,audio);
+        
+       var file_data = File;   
+       
+    console.log(File);
+    var form_data = new FormData();                  
+    form_data.append('meditation', file_data);
+ //   alert(form_data);                             
+    $.ajax({
+        url: 'action.php', // point to server-side PHP script 
+        dataType: 'text',  // what to expect back from the PHP script, if anything
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: form_data,                         
+        type: 'post',
+        success: function(data){
+            if(data){
+                    //You could also do
+                    
+                
+            /*$.post("test.php", {"path": 'http://34.215.40.163/Admin/'+data.replace(/\n/g, '')}, function(result){
+                console.log(result);
+            });*/
+            }
+            $(".fa-spinner").hide();
+            audio.push("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
+            $("#murl").val(audio);
+            $(".sessionadd").removeAttr("disabled");
+            console.log(data); // display response from the PHP script, if any
+        }
+     });
+        
+    }
+});
+
+}
+// Function yo get audio time
+
+    var time = [];
+function audio_time(File){
+    obUrl = URL.createObjectURL(File);
+       var aud = new Audio();
+    aud.src = obUrl;
+     console.log(obUrl);          
+                    //Now lets play the music
+  aud.onloadedmetadata = function() {
+        //return aud.duration;
+      time.push(Math.round(aud.duration/60));
+    $("#mtime").val(time);
+    };
+}
+
 
 //Handle waiting to upload each file using promise
 function uploadImageAsPromise (File,audio) {

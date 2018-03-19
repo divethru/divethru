@@ -86,7 +86,7 @@
            <!--BOX1-->
                           <div class="col-sm-6 col-md-4 p-0" >
                                 <div class="card text-white card1">
-                                  <img class="card-img1" src="img/main1.png">
+                                  <img class="card-img1" src="img/1.jpeg">
                                       <div class="card-img-overlay1 center">
                                          <p>Conversation 1</p>
                                       </div>
@@ -96,7 +96,7 @@
 						<!--BOX2-->
                           <div class="col-sm-6 col-md-4 p-0">
                                 <div class="card text-white card1">
-                                  <img class="card-img1" src="img/main2.png">
+                                  <img class="card-img1" src="img/4.jpg">
                                       <div class="card-img-overlay1 center">
                                          <p>Conversation 2</p>
                                       </div>
@@ -106,7 +106,7 @@
 						<!--BOX3-->
                           <div class="col-sm-6 col-md-4 p-0">
                                 <div class="card text-white card1">
-                                  <img class="card-img1" src="img/main3.png">
+                                  <img class="card-img1" src="img/images.jpg">
                                       <div class="card-img-overlay1 center">
                                          <p>Conversation 3</p>
                                       </div>

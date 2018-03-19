@@ -16,10 +16,10 @@
                      <hr class="footer-hr">
                      <ul>
                          <li><a href="#">Join</a></li>
-                         <li><a href="#">Why Dive Thru</a></li>
+                         <li><a href="http://34.215.40.163/WhyDiveThru.php">Why Dive Thru</a></li>
                          <li><a href="#">Dive Thru For Corporate</a></li>
                          <li><a href="#">Dive Thru For Youth</a></li>
-                         <li><a href="#">Gift</a></li>
+                         <li><a href="http://34.215.40.163/gift.php">Gift</a></li>
                       </ul>
                 </div>
                 
@@ -27,7 +27,7 @@
                      <h6>ABOUT</h6>
                      <hr class="footer-hr">
                      <ul>
-                         <li><a href="#">About Dive Thru</a></li>
+                         <li><a href="http://34.215.40.163/about.php">About Dive Thru</a></li>
                          <li><a href="#">Press</a></li>
                       </ul>
                 </div>
@@ -37,7 +37,7 @@
                      <hr class="footer-hr">
                      <ul>
                          <li><a href="#">Support</a></li>
-                         <li><a href="#">Contact Us</a></li>
+                         <li><a href="http://34.215.40.163/contact.php">Contact Us</a></li>
                          <li><a href="#">Terms & Conditions</a></li>
                          <li><a href="#">Privacy</a></li>
                       </ul>

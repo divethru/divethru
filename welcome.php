@@ -361,7 +361,7 @@ for (i in storedNames)
 <div class="mySlides fade" onclick="plusSlides(1)" style="background: #66348b url('img/spls 1.png') no-repeat;">
   <div class="text" >
       Here's everything you<br>need to know:<br>
-      <video class="videoPlayer" controls="">
+      <video class="videoPlayer" id="video" controls="">
         <source src="http://techslides.com/demos/sample-videos/small.mp4" type="video/mp4">
       </video>
   </div>
@@ -451,6 +451,10 @@ function pause(){
    var vid = document.getElementById("jp_audio_0");
    vid.pause();
 }
+function pausevideo(){
+  var v = document.getElementById("video");
+  v.pause();
+}
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-36251023-1']);
   _gaq.push(['_setDomainName', 'jqueryscript.net']);
@@ -473,9 +477,16 @@ function plusSlides(n) {
   showSlides(slideIndex += n);
 }
 function currentSlide(n) {
+  if(n != 6){
+    pause();
+  }
+ /* if(n != 5){
+    pausevideo();
+  }*/
   showSlides(slideIndex = n);
 }
 function showSlides(n) {
+  /**/
   var i;
   var slides = document.getElementsByClassName("mySlides");
   var dots = document.getElementsByClassName("dot");

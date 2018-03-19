@@ -395,6 +395,9 @@
     left: 0;
     position: fixed;
     }
+    .cls{
+  margin-right: 41px;
+}
 }
 @media only screen 
     and (min-device-width : 1620px) 
@@ -721,19 +724,18 @@ yourself? We have a conversation for that.<br><a href="#" style="color:#80429c">
                                 <h6 class="lead mb-0 txtpos" style="color: #727272; font-weight: 400;  font-size: 20px;"> 
                                    Download the DiveThru app<br>or sign up online to find<br>the peace within.
                               </h6>
-                              <br><br>
+                              <br>
                                
                                <a href="#" class="btn1 btnpos mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none;  background-color:#7DD3D5 !important;
                       border:none;
             color:#fff !important;">SUBSCRIBE NOW</a>
-                               <br><br>
+                               <br>
                                  <a href="http://34.215.40.163/registration.php
                                  " class="btn1 btnpos mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none; padding-left:18px !important;
                        padding-right:17px !important; background-color:#7DD3D5 !important;
                       border:none;
             color:#fff !important;">JOIN FOR FREE</a>
-                                <br><br>
-                                <div>
+                                <br><br>                             <div>
                                 <img src="img/app atore.png" class="img-responsive plystr " height="40" width="140"> 
                                  <img src="img/google play.png"  class="img-responsive plystr1 "  height="40" width="140"  ></div>
                                  <br><br>

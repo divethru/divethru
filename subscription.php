@@ -11,7 +11,39 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
     <link rel="stylesheet" href="css/footercss.css" type="text/css" >
 </head>
-
+<style type="text/css">
+		.btn1 {
+      display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    /* border: 1px solid #ced4da; */
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.btn2 {
+  display: inline-block;
+  font-weight: 400;
+  color: #FFF;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 1.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+button:focus{outline: none;}
+</style>
 <body>
 
 
@@ -29,33 +61,33 @@
        <div class="container heading text-center">
 	
 		   <h2>UNLOCK DIVE THRU</h2>
-		   <P style="padding-bottom: 60px;">Get access to 100s of conversation by unlocking<br> the complete the Dive Thru library. </P>
+		   <P style="padding-bottom: 60px;">Get access to 100s of conversations by unlocking<br> the complete Dive Thru library. </P>
 		   
-		   <div class="row">
+		   <div class="row justify-content-center">
 			   
-			    <div class="col-sm-4 px-0">
+			    <div class="col-sm-4 col-10 px-0">
 			       <div class="box1">
 					   <h4>M O N T H L Y</h4>
 					   <h2>$ 14.99</h2>
-					   <p>PAID MONTH</p>
+					   <p style="font-size: 20px;">PAID MONTH</p>
 					   <a href="" class="btn get-button">GET  AS A GIFT</a>
 				   </div>
 			   </div>
 		   
-		       <div class="col-sm-4 px-0">
+		       <div class="col-sm-4 col-10 px-0">
 			       <div class="box2">
 				       <h4>Y E A R L Y</h4>
 					   <h2>$ 7.99</h2>
-					   <p>PAID YEARLY</p>
+					   <p style="font-size: 20px;">PAID YEARLY</p>
 					   <a href="" class="btn get-button">GET  AS A GIFT</a>
 				   </div>
 			   </div>
 			   
-			    <div class="col-sm-4 px-0">
+			    <div class="col-sm-4 col-10 px-0">
 			       <div class="box3">
-					   <h4>L I F E T I M E</h4>
+					   <h4>L I F E  &nbsp; T I M E</h4>
 					   <h2>$ 345</h2>
-					   <p>PAID ONCE</p>
+					   <p style="font-size: 20px;">PAID ONCE</p>
 					   <a href="" class="btn get-button">GET  AS A GIFT</a>
 				   </div>
 			   </div>
@@ -159,16 +191,16 @@
      <div class="container py-5">
 	
 		 <div class="row text-center ">
-	     <div class="col-md-6 col-lg-4 icon my-5">
+	     <div class="col-md-6 col-lg-4 icon ">
 		     <img src="img/ic_lock@3x.png" />
 			 <h3 class="my-4">Unlock The Entire Library</h3>
 			 <p>By signing up you get access to the<br>
-                entire Dive Thru. The library feutures<br>
-                100s ofconversations with new<br>
+                entire Dive Thru. The library features<br>
+                100s of conversations with new<br>
                 once coming every month.</p>
 		 </div>
 		 
-		 <div class="col-md-6 col-lg-4 icon my-5">
+		 <div class="col-md-6 col-lg-4 icon ">
 		     <img src="img/ic_hand@3x.png" />
 			 <h3 class="my-4">$1 Each Month Donated</h3>
 			 <p>We donate $1 monthly membership each month
@@ -178,7 +210,7 @@
 			 </p>
 		 </div>
 		 
-		 <div class="col-md-6 col-lg-4 icon my-5">
+		 <div class="col-md-6 col-lg-4 icon ">
 		     <img src="img/ic_web@3.png" />
 			 <h3 class="my-4">Accessible Everywhere</h3>
 			 <p>
@@ -210,7 +242,7 @@
 		 </div>
 	   </div>
 		 <div class="row justify-content-center">
-			 <div class="col-8">
+			 <div class="col-6">
 	 <hr style="height: 4px; border-bottom: 0;  border-top: 0; background-color:#7dd3d5; "/>
 			 </div>
 	     </div>
@@ -223,7 +255,7 @@
 	
 <div class="container-fluid mt-5">
 	
-       <div >
+       <div class="container" >
 		   <div class="box-slider">
 	
 		   <h3>QUICK DIVE</h3>
@@ -239,16 +271,16 @@
                                          
 								  <div class="row text-center box justify-content-center">
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2 col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/10.png">
 												<div class="card-img-overlay1">
-												   <p class="center">Having A Bed Day</p>
+												   <p class="center">Having A Bad Day</p>
 												</div>
 											  </div>
 										 </div>
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/2.png">
 												<div class="card-img-overlay1">
@@ -257,7 +289,7 @@
 											  </div>
 										 </div>
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/3.png">
 												<div class="card-img-overlay1">
@@ -266,7 +298,7 @@
 											  </div>
 										 </div>
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/4.png">
 												<div class="card-img-overlay1">
@@ -283,7 +315,7 @@
                                         
 								  <div class="row text-center box justify-content-center">
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/10.png">
 												<div class="card-img-overlay1">
@@ -292,7 +324,7 @@
 											  </div>
 										 </div>
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/2.png">
 												<div class="card-img-overlay1">
@@ -301,7 +333,7 @@
 											  </div>
 										 </div>
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/3.png">
 												<div class="card-img-overlay1">
@@ -310,7 +342,7 @@
 											  </div>
 										 </div>
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/4.png">
 												<div class="card-img-overlay1">
@@ -327,7 +359,7 @@
                                         
 								  <div class="row text-center box justify-content-center">
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/10.png">
 												<div class="card-img-overlay1">
@@ -336,7 +368,7 @@
 											  </div>
 										 </div>
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/2.png">
 												<div class="card-img-overlay1">
@@ -345,7 +377,7 @@
 											  </div>
 										 </div>
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/3.png">
 												<div class="card-img-overlay1">
@@ -354,7 +386,7 @@
 											  </div>
 										 </div>
 
-										   <div class="col-md-2 px-0">
+										   <div class="col-md-2  col-9 px-0">
 											  <div class="card1 text-white b1">
 												<img class="card-img1" src="img/4.png">
 												<div class="card-img-overlay1">
@@ -388,7 +420,7 @@
 	
 <div class="container-fluid mt-5">
 	
-	<div >
+	<div class="container" >
 		
 		<div class="box-slider">
 		 <h3>DEEP DIVE</h3>
@@ -405,7 +437,7 @@
 				 
 				         <div class="row box justify-content-center">
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/10.png">
 								<div class="card-img-overlay1">
@@ -418,7 +450,7 @@
 							  </div>
 						 </div>
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/2.png">
 								<div class="card-img-overlay1">
@@ -428,7 +460,7 @@
 							  </div>
 						 </div>
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/3.png">
 								<div class="card-img-overlay1">
@@ -438,7 +470,7 @@
 							  </div>
 						 </div>
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/4.png">
 								<div class="card-img-overlay1">
@@ -456,7 +488,7 @@
 				 
 				         <div class="row box justify-content-center">
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/10.png">
 								<div class="card-img-overlay1">
@@ -466,7 +498,7 @@
 							  </div>
 						 </div>
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/2.png">
 								<div class="card-img-overlay1">
@@ -476,7 +508,7 @@
 							  </div>
 						 </div>
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/3.png">
 								<div class="card-img-overlay1">
@@ -486,7 +518,7 @@
 							  </div>
 						 </div>
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/4.png">
 								<div class="card-img-overlay1">
@@ -504,7 +536,7 @@
 				 
 				         <div class="row box justify-content-center">
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/10.png">
 								<div class="card-img-overlay1">
@@ -514,7 +546,7 @@
 							  </div>
 						 </div>
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/2.png">
 								<div class="card-img-overlay1">
@@ -524,7 +556,7 @@
 							  </div>
 						 </div>
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/3.png">
 								<div class="card-img-overlay1">
@@ -534,7 +566,7 @@
 							  </div>
 						 </div>
 
-						   <div class="col-md-2 px-0">
+						   <div class="col-md-2 col-9 px-0">
 							  <div class="card1 text-white b2">
 								<img class="card-img1" src="img/4.png">
 								<div class="card-img-overlay1">
@@ -567,7 +599,7 @@
 	
 <div class="container-fluid mt-5 ">
 	
-	<div >
+	<div class="container" >
 		<div class="box-slider">
 		<h3>OPEN DIVE</h3>
 	    </div>
@@ -582,7 +614,7 @@
 							   <div class="carousel-item active">
 				                 <div class="row text-center box justify-content-center">
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/10.png">
 							<div class="card-img-overlay1">
@@ -591,7 +623,7 @@
 						  </div>
 					 </div>
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/2.png">
 							<div class="card-img-overlay1">
@@ -600,7 +632,7 @@
 						  </div>
 					 </div>
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/3.png">
 							<div class="card-img-overlay1">
@@ -609,7 +641,7 @@
 						  </div>
 					 </div>
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/4.png">
 							<div class="card-img-overlay1">
@@ -624,7 +656,7 @@
 							   <div class="carousel-item">
 				                 <div class="row text-center box justify-content-center">
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/10.png">
 							<div class="card-img-overlay1">
@@ -633,7 +665,7 @@
 						  </div>
 					 </div>
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/2.png">
 							<div class="card-img-overlay1">
@@ -642,7 +674,7 @@
 						  </div>
 					 </div>
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/3.png">
 							<div class="card-img-overlay1">
@@ -651,7 +683,7 @@
 						  </div>
 					 </div>
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/4.png">
 							<div class="card-img-overlay1">
@@ -666,7 +698,7 @@
 							    <div class="carousel-item">
 				                 <div class="row text-center box justify-content-center">
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/0.png">
 							<div class="card-img-overlay1">
@@ -675,7 +707,7 @@
 						  </div>
 					 </div>
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/2.png">
 							<div class="card-img-overlay1">
@@ -684,7 +716,7 @@
 						  </div>
 					 </div>
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/3.png">
 							<div class="card-img-overlay1">
@@ -693,7 +725,7 @@
 						  </div>
 					 </div>
 
-					   <div class="col-md-2 px-0">
+					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
 							<img class="card-img1" src="img/4.png">
 							<div class="card-img-overlay1">
@@ -728,33 +760,33 @@
        <div class="container heading text-center">
 	
 		   <h2>UNLOCK DIVE THRU</h2>
-		   <P style="padding-bottom: 60px;">Get access to 100s of conversation by unlocking<br> the complete the Dive Thru library. </P>
+		   <P style="padding-bottom: 60px;">Get access to 100s of conversations by unlocking<br> the complete Dive Thru library. </P>
 		   
-		   <div class="row">
+		   <div class="row justify-content-center">
 			   
-			    <div class="col-sm-4 px-0">
+			    <div class="col-sm-4 col-10 px-0">
 			       <div class="box1">
 					   <h4>M O N T H L Y</h4>
 					   <h2>$ 14.99</h2>
-					   <p>PAID MONTH</p>
+					   <p style="font-size: 20px;">PAID MONTH</p>
 					   <a href="" class="btn get-button">GET  AS A GIFT</a>
 				   </div>
 			   </div>
 		   
-		       <div class="col-sm-4 px-0">
+		       <div class="col-sm-4 col-10 px-0">
 			       <div class="box2">
 				       <h4>Y E A R L Y</h4>
 					   <h2>$ 7.99</h2>
-					   <p>PAID YEARLY</p>
+					   <p style="font-size: 20px;">PAID YEARLY</p>
 					   <a href="" class="btn get-button">GET  AS A GIFT</a>
 				   </div>
 			   </div>
 			   
-			    <div class="col-sm-4 px-0">
+			    <div class="col-sm-4 col-10 px-0">
 			       <div class="box3">
-					   <h4>L I F E T I M E</h4>
+					   <h4>L I F E &nbsp; T I M E</h4>
 					   <h2>$ 345</h2>
-					   <p>PAID ONCE</p>
+					   <p style="font-size: 20px;">PAID ONCE</p>
 					   <a href="" class="btn get-button">GET  AS A GIFT</a>
 				   </div>
 			   </div>
@@ -769,9 +801,10 @@
  <section class="bg-white text-center pt-5 pb-5">
                       <div class="container">
                         <div class="row mt-5">
-                            <div class="col-lg-6 mb-5">
+                            <div class="col-lg-5 mb-5 text-lg-right text-center">
                                  <img src="img/mobile.png" class="img-responsive" height="400" width="200">
                             </div>
+                            <div class="col-1"></div>
                             <div class="col-lg-6">
                                 <h3 class="mb-2 txtpos" style="color: #34495e; ">
                                     It's Time To<br> DiveThru 
@@ -780,7 +813,7 @@
                                 <h6 class="lead mb-0 txtpos" style="color: #727272; font-weight: 400;  font-size: 20px;"> 
                                    Download the DiveThru app<br>or sign up online to find<br>the peace within.
                               </h6>
-                              <br><br>
+                              <br>
                                <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</button>
                                <br><br>
                                 <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;  background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </button>

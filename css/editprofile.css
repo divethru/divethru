@@ -1,0 +1,33 @@
+@charset "utf-8";
+/* CSS Document */
+
+.form-control-log {
+    padding: 12px 13px 12px;
+    font-size: 17px;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #f1f1f1;
+    background-clip: padding-box;
+    border: 0px solid #ced4da;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	border-radius: 0px;
+}
+
+.form-group-log{
+        margin-bottom: 1.5rem;
+}
+
+.input-group-text-log{background-color: transparent !important;
+                      border: none !important;
+                      color: #7dd3d5;}
+
+.input-group-text-log1{background-color: #f1f1f1 !important;
+                      border: none !important;
+                      color: #495057;
+                      text-size:16px;}
+
+.btn-primary-log {
+  color: #fff;
+  background-color: #7dd3d5;
+  border-color: #7dd3d5;
+}

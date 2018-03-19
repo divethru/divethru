@@ -25,7 +25,7 @@
 			  <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
 			    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
 			      <li class="nav-item  ">
-			        <a class="nav-link" style="padding-right: 1.5rem; padding-left: 1.5rem;       color:#34495e;" href="#"  onmouseover='this.style.color="#7dd3d5"' 
+			        <a class="nav-link" style="padding-right: 1.5rem; padding-left: 1.5rem;       color:#34495e;" href="http://34.215.40.163/WhyDiveThru.php"  onmouseover='this.style.color="#7dd3d5"' 
     onmouseout='this.style.color="#34495e"'>WHY DIVE THRU <span class="sr-only">(current)</span></a>
 			      </li>
 			      <li class="nav-item ">
@@ -33,7 +33,7 @@
     onmouseout='this.style.color="#34495e"'>BLOG <span class="sr-only">(current)</span></a>
 			      </li>
 			      <li class="nav-item ">
-			        <a class="nav-link " style="padding-right: 1.5rem; color: #34495e; padding-left: 1.5rem;" href="#"  onmouseover='this.style.color="#7dd3d5"' 
+			        <a class="nav-link " style="padding-right: 1.5rem; color: #34495e; padding-left: 1.5rem;" href="http://34.215.40.163/about.php"  onmouseover='this.style.color="#7dd3d5"' 
     onmouseout='this.style.color="#34495e"'>ABOUT<span class="sr-only">(current)</span></a>
 			      </li>
 			      <li class="nav-item ">

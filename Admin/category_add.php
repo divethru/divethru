@@ -83,7 +83,7 @@ var config = {
   firebase.initializeApp(config);
         </script>
          <script src="js/check_login.js "></script>
-         <script type="text/javascript" src="../register_user.js"></script>
+         <script type="text/javascript" src="js/upload.js"></script>
 
 </head>
 
@@ -160,7 +160,7 @@ var config = {
                             <form name="category" id="form_validation_cat"  enctype="multipart/form-data" novalidate="novalidate">
                                 <div class="form-group form-float">
                                     <div class="form-line error">
-                                        <input type="text" class="form-control" id="catname" name="name" required="" aria-required="true" aria-invalid="true">
+                                        <input type="text" class="form-control" id="catname" name="name" required="" style="text-transform: capitalize;" aria-required="true" aria-invalid="true" />
                                         <label class="form-label">Name</label>
                                     </div>
                                     </div>
@@ -183,7 +183,7 @@ var config = {
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                                                <input name="catimage" id="catimage" type="file"  onchange="uplaodfile()" accept="image/*" />
+                                                <input name="catimage" class="check-image-size form-control" id="catimage" type="file"  onchange="uplaodfile()" accept="image/*" />
                                                 <input type="hidden" id="imgurl">
                                         <!--    </div> -->
 
@@ -253,7 +253,24 @@ var config = {
          <!-- <script src="js/pages/forms/form-validation.js"></script> -->
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
+    <script src="js/jquery.checkImageSize.js"></script>
+    <script>
+$("input[type=file]").checkImageSize();
+</script>
+<script type="text/javascript">
 
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script type="text/javascript">
@@ -263,6 +280,59 @@ var config = {
     //      config.placeholder = 'Description'; 
 //CKEDITOR.replace('ckeditor',config);
     //CKEDITOR.config.height = 300;
+     $.validator.addMethod("regex", function(value, element, regexpr) {          
+                 return regexpr.test(value);
+               }, "Please enter Only characters"); 
+    $('#form_validation_cat').validate({
+        rules: {
+            'name': {
+                required: true,
+                minlength: 6,
+                maxlength: 15,
+                 regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
+            }, 
+            'description': {
+                required: true
+            }, 
+            'catimage': {
+                required: true,
+                accept: "image/jpeg, image/png,image/gif"
+            }, 
+            'subname':{
+                required:true
+            }
+            
+        },
+        messages: {
+          name: {
+            required:"Please enter your Category Name",
+            minlength: "Enter name must be at least 6 characters long",
+            maxlength: "Enter name maximum 15 characters allow"
+            },
+          catimage: {
+            required:"Please Select Any image",
+            accept: "Select only jpeg,png,gif file formate only!!"
+            },
+            description:"Please enter Description",
+            subname:"Please enter subscribe name"
+          
+        },
+        highlight: function (input) {
+            $(input).parents('.form-line').addClass('error');
+        },
+        unhighlight: function (input) {
+            $(input).parents('.form-line').removeClass('error');
+        },
+        errorPlacement: function (error, element) {
+            $(element).parents('.form-group').append(error);
+        },
+        submitHandler: function(form) {
+
+        },
+        success: function(form){
+                                
+        }
+    });
     
     $('.js-basic-example').DataTable({
         responsive: true,
@@ -312,50 +382,9 @@ var config = {
     });*/
     $(".catadd").click(function(){
 
-
-        $('#form_validation_cat').validate({
-        rules: {
-            'name': {
-                required: true,
-                minlength: 6,
-                maxlength: 15
-            }, 
-            'description': {
-                required: true
-            }, 
-            'catimage': {
-                required: true,
-                accept: "image/jpeg, image/png,image/gif"
-            }, 
-            'subname':{
-                required:true
-            }
-            
-        },
-        messages: {
-          name: {
-            required:"Please enter your Category Name",
-            minlength: "Enter name must be at least 6 characters long",
-            maxlength: "Enter name maximum 15 characters allow"
-            },
-          catimage: {
-            required:"Please Select Any image",
-            accept: "Select only jpeg,png,gif file formate only!!"
-            },
-            description:"Please enter Description",
-            subname:"Please enter subscribe name"
-          
-        },
-        highlight: function (input) {
-            $(input).parents('.form-line').addClass('error');
-        },
-        unhighlight: function (input) {
-            $(input).parents('.form-line').removeClass('error');
-        },
-        errorPlacement: function (error, element) {
-            $(element).parents('.form-group').append(error);
-        },
-        submitHandler: function(form) {
+var temp=$('#form_validation_cat').valid();
+        if(temp==true){
+        
     //   var desc = CKEDITOR.instances['ckeditor'].getData();
          var desc = $('#ckeditor').val();
          var catnm = $("#catname").val();
@@ -383,15 +412,25 @@ var config = {
         //alert(cimg);
         //alert(55);
              if(pushedCatRef){
-               
-                swal("Inserted!","Category has been Inserted.","success");
-                 $('#form_validation_cat')[0].reset();
-                 $('select').selectpicker('refresh');
                 
+                     swal({
+                        title: "Inserted!",
+                        text: "Category has been Inserted.",
+                        html:true,
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "OK",
+                        closeOnConfirm: false
+                    }, function () {
+                        window.setTimeout(function() {
+                        
+                          window.location.href = "category_list.php";
+                        }, 1000);
+                    });
             }
+       
         }
-    });
-        
     });
     
 });

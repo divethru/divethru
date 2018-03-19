@@ -11,7 +11,8 @@ firebase.auth().onAuthStateChanged(function(user) {
                         console.log(data.activated_on);
                     if(data.activated_on != ''){
                                                  var lout = '<a class="nav-link" id="lg" style="padding-right: 1.5rem; padding-left: 1.5rem;" href="#" onclick="sign_out();">LOG OUT<span class="sr-only">(current)</span></a>';
-                          console.log($(".log").html(lout));
+                          $(".log").html(lout);
+
                        }
 
                 });

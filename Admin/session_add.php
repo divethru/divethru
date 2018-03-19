@@ -54,7 +54,7 @@ foreach($category as $k => $v){
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Blank Page | Bootstrap Based Admin Template - Material Design</title>
+    <title>Seesion | DiveThru Admin </title>
     <!-- Favicon-->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
@@ -78,6 +78,8 @@ foreach($category as $k => $v){
     <link href="plugins/jquery-datatable/skin/bootstrap/css/dataTables.bootstrap.css" rel="stylesheet">
     <!-- Custom Css -->
     <link href="css/style.css" rel="stylesheet">
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
     <link href="css/themes/all-themes.css" rel="stylesheet" />
     <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
@@ -103,7 +105,7 @@ foreach($category as $k => $v){
   firebase.initializeApp(config);
         </script>
             
-
+       <script type="text/javascript" src="js/check_login.js"></script>
 </head>
 
 <body class="theme-red">
@@ -179,9 +181,10 @@ foreach($category as $k => $v){
                             <form id="form_validation_session"  enctype="multipart/form-data" novalidate="novalidate">
                                 <div class="form-group form-float">
                                     <div class="form-line error">
-                                        <input type="text" class="form-control" id="sessionname" name="name" required="" aria-required="true" aria-invalid="true">
+                                        <input type="text" class="form-control" id="sessionname" name="name" required="" aria-required="true" style="text-transform: capitalize;" aria-invalid="true">
                                         <label class="form-label">Name</label>
                                     </div>
+                                    <p style="color:red" id="nm"></p>
                               <!--  <label id="name-error" class="error" for="name">This field is required.</label>-->
                                </div>
                                         
@@ -218,16 +221,16 @@ foreach($category as $k => $v){
                                 <div class="form-group form-float sub">
                                     <div class="form-line error">
                                         <label class="form-label">SubCategory</label>
-                                        <br><br>
-                                        <select id="subcat" class="form-control show-tick" name="subcat">
+                                        <br>
+                                        <select id="subcat" class="form-control show-tick" name="subcat"> 
                                         <?php
                                         if($subcategory){
-                                            echo "<option value=''>Select Subcategory</option>";
+                                            
                                             foreach($subcategory as $s){
                                     //          echo "<option value=".$s['subcategory_id'].">".$s["subcategory_name"]."</option>";
                                             }
                                         }else{
-                                            echo "<option value='0'>Nothing selcted</option>";
+                                            echo "<option value=''> select SubCategory</option>";
                                         }
                                         ?>
                                         </select>
@@ -240,13 +243,16 @@ foreach($category as $k => $v){
                                         <label class="form-label">Bundle </label>
                                         <br><br>
                                         <select id="bundle" class="form-control show-tick" name="bundle">
+                                            
+
                                         <?php
-                                        if($bundle){
-                                             echo "<option value=''>Select Bundle</option>";
-                                            foreach($bundle as $c){
-                                                echo "<option value=".$c['bundle_id'].">".$c["bundle_name"]."</option>";
-                                            }
-                                        }
+                                         echo "<option value=''> select Bundle</option>";
+                                        // if($bundle){
+                                        //     echo "<option value=''> select Bundle</option>";
+                                        //     foreach($bundle as $c){
+                                        //         echo "<option value=".$c['bundle_id'].">".$c["bundle_name"]."</option>";
+                                        //     }
+                                        // }
                                         ?>
                                         </select>
                                         
@@ -264,7 +270,7 @@ foreach($category as $k => $v){
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                                                <input name="session" class="form-control" id="sessionimage" type="file" onchange="uplaodsimgfile()" accept="image/*" />
+                                                <input name="session" class="check-image-size form-control " id="sessionimage" type="file" onchange="uplaodsimgfile()" accept="image/*" />
                                                 <input type="hidden" id="simgurl">
                                         <!--    </div> -->
 
@@ -286,21 +292,54 @@ foreach($category as $k => $v){
                                         
                             <!--        </div>
                                 </div>-->
-                                <div class="form-group form-float">
-                                    <div class="form-line error">
+                               <div class="form-group form-float">
+                                    <div class="form-line error ">
                                     <label class="form-label">Meditation audio</label>
                                     </br>
                                     </br>
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                                                <input name="meditaion" class="form-control" id="maudio" type="file"  accept="audio/*" multiple/>
+                                                <input name="meditaion" class="form-control" id="maudio" type="file"  accept="audio/*" style="width:auto;display:inline;"/>
+    
                                                 <input type="hidden" id="murl">
+                                                <input type="hidden" id="mtime">
                                         <!--    </div> -->
 
                                         
                                     </div>
                                 </div>
+                                <div class="form-group form-float audio1">
+                                    <div class="form-line error ">
+                                    <label class="form-label">Meditation audio</label>
+                                    </br>
+                                    </br>
+                                     <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
+                                            <div class="dropzone-previews"></div>
+                                            <div class="fallback"> <!-- this is the fallback if JS isn't working -->
+                                                <input name="meditaion1" class="form-control" id="maudio2" type="file"  accept="audio/*" style="width:auto;display:inline;"/>
+    
+                                        <!--    </div> -->
+
+                                        
+                                    </div>
+                                </div>                            
+                    <div class="form-group form-float audio2">
+                                    <div class="form-line error ">
+                                    <label class="form-label">Meditation audio</label>
+                                    </br>
+                                    </br>
+                                     <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
+                                            <div class="dropzone-previews"></div>
+                                            <div class="fallback"> <!-- this is the fallback if JS isn't working -->
+                                                <input name="meditaion2" class="form-control" id="maudio3" type="file"  accept="audio/*" style="width:auto;display:inline;"/>
+    
+                                        <!--    </div> -->
+
+                                        
+                                    </div>
+                                </div>
+                                
                                 
                                     <!--<div class="form-group form-float">
                                     <div class="form-line error">
@@ -314,7 +353,7 @@ foreach($category as $k => $v){
                                     <input type="checkbox" id="checkbox" name="checkbox" aria-required="true">
                                     <label for="checkbox">I have read and accept the terms</label>
                                <label id="checkbox-error" class="error" for="checkbox">This field is required.</label></div>-->
-                                <button class="btn btn-primary waves-effect sessionadd" type="submit">SUBMIT</button>
+                                <button class="btn btn-primary waves-effect sessionadd" type="submit"><i class="fa fa-spinner fa-spin"></i>SUBMIT</button>
                             </form>
                         </div>
                     </div>
@@ -338,9 +377,8 @@ foreach($category as $k => $v){
 
     <!-- Waves Effect Plugin Js -->
     <script src="plugins/node-waves/waves.js"></script>
-     <!-- SweetAlert Plugin Js -->
+        <!-- SweetAlert Plugin Js -->
     <script src="plugins/sweetalert/sweetalert.min.js"></script>
-        
     <!-- Jquery DataTable Plugin Js -->
     <script src="plugins/jquery-datatable/jquery.dataTables.js"></script>
     <script src="plugins/jquery-datatable/skin/bootstrap/js/dataTables.bootstrap.js"></script>
@@ -354,18 +392,40 @@ foreach($category as $k => $v){
          <script src="plugins/ckeditor/ckeditor.js"></script>
          <script src="plugins/ckeditor/plugins/placeholder/plugin.js"></script>
          <script src="plugins/jquery-validation/jquery.validate.js"></script>
-          <script src="plugins/jquery-validation/additional-methods.js"></script>
+         <script src="plugins/jquery-validation/additional-methods.js"></script>
          <script src="js/pages/forms/form-validation.js"></script>
 
-         <script type="text/javascript" src="../register_user.js"></script>
+         <script type="text/javascript" src="js/upload.js"></script>
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
 
+<script src="js/jquery.checkImageSize.js"></script>
+<script>
+$("input[type=file]").checkImageSize();
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
    
     <script type="text/javascript">
         
             
         $(function () {
+
+            $(".audio2").hide();
+            $(".audio1").hide();
+            $(".fa-spinner").hide();
             var config = {};
             config.placeholder = 'Description'; 
 //CKEDITOR.replace('ckeditor',config);
@@ -374,15 +434,6 @@ foreach($category as $k => $v){
     $('.js-basic-example').DataTable({
         responsive: true,
         //pagination: true,
-    });
-     $('select').selectpicker().change(function(){
-        $(this).valid()
-    });
-    $('#maudio').on('change', function(){
-        $(this).valid()
-    });
-     $('#sessionimage').on('change', function(){
-        $(this).valid()
     });
 
     //Exportable table
@@ -393,48 +444,73 @@ foreach($category as $k => $v){
             'copy', 'csv', 'excel', 'pdf', 'print'
         ]
     });
-$("#cat").change(function(){
-        //alert(55);.
-        var op ='';
+
+    $('select').selectpicker().change(function(){
+        $(this).valid()
+    });
+    $('#maudio').selectpicker().change(function(){
+        $(this).valid()
+    });
+     $('#sessionimage').selectpicker().change(function(){
+        $(this).valid()
+    });
+ $("#cat").change(function(){
+        //alert($("#cat option:selected").text());
         var c = $("#cat option:selected").text();
-            /* Code for hide and show subcategory according to category */
-        if($("#cat option:selected").text() != 'Deep Dive'){
-            $(".sub").hide();
-            
-        }else{
+           $('#bundle').empty().append('<option selected="selected" value="">Select bundle</option>');
+        var op = "";
+        if($("#cat option:selected").text() == 'Deep Dive'){
+            //  alert(55);
             $(".sub").show();
-            
-        }
-        
-        /* Code For disable bundle in  open dive */
-        /*if(c == 'Open Dive'){
-            $(".bundleadd").attr("disabled","disabled");
-            alert("You can't enter bundle for this catgeory");
-            
+            $(".bnd").show();
+            $(".audio1").show();
+            $(".audio2").show();
+
+        }else if($("#cat option:selected").text() == 'Quick Dive'){
+            $(".sub").hide();
+            $(".bnd").show();
+            $(".audio1").show();
+            $(".audio2").show();
         }else{
-            $(".bundleadd").removeAttr("disabled");
-        }*/
-        
-        /* Code for append sub catgeory according to catgoery */
-        
+            $(".sub").hide();
+            $(".bnd").hide();
+            $(".audio1").hide();
+            $(".audio2").hide();
+        }
         firebase.database().ref("/Category/"+c).on("value", function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
                 // key
                 var key = childSnapshot.key;
                 // value, could be object
                 var childData = childSnapshot.val();
-                //console.log(childData);
-            
-                if(childSnapshot.key == 'subcategory'){
+//console.log(childSnapshot.key);
+            /*  childData.forEach(function(child) {
+                    
+                op += "<option value"+child.subcategory_id+">"+child.subcategory_name+"</option>";
+                });*/
+                if(childSnapshot.key == 'SubCategory'){
                     var t = Object.values(childData);
-                    console.log(t);
+                    //console.log(t);
+                    op = "<option value=''>Nothing selected</option>";
                     $.map(t, function(value, index) {
                        // console.log(value.subcategory_id);
                         op += "<option value="+value.subcategory_id+">"+value.subcategory_name+"</option>";
                     });
-    
-                        $("#subcat").find('option').remove().end().append(op)
-    
+    //  console.log(op);
+                        $("#subcat").html(op);
+    //   $('.mdb-select').material_select('destroy'); 
+                    $('select').selectpicker('refresh');
+            }
+            if(childSnapshot.key == 'Bundle'){
+                //console.log( Object.values(childData));
+                var t = Object.values(childData);
+                    console.log(t);
+                    op = "<option value=''>Nothing selected</option>";
+                    $.map(t, function(value, index) {
+                       // console.log(value.subcategory_id);
+                        op += "<option value="+value.bundle_id+">"+value.bundle_name+"</option>";
+                    });
+                        $("#bundle").html(op);
                     $('select').selectpicker('refresh');
             }
 
@@ -447,56 +523,104 @@ $("#cat").change(function(){
     });
     
 //$(".bnd").hide();
+ $.validator.addMethod("regex", function(value, element, regexpr) {          
+                 return regexpr.test(value);
+               }, "Please enter Only characters");  
     
-    $("#cat").change(function(){
-        //alert($("#cat option:selected").text());
-        var c = $("#cat option:selected").text();
-        
-        var op = "";
-        if($("#cat option:selected").text() != 'Open Dive'){
-            //alert(55);
-            $(".bnd").show();
-        }else{
-            $(".bnd").hide();
-        }
-        firebase.database().ref("/Category/"+c).on("value", function(snapshot) {
-            snapshot.forEach(function(childSnapshot) {
-                // key
-                var key = childSnapshot.key;
-                // value, could be object
-                var childData = childSnapshot.val();
-                //console.log(childData);
-            /*  childData.forEach(function(child) {
-                    
-                op += "<option value"+child.subcategory_id+">"+child.subcategory_name+"</option>";
-                });*/
-                if(childSnapshot.key == 'SubCategory'){
-                    var t = Object.values(childData);
-                    //console.log(t);
-                    op += "<option value=''>Select Subcategory</option>";
-                    $.map(t, function(value, index) {
-                       // console.log(value.subcategory_id);
-                        op += "<option value="+value.subcategory_id+">"+value.subcategory_name+"</option>";
-                    });
-    //  console.log(op);
-                        $("#subcat").html(op);
-    //   $('.mdb-select').material_select('destroy'); 
-                    $('select').selectpicker('refresh');
-            }
+   $('#form_validation_session').validate({
 
-                // Do what you want with these key/values here*/
+                rules: {
+                    'name': {
+                        required: true,
+                        minlength: 6,
+                        maxlength: 50,
+                        //alphanumeric : ture,
+                        regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
+                    }, 
+                    'description': {
+                        required: true
+                    }, 
+                    'session': {
+                        required: true,
+                        accept: "image/jpeg, image/png,image/gif"
+                    }, 
+                    'meditaion': {
+                        required: true,
+                        accept: "audio/aac, audio/ogg,audio/mp3,audio/mpeg,audio/mpeg3"
+                    },
+                    'meditaion1': {
+                        required: function() {
+                              return $("#cat option:selected").text() != 'Open Dive';
+                        },
+                        accept: "audio/aac, audio/ogg,audio/mp3,audio/mpeg,audio/mpeg3"
+                    }, 
+                    'meditaion2': {
+                        required: function() {
+                              return $("#cat option:selected").text() != 'Open Dive';
+                        },
+                        accept: "audio/aac, audio/ogg,audio/mp3,audio/mpeg,audio/mpeg3"
+                    }, 
+                    'cat':{
+                        required:true
+                    },
+                    'bundle':{
+                         required: function() {
+                              return $("#cat option:selected").text() != 'Open Dive';
+                        }
+                    },
+                    'subcat':{
+                         required: function() {
+                              return $("#cat option:selected").text() == 'Deep Dive';
+                        }
+                    },
+                },
+                messages: {
+                  name: {
+                    required:"Please enter your Session Name",
+                    minlength: "Enter name must be at least 6 characters long",
+                    maxlength: "Enter name maximum 15 characters allow"
+                    },
+                  meditaion: {
+                    required:"Please Select Any audio",
+                    accept: "Select only mp3,ogg,mpeg file formate only!!"
+                    },
+                  session: {
+                    required:"Please Select Any image",
+                    accept: "Select only jpeg,png,gif file formate only!!"
+                    },
+                  description:"Please enter Description",
+                  cat:"Please Select category",
+                 bundle:"Please Select Bundle",
+                  subcat:"Please Select Subcategory",
+                    
+                  
+                },
+                highlight: function (input) {
+                    $(input).parents('.form-line').addClass('error');
+                },
+                unhighlight: function (input) {
+                    $(input).parents('.form-line').removeClass('error');
+                },
+                errorPlacement: function (error, element) {
+                    $(element).parents('.form-group').append(error);
+                },
+                submitHandler: function(form) {
+                },
+                success: function(form){
+                                        
+                }
+                
             });
-        });
-    });
-    
+                
     
     $("#subcat").change(function(){
         
         //alert($("#cat option:selected").text());
         var c = $("#cat option:selected").text();
         var s = $("#subcat option:selected").text();
+        var sid = $("#subcat option:selected").val();
         
-        var op = "";
+        var op = "<option selected='selected' value=''>Select bundle</option>";
     /*  if($("#cat option:selected").text() != 'Open Dive'){
             alert(55);
             $(".bnd").show();
@@ -514,17 +638,22 @@ $("#cat").change(function(){
                     
                 op += "<option value"+child.subcategory_id+">"+child.subcategory_name+"</option>";
                 });*/
-                if(childSnapshot.key == 'SubCategory'){
+               if(childSnapshot.key == 'SubCategory'){
                     var t = Object.values(childData);
-                    $.map(t, function(value, index) {
-                        if(childData.Bundle != ''){
+                    var key = Object.keys(childData);
+                    $.map(childData, function(value, index) {
+                        if(childData.Bundle != '' && index == sid){
                             
                         var B = Object.values(childData);
+                        //var Bb = Object.values(B.Bundle);
+                    console.log(B);
                             $.map(B, function(value, index) {
                                 $.map(value.Bundle, function(value, index) {
-                                    
-                        console.log(value.bundle_name);
+                        console.log(value.bundle_category+"=="+s);
+                                 if(value.bundle_category == s){
+                                     
                                     op += "<option value="+value.bundle_id+">"+value.bundle_name+"</option>";
+                                 }   
                                 });
                                 
                         //op += "<option value="+value.subcategory_id+">"+value.subcategory_name+"</option>";
@@ -532,80 +661,22 @@ $("#cat").change(function(){
                         }
                     });
     //  console.log(op);
-                        $("#bundle").empty().append(op);
     //   $('.mdb-select').material_select('destroy'); 
-                    $('select').selectpicker('refresh');
             }
 
                 // Do what you want with these key/values here*/
             });
         });
+          $("#bundle").empty().html(op);
+                    $('select').selectpicker('refresh');
     });
+   
     
     
     $(".sessionadd").click(function(){
-
-        $('#form_validation_session').validate({
-                rules: {
-                    'name': {
-                        required: true,
-                        minlength: 6,
-                        maxlength: 15
-                    }, 
-                    'description': {
-                        required: true
-                    }, 
-                    'session': {
-                        required: true,
-                        accept: "image/jpeg, image/png,image/gif"
-                    }, 
-                    'meditaion': {
-                        required: true,
-                        accept: "audio/aac, audio/ogg,audio/mp3,audio/mpeg,audio/mpeg3"
-                    }, 
-                    'cat':{
-                        required:true
-                    },
-                    // 'bundle':{
-                    //     required:true
-                    // },
-                    // 'subcat':{
-                    //     required:true
-                    // },
-                    
-                    
-                },
-                messages: {
-                  name: {
-                    required:"Please enter your Session Name",
-                    minlength: "Enter name must be at least 6 characters long",
-                    maxlength: "Enter name maximum 15 characters allow"
-                    },
-                  meditaion: {
-                    required:"Please Select Any audio",
-                    accept: "Select only mp3,ogg,mpeg file formate only!!"
-                    },
-                  session: {
-                    required:"Please Select Any image",
-                    accept: "Select only jpeg,png,gif file formate only!!"
-                    },
-                 // bundle:"Please Select Bundle",
-                  description:"Please enter Description",
-                  cat:"Please Select category",
-                  //subcat:"Please Select Subcategory",
-                    
-                  
-                },
-                highlight: function (input) {
-                    $(input).parents('.form-line').addClass('error');
-                },
-                unhighlight: function (input) {
-                    $(input).parents('.form-line').removeClass('error');
-                },
-                errorPlacement: function (error, element) {
-                    $(element).parents('.form-group').append(error);
-                },
-                submitHandler: function(form) {
+        var temp=$('#form_validation_session').valid();
+        if(temp==true){
+           
                 var catnm = $("#cat option:selected").text();
                 var catid = $("#cat").val();
                 var scatid = $("#subcat").val();
@@ -619,6 +690,7 @@ $("#cat").change(function(){
                  var simg = $("#simgurl").val();
             //   var surl = $("#surl").val();
                  var murl = $("#murl").val();
+                 var mtime = $("#mtime").val();
                  var subname = $("#subname").val();
                  if(catnm == 'Deep Dive'){
                      var firebaseRef = firebase.database().ref("Category/"+catnm+"/SubCategory/"+scatid+"/Bundle/"+bundle+"/Session");
@@ -630,6 +702,7 @@ $("#cat").change(function(){
                     var firebaseRef = firebase.database().ref("Category/"+catnm+"/Session");
                  }
                 var audio = murl.split(',');
+                var audiotime = mtime.split(',');
         //console.log(array);
                 //var catRef = firebaseRef.child("category").child(catnm).child("session");
 
@@ -637,32 +710,91 @@ $("#cat").change(function(){
 
                 // Get the unique key generated by push()
                 var sid = pushedCatRef.key;
-        //alert(sid);
+       // alert(sid);
                 firebaseRef.child(sid).set({
                     session_name: sessionnm,
                     session_description: desc,
                     session_img: simg,
                 //  outro_audio: surl,
                     meditation_audio: audio,
-                    bundle_id: bundle,
+                    meditation_audio_time: audiotime,
+                    budle_id: bundle,
                     session_id: sid
                 });
-                //alert(cimg);
                 if(pushedCatRef){
                
-                    swal("Inserted!","Session has been Inserted.","success");
-                     $('#form_validation_session')[0].reset();
-                     $('select').selectpicker('refresh');
+                   swal({
+                        title: "Inserted!",
+                        text: "Session has been Inserted.",
+                        html:true,
+                        type: "success",
+                        showCancelButton: false,
+                        confirmButtonColor: "#86CCEB",
+                        confirmButtonText: "OK",
+                        closeOnConfirm: false
+                    }, function () {
+                        window.setTimeout(function() {
+                        
+                          window.location.href = "session_list.php";
+                        }, 1000);
+                    });
                     
                 }
-               // window.location = "session_list.php";
-                
-                }
-            });
+                //alert(cimg);
+                //alert(55);
+           
+        }
     });
     
 });
+
+
     </script>
+<!--  <script type="text/javascript">
+        function Upload() {
+            //Get reference of FileUpload.
+            var fileUpload = document.getElementById("sessionimage");
+         
+            //Check whether the file is valid Image.
+            var regex = new RegExp("([a-zA-Z0-9\s_\\.\-:])+(.jpg|.png|.gif)$");
+            if (regex.test(fileUpload.value.toLowerCase())) {
+         
+                //Check whether HTML5 is supported.
+                if (typeof (fileUpload.files) != "undefined") {
+                    //Initiate the FileReader object.
+                    var reader = new FileReader();
+                    //Read the contents of Image File.
+                    reader.readAsDataURL(fileUpload.files[0]);
+                    reader.onload = function (e) {
+                        //Initiate the JavaScript Image object.
+                        var image = new Image();
+         
+                        //Set the Base64 string return from FileReader as source.
+                        image.src = e.target.result;
+                               
+                        //Validate the File Height and Width.
+                        image.onload = function () {
+                            var height = this.height;
+                            var width = this.width;
+                            if (height == 1080 && width == 1920) {
+                                alert("Sucess");
+                                return false;
+                            }
+                           alert("fail");
+                            return true;
+                        };
+         
+                    }
+                } else {
+                    //alert("This browser does not support HTML5.");
+                    return false;
+                }
+            } else {
+                //alert("Please select a valid Image file.");
+                return false;
+            }
+        }
+</script> -->
 </body>
 
 </html>

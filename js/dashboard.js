@@ -38,6 +38,7 @@ console.log(childData);
 
 
 
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (!user) {
           window.location.href = "http://34.215.40.163/login.php";
@@ -53,10 +54,16 @@ firebase.auth().onAuthStateChanged(function(user) {
 				var childData = childSnapshot.val();
 				if(key == 'last_free_conversation_id'){
 					day = childData+1;
+					if(day!=11){
+						
 					$(".day").html(childData+1);
+					}else{
+					$(".day").html(childData);
+
+					}
 					//window.localStorage.setItem('content', day);
 					window.localStorage.setItem('content', day);
-				console.log("g"+childData);
+					console.log("g"+childData);
 				}				
 				// Do what you want with these key/values here*/
 				
@@ -86,6 +93,7 @@ firebase.database().ref("Category").orderByChild("category_id").limitToLast(3).o
 	var c = [];
 	var session = [];
 	var ht ='';
+	var desc = '';
 			snapshot.forEach(function(childSnapshot) {
 				// key
 				var key = childSnapshot.key;
@@ -99,7 +107,7 @@ firebase.database().ref("Category").orderByChild("category_id").limitToLast(3).o
 				//console.log(childSnapshot.getPriority());
                 console.log(childSnapshot.key);
 				c.push(childSnapshot.key);
-				var ht = '<div class="row Margins"><p class="MainMenu1 "><span class="i">'+childSnapshot.key+'</span>&nbsp;&nbsp;<a href="#" class="learnMorestyle"><i>LEARN MORE</i></a></p></div><br><div class="container text-center cardContainers"><div class="row Margins text-center">';
+				var ht = '<div class="row Margins"><p class="MainMenu1 "><span class="i">'+childSnapshot.key+'</span>&nbsp;&nbsp;<a href="#" class="learnMorestyle" style="outline:none;" data-toggle="modal" data-target="#exampleModalCenter2"><i>LEARN MORE</i></a></p></div><br><div class="container text-center cardContainers"><div class="row Margins text-center">';
 				if(childSnapshot.key == 'Open Dive'){
 					session.push(childData.Session);
 					$.map(childData.Session, function(value, index) {
@@ -107,16 +115,16 @@ firebase.database().ref("Category").orderByChild("category_id").limitToLast(3).o
 						//console.log(value.session_name);
 						
 						if(i==window.localStorage.getItem('content')){
-							$(".bg").css('background', 'url('+value.session_img+') '); /*Dynamic image from database*/
+							//$(".bg").css('background', 'url('+value.session_img+') '); /*Dynamic image from database*/
 
-							$(".conv").html(value.session_name);
+							//$(".conv").html(value.session_name);
 						}
 						if(i>3){
-						ht +='<div class="col-md-4 col-xs-6 boxStyle hiddens" style=" background-image: url('+value.session_img+');"><p class="Center" style="color:#fff;">'+value.session_name+'</p></div>';
+						ht +='<div class="col-md-4 col-xs-6 boxStyle hiddens" style=" background-image: url('+value.session_img+'); background-size:cover;"><p class="Center" style="color:#fff;">'+value.session_name+'</p></div>';
 
 						}else{
 							chkS = true;
-						ht +='<div class="col-md-4 col-xs-6 boxStyle" style=" background-image: url('+value.session_img+');"><p class="Center">'+value.session_name+'</p></div>';
+						ht +='<div class="col-md-4 col-xs-6 boxStyle" style=" background-image: url('+value.session_img+'); background-size:cover;"><p class="Center">'+value.session_name+'</p></div>';
 						}
 					i++;
 					});
@@ -131,11 +139,11 @@ firebase.database().ref("Category").orderByChild("category_id").limitToLast(3).o
 							//$(".conv").html(value.session_name);
 						}
 						if(i>6){
-						ht = ht +'<div class="col-md-4 col-xs-6 boxStyle hiddens1" style=" background-image: url('+value.bundle_img+');"><p class="Center">'+value.bundle_name+'</p></div>';
+						ht = ht +'<div class="col-md-4 col-xs-6 boxStyle hiddens1" style=" background-image: url('+value.bundle_img+'); background-size:cover;"><p class="Center">'+value.bundle_name+'</p></div>';
 
 						}else{
 							chkBnd = true;
-						ht = ht + '<div class="col-md-4 col-xs-6 boxStyle" style=" background-image: url('+value.bundle_img+');"><p class="Center">'+value.bundle_name+'</p></div>';
+						ht = ht + '<div class="col-md-4 col-xs-6 boxStyle" style=" background-image: url('+value.bundle_img+'); background-size:cover;"><p class="Center">'+value.bundle_name+'</p></div>';
 						}
 					i++;
 					});
@@ -152,11 +160,11 @@ firebase.database().ref("Category").orderByChild("category_id").limitToLast(3).o
 						}
 						if(i>6){
 							chkSub = true;
-						ht = ht +'<div class="col-md-4 col-xs-6 boxStyle hiddens2" style=" background-image: url('+value.subcategory_img+');"><p class="Center">'+value.subcategory_name+'</p></div>';
+						ht = ht +'<div class="col-md-4 col-xs-6 boxStyle hiddens2" style=" background-image: url('+value.subcategory_img+'); background-size:cover;"><p class="Center">'+value.subcategory_name+'</p></div>';
 
 						}else{
 							
-						ht = ht + '<div class="col-md-4 col-xs-6 boxStyle" style=" background-image: url('+value.subcategory_img+');"><p class="Center">'+value.subcategory_name+'</p></div>';
+						ht = ht + '<div class="col-md-4 col-xs-6 boxStyle" style=" background-image: url('+value.subcategory_img+'); background-size:cover;"><p class="Center">'+value.subcategory_name+'</p></div>';
 						}
 					i++;
 
@@ -201,6 +209,21 @@ firebase.database().ref("Category").orderByChild("category_id").limitToLast(3).o
 
 				//				$(".cat").html(ht);
 				window.localStorage.setItem('session',JSON.stringify(session));
+
+				$(".learnMorestyle").click(function(){
+								if(key == $(this).prev().text()){
+									desc = childData.category_description;
+								}
+							});
+			});
+
+
+				$(".learnMorestyle").click(function(){
+				var cat = $(this).prev().text();
+				$(".modal-content .modal-body .modal-title").html(cat);
+				$(".modal-body p").html(desc);
+				//$("#exampleModalCenter2").modal('show');
+				console.log(desc);
 			});
 			$(".i").each(function(index,value){
 //console.log(c[index]);
@@ -235,7 +258,7 @@ for (i in storedNames)
 
 	if(conversation == window.localStorage.getItem('content')){
 	$(".conv").html(storedNames[i][j].session_name);
-	$(".modal-body p").html(storedNames[i][j].session_description)
+	$(".modal-body h2").html(storedNames[i][j].session_name)
 console.log("p"+storedNames[i][j].meditation_audio[0]);
 console.log($(".modal-body p").html());
 }
@@ -250,7 +273,13 @@ conversation++;
 console.log("d"+$(".modal-body").html());	
 //console.log(window.localStorage.getItem('content'));
 $(".bannerButton").click(function(){
+	var user = JSON.parse(window.localStorage.getItem('user'));
+		if(day>8 && day<=10){
+			 $('#exampleModalCenter').modal('show');
+		}else if(day<=8){
 		var url = "http://34.215.40.163/player.php";
 		window.location.href = url;
-
+		}else if(day>10 && user.membership_type == "Free"){
+			window.location = "subscription.php";
+		}
 	});

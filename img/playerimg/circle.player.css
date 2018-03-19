@@ -95,7 +95,7 @@
 
 .cp-controls {
 	margin:0;
-	padding:26px;
+	padding:26px; margin-left:3px;
 }
 
 .cp-controls li{

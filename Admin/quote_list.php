@@ -80,6 +80,7 @@ return $nodeGetContent;
   };*/
   firebase.initializeApp(config);
         </script>
+               <script type="text/javascript" src="js/check_login.js"></script>
 </head>
 
 <body class="theme-red">

@@ -95,7 +95,7 @@ button:focus{outline: none;}
 										<p id="p2"  class="p1" style="text-align: left;"></p>
 									  </div>
 									  <div class="form-group-log" id ="login_div">
-									    <input type="password"  name="password" class="form-control-log" id="password"  name="password" placeholder="Password"><span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password" style="margin-left: 86%;  position: relative;
+									    <input type="password"  name="password" class="form-control-log" id="password"  name="password" placeholder="Password"><span toggle="#password" class="fa fa-fw fa-eye-slash field-icon toggle-password" style="margin-left: 86%;  position: relative;
     									bottom: 31px;"></span>
 									    <p id="p3" class="p1" style="margin-top: -12px; text-align: left;"></p>     
 									  </div>
@@ -148,11 +148,11 @@ button:focus{outline: none;}
 		  }
 		});
 
-$("#log").keypress(function(e) {
+$("form").keypress(function(e) {
 			if(e.which == 13) {
 			//	alert('You pressed enter!');
 			//$("#go").click();
-			loginValidation();
+		login_user();
 			}
 		});
 

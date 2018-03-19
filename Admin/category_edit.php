@@ -104,7 +104,24 @@ return $nodeGetContent;
         <script src="js/check_login.js "></script>
             <script type="text/javascript" src="../register_user.js"></script>
 <!--            <script type="text/javascript" src="../js/dashboard.js"></script>-->
+<style type="text/css">
+    .flex-style{
+ display: flex;
+}
 
+.input-file{
+ opacity: 0;
+ margin-left: -40px;
+ width: 40px;
+ height: 45px;
+}
+
+.icon{
+ width: 48px;
+ height: 45px;
+ background:url(images/upload-black.png); 
+}
+</style>
 </head>
 
 <body class="theme-red">
@@ -188,10 +205,17 @@ return $nodeGetContent;
                                     </div>  
                                <div class="form-group form-float">
                                     <div class="form-line error">
+                                         <label class="form-label">Image</label>
+                                         </br>
+                                        </br>
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                                                <input name="file" id="catimage" type="file" onchange="uplaodfile()" accept="image/*" />
+                                                <div class='flex-style'>
+                                                <div class='icon'></div>
+                                                <input name="file" class="check-image-size input-file" id="catimage" type="file" onchange="uplaodfile()" accept="image/*" />
+                                                </div>
+                                                <br>
                                                 <img src="<?php echo $category["category_img"];?>" id="oldimg" width="50" height="50">
                                                 <input type="hidden" id="imgurl">
                                         <!--    </div> -->
@@ -277,8 +301,26 @@ return $nodeGetContent;
          <!-- <script src="js/pages/forms/form-validation.js"></script> -->
 
     <!-- Custom Js -->
-    <script src="js/admin.js"></script>
+    <script src="js/jquery.checkImageSize.js"></script>
+    <script>
+$("input[type=file]").checkImageSize();
+</script>
+<script type="text/javascript">
 
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+    <script src="js/admin.js"></script>
+<script type="text/javascript" src="js/upload.js"></script>
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script type="text/javascript">
@@ -317,7 +359,9 @@ return $nodeGetContent;
             'copy', 'csv', 'excel', 'pdf', 'print'
         ]
     });
-    
+    $.validator.addMethod("regex", function(value, element, regexpr) {          
+                 return regexpr.test(value);
+               }, "Please enter Only characters"); 
     $(".catadd").click(function(){
 
         $('#form_validation_cat').validate({
@@ -325,7 +369,8 @@ return $nodeGetContent;
             'name': {
                 required: true,
                 minlength: 6,
-                maxlength: 15
+                maxlength: 15,
+                regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
             }, 
             'description': {
                 required: true
@@ -432,9 +477,10 @@ return $nodeGetContent;
           data.session_subcription_type=subname;
           var update = {};
           update[oldc] = null;
-          update[catnm] = data;
+          update[oldc] = data;
           
           return booksRef.update(update);
+        
 
         });
         swal({

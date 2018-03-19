@@ -2,13 +2,15 @@
 <html style="height: 100%">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="css/dashboard.css">
 <link rel="stylesheet" href="css/dashheader.css">
 <link rel="stylesheet" href="css/footercss.css" type="text/css" >
+<link rel="stylesheet" href="css/sweetalert.css" type="text/css" >
+<script src="js/sweetalert.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
 <script>
   // Initialize Firebase
@@ -42,6 +44,12 @@
   border-radius: .25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+.modal-footer1 {
+    padding: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+
 </style>
 </head>
 <body>
@@ -58,7 +66,6 @@ $fb = Firebase::initialize(FIREBASE_URL, FIREBASE_SECRET);
 
 $user = get("DailyQuotes/qoute_description");
 
-
 function get($path){
 $fb = Firebase::initialize(FIREBASE_URL, FIREBASE_SECRET);
 
@@ -74,121 +81,164 @@ return $nodeGetContent;
  include 'dashbordHeader.php'; ?>
 <!-- <div class="loader"></div> -->
     <div class="mainBanner">
-	  <center>
-	    <div class="bannerCenter">
-	      <p class="bannerDay">Day <span class="day"></span> of 10</p>
-		  <p class="bannerHeader">Intro Program</p>
-		  <button class="bannerButton" style="outline:none; font-weight: 400;" type="button"><i class="fa fa-play" aria-hidden="true"></i> &nbsp; B E G I N</button>
-		</div>
-	  </center>
-	</div>
-	
-	<br>
-	<br>
-	<div class="card Margins startCard"  width="100%">
-	  <center>
+    <center>
+      <div class="bannerCenter">
+        <p class="bannerDay">Day <span class="day"></span> of 10</p>
+      <p class="bannerHeader">Intro Program</p>
+      <button class="bannerButton" id="close_account"  style="outline:none; font-weight: 400;" type="button"><i class="fa fa-play" aria-hidden="true"></i> &nbsp; B E G I N</button>
+
+    </div>
+    </center>
+  </div>
+  
+  <br>
+  <br>
+  <div class="card Margins startCard"  width="100%">
+    <center>
         <div class="card-body" width="100%">
           <h4 class="cardtitles" style="letter-spacing: 3px;">WORDS TO SIT WITH</h4>
-		  <hr />
+      <hr />
           <p class="cardtexts"></p>
         </div>
-		</center>
+    </center>
     </div>
-	<!--<div class="row Margins">
-	  <p class="MainMenu">QUICK DIVE&nbsp;&nbsp;<a href="#" class="learnMorestyle"><i>LEARN MORE</i></a></p>
-	</div>
-	
-	<br>-->
-	
+  <!--<div class="row Margins">
+    <p class="MainMenu">QUICK DIVE&nbsp;&nbsp;<a href="#" class="learnMorestyle"><i>LEARN MORE</i></a></p>
+  </div>
+  
+  <br>-->
+<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <h1 class="modal-title Modalcat" id="exampleModalLongTitle" style="color: #34495e;">Title</h1>
+        <br>
+       <p style="color: #727272;">Description</p>
 
+          <a class="btn1 mt-2 mx-1 " data-dismiss="modal" style="background-color: #7DD3D5 !important; outline: none !important; letter-spacing: 3; color:#FFF;  border-color:  #7DD3D5 !important; text-decoration: none;">GOT IT</a>
+      </div>
+     
+      
+    
+  </div>
+</div>
+</div>
+
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header title_center">
+        <h4 class="modal-title" id="exampleModalLongTitle" style="color: #34495e;">10 day Intro program</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+       <h5 style="color: #727272;">Purchase for a subscription or continue and check out the exciting bundles and activities that can be unlocked when subscribing to the full Dive Thru account.</h5>
+      </div>
+      <div class="modal-footer1 text-center">
+        <a href="http://34.215.40.163/player.php" class="btn1 mt-2 mx-1 " style="background-color: #7DD3D5 !important; outline: none !important; color:#FFF;  border-color:  #7DD3D5 !important; text-decoration: none;">Continue with free program</a>
+        <button type="button" class="btn1  mt-2 mx-1 " style="color:#FFF; background-color: #7DD3D5 !important; outline: none !important; border-color:  #7DD3D5 !important;">Purchase for a subscription</button>
+    </div>
+  </div>
+</div>
+</div>
 <div class="cat container-fluid">    
 <!-- <div class="container text-center cardContainers">
     <div class="row Margins text-center">
      <div class="col-md-4 col-xs-6 boxStyle" style="background-color:#aaa;">
-	    <p class="Center">Having A Bad Day</p>
+      <p class="Center">Having A Bad Day</p>
       </div>
       <div class="col-md-4 col-xs-4 boxStyle" style="background-color:#bbb;">
-	  <p class="Center">Overcome by Anxiety</p>
+    <p class="Center">Overcome by Anxiety</p>
       </div>
       <div class="col-md-4 col-xs-4 boxStyle" style="background-color:#ccc;">
-	  <p class="Center">Consumed By Insecurities</p>
+    <p class="Center">Consumed By Insecurities</p>
       </div>
-	  <div class="col-md-4 col-xs-4 boxStyle hiddens" style="background-color:#ccc;">
-	  <p class="Center">Having A Bad Day</p>
+    <div class="col-md-4 col-xs-4 boxStyle hiddens" style="background-color:#ccc;">
+    <p class="Center">Having A Bad Day</p>
       </div>
       <div class="col-md-4 col-xs-4 boxStyle hiddens" style="background-color:#aaa;">
-	  <p class="Center">Having A Bad Day</p>
+    <p class="Center">Having A Bad Day</p>
       </div>
       <div class="col-md-4 col-xs-4 boxStyle hiddens" style="background-color:#bbb;">
-	  <p class="Center">Having A Bad Day</p>
+    <p class="Center">Having A Bad Day</p>
       </div>
-	  <br>
-	  <p class="exploreMore">EXPLORE MORE</p> 
+    <br>
+    <p class="exploreMore">EXPLORE MORE</p> 
     </div>
 </div>
 
-		<div class="row Margins">
-	  <p class="MainMenu">DEEP DIVE&nbsp;&nbsp;<a href="#" class="learnMorestyle"><i>LEARN MORE</i></a></p>
-	</div>
-	
-	<br>
-	     
+    <div class="row Margins">
+    <p class="MainMenu">DEEP DIVE&nbsp;&nbsp;<a href="#" class="learnMorestyle"><i>LEARN MORE</i></a></p>
+  </div>
+  
+  <br>
+       
 <div class="container text-center cardContainers">
     <div class="row Margins text-center">
     <!--  <div class="col-md-4 boxStyle" style="background-color:#aaa;">
-	    <p class="Center">Having A Bad Day</p>
+      <p class="Center">Having A Bad Day</p>
       </div>
       <div class="col-md-4 boxStyle" style="background-color:#bbb;">
-	  <p class="Center">Overcome by Anxiety</p>
+    <p class="Center">Overcome by Anxiety</p>
       </div>
       <div class="col-md-4 boxStyle" style="background-color:#ccc;">
-	  <p class="Center">Consumed By Insecurities</p>
+    <p class="Center">Consumed By Insecurities</p>
       </div>
-	  <div class="col-md-4 boxStyle hiddens1" style="background-color:#ccc;">
-	  <p class="Center">Having A Bad Day</p>
+    <div class="col-md-4 boxStyle hiddens1" style="background-color:#ccc;">
+    <p class="Center">Having A Bad Day</p>
       </div>
       <div class="col-md-4 boxStyle hiddens1" style="background-color:#aaa;">
-	  <p class="Center">Having A Bad Day</p>
+    <p class="Center">Having A Bad Day</p>
       </div>
       <div class="col-md-4 boxStyle hiddens1" style="background-color:#bbb;">
-	  <p class="Center">Having A Bad Day</p>
+    <p class="Center">Having A Bad Day</p>
       </div>
-	  <br>
-	  <p class="exploreMore1">EXPLORE MORE</p>  
+    <br>
+    <p class="exploreMore1">EXPLORE MORE</p>  
     </div>
 </div>
 
-		<div class="row Margins">
-	  <p class="MainMenu">OPEN DIVE&nbsp;&nbsp;<a href="#" class="learnMorestyle"><i>LEARN MORE</i></a></p>
-	</div>
-	
-	<br>
-	     
+    <div class="row Margins">
+    <p class="MainMenu">OPEN DIVE&nbsp;&nbsp;<a href="#" class="learnMorestyle"><i>LEARN MORE</i></a></p>
+  </div>
+  
+  <br>
+       
 <div class="container text-center cardContainers">
     <div class="row Margins text-center">
       <div class="col-md-4 boxStyle" style="background-color:#aaa;">
-	    <p class="Center">Having A Bad Day</p>
+      <p class="Center">Having A Bad Day</p>
       </div>
       <div class="col-md-4 boxStyle" style="background-color:#bbb;">
-	  <p class="Center">Overcome by Anxiety</p>
+    <p class="Center">Overcome by Anxiety</p>
       </div>
       <div class="col-md-4 boxStyle" style="background-color:#ccc;">
-	  <p class="Center">Consumed By Insecurities</p>
+    <p class="Center">Consumed By Insecurities</p>
       </div>
-	  <div class="col-md-4 boxStyle hiddens2" style="background-color:#ccc;">
-	  <p class="Center">Having A Bad Day</p>
+    <div class="col-md-4 boxStyle hiddens2" style="background-color:#ccc;">
+    <p class="Center">Having A Bad Day</p>
       </div>
       <div class="col-md-4 boxStyle hiddens2" style="background-color:#aaa;">
-	  <p class="Center">Having A Bad Day</p>
+    <p class="Center">Having A Bad Day</p>
       </div>
       <div class="col-md-4 boxStyle hiddens2" style="background-color:#bbb;">
-	  <p class="Center">Having A Bad Day</p>
+    <p class="Center">Having A Bad Day</p>
       </div>
-	  <br>
-	  <p class="exploreMore2">EXPLORE MORE</p> 
+    <br>
+    <p class="exploreMore2">EXPLORE MORE</p> 
     </div>-->
 </div>
 </div>
+
+<script type="text/javascript">
+   
+    $(window).load(function(){        
+               $('#exampleModalCenter').modal('show');
+              });
+</script>
 <!---<div class="container-fluid mt-5"><div class="box-slider">
 
   
@@ -242,10 +292,10 @@ return $nodeGetContent;
 </div>
 ------->
 <div class="bottomCard" width="100%"> 
-	  <center>
+    <center>
           <p style="color: #34495e; ">Unlock the Dive thru Library</p>
-		  <a href="#" class="bottomCardButton " style="color: #FFF; text-decoration: none;">SUBSCRIBE NOW</a>
-	  </center>
+      <a href="#" class="bottomCardButton " style="color: #FFF; text-decoration: none;">SUBSCRIBE NOW</a>
+    </center>
 </div>
 
 <?php include 'footer.php'; ?>
@@ -257,19 +307,19 @@ return $nodeGetContent;
 $(document).ready(function(){
     $(".exploreMore").click(function(){
         $(".hiddens").show();
-		$(".exploreMore").hide();
+    $(".exploreMore").hide();
     });
 });
 $(document).ready(function(){
     $(".exploreMore1").click(function(){
         $(".hiddens1").show();
-		$(".exploreMore1").hide();
+    $(".exploreMore1").hide();
     });
 });
 $(document).ready(function(){
     $(".exploreMore2").click(function(){
         $(".hiddens2").show();
-		$(".exploreMore2").hide();
+    $(".exploreMore2").hide();
     });
 });
 </script>

@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Sign In | Bootstrap Based Admin Template - Material Design</title>
+    <title>DiveThru | Admin Login</title>
     <!-- Favicon-->
     <link rel="icon" href="../../favicon.ico" type="image/x-icon">
 
@@ -59,16 +59,20 @@
                             <i class="material-icons">person</i>
                         </span>
                         <div class="form-line">
-                            <input type="email" class="form-control" name="email" id="email" placeholder="Email" required autofocus>
+                            <input type="test" class="form-control" name="email" id="email" onchange="inputemail();" placeholder="Email"  autofocus >
+                            
                         </div>
+                        <p id="p1" class="p1" style="font-size: 14px;color: red;"></p>
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">
                             <i class="material-icons">lock</i>
                         </span>
                         <div class="form-line">
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+                            <input type="password" class="form-control" name="password" onchange="inputpassword();" id="password" placeholder="Password" >
+                            
                         </div>
+                        <p id="p2" class="p1" style="font-size: 14px;color: red;"></p>
                     </div>
                     <div class="row">
                        <!-- <div class="col-xs-8 p-t-5">
@@ -78,7 +82,7 @@
                             <p id="error" style="color: red; padding: 0% 1% 0% 5%;"></p>
 						
                         <div class="col-xs-4">
-                            <button class="btn btn-block bg-pink waves-effect" id="Button" onclick="signin_admin();" type="button">SIGN IN</button>
+                            <button class="btn btn-block bg-pink waves-effect" id="Button" onclick="btnclick();" type="button">SIGN IN</button>
                         </div>
                     </div>
                    <!-- <div class="row m-t-15 m-b--20">
@@ -109,6 +113,66 @@
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
     <script src="js/pages/examples/sign-in.js"></script>
+
+    <script type="text/javascript">
+        $("form").keypress(function(e) {
+            if(e.which == 13) {
+            //  alert('You pressed enter!');
+            //$("#go").click();
+                signin_admin();
+            }
+        });
+       function inputemail() {
+
+            var email = document.getElementById('email').value;
+
+            if(email !="")
+            {
+
+
+                var emailExp =  /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+               
+               
+               if (email.match(emailExp)) {
+                    document.getElementById('p1').innerText = "";
+                return true;
+                } else {
+                document.getElementById('p1').innerText = " Please enter a valid email address"; // This segment displays the validation rule for email.
+                document.getElementById('email').focus();
+                return false;
+                }
+            }
+            else{
+                document.getElementById('p1').innerText = "Please enter email id";
+                return false;
+            }
+       }
+       function inputpassword() {
+
+            var password = document.getElementById('password').value;
+
+            if(password !="")
+            {
+               
+                document.getElementById('p2').innerText = "";
+                return true;
+               
+            }
+            else{
+                document.getElementById('p2').innerText = "Please enter Password";
+                return false;
+            }
+       }
+
+       function btnclick() {
+            var chk=inputemail();
+            var chk1=inputpassword();
+            if(chk==true && chk1==true){
+                signin_admin();
+            }
+           
+       }
+    </script>
 </body>
 
 </html>

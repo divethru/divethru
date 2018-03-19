@@ -124,10 +124,13 @@ console.log(conversation+'=='+ window.localStorage.getItem('content')+'='+stored
 		 // var vid = document.getElementById("jp_audio_1");
 			var db = firebase.database();
 			db.ref("Users/"+user.user_id+"/halted").set(0.0); // Update lalted time on pause
-
+			//if((user.last_free_conversation_id+1)!=10 && user.membership_type == "Free"){	
             db.ref("Users/"+user.user_id+"/last_free_conversation_id").set(user.last_free_conversation_id + 1);
-	  }); 
-	  
+			//}
+ 
+
+    }); 
+    
 	  /* Audio ended Event end*/
 	  
 	  /* Audio Time Event Start*/
@@ -154,8 +157,8 @@ console.log(conversation+'=='+ window.localStorage.getItem('content')+'='+stored
  
 <div class="row pad" style="    height: 5px;">
   <div class="col-10 col-sm-11 icon" style="padding-left:0;">
-    <img class="bgicon" src="img/ic_reminder_w@3x.png" />
-  <a data-toggle="modal" data-target="#myModal">
+   <!--  <img class="bgicon" src="img/ic_reminder_w@3x.png" /> -->
+  <a data-toggle="modal" data-target="#exampleModalCenter2">
     <img  class="bgicon" src="img/ic_info@3x.png" />
   </a>  
   </div>
@@ -185,8 +188,8 @@ console.log(conversation+'=='+ window.localStorage.getItem('content')+'='+stored
                 </div>
                 <div class="cp-circle-control"></div>
                 <ul class="cp-controls">
-                  <li><a class="cp-play" tabindex="1">play</a></li>
-                  <li><a class="cp-pause" style="display:none;" tabindex="1">pause</a></li>
+                  <li><a class="cp-play"  tabindex="1">play</a></li>
+                  <li><a class="cp-pause" style="margin-left: -4px;" style="display:none;" tabindex="1">pause</a></li>
                 </ul>
               </div>
         </div>
@@ -234,26 +237,23 @@ console.log(conversation+'=='+ window.localStorage.getItem('content')+'='+stored
 
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-size"  role="document">
-    <div class="modal-content modal-style">
-      
+<div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
       <div class="modal-body text-center">
-        
-        <h2 >Conversation</h2>
-        
-       <!-- <h4>Basic</h4>-->
-        
-        <p>
+        <h2 class="modal-title" id="exampleModalLongTitle" style="color: #34495e;"></h2>
+        <br>
+       <p style="color: #727272;">10 Day Free program</p>
 
-        </p>
-        
-        <a href="#" class="btn btn-color">DIVE THRU</a>
+          <a href="#"  data-dismiss="modal" class="btn btn-color">DIVE THRU</a>
       </div>
+     
       
-    </div>
+    
   </div>
 </div>
+</div>
+
     <script type="text/javascript" src="js/dashboard.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
 <script>

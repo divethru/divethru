@@ -119,9 +119,26 @@ foreach($session['session_audio'] as $s){
   };*/
   firebase.initializeApp(config);
         </script>
-
+       <script type="text/javascript" src="js/check_login.js"></script>
 </head>
+<style type="text/css">
+    .flex-style{
+ display: flex;
+}
 
+.input-file{
+ opacity: 0;
+ margin-left: -40px;
+ width: 40px;
+ height: 45px;
+}
+
+.icon{
+ width: 48px;
+ height: 45px;
+ background:url(images/upload-black.png); 
+}
+</style>
 <body class="theme-red">
     <!-- Page Loader -->
     <div class="page-loader-wrapper">
@@ -251,7 +268,11 @@ foreach($session['session_audio'] as $s){
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                                                <input name="file" class="form-control" id="subcatimage" type="file" onchange="uplaodsubimgfile()" accept="image/*" />
+                                                <div class='flex-style'>
+                                                <div class='icon'></div>
+                                                <input name="file" class="check-image-size form-control input-file" id="subcatimage" type="file" onchange="uplaodsubimgfile()" accept="image/*" />
+                                                </div>
+                                                <br>
                                                 <img src="<?php echo $sub['subcategory_img'];?>" id="oldsubimg" width=50 height=50>
                                                 <input type="hidden" id="subimgurl">
                                         <!--    </div> -->
@@ -310,12 +331,31 @@ foreach($session['session_audio'] as $s){
          <script src="plugins/ckeditor/plugins/placeholder/plugin.js"></script>
          <script src="plugins/jquery-validation/jquery.validate.js"></script>
          <script src="js/pages/forms/form-validation.js"></script>
-            <script type="text/javascript" src="../register_user.js"></script>
+            <script type="text/javascript" src="js/upload.js"></script>
              <!-- Bootstrap Tags Input Plugin Js -->
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
-
+ <script type="text/javascript" src="js/upload.js"></script>
     <!-- Demo Js -->
+
+      <script src="js/jquery.checkImageSize.js"></script>
+    <script>
+$("input[type=file]").checkImageSize();
+</script>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
     <script src="js/demo.js"></script>
     <script type="text/javascript">
         
@@ -347,7 +387,9 @@ $('select').selectpicker('refresh');
             'copy', 'csv', 'excel', 'pdf', 'print'
         ]
     });
-
+    $.validator.addMethod("regex", function(value, element, regexpr) {          
+                 return regexpr.test(value);
+               }, "Please enter Only characters"); 
     
     $(".subcatedit").click(function(){
 
@@ -356,7 +398,8 @@ $('select').selectpicker('refresh');
             'name': {
                 required: true,
                 minlength: 6,
-                maxlength: 15
+                maxlength: 15,
+                regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
             }, 
             'description': {
                 required: true
@@ -394,12 +437,13 @@ $('select').selectpicker('refresh');
             $(element).parents('.form-group').append(error);
         },
         submitHandler: function(form) {
-        
+       
             var subid = $("#subid").val();
                     var cname = $("#cname").val();
                     var pcat = $("#pcat option:selected").text();
             //alert(cname);
             if(cname != pcat){
+
                 /* delete from old category */
                 firebase.database().ref('Category').child(cname).child('SubCategory').child(subid).remove();
                 var desc = $('#ckeditor').val();
@@ -445,8 +489,8 @@ $('select').selectpicker('refresh');
                 }
             }else{
                 
-                        
                         var booksRef = firebase.database().ref('Category/'+cname+'/SubCategory/');
+                         
                         booksRef.child(subid).once('value').then(function(snap) {
                                      var desc = $('#ckeditor').val();
                                     var subid = $("#subid").val();
@@ -474,7 +518,7 @@ $('select').selectpicker('refresh');
                                   update[subid] = data;
                         return booksRef.update(update);
                     });
-                        booksRef.on("child_changed", function(data) {
+                       
                            swal({
                                 title: "Updated!",
                                 text: "SubCategory has been Updated.",
@@ -488,7 +532,7 @@ $('select').selectpicker('refresh');
                                 
                                   window.location.href = "subcategory_list.php";
                             });
-                        });
+                       
             }
        
             }

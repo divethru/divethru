@@ -34,7 +34,7 @@ return $nodeGetContent;
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Blank Page | Bootstrap Based Admin Template - Material Design</title>
+    <title>Edit | CMS</title>
     <!-- Favicon-->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
@@ -48,6 +48,9 @@ return $nodeGetContent;
 
     <!-- Waves Effect Css -->
     <link href="plugins/node-waves/waves.css" rel="stylesheet" />
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
 
     <!-- Animation Css -->
     <link href="plugins/animate-css/animate.css" rel="stylesheet" />
@@ -80,7 +83,8 @@ return $nodeGetContent;
   // };
   firebase.initializeApp(config);
         </script>
-            <script type="text/javascript" src="../register_user.js"></script>
+               <script type="text/javascript" src="js/check_login.js"></script>
+            <!--<script type="text/javascript" src="../register_user.js"></script>-->
 
 </head>
 
@@ -154,13 +158,14 @@ return $nodeGetContent;
                             </ul>-->
                         </div>
                         <div class="body">
-                            <form id="form_validation"  novalidate="novalidate">
+                            <form id="form_validation_cms"  novalidate="novalidate">
                                 <div class="form-group form-float">
                                     <div class="form-line error">
                                         <input type="hidden" id="cid" value="<?php echo  $cms['page_id'];?>">
                                         <input type="text" class="form-control" id="catnm" name="name" value="<?php echo $cms['page_name'];?>" required="" aria-required="true" aria-invalid="true">
                                         <label class="form-label">Name</label>
                                     </div>
+                                </div>
                               <!--  <label id="name-error" class="error" for="name">This field is required.</label></div>-->
                                 </br>
                                         
@@ -171,6 +176,8 @@ return $nodeGetContent;
                                         </br>
                                         <textarea name="description" id="tinymce" cols="30" rows="5" class="form-control no-resize" required="" aria-required="true" placeholder="Desciption"><?php echo $cms["page_description"];?></textarea>
                                     </div>
+                                    <p id="desc" class="error" style="font-size: 12px;display: block;margin-top: 5px;font-weight: normal;color: #F44336;"></p>
+                                </div>
                                 <!--<label id="description-error" class="error" for="description">This field is required.</label></div>-->
                                 </br>
                                         
@@ -199,6 +206,8 @@ return $nodeGetContent;
 
     <!-- Waves Effect Plugin Js -->
     <script src="plugins/node-waves/waves.js"></script>
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
         
     <!-- Jquery DataTable Plugin Js -->
     <script src="plugins/jquery-datatable/jquery.dataTables.js"></script>
@@ -223,6 +232,22 @@ return $nodeGetContent;
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script type="text/javascript">
+         function tinymceadd() {
+            
+        var content = tinyMCE.get('tinymce').getContent();
+            
+            if(content=="")
+            {
+                 //alert();
+                document.getElementById('desc').innerText = "Please enter Description";
+                return false;
+            }
+            else{
+               // alert(des);
+                document.getElementById('desc').innerText = "";
+                return true;
+            }
+        }
         
             function del(key){
                 
@@ -248,6 +273,12 @@ CKEDITOR.replace('ckeditor',config);
         selector: "textarea#tinymce",
         theme: "modern",
         height: 300,
+         content_css: [
+        ' https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+        '../css/contact.css',
+        '../css/footercss.css',
+        '../css/reg.css',
+        '../css/font-awesome.min.css'],
         plugins: [
             'advlist autolink lists link image charmap print preview hr anchor pagebreak',
             'searchreplace wordcount visualblocks visualchars code fullscreen',
@@ -256,7 +287,12 @@ CKEDITOR.replace('ckeditor',config);
         ],
         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
         toolbar2: 'print preview media | forecolor backcolor emoticons',
-        image_advtab: true
+        image_advtab: true,
+        init_instance_callback: function (editor) {
+            editor.on('keyup', function (e) {
+              tinymceadd();
+            });
+          }
     });
     tinymce.suffix = ".min";
     tinyMCE.baseURL = 'plugins/tinymce';
@@ -276,21 +312,83 @@ CKEDITOR.replace('ckeditor',config);
             'copy', 'csv', 'excel', 'pdf', 'print'
         ]
     });
-    
+    $.validator.addMethod("regex", function(value, element, regexpr) {          
+                 return regexpr.test(value);
+               }, "Please enter Only characters"); 
+    $('#form_validation_cms').validate({
+                rules: {
+                    'name': {
+                        required: true,
+                        minlength: 6,
+                        maxlength: 15,
+                        regex:  /^[a-zA-Z]+$/
+                    }
+                },
+                messages: {
+                  name: {
+                    required:"Please enter your CMS Name",
+                    minlength: "Enter name must be at least 6 characters long",
+                    maxlength: "Enter name maximum 15 characters allow"
+                    },
+                  
+                  description:"Please enter Description"
+                    
+                  
+                },
+                highlight: function (input) {
+                    $(input).parents('.form-line').addClass('error');
+                },
+                unhighlight: function (input) {
+                    $(input).parents('.form-line').removeClass('error');
+                },
+                errorPlacement: function (error, element) {
+                    $(element).parents('.form-group').append(error);
+                },
+                submitHandler: function(form) {
+
+                }
+            });
     $(".catadd").click(function(){
-         tinyMCE.triggerSave();
-         var desc = $('#tinymce').val();
-         var catnm = $("#catnm").val();
-         var cid = $("#cid").val();
-         var data = {
-            page_name: catnm,
-            page_description: desc,
-            page_id: cid,
-         };
-         var updates = {};
-        updates['/cms/' + cid] = data;
-    firebase.database().ref().update(updates);  
-alert("CMS Updated Sucessfully..");
+        var chk=tinymceadd();
+       
+                  
+               var temp=$('#form_validation_cms').valid();
+                if(temp==true){
+         
+                
+                if(chk==true){
+                     tinyMCE.triggerSave();
+                     var desc = $('#tinymce').val();
+                     var catnm = $("#catnm").val();
+                     var cid = $("#cid").val();
+                     var data = {
+                        page_name: catnm,
+                        page_description: desc,
+                        page_slug:catnm,
+                        page_id: cid,
+                     };
+                     var updates = {};
+                    updates['/cms/' + cid] = data;
+                    firebase.database().ref().update(updates);  
+                    
+                           swal({
+                                title: "Updated!",
+                                text: "CMS has been Updated.",
+                                html:true,
+                                type: "success",
+                                showCancelButton: false,
+                                confirmButtonColor: "#86CCEB",
+                                confirmButtonText: "OK",
+                                closeOnConfirm: false
+                            }, function () {
+                                
+                                  window.location.href = "cms_list.php";
+                            });
+                        
+                //   alert("CMS Updated Sucessfully..");
+                }
+                //alert('hi');
+            }
     });
     
       $("form").submit(function(e){

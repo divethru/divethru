@@ -163,7 +163,7 @@ return $nodeGetContent;
                                             <th>From</th>
                                             <th>Login Via</th>
                                             <th>Registered On</th>
-                                            <th>Action</th>
+                                            <!-- <th>Action</th> -->
                                         </tr>
                                     </thead>
 
@@ -186,10 +186,12 @@ return $nodeGetContent;
 												}
 												echo "<td>".date('Y-m-d',strtotime($u['registered_on']))."</td>";
 												if(isset($u['user_id'])){?>
-												<td><a href='#' onclick='del("<?php echo $u['user_id'];?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
+                                                
+												<!-- <td><a href='#' onclick='del("<?php echo $u['user_id'];?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td> -->
 												<?php	
 												}else if(!isset($u['user_id'])){?>
-												<td><a href='#' onclick='del("<?php echo $u['user_Id'];?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
+                                                
+												<!-- <td><a href='#' onclick='del("<?php //echo $u['user_Id'];?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td> -->
 												<?php
 													
 												}

@@ -47,6 +47,8 @@ return $nodeGetContent;
 
     <!-- Waves Effect Css -->
     <link href="plugins/node-waves/waves.css" rel="stylesheet" />
+    <!-- Sweetalert Css -->
+    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <!-- Animation Css -->
     <link href="plugins/animate-css/animate.css" rel="stylesheet" />
@@ -204,6 +206,8 @@ return $nodeGetContent;
 
     <!-- Waves Effect Plugin Js -->
     <script src="plugins/node-waves/waves.js"></script>
+      <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
 		
 	<!-- Jquery DataTable Plugin Js -->
     <script src="plugins/jquery-datatable/jquery.dataTables.js"></script>
@@ -225,14 +229,47 @@ return $nodeGetContent;
 		
 			function del(key){
 				
+                swal({
+                    title: "Are you sure?",
+                    text: "You will not be able to recover this imaginary file!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                }, function () {
+                        console.log(key);
+                        var user_id = key;
+                        var ref = firebase.database().ref().child('/cms/' + user_id).remove();
+                        if(ref){
+                            
+                                    //alert('This category Deleted Sucessfully');
+                                    swal({
+                                        title: "Deleted!",
+                                        text: "CMS has been deleted.",
+                                        html:true,
+                                        type: "success",
+                                        showCancelButton: false,
+                                        confirmButtonColor: "#86CCEB",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    }, function () {
+                                        
+                                         window.location.reload();
+                                    });
+                            
+                        }
+                        
+                });
 			//var ref = firebase.database().ref('Users');
-			var user_id = key;
-			var ref = firebase.database().ref().child('/cms/' + user_id).remove();
-			if(ref){
+			// var user_id = key;
+            // alert(key);
+			// var ref = firebase.database().ref().child('/cms/' + user_id).remove();
+			// if(ref){
 				
-						alert('This CMS Deleted Sucessfully');
-			}
-			window.location.reload();
+			// 			alert('This CMS Deleted Sucessfully');
+			// }
+			// window.location.reload();
 		}
 		
 		$(function () {

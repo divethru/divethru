@@ -45,7 +45,7 @@ foreach($category as $k => $v){
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Bundle | DiveThru Admin</title>
+    <title>Blank Page | Bootstrap Based Admin Template - Material Design</title>
     <!-- Favicon-->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
@@ -59,7 +59,7 @@ foreach($category as $k => $v){
 
     <!-- Waves Effect Css -->
     <link href="plugins/node-waves/waves.css" rel="stylesheet" />
-     <!-- Sweetalert Css -->
+    <!-- Sweetalert Css -->
     <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
 
     <!-- Animation Css -->
@@ -93,7 +93,7 @@ foreach($category as $k => $v){
   };*/
   firebase.initializeApp(config);
 		</script>
-		    
+		    <script src="js/check_login.js "></script>
 
 </head>
 
@@ -170,7 +170,7 @@ foreach($category as $k => $v){
                             <form id="form_validation_bundle"  novalidate="novalidate">
                                 <div class="form-group form-float">
                                     <div class="form-line error">
-                                        <input type="text" class="form-control" id="bundlename" name="name" required="" aria-required="true" aria-invalid="true">
+                                        <input type="text" class="form-control" id="bundlename" name="name"  style="text-transform: capitalize;" aria-invalid="true">
                                         <label class="form-label">Name</label>
                                     </div>
                               <!--  <label id="name-error" class="error" for="name">This field is required.</label>-->
@@ -181,7 +181,7 @@ foreach($category as $k => $v){
                                         <!--<label class="form-label">Description</label>
 										</br>
 										</br>-->
-                                        <textarea name="description" id="ckeditor" cols="30" rows="5" class="form-control no-resize" required="" aria-required="true" placeholder="Desciption"></textarea>
+                                        <textarea name="description" id="ckeditor" cols="30" rows="5" class="form-control no-resize"  placeholder="Desciption"></textarea>
                                     </div>
                                 <!--<label id="description-error" class="error" for="description">This field is required.</label>-->
 								</div>
@@ -190,12 +190,15 @@ foreach($category as $k => $v){
                                     <div class="form-line error">
                                         <label class="form-label">Category</label>
 										<br><br>
-										<select id="cat" class="form-control show-tick" name="cat">
+										<select id="cat" class="form-control show-tick" name="cat"> 
 										<?php
 										if($category){
-											echo "<option value=''>Select Category</option>";
+											echo "<option value=''>Select category</option>";
 											foreach($category as $c){
+												if($c["category_name"] != "Open Dive"){
+													
 												echo "<option value=".$c['category_id'].">".$c["category_name"]."</option>";
+												}
 											}
 										}
 										?>
@@ -211,7 +214,7 @@ foreach($category as $k => $v){
 										<select id="subcat" class="form-control show-tick" name="subcat">
 										<?php
 										if($subcategory){
-											echo "<option value=''>Select SubCategory</option>";
+											echo "<option value=''>Select Subcategory</option>";
 											foreach($subcategory as $s){
 												echo "<option value=".$s['subcategory_id'].">".$s["subcategory_name"]."</option>";
 											}
@@ -235,7 +238,7 @@ foreach($category as $k => $v){
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
 											<div class="dropzone-previews"></div>
 											<div class="fallback"> <!-- this is the fallback if JS isn't working -->
-												<input name="bundle" class="form-control" id="bundleimage" type="file" onchange="uplaodbimgfile()" accept="image/*" />
+												<input name="bundle" class="check-image-size form-control" id="bundleimage" type="file" onchange="uplaodbimgfile()" accept="image/*" />
 												<input type="hidden" id="bimgurl">
 										<!--	</div> -->
 
@@ -273,9 +276,8 @@ foreach($category as $k => $v){
 
     <!-- Waves Effect Plugin Js -->
     <script src="plugins/node-waves/waves.js"></script>
-    <!-- Sweetalert Css -->
-    <link href="plugins/sweetalert/sweetalert.css" rel="stylesheet" />
-
+    <!-- SweetAlert Plugin Js -->
+    <script src="plugins/sweetalert/sweetalert.min.js"></script>
 		
 	<!-- Jquery DataTable Plugin Js -->
     <script src="plugins/jquery-datatable/jquery.dataTables.js"></script>
@@ -290,12 +292,29 @@ foreach($category as $k => $v){
 		 <script src="plugins/ckeditor/ckeditor.js"></script>
 		 <script src="plugins/ckeditor/plugins/placeholder/plugin.js"></script>
 		 <script src="plugins/jquery-validation/jquery.validate.js"></script>
-		 <script src="plugins/jquery-validation/additional-methods.js"></script>
+		  <script src="plugins/jquery-validation/additional-methods.js"></script>
 		 <script src="js/pages/forms/form-validation.js"></script>
-		 <script type="text/javascript" src="../register_user.js"></script>
+		 <script type="text/javascript" src="js/upload.js"></script>
     <!-- Custom Js -->
     <script src="js/admin.js"></script>
+    <script src="js/jquery.checkImageSize.js"></script>
+<script>
+$("input[type=file]").checkImageSize();
+</script>
+<script type="text/javascript">
 
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
 	<script type="text/javascript">
@@ -322,13 +341,73 @@ foreach($category as $k => $v){
         responsive: true,
 		//pagination: true,
     });
+     $('select').selectpicker().change(function(){
+        $(this).valid()
+    });
+    $('#bundleimage').selectpicker().change(function(){
+        $(this).valid()
+    });
 
-    $('select').selectpicker().change(function(){
-        $(this).valid()
-    });
-    $('#bundleimage').on('change', function(){
-        $(this).valid()
-    });
+    $.validator.addMethod("regex", function(value, element, regexpr) {          
+                 return regexpr.test(value);
+               }, "Please enter Only characters"); 
+    $('#form_validation_bundle').validate({
+		        rules: {
+		            'name': {
+		                required: true,
+		                minlength: 6,
+		                maxlength: 15,
+                        regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
+		            }, 
+		            'description': {
+		                required: true
+		            }, 
+		            'bundle': {
+		                required: true,
+		                accept: "image/jpeg, image/png,image/gif"
+		            }, 
+		            'cat':{
+		                required:true
+		            },
+		            'subcat':{
+		          		 required: function() {
+                              return $("#cat option:selected").text() == 'Deep Dive';
+                     }
+		            
+		            
+		        },
+		        messages: {
+		          name: {
+		            required:"Please enter your Bundle Name",
+		            minlength: "Enter name must be at least 6 characters long",
+		            maxlength: "Enter name maximum 15 characters allow"
+		            },
+		          bundle: {
+		            required:"Please Select Any image",
+		            accept: "Select only jpeg,png,gif file formate only!!"
+		            },
+		            description:"Please enter Description",
+		            cat:"Please Select category",
+		          	subcat: "Please Select subcategory"
+		          	}
+		        },
+		        highlight: function (input) {
+		            $(input).parents('.form-line').addClass('error');
+		        },
+		        unhighlight: function (input) {
+		            $(input).parents('.form-line').removeClass('error');
+		        },
+		        errorPlacement: function (error, element) {
+		            $(element).parents('.form-group').append(error);
+		        },
+		        submitHandler: function(form) {
+		        	 console.log("dfg");  
+		        },
+		        success: function(form){
+		                             
+		        }
+		    });
+
 
     //Exportable table
     $('.js-exportable').DataTable({
@@ -338,16 +417,18 @@ foreach($category as $k => $v){
             'copy', 'csv', 'excel', 'pdf', 'print'
         ]
     });
+    $(".sub").hide();
 	$("#cat").change(function(){
 		//alert(55);.
 		var op ='';
 		var c = $("#cat option:selected").text();
 		
 		/* Code for hide and show subcategory according to category */
-		if($("#cat option:selected").text() != 'Deep Dives'){
+		if($("#cat option:selected").text() != 'Deep Dive'){
 			$(".sub").hide();
-			
+			//alert(5);
 		}else{
+			//alert(55);
 			$(".sub").show();
 			
 		}
@@ -397,55 +478,74 @@ foreach($category as $k => $v){
 	
 	
 	$(".bundleadd").click(function(){
+		var temp=$('#form_validation_bundle').valid();
+		if(temp==true){
+		        	 	
+		        	 
+					var cat = $("#cat").val();
+					var catnm = $("#cat option:selected").text();
+					if(catnm == 'Deep Dive'){
+						
+					var subcatnm = $("#subcat option:selected").text();
+					var subcat = $("#subcat").val();
+							var firebaseRef = firebase.database().ref("Category/"+catnm+"/SubCategory/"+subcat+"/Bundle");
+						//	var f = "category/"+catnm+"/subcategory/"+subcat+"/bundle";
+					}else{
+						var subcat = '';
+						var subcatnm = '';
+                       //+ var catnm = catnm.replace(/\s/g, '');
+						var firebaseRef = firebase.database().ref("Category/"+catnm+"/Bundle");
+					//	var f = "category/"+catnm+"/bundle";
+					}
+				//	alert(bundle);
+					//return;
+					// var desc = CKEDITOR.instances['ckeditor'].getData();
+					 var desc = $('#ckeditor').val();
+					 var bundlename = $("#bundlename").val();
+					 var bimg = $("#bimgurl").val();
 
 
-		var cat = $("#cat").val();
-		var catnm = $("#cat option:selected").text();
-		var subcatnm = $("#subcat option:selected").text();
-		if(catnm == 'Deep Dives'){
+				//	var outro = surl.split(',');
+			//console.log(array);
+					//var catRef = firebaseRef.child("bundle");
+
+					var pushedCatRef = firebaseRef.push();
+
+					// Get the unique key generated by push()
+					var bid = pushedCatRef.key;
+
+					firebaseRef.child(bid).set({
+						bundle_name: bundlename,
+						bundle_description: desc,
+						bundle_parent_category: cat,
+						bundle_category: subcatnm,
+						bundle_img: bimg,
+						bundle_id: bid,
+						Session: ''
+					});
+					//alert(cimg);
+					//alert(f);
+					if(pushedCatRef){
+                   
+		                    swal({
+		                        title: "Inserted!",
+		                        text: "Bundle has been Inserted.",
+		                        html:true,
+		                        type: "success",
+		                        showCancelButton: false,
+		                        confirmButtonColor: "#86CCEB",
+		                        confirmButtonText: "OK",
+		                        closeOnConfirm: false
+		                    }, function () {
+		                        window.setTimeout(function() {
+		                        
+		                          window.location.href = "bundle_list.php";
+		                        }, 1000);
+		                    });
+		                }
+
 			
-		var subcat = $("#subcat").val();
-				var firebaseRef = firebase.database().ref("Category/"+catnm+"/SubCategory/"+subcat+"/Bundle");
-			//	var f = "category/"+catnm+"/subcategory/"+subcat+"/bundle";
-		}else{
-			var subcat = '';
-			var firebaseRef = firebase.database().ref("Category/"+catnm+"/Bundle");
-		//	var f = "category/"+catnm+"/bundle";
 		}
-	//	alert(bundle);
-		//return;
-		// var desc = CKEDITOR.instances['ckeditor'].getData();
-		 var desc = $('#ckeditor').val();
-		 var bundlename = $("#bundlename").val();
-		 var bimg = $("#bimgurl").val();
-
-		 	if(cat == '' || catnm == '' || desc == '' || bimg == ''){
-		 		window.location.reload();
-		 	}
-
-	//	var outro = surl.split(',');
-//console.log(array);
-		//var catRef = firebaseRef.child("bundle");
-
-		var pushedCatRef = firebaseRef.push();
-
-		// Get the unique key generated by push()
-		var bid = pushedCatRef.key;
-
-		firebaseRef.child(bid).set({
-			bundle_name: bundlename,
-			bundle_description: desc,
-			bundle_parent_category: cat,
-			bundle_category: subcatnm,
-			bundle_img: bimg,
-			bundle_id: bid,
-			Session: ''
-		});
-
-		window.location = "bundle_list.php";
-		//alert(cimg);
-		//alert(f);
-		
 	});
 	
 });

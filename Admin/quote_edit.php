@@ -103,7 +103,8 @@ return $nodeGetContent;
   };*/
   firebase.initializeApp(config);
         </script>
-            <script type="text/javascript" src="../register_user.js"></script>
+               <script type="text/javascript" src="js/check_login.js"></script>
+ 
 
 </head>
 
@@ -239,6 +240,7 @@ return $nodeGetContent;
          <script src="plugins/jquery-validation/jquery.validate.js"></script>
          <script src="js/pages/forms/form-validation.js"></script>
     <!-- Custom Js -->
+               <script type="text/javascript" src="../register_user.js"></script>
     <script src="js/admin.js"></script>
 
     <!-- Demo Js -->
@@ -343,8 +345,9 @@ return $nodeGetContent;
                     confirmButtonText: "OK",
                     closeOnConfirm: false
                 }, function () {
-                    
+                    window.setTimeout(function() {
                       window.location.href = "quote_list.php";
+                    }, 1000);
                 });
                 
             }

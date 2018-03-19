@@ -25,11 +25,12 @@ $nodeGetContent = $fb->get($path);
 return $nodeGetContent;
 }
 foreach($category as $k => $v){
-    $c[] =$k;
+  
     if(isset($v['SubCategory']) && !empty($v['SubCategory'])){
             
         foreach($v['SubCategory'] as $key => $value){
-            
+              $c[] =$k;
+
             $subcategory[] = $value;
         }
     }
@@ -47,7 +48,7 @@ foreach($category as $k => $v){
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Blank Page | Bootstrap Based Admin Template - Material Design</title>
+    <title>SubCategory | DiveThru Admin </title>
     <!-- Favicon-->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
@@ -92,6 +93,7 @@ foreach($category as $k => $v){
   };*/
   firebase.initializeApp(config);
         </script>
+        <script type="text/javascript" src="js/check_login.js"></script>
 </head>
 
 <body class="theme-red">
@@ -183,7 +185,7 @@ foreach($category as $k => $v){
                                         <?php
                                         if(count($subcategory)>0)
                                         {
-                                            foreach($subcategory as $u){
+                                            foreach($subcategory as $k=>$u){
                                                 echo "<tr>";
                                                     echo "<td>".$u['subcategory_name']."</td>";
                                                     echo "<td>".$u['subcategory_description']."</td>";
@@ -192,7 +194,7 @@ foreach($category as $k => $v){
                                                 
                                                     ?>
                                                     
-                                                    <td><a href='#' onclick='edit("<?php echo $u['subcategory_id'];?>","<?php echo $u["parentcategory"];?>");'><i class="material-icons">mode_edit</i></a> &nbsp;  <a href='#' onclick='del("<?php echo $u['subcategory_id'];?>","<?php echo $u["parentcategory"];?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
+                                                    <td><a href='#' onclick='edit("<?php echo $u['subcategory_id'];?>","<?php echo $c[$k]; ?>");'><i class="material-icons">mode_edit</i></a> &nbsp;  <a href='#' onclick='del("<?php echo $u['subcategory_id'];?>","<?php echo $c[$k]; ?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
                                                     <?php 
                                                 echo "</tr>";
                                             }
