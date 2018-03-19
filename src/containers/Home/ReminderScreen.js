@@ -4,6 +4,7 @@ import Moment from 'moment';
 import FormData from 'FormData';
 import { View, Text, Image, Switch, TextInput, TouchableOpacity, Alert, StatusBar, Platform, AsyncStorage, Dimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import FCM from 'react-native-fcm';
 import { Button } from 'react-native-material-ui';
 import DropdownAlert from 'react-native-dropdownalert';
 import DatePicker from 'react-native-datepicker';
@@ -24,6 +25,7 @@ class ReminderScreen extends Component {
       elevation: 0,
       shadowOpacity: 0,
       borderBottomWidth: 0,
+      paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight + 10,
     },
     headerTitleStyle: {
       alignSelf: 'center',
@@ -58,7 +60,7 @@ class ReminderScreen extends Component {
 
   ShowAlert = (value) => {
     this.setState({
-      SwitchOnValueHolder: value
+      SwitchOnValueHolder: value,
     });
   }
 
@@ -129,45 +131,50 @@ class ReminderScreen extends Component {
   }
 
   onSubmitReminder() {
-    if(this.state.date !== undefined && this.state.time !== undefined && this.state.description !== ''){
-      this.setState({ loading: true });
-      const date = Moment(this.state.date+ " "+this.state.time, "MMM D, YYYY LT").format("YYYY-MM-DDTHH:mm:ssZ")
-      const reminderDate = new Date(date);
-      const rDate = Moment.utc(reminderDate, "YYYY-MM-DDTHH:mm:ssZ").format("YYYY-MM-DD HH:mm")
-      // const rDate = Moment.utc(reminderDate, "YYYY-MM-DDTHH:mm:ssZ").format()
-      // const rd = new Date(rDate);
-      // const timestamp = Moment(rd).format("X");
+    if (this.state.date !== undefined && this.state.time !== undefined && this.state.description !== '') {
+      FCM.requestPermissions().then(() => {
+        this.setState({ loading: true });
+        const date = Moment(this.state.date+ " "+this.state.time, "MMM D, YYYY LT").format("YYYY-MM-DDTHH:mm:ssZ")
+        const reminderDate = new Date(date);
+        const rDate = Moment.utc(reminderDate, "YYYY-MM-DDTHH:mm:ssZ").format("YYYY-MM-DD HH:mm")
+        // const rDate = Moment.utc(reminderDate, "YYYY-MM-DDTHH:mm:ssZ").format()
+        // const rd = new Date(rDate);
+        // const timestamp = Moment(rd).format("X");
 
-      const userID = '';
-      const formData = new FormData();
-      AsyncStorage.getItem('user_id').then((value) => {
-        if (value != null) {
-          userID = value;
-          const data = {
-            userId: userID,
-            datewithTime: rDate,
-            message: this.state.description
-          };
-                
-          const ref = firebaseApp.database().ref().child('Reminder').push().key;
-    
-           // Write the new post's data simultaneously in the posts list and the user's post list.
-          var updates = {};
-          updates['/Reminder/' + ref] = data;
-    
-          firebaseApp.database().ref().update(updates).then((dataSnapshot) => {
-            this.setState({ loading: false });
-            if(this.state.SwitchOnValueHolder === true) {
-              this.addEventInCalendar();
-            } else {
-              this.dropdown.alertWithType('success', '', 'Your reminder is set. You will be notified at ' + this.state.time + ' On ' + this.state.date );
-            }
-          })
-          .catch((error) => {
-            console.log('Error' + JSON.stringify(error));
-            this.setState({ loading: false });    
-          });
-        }
+        let userID = '';
+        const formData = new FormData();
+        AsyncStorage.getItem('user_id').then((value) => {
+          if (value != null) {
+            userID = value;
+            const data = {
+              userId: userID,
+              datewithTime: rDate,
+              message: this.state.description,
+            };
+                  
+            const ref = firebaseApp.database().ref().child('Reminder').push().key;
+      
+            // Write the new post's data simultaneously in the posts list and the user's post list.
+            var updates = {};
+            updates['/Reminder/' + ref] = data;
+      
+            firebaseApp.database().ref().update(updates).then((dataSnapshot) => {
+              this.setState({ loading: false });
+              if (this.state.SwitchOnValueHolder === true) {
+                this.addEventInCalendar();
+              } else {
+                this.dropdown.alertWithType('success', '', 'Your reminder is set. You will be notified at ' + this.state.time + ' On ' + this.state.date);
+              }
+            })
+            .catch((error) => {
+              console.log('Error' + JSON.stringify(error));
+              this.setState({ loading: false });
+            });
+          }
+        });
+      })
+      .catch(() => {
+        this.dropdown.alertWithType('error', '', 'To set reminder please allow notification from Settings. By enabling notifications, you will receive notifications on your device for all the alerts.');
       });
     }
   }
@@ -178,10 +185,19 @@ class ReminderScreen extends Component {
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
           <KeyboardAwareScrollView>
-            <StatusBar
-              backgroundColor="rgba(0, 0, 0, 0.30)"
+            {/* <StatusBar
+              translucent
+              backgroundColor="rgba(0, 0, 0, 0.010)"
               animated
               hidden={false}
+              barStyle="light-content"
+            /> */}
+            <StatusBar
+              // translucent
+              hidden={false}
+              backgroundColor="rgba(255, 255, 255, 0.5)"
+              animated
+              barStyle="dark-content"
             />
             <View style={styles.innercontainer}>
               <Text style={styles.textrem}>Remind me to</Text>
@@ -189,8 +205,8 @@ class ReminderScreen extends Component {
                 <Text style={styles.textrem}>Dive Thru at </Text>
                 <Text style={styles.txtunderline}>{this.state.timeText}</Text>
               </View>
-              {this.state.dateText 
-                ?  (
+              {this.state.dateText
+                ? (
                   <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={styles.textrem}>On </Text>
                     <Text style={styles.txtunderline}>{this.state.dateText}</Text>

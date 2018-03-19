@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
+import FCM from 'react-native-fcm';
 import { View, Text, Image, Switch, TextInput, TouchableOpacity, StatusBar, Platform, AsyncStorage, Dimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Button } from 'react-native-material-ui';
@@ -135,82 +136,49 @@ class CalenderReminderScreen extends Component {
 
   onSubmitReminder() {
     if (this.state.date !== undefined && this.state.time !== undefined && this.state.description !== '') {
-      this.setState({ loading: true });
-      const date = Moment(this.state.date + " " + this.state.time, 'MMM D, YYYY LT').format('YYYY-MM-DDTHH:mm:ssZ');
-      const reminderDate = new Date(date);
-      const rDate = Moment.utc(reminderDate, 'YYYY-MM-DDTHH:mm:ssZ').format('YYYY-MM-DD HH:mm');
-      // const rDate = Moment.utc(reminderDate, "YYYY-MM-DDTHH:mm:ssZ").format()
-      // const rd = new Date(rDate);
-      // const timestamp = Moment(rd).format("X");
+      FCM.requestPermissions().then(() => {
+        this.setState({ loading: true });
+        const date = Moment(this.state.date + " " + this.state.time, 'MMM D, YYYY LT').format('YYYY-MM-DDTHH:mm:ssZ');
+        const reminderDate = new Date(date);
+        const rDate = Moment.utc(reminderDate, 'YYYY-MM-DDTHH:mm:ssZ').format('YYYY-MM-DD HH:mm');
+        // const rDate = Moment.utc(reminderDate, "YYYY-MM-DDTHH:mm:ssZ").format()
+        // const rd = new Date(rDate);
+        // const timestamp = Moment(rd).format("X");
 
-      let userID = '';
-      AsyncStorage.getItem('user_id').then((value) => {
-        if (value != null) {
-          userID = value;
-          const data = {
-            userId: userID,
-            datewithTime: rDate,
-            message: this.state.description,
-          };
-                
-          const ref = firebaseApp.database().ref().child('Reminder').push().key;
-    
-           // Write the new post's data simultaneously in the posts list and the user's post list.
-          var updates = {};
-          updates['/Reminder/' + ref] = data;
-    
-          firebaseApp.database().ref().update(updates).then((dataSnapshot) => {
-            this.setState({ loading: false });
-            if (this.state.SwitchOnValueHolder === true) {
-              this.addEventInCalendar();
-            } else {
-              this.dropdown.alertWithType('success', '', 'Your reminder is set. You will be notified at ' + this.state.time + ' On ' + this.state.date );
-            }
-          })
-          .catch((error) => {
-            console.log('Error' + JSON.stringify(error));
-            this.setState({ loading: false });
-          });
-        }
+        let userID = '';
+        AsyncStorage.getItem('user_id').then((value) => {
+          if (value != null) {
+            userID = value;
+            const data = {
+              userId: userID,
+              datewithTime: rDate,
+              message: this.state.description,
+            };
+                  
+            const ref = firebaseApp.database().ref().child('Reminder').push().key;
+      
+            // Write the new post's data simultaneously in the posts list and the user's post list.
+            var updates = {};
+            updates['/Reminder/' + ref] = data;
+      
+            firebaseApp.database().ref().update(updates).then((dataSnapshot) => {
+              this.setState({ loading: false });
+              if (this.state.SwitchOnValueHolder === true) {
+                this.addEventInCalendar();
+              } else {
+                this.dropdown.alertWithType('success', '', 'Your reminder is set. You will be notified at ' + this.state.time + ' On ' + this.state.date );
+              }
+            })
+            .catch((error) => {
+              console.log('Error' + JSON.stringify(error));
+              this.setState({ loading: false });
+            });
+          }
+        });
+      })
+      .catch(() => {
+        this.dropdown.alertWithType('error', '', 'To set reminder please allow notification from Settings. By enabling notifications, you will receive notifications on your device for all the alerts.');
       });
-
-        // ref.once('value').then((dataSnapshot) => {
-        //   this.setState({ loading: false });
-        //   if(this.state.SwitchOnValueHolder === true) {
-        //     this.addEventInCalendar();
-        //   }
-        // })
-        // .catch((error) => {
-        //   console.log('Error' + JSON.stringify(error));
-        //   this.setState({ loading: false });    
-        // });
-
-      // fetch('http://34.215.40.163/SendNotification.php', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Accept': 'application/json',
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify({
-      //     userId: userID,
-      //     datewithTime: rDate,
-      //     message: this.state.description
-      //   }),
-      // })
-      // .then((response) => response.json())
-      // .then((res) => {
-      //   if (res.error_code === 0) {
-      //     this.setState({ loading: false });
-      //     if(this.state.SwitchOnValueHolder === true) {
-      //       this.addEventInCalendar();
-      //     }
-      //   }
-      // })
-      // .catch(error => {
-      //   console.log(error);
-      //   // alert(error);
-      // })
-      // .done();
     }
   }
 

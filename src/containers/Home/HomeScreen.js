@@ -53,6 +53,7 @@ class HomeScreen extends Component {
 
   componentDidMount() {
     StatusBar.setHidden(false);
+    // StatusBar.setTranslucent(true);
     this.setState({ loading: true });
 
     this.fetchUserLastConversationData().then(() => {

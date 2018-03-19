@@ -92,10 +92,17 @@ class ForgotPasswordScreen extends Component {
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
           <KeyboardAwareScrollView>
-            <StatusBar
+            {/* <StatusBar
               backgroundColor="rgba(0, 0, 0, 0.30)"
               animated
               hidden={false}
+            /> */}
+            <StatusBar
+              // translucent
+              hidden={false}
+              backgroundColor="rgba(255, 255, 255, 0.5)"
+              animated
+              barStyle="dark-content"
             />
             <View style={styles.innerContainer}>
               <View style={styles.lockIconContainer}>

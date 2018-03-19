@@ -42,6 +42,22 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     margin: Platform.OS === 'ios' ? 11 : 12,
   },
+  googleContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    height: Platform.OS === 'ios' ? 40 : 45,
+    margin: 10,
+    marginTop: 20,
+    backgroundColor: '#db4437',
+    justifyContent: 'center',
+    borderRadius: 2,
+  },
+  googleLogo: {
+    width: 20,
+    height: 20,
+    backgroundColor: colors.white,
+    margin: Platform.OS === 'ios' ? 11 : 12,
+  },
   btnText: {
     fontSize: Platform.OS === 'ios' ? 12 : 14,
     color: colors.white,

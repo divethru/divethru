@@ -191,4 +191,25 @@ export const timeButtonStyles = StyleSheet.create({
   },
 });
 
+export const timeButtonClickStyles = StyleSheet.create({
+  text: {
+    fontSize: 14,
+    color: colors.white,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'Roboto',
+  },
+  container: {
+    flex: 1,
+    height: Platform.OS === 'ios' ? 40 : 45,
+    margin: 10,
+    marginTop: 0,
+    backgroundColor: '#00000040',
+    justifyContent: 'center',
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+});
+
 export default styles;

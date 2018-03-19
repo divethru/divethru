@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { View, Text, TextInput, Image, TouchableOpacity, AsyncStorage, StatusBar } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import firebase from 'firebase';
+import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
 import { Button } from 'react-native-material-ui';
 import FCM from 'react-native-fcm';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -54,6 +55,25 @@ class LoginScreen extends Component {
     };
   }
 
+  componentDidMount() {
+    GoogleSignin.hasPlayServices({ autoResolve: true }).then(() => {
+      // play services are available. can now configure library
+    })
+    .catch((err) => {
+      console.log("Play services error", err.code, err.message);
+    })
+
+    GoogleSignin.configure({
+      iosClientId: '53159239409-9nevpupur18e4ur2k0n80smhq9698p0i.apps.googleusercontent.com', // only for iOS
+    })
+    .then(() => {
+      // GoogleSignin.currentUserAsync().then((user) => {
+      //   console.log('USER', user);
+      //   this.setState({user: user});
+      // }).done();
+    });
+  }
+
   validateEmail(email) {
     // eslint-disable-next-line no-useless-escape
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -95,18 +115,10 @@ class LoginScreen extends Component {
   }
 
   loginButtonClicked = () => {
-    // this.props.navigation.navigate('Tutorial');
-
     let deviceToken = '';
-    // AsyncStorage.getItem('deviceToken').then((value) => {
-    //   if (value != null) {
-    //     deviceToken = value;
-    //   }
-    // }).done();
-    
     FCM.getFCMToken().then(token => {
-      console.log('HelloNewToken: '+token);
-      if(token !== undefined){
+      console.log('HelloNewToken: '+ token);
+      if(token !== undefined) {
         deviceToken = token;
       }
     });
@@ -120,9 +132,8 @@ class LoginScreen extends Component {
             ref.once('value').then((dataSnapshot) => {
               this.setState({ loading: false });
               const data = dataSnapshot.val();
-              if(data != null){
+              if (data != null){
                 if (data.activated_on !== '') {
-                  // console.log('CURRENT USER data-->' + JSON.stringify(data.user_id));
                   AsyncStorage.setItem('user_id', data.user_id);
                   AsyncStorage.getItem('isMarketingLaunched').then((value) => {
                     const ref = firebaseApp.database().ref('Users').child(data.user_id);
@@ -153,12 +164,6 @@ class LoginScreen extends Component {
 
   fbAuth = () => {
     let deviceToken = '';
-    // AsyncStorage.getItem('deviceToken').then((value) => {
-    //   if (value != null) {
-    //     deviceToken = value;
-    //   }
-    // }).done();
-
     FCM.getFCMToken().then(token => {
       console.log('HelloNewToken: '+token);
       if(token !== undefined){
@@ -170,7 +175,6 @@ class LoginScreen extends Component {
       if (result.isCancelled) {
         alert('Login cancelled');
       } else {
-        // alert('Login success with permissions: ' + result.grantedPermissions.toString());
         AccessToken.getCurrentAccessToken().then((data) => {
           const { accessToken } = data;
           this.setState({ loading: true });
@@ -178,30 +182,50 @@ class LoginScreen extends Component {
             .then(response => response.json())
             .then((json) => {
               console.log(json);
-              const provider = firebase.auth.FacebookAuthProvider;
-              const credential = provider.credential(accessToken);
 
-              // Login with the credential
-              firebaseApp.auth().signInWithCredential(credential).then((response) => {
-                const ref = firebaseApp.database().ref('Users').child(response.uid);
-                ref.once('value').then((dataSnapshot) => {
-                  const userData = dataSnapshot.val();
-                  if (userData != null) {
-                    AsyncStorage.getItem('isMarketingLaunched').then((value) => {
-                      if (value === 'yes') {
-                        const ref = firebaseApp.database().ref('Users').child(data.user_id);
-                        ref.update({ device_token: deviceToken });
-                        this.props.navigation.navigate('TabScreen');
+              firebaseApp.auth().fetchProvidersForEmail(json.email).then((response) => {
+                const provider = response.toString(); 
+                if (provider === 'facebook.com') {
+                  const provider = firebase.auth.FacebookAuthProvider;
+                  const credential = provider.credential(accessToken);
+
+                  // Login with the credential
+                  firebaseApp.auth().signInWithCredential(credential).then((response) => {
+                    const ref = firebaseApp.database().ref('Users').child(response.uid);
+                    ref.once('value').then((dataSnapshot) => {
+                      const userData = dataSnapshot.val();
+                      if (userData != null) {
+                        AsyncStorage.setItem('user_id', userData.user_id);
+                        AsyncStorage.setItem('fb_id', json.id);
+                        AsyncStorage.getItem('isMarketingLaunched').then((value) => {
+                          if (value === 'yes') {
+                            const ref = firebaseApp.database().ref('Users').child(userData.user_id);
+                            ref.update({ device_token: deviceToken });
+                            this.props.navigation.navigate('TabScreen');
+                          } else {
+                            this.props.navigation.navigate('Tutorial');
+                          }
+                        });
                       } else {
-                        this.props.navigation.navigate('Tutorial');
+                        this.setState({ loading: false });
+                        this.showErrorAlertView('User does not exist.');
                       }
                     });
-                  } else {
+                  })
+                  .catch((error) => {
                     this.setState({ loading: false });
-                    this.showErrorAlertView('User does not exist.');
-                  }
-                });
-              });
+                    console.log('Error' + JSON.stringify(error));
+                    this.showErrorAlertView(error.message);
+                  });
+                } else if (provider === '') {
+                  this.setState({ loading: false });
+                  this.showErrorAlertView('User does not exist.');
+                }
+                else {
+                  this.setState({ loading: false });
+                  this.showErrorAlertView('Email already associated with another account.');
+                }
+              })
             })
             .catch((error) => {
               this.setState({ loading: false });
@@ -212,20 +236,93 @@ class LoginScreen extends Component {
     },
       function (error) {
         this.setState({ loading: false });
-        alert('Login fail with error: ' + error);
+        // alert('Login fail with error: ' + error);
       },
     );
   }
+
+  _googleAuth() {
+    GoogleSignin.signOut()
+    GoogleSignin.signIn()
+    .then((user) => {        
+      const accessToken = firebase.auth.GoogleAuthProvider.credential(user.idToken, user.accessToken);
+      let deviceToken = '';
+     
+      FCM.getFCMToken().then((fcmtoken) => {
+        if (fcmtoken !== undefined) {
+          deviceToken = fcmtoken;
+        }
+      });
+      this.setState({ loading: true });
+      // Login with the credential
+      firebaseApp.auth().fetchProvidersForEmail(user.email).then((response) => {
+        const provider = response.toString();
+        if (provider === 'google.com') {
+          firebaseApp.auth().signInWithCredential(accessToken).then((response) => {
+            const ref = firebaseApp.database().ref('Users').child(response.uid);
+              ref.once('value').then((dataSnapshot) => {
+                const userData = dataSnapshot.val();
+                if (userData != null) {
+                  AsyncStorage.setItem('user_id', userData.user_id);
+                  AsyncStorage.setItem('google_id', user.id);
+                  AsyncStorage.getItem('isMarketingLaunched').then((value) => {
+                    this.setState({ loading: false });
+                    if (value === 'yes') {
+                      const ref = firebaseApp.database().ref('Users').child(userData.user_id);
+                      ref.update({ device_token: deviceToken });
+                      this.props.navigation.navigate('TabScreen');
+                    } else {
+                      this.props.navigation.navigate('Tutorial');
+                    }
+                  });
+                } else {
+                  this.setState({ loading: false });
+                  this.showErrorAlertView('User does not exist.');
+                }
+              });
+          })
+          .catch((error) => {
+            const errorCode = error.code;
+            if (errorCode === 'auth/account-exists-with-different-credential') {
+              this.setState({ loading: false });
+              this.showErrorAlertView('Email already associated with another account.');
+            }
+          });
+        } else if (provider === '') {
+          this.setState({ loading: false });
+          this.showErrorAlertView('User does not exist.');
+        }
+        else {
+          this.setState({ loading: false });
+          this.showErrorAlertView('Email already associated with another account.');
+        }
+      })
+    })
+    .catch((err) => {
+      console.log('WRONG SIGNIN', err);
+      // alert(err);
+      this.setState({ loading: false });
+    })
+    .done();
+  }
+
 
   render() {
     return (
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
           <KeyboardAwareScrollView>
-            <StatusBar
+            {/* <StatusBar
               backgroundColor="rgba(0, 0, 0, 0.30)"
               animated
               hidden={false}
+            /> */}
+            <StatusBar
+              // translucent
+              hidden={false}
+              backgroundColor="rgba(255, 255, 255, 0.5)"
+              animated
+              barStyle="dark-content"
             />
             <View style={styles.loginContainer}>
               <Text style={styles.helperText}>{this.state.errorMessage}</Text>
@@ -297,6 +394,23 @@ class LoginScreen extends Component {
                   <Text style={styles.btnText}>C O N T I N U E  W I T H  F A C E B O O K</Text>
                 </View>
               </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={this._googleAuth.bind(this)}
+              >
+                <View style={styles.googleContainer}>
+                  <View style={styles.googleLogo}>
+                    <Icon
+                      name="google"
+                      size={15}
+                      color="#db4437"
+                      style={styles.btnIcon}
+                    />
+                  </View>
+                  <Text style={styles.btnText}>C O N T I N U E  W I T H  G O O G L E</Text>
+                </View>
+              </TouchableOpacity>
+
             </View>
           </KeyboardAwareScrollView>
           <DropdownAlert ref={(ref) => { this.dropdown = ref; }} />

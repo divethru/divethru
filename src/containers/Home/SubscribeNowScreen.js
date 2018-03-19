@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, ListView, StatusBar } from 'react-native';
 import PropTypes from 'prop-types';
 import * as RNIap from 'react-native-iap';
-import IC_LOCK from '../../assets/images/ic_lock.png';
+import IC_LOCK from '../../assets/images/ic_lock_black.png';
 import IC_HAND from '../../assets/images/ic_hand.png';
 import IC_WEB from '../../assets/images/ic_web.png';
 import IC_HEART from '../../assets/images/ic_heart.png';

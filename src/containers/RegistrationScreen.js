@@ -4,7 +4,7 @@ import Moment from 'moment';
 import FormData from 'FormData';
 import { View, Text, TextInput, Image, TouchableOpacity, Platform, AsyncStorage, StatusBar, Dimensions } from 'react-native';
 import { Button } from 'react-native-material-ui';
-import { GoogleSignin, GoogleSigninButton } from 'react-native-google-signin';
+import { GoogleSignin } from 'react-native-google-signin';
 // import RadioButton from 'radio-button-react-native';
 import FCM from 'react-native-fcm';
 import DatePicker from 'react-native-datepicker';
@@ -84,17 +84,16 @@ class RegistrationScreen extends Component {
     })
     .catch((err) => {
       console.log("Play services error", err.code, err.message);
-    })
+    });
 
     GoogleSignin.configure({
       iosClientId: '53159239409-9nevpupur18e4ur2k0n80smhq9698p0i.apps.googleusercontent.com', // only for iOS
     })
     .then(() => {
-      GoogleSignin.currentUserAsync().then((user) => {
-        console.log('USER', user);
-        this.setState({user: user});
-      }).done();
-      // you can now call currentUserAsync()
+      // GoogleSignin.currentUserAsync().then((user) => {
+      //   console.log('USER', user);
+      //   this.setState({user: user});
+      // }).done();
     });
   }
 
@@ -139,7 +138,7 @@ class RegistrationScreen extends Component {
   validateEmail(email) {
     // eslint-disable-next-line no-useless-escape
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+   
     if (!re.test(email)) {
       this.setState({
         inputEmailColor: colors.red600,
@@ -212,7 +211,7 @@ class RegistrationScreen extends Component {
         inputDateOfBirthError: '',
       });
     }
-    this.setState({ dateOfBirth });
+    // this.setState({ dateOfBirth });
   }
 
   showErrorAlertView(message) {
@@ -380,6 +379,7 @@ class RegistrationScreen extends Component {
                     firebaseApp.database().ref().update(updates).then(() => {
                       this.setState({ loading: false });
                       AsyncStorage.setItem('user_id', response.uid);
+                      AsyncStorage.setItem('fb_id', json.id);
                       this.props.navigation.navigate('Tutorial');
                     })
                     .catch((error) => {
@@ -392,10 +392,16 @@ class RegistrationScreen extends Component {
                     this.showErrorAlertView('User with this email address already exist.');
                   }
                 });
+              })
+              .catch((error) => {
+                this.setState({ loading: false });
+                this.showErrorAlertView('Email already associated with another account.')
+                console.log('Error' + JSON.stringify(error));
               });
             })
             .catch((error) => {
               this.setState({ loading: false });
+              // alert(error)
               console.log('Error' + JSON.stringify(error));
             });
         });
@@ -403,113 +409,32 @@ class RegistrationScreen extends Component {
     },
       function (error) {
         this.setState({ loading: false });
-        alert('Login fail with error: ' + error);
+        // alert('Login fail with error: ' + error);
       },
     );
   }
 
-  googleAuth() {
+  _googleAuth() {
+    GoogleSignin.signOut()
     GoogleSignin.signIn()
-    .then((token) => {
-      alert(token);
-      // const accessToken = firebase.auth.GoogleAuthProvider.credential(token);
-      // const currentDate = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
-      // let deviceToken = '';
-     
-      // FCM.getFCMToken().then((fcmtoken) => {
-      //   if (fcmtoken !== undefined) {
-      //     deviceToken = fcmtoken;
-      //   }
-      // });
-
-      // Login with the credential
-      // firebaseApp.auth().signInWithCredential(accessToken).then((response) => {
-      //   alert('RESPONSE -->' + JSON.stringify(response));
-      //   const ref = firebaseApp.database().ref('Users').child(response.uid);
-      //   ref.once('value').then((dataSnapshot) => {
-      //     const dataUser = dataSnapshot.val();
-          
-          // if (dataUser == null) {
-          //   const userData = {
-          //     first_name: json.first_name,
-          //     last_name: json.last_name,
-          //     email: json.email,
-          //     gender: '',
-          //     birthdate: '',
-          //     membership_type: 'Free',
-          //     activation_code: '',
-          //     activated_on: '',
-          //     login_via: 'facebook',
-          //     device_type: Platform.OS,
-          //     device_token: deviceToken,
-          //     fb_id: json.id,
-          //     registered_on: currentDate,
-          //     lastUpdated_on: currentDate,
-          //     user_id: response.uid,
-          //     access_code: '',
-          //     last_free_conversation_id: 0,
-          //     halted: 0.0,
-          //   };
-
-          //   const updates = {};
-          //   updates['/Users/' + response.uid] = userData;
-          //   firebaseApp.database().ref().update(updates).then(() => {
-          //     this.setState({ loading: false });
-          //     AsyncStorage.setItem('user_id', response.uid);
-          //     this.props.navigation.navigate('Tutorial');
-          //   })
-          //   .catch((error) => {
-          //     console.log('Error' + JSON.stringify(error));
-          //     this.setState({ loading: false });
-          //     // this.showErrorAlertView(error.message);
-          //   });
-          // } else {
-          //   this.setState({ loading: false });
-          //   this.showErrorAlertView('User with this email address already exist.')
-          // }
-      //   });
-      // })
-      // .catch((error) => {
-      //   const errorCode = error.code;
-      //   if (errorCode === 'auth/account-exists-with-different-credential') {
-      //     this.setState({ loading: false });
-      //     this.showErrorAlertView('Email already associated with another account.');
-      //   }
-      // });
-    })
-    .catch((err) => {
-      // this.setState({ loading: false });
-      alert('Login fail with error: ' + err);
-    })
-    .done();
-  }
-
-  _signIn() {
-    // this.setState({ loading: true });
-    GoogleSignin.signIn()
-    .then((user) => {
-      // alert(JSON.stringify(user));
-      
+    .then((user) => {        
       this.setState({user: user});
       const accessToken = firebase.auth.GoogleAuthProvider.credential(user.idToken, user.accessToken);
       const currentDate = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       let deviceToken = '';
-     
+         
       FCM.getFCMToken().then((fcmtoken) => {
         if (fcmtoken !== undefined) {
           deviceToken = fcmtoken;
         }
       });
 
-      // alert('accessToken->' + JSON.stringify(accessToken))
-
+       this.setState({ loading: true });
       // Login with the credential
       firebaseApp.auth().signInWithCredential(accessToken).then((response) => {
-        // alert('RESPONSE -->' + JSON.stringify(response));
         const ref = firebaseApp.database().ref('Users').child(response.uid);
         ref.once('value').then((dataSnapshot) => {
           const dataUser = dataSnapshot.val();
-          
           if (dataUser == null) {
             const userData = {
               first_name: user.name,
@@ -538,12 +463,13 @@ class RegistrationScreen extends Component {
             firebaseApp.database().ref().update(updates).then(() => {
               this.setState({ loading: false });
               AsyncStorage.setItem('user_id', response.uid);
+              AsyncStorage.setItem('google_id', user.id);
               this.props.navigation.navigate('Tutorial');
             })
             .catch((error) => {
               console.log('Error' + JSON.stringify(error));
               this.setState({ loading: false });
-              // this.showErrorAlertView(error.message);
+              this.showErrorAlertView(error.message);
             });
           } else {
             this.setState({ loading: false });
@@ -553,7 +479,6 @@ class RegistrationScreen extends Component {
       })
       .catch((error) => {
         const errorCode = error.code;
-        alert(error);
         if (errorCode === 'auth/account-exists-with-different-credential') {
           this.setState({ loading: false });
           this.showErrorAlertView('Email already associated with another account.');
@@ -561,7 +486,7 @@ class RegistrationScreen extends Component {
       });
     })
     .catch((err) => {
-      alert('er->' + err)
+      this.setState({ loading: false });
       console.log('WRONG SIGNIN', err);
     })
     .done();
@@ -622,10 +547,17 @@ class RegistrationScreen extends Component {
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
           <KeyboardAwareScrollView>
-            <StatusBar
+            {/* <StatusBar
               backgroundColor="rgba(0, 0, 0, 0.30)"
               animated
               hidden={false}
+            /> */}
+            <StatusBar
+              // translucent
+              hidden={false}
+              backgroundColor="rgba(255, 255, 255, 0.5)"
+              animated
+              barStyle="dark-content"
             />
             <View style={styles.innerContainer}>
               <Text style={styles.helperText}>{this.state.errorMessage}</Text>
@@ -758,17 +690,17 @@ class RegistrationScreen extends Component {
                       color: '#7dd3d5',
                       height: 30,
                       marginTop: 30,
-                      marginBottom: 20
+                      marginBottom: 20,
                     },
-                    btnTextCancel:{
+                    btnTextCancel: {
                       color: colors.black,
                       height: 30,
                       marginTop: 30,
-                      marginBottom: 20
+                      marginBottom: 20,
                     },
-                    placeholderText:{
+                    placeholderText: {
                       color: colors.grey500,
-                    }
+                    },
                   }}
                   onDateChange={(dateOfBirth) => { this.validateDateOfBirth(dateOfBirth); }}
                 />
@@ -878,7 +810,7 @@ class RegistrationScreen extends Component {
               /> */}
 
               <TouchableOpacity
-                onPress={this._signIn.bind(this)}
+                onPress={this._googleAuth.bind(this)}
               >
                 <View style={styles.googleContainer}>
                   <View style={styles.googleLogo}>

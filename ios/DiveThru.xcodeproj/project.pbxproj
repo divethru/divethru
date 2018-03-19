@@ -57,8 +57,6 @@
 		990214EC204FC4ED001A4208 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 990214BD204FC4ED001A4208 /* EventKit.framework */; };
 		990214EE204FC507001A4208 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 990214ED204FC507001A4208 /* CoreFoundation.framework */; };
 		990214F5204FEB21001A4208 /* libRNCalendarEvents.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 990214F4204FE7A2001A4208 /* libRNCalendarEvents.a */; };
-		992130D22053BBF300466705 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 992130D12053BBF300466705 /* assets */; };
-		992130D62053F6DB00466705 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 992130D52053F6DA00466705 /* main.jsbundle */; };
 		993D55E9201EEC0000E90CC2 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 993D55E6201EE91B00E90CC2 /* Roboto-Bold.ttf */; };
 		993D55EA201EEC0100E90CC2 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 993D55E8201EE91C00E90CC2 /* Roboto-Medium.ttf */; };
 		993D55EB201EEC0100E90CC2 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 993D55E7201EE91B00E90CC2 /* Roboto-Regular.ttf */; };
@@ -77,6 +75,8 @@
 		99669657201CA55E00BC4C45 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99669653201CA4C900BC4C45 /* FBSDKLoginKit.framework */; };
 		99669658201CA55E00BC4C45 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99669654201CA51200BC4C45 /* FBSDKShareKit.framework */; };
 		99669659201CA55E00BC4C45 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99669655201CA54900BC4C45 /* Bolts.framework */; };
+		99E73094205A8F3800A90227 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 99E73093205A8F3700A90227 /* assets */; };
+		99E73096205A8F4000A90227 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 99E73095205A8F4000A90227 /* main.jsbundle */; };
 		99ED2C4F202472A9007723DC /* libART.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 99ED2C342024729F007723DC /* libART.a */; };
 		99EDFF4620592DCE00BB4B36 /* GoogleAppUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99EDFF3F20592DCE00BB4B36 /* GoogleAppUtilities.framework */; };
 		99EDFF4720592DCE00BB4B36 /* GoogleAuthUtilities.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 99EDFF4020592DCE00BB4B36 /* GoogleAuthUtilities.framework */; };
@@ -503,8 +503,6 @@
 		990214BD204FC4ED001A4208 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		990214ED204FC507001A4208 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		990214EF204FE7A2001A4208 /* RNCalendarEvents.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCalendarEvents.xcodeproj; path = "../node_modules/react-native-calendar-events/RNCalendarEvents.xcodeproj"; sourceTree = "<group>"; };
-		992130D12053BBF300466705 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
-		992130D52053F6DA00466705 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		993D55E6201EE91B00E90CC2 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Bold.ttf"; sourceTree = "<group>"; };
 		993D55E7201EE91B00E90CC2 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		993D55E8201EE91C00E90CC2 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
@@ -528,6 +526,8 @@
 		99930EC72025E70700B36D06 /* RCTVideo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTVideo.xcodeproj; path = "../node_modules/react-native-video/ios/RCTVideo.xcodeproj"; sourceTree = "<group>"; };
 		99A0DA542036B76F00FE8FF6 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Italic.ttf"; sourceTree = "<group>"; };
 		99A0DA552036B76F00FE8FF6 /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
+		99E73093205A8F3700A90227 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
+		99E73095205A8F4000A90227 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		99ED2C2F2024729E007723DC /* ART.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ART.xcodeproj; path = "../node_modules/react-native/Libraries/ART/ART.xcodeproj"; sourceTree = "<group>"; };
 		99EDFF3F20592DCE00BB4B36 /* GoogleAppUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleAppUtilities.framework; sourceTree = "<group>"; };
 		99EDFF4020592DCE00BB4B36 /* GoogleAuthUtilities.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleAuthUtilities.framework; sourceTree = "<group>"; };
@@ -722,9 +722,9 @@
 		13B07FAE1A68108700A75B9A /* DiveThru */ = {
 			isa = PBXGroup;
 			children = (
+				99E73095205A8F4000A90227 /* main.jsbundle */,
+				99E73093205A8F3700A90227 /* assets */,
 				99EDFF3E20592DCE00BB4B36 /* GoogleSdk */,
-				992130D52053F6DA00466705 /* main.jsbundle */,
-				992130D12053BBF300466705 /* assets */,
 				99F3E5D9204EBAA600DD4840 /* DiveThru.entitlements */,
 				99F3E578204EAF4700DD4840 /* GoogleService-Info.plist */,
 				99669651201CA47B00BC4C45 /* Framework */,
@@ -1632,17 +1632,17 @@
 				ECE87D6D16484DE39CD9FC69 /* Entypo.ttf in Resources */,
 				1F6394FBDA3F429DA9E1CD66 /* EvilIcons.ttf in Resources */,
 				18D7EEBD46724EF39646C87D /* FontAwesome.ttf in Resources */,
+				99E73094205A8F3800A90227 /* assets in Resources */,
 				A9848CC8519F43D3872B751C /* Foundation.ttf in Resources */,
 				F6F0E8CB14FB4966999E1A67 /* Ionicons.ttf in Resources */,
 				827F2C45BD234EC19360961A /* MaterialIcons.ttf in Resources */,
 				EE7EA5AF8F904F3FB935256D /* Octicons.ttf in Resources */,
 				0D265D8B67A148E89651B34C /* Roboto_medium.ttf in Resources */,
-				992130D22053BBF300466705 /* assets in Resources */,
+				99E73096205A8F4000A90227 /* main.jsbundle in Resources */,
 				67A322624B8A41EC9A053C96 /* Roboto.ttf in Resources */,
 				334C868B3FFA4099B4455CE1 /* rubicon-icon-font.ttf in Resources */,
 				485083C7F93D41AC9A160787 /* SimpleLineIcons.ttf in Resources */,
 				87DB686BE7FD48FB902FE65D /* Zocial.ttf in Resources */,
-				992130D62053F6DB00466705 /* main.jsbundle in Resources */,
 				1CED3FD0B02646C5AF70CF48 /* Feather.ttf in Resources */,
 				3CEA31B1B2A8463E8B4FBA4A /* MaterialCommunityIcons.ttf in Resources */,
 			);

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, Image, AsyncStorage } from 'react-native';
 import { NavigationActions } from 'react-navigation';
+import { GoogleSignin } from 'react-native-google-signin';
 import { Button } from 'react-native-material-ui';
 import styles, { buttonStyles } from '../../styles/profile';
 import Profile from '../../assets/images/ic_profile.png';
@@ -21,6 +22,18 @@ class ProfileScreen extends Component {
   }
 
   onLogout = () => {
+    const userData = AsyncStorage.getItem('google_id').then((value) => {
+      if(value !== null) {
+        GoogleSignin.signOut()
+        .then(() => {
+          console.log('out');
+        })
+        .catch((err) => {
+
+        });
+      }
+    });
+  
     AsyncStorage.removeItem('user_id');
     this.props.navigation.dispatch(
       NavigationActions.reset({

@@ -1,8 +1,9 @@
 import { StackNavigator, TabNavigator, TabBarTop } from 'react-navigation';
 import { COLOR as colors } from 'react-native-material-ui';
 import ReminderScreen from './ReminderScreen';
-import DiveThruScreen from './DiveThruScreen';
-// import DiveThruPlayerScreen from '../DiveThru/DiveThruPlayerScreen';
+// import DiveThruScreen from './DiveThruScreen';
+import DiveThruScreen from '../DiveThru/DiveThruScreen';
+import DiveThruPlayerScreen from '../DiveThru/DiveThruPlayerScreen';
 import ProfileScreen from './ProfileScreen';
 import HomeScreen from './HomeScreen';
 import PlayerScreen from './PlayerScreen';
@@ -22,7 +23,28 @@ const components = {
     headerMode: 'none',
   }) },
   Reminder: { screen: ReminderScreen },
-  DiveThru: { screen: DiveThruScreen },
+  DiveThru: {
+    screen: StackNavigator({
+      DiveThru: { screen: DiveThruScreen },
+      DiveThruPlayer: { screen: DiveThruPlayerScreen },
+    }),
+    navigationOptions: {
+      title: 'DiveThru',
+      // tabBarVisible: false,
+      // tabBar: (state, acc) => {
+      //   return {
+      //     label: (acc && acc.label !== 'undefined') ? acc.label : 'DiveThru',
+      //     visible: (acc && acc.visible !== 'undefined') ? acc.visible : true,
+      //   };
+      // },
+      // tabBar: (state, acc) => {
+      //   return {
+      //     label: '',
+      //     visible: (acc && acc.visible !== 'undefined') ? acc.visible : true,
+      //   };
+      // },
+    },
+  },
   // DiveThru: { screen: DiveThruPlayerScreen },
   Profile: { screen: ProfileScreen },
 };
