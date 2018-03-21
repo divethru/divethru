@@ -4,7 +4,6 @@ import { View, Text, StatusBar, TouchableOpacity, Image, ImageBackground, Scroll
 import { Button } from 'react-native-material-ui';
 import styles, { buttonStyles } from '../../styles/sessionDescription';
 import IC_WHITE_CLOSE from '../../assets/images/ic_close.png';
-import { colors } from '../../styles/theme';
 import sessionDescBg from '../../assets/images/SessionDescBg.png';
 
 class SessionDescriptionScreen extends Component {
@@ -26,6 +25,7 @@ class SessionDescriptionScreen extends Component {
     const sessionData = params ? params.sessionData : undefined;
 
     this.setState({
+      title: sessionData.title,
       sessionDesc: sessionData.sessionDesc,
       sessionName: sessionData.sessionName,
       // sessionCategory: sessionData.sessionCategory,
@@ -62,7 +62,7 @@ class SessionDescriptionScreen extends Component {
             </View>
           </View>
           <View style={styles.descContainer}>
-            <Text style={styles.subText}>10 Day Program</Text>
+            <Text style={styles.subText}>{this.state.title}</Text>
             <Text style={styles.descText}>{this.state.sessionDesc}</Text>
             <Button
               primary

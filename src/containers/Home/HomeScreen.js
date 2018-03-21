@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity, ScrollView, Platform, ImageBackground, ListView, Dimensions, AsyncStorage, Animated, RefreshControl, StatusBar } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, ImageBackground, ListView, Dimensions, AsyncStorage, Animated, RefreshControl, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Button } from 'react-native-material-ui';
 import * as Progress from 'react-native-progress';
@@ -18,7 +18,7 @@ import Home from '../../assets/images/ic_home.png';
 const width = Dimensions.get('window').width;
 
 class HomeScreen extends Component {
-  static navigationOptions = ({navigation}) => ({
+  static navigationOptions = () => ({
     header: null,
     tabBarLabel: 'Home',
     tabBarIcon: ({ tintColor }) => <Image source={Home} style={{ tintColor }} />,
@@ -124,9 +124,9 @@ class HomeScreen extends Component {
             session_id: value.session_id,
             session_description: value.session_description,
             meditation_audio: value.meditation_audio[0],
+            meditation_audio_time: value.meditation_audio_time[0],
           });
         });
-        
         const size = 6;
         this.openDivesItem = sessionData.slice(0, size);
         this.setState({
@@ -170,7 +170,7 @@ class HomeScreen extends Component {
   }
 
   fetchDeepDiveData() {
-    const ref = firebaseApp.database().ref('Category').child('Deep Dives');
+    const ref = firebaseApp.database().ref('Category').child('Deep Dive');
     return ref.once('value').then((dataSnapshot) => {
       if (dataSnapshot.exists()) {
         const sessionData = [];
@@ -208,35 +208,35 @@ class HomeScreen extends Component {
     }
   }
 
+  onBegin = () => {
+    if (this.state.session.length > 0) {
+      if (this.state.last_conversation_id >= 8 && this.state.last_conversation_id !== 10) {
+        this.setState({ isPrompted: true });
+      } else if (this.state.last_conversation_id === 10) {
+        this.props.navigation.navigate('SubscribeNowScreen');
+      } else {
+        this.redirectToPlayer();
+      }
+    }
+  }
+
   redirectToPlayer() {
     if (this.state.last_conversation_id >= 8) {
       this.clearTimer();
     }
     const lastConversation = this.state.last_conversation_id;
     const session = this.state.session[lastConversation];
-    const sessionData = {
+    const rowdata = {
       session_name: session.session_name,
       session_img: session.session_img,
       session_id: session.session_id,
       session_description: session.session_description,
       meditation_audio: session.meditation_audio,
+      meditation_audio_time: session.meditation_audio_time,
       last_conversation_id: this.state.last_conversation_id,
       halted: this.state.halted,
     };
-    this.props.navigation.navigate('Player', { returnData: this.fetchUserLastConversationData.bind(this), sessionData });
-  }
-
-  onBegin = () => {
-    if (this.state.session.length > 0) {
-      if (this.state.last_conversation_id >= 8 && this.state.last_conversation_id !== 10) {
-        this.setState({ isPrompted: true });
-      } else if (this.state.last_conversation_id == 10) {
-        console.log('10 Day program over');
-        this.props.navigation.navigate('SubscribeNowScreen');
-      } else {
-        this.redirectToPlayer();
-      }
-    }
+    this.props.navigation.navigate('Player', { returnData: this.fetchUserLastConversationData.bind(this), rowdata });
   }
 
   CloseModal = () => {
@@ -291,7 +291,7 @@ class HomeScreen extends Component {
 
   render() {
     let day = 0;
-    if(this.state.last_conversation_id <= 9) {
+    if (this.state.last_conversation_id <= 9) {
       day = this.state.last_conversation_id + 1;
     } else {
       day = 10;
@@ -314,13 +314,15 @@ class HomeScreen extends Component {
     return (
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
-          <ScrollView refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={() => { this.onRefreshClicked(); }}
-            />
-          }>
-           <StatusBar
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={() => { this.onRefreshClicked(); }}
+              />
+            }
+          >
+            <StatusBar
               translucent
               backgroundColor="rgba(0, 0, 0, 0.010)"
               animated
@@ -411,7 +413,7 @@ class HomeScreen extends Component {
 
               <View style={styles.diveContainer}>
                 <View style={styles.diveInnerContainer}>
-                <ListView
+                  <ListView
                     horizontal
                     pagingEnabled
                     showsHorizontalScrollIndicator={false}
@@ -444,7 +446,7 @@ class HomeScreen extends Component {
 
               <View style={styles.diveContainer}>
                 <View style={styles.diveInnerContainer}>
-                <ListView
+                  <ListView
                     horizontal
                     onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { x: this.scrollX2 } }}],

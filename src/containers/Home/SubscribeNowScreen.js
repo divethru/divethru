@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, ListView, StatusBar } from 'react-native';
 import PropTypes from 'prop-types';
-import * as RNIap from 'react-native-iap';
+import { View, Text, Image, TouchableOpacity, ScrollView, ListView } from 'react-native';
+import box from '../../assets/images/box.png';
 import IC_LOCK from '../../assets/images/ic_lock_black.png';
 import IC_HAND from '../../assets/images/ic_hand.png';
 import IC_WEB from '../../assets/images/ic_web.png';
@@ -45,17 +45,6 @@ const data = [
   },
 ];
 
-const itemSkus = {
-  ios: [
-    'com.meditation.divethru.mothlyTest',
-    'com.meditation.divethru.yearlyTest',
-  ],
-  android: [
-    'com.meditation.divethru.mothlyTest',
-    'com.meditation.divethru.yearlyTest',
-  ],
-};
-
 class SubscribeNowScreen extends Component {
   static navigationOptions = () => ({
     header: null,
@@ -70,35 +59,29 @@ class SubscribeNowScreen extends Component {
       }),
       onClicked: false,
     };
+    this.handlerButtonOnClick = this.handlerButtonOnClick.bind(this);
   }
-
   componentDidMount() {
-    StatusBar.setHidden(true);
-    try {
-      const message = RNIap.prepareAndroid().then(() => {
-        const items = RNIap.getItems(itemSkus)
-        this.setState({ items })
-      });
-    } catch(errorCode) {
-    
-    }
     this.fetchData();
   }
-
-  componentWillUnmount() {
-    StatusBar.setHidden(false);
-  }
-
   fetchData() {
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(data),
     });
   }
-
+  handlerButtonOnClick() {
+    this.setState({
+      onClicked: true,
+    });
+  }
   renderCategory(category) {
     return (
-      <TouchableOpacity style={{}} onPress={() => { this.setState({ onClicked: true, itemTitle: category.title }); }}>
-        <View style={this.state.onClicked && this.state.itemTitle === category.title ? styles.innerContainerFocus : styles.innerContainer}>
+      <TouchableOpacity onPress={() => { this.setState({ onClicked: true, itemTitle: category.title }); }}>
+        <View style={{ flex: 1 }}>
+          <Image
+            style={this.state.onClicked && category.title === this.state.itemTitle ? styles.imagebox : styles.imgbox}
+            source={box}
+          />
           <Image
             style={styles.imagebckground}
             source={SessionPlayerBG}
@@ -114,7 +97,7 @@ class SubscribeNowScreen extends Component {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <TouchableOpacity style={styles.closebtn} onPress={() => { this.props.navigation.goBack(); }}>
+          <TouchableOpacity style={styles.closebtn} onPress={() => { }}>
             <Image
               style={styles.image}
               source={IC_CLOSE}
@@ -126,7 +109,6 @@ class SubscribeNowScreen extends Component {
             <ListView
               horizontal
               dataSource={this.state.dataSource}
-              // renderRow={category => <Text>{category.title}</Text>}
               renderRow={category => this.renderCategory(category)}
             />
           </View>

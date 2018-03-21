@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ListView, TouchableOpacity, ImageBackground, FlatList, ScrollView } from 'react-native';
+import { View, Text, ListView, TouchableOpacity, ImageBackground, FlatList, ScrollView, StatusBar } from 'react-native';
 import PropTypes from 'prop-types';
 import * as Progress from 'react-native-progress';
 import styles from '../../styles/subCategory';
@@ -24,6 +24,7 @@ export default class SubCategoryScreen extends Component {
     };
   }
   componentDidMount() {
+    StatusBar.setHidden(false);
     const { params } = this.props.navigation.state;
     const categoryData = params ? params.categoryData : undefined;
     this.setState({

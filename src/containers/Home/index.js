@@ -10,7 +10,8 @@ import PlayerScreen from './PlayerScreen';
 import SessionDescriptionScreen from './SessionDescriptionScreen';
 import SubscribeNowScreen from './SubscribeNowScreen';
 import CalenderReminderScreen from './CalenderReminderScreen';
-import { uiTheme } from '../../styles/theme';
+import SessionScreen from '../DiveThru/SessionScreen';
+import CategoryScreen from '../DiveThru/CategoryScreen';
 
 const components = {
   Home: { screen: StackNavigator({
@@ -23,29 +24,17 @@ const components = {
     headerMode: 'none',
   }) },
   Reminder: { screen: ReminderScreen },
-  DiveThru: {
-    screen: StackNavigator({
-      DiveThru: { screen: DiveThruScreen },
-      DiveThruPlayer: { screen: DiveThruPlayerScreen },
-    }),
-    navigationOptions: {
-      title: 'DiveThru',
-      // tabBarVisible: false,
-      // tabBar: (state, acc) => {
-      //   return {
-      //     label: (acc && acc.label !== 'undefined') ? acc.label : 'DiveThru',
-      //     visible: (acc && acc.visible !== 'undefined') ? acc.visible : true,
-      //   };
-      // },
-      // tabBar: (state, acc) => {
-      //   return {
-      //     label: '',
-      //     visible: (acc && acc.visible !== 'undefined') ? acc.visible : true,
-      //   };
-      // },
-    },
-  },
-  // DiveThru: { screen: DiveThruPlayerScreen },
+  DiveThru: { screen: StackNavigator({
+    DiveThru: { screen: DiveThruScreen },
+    CategoryScreen: { screen: CategoryScreen },
+    Session: { screen: SessionScreen },
+    DiveThruPlayer: { screen: DiveThruPlayerScreen },
+    SessionDescription: { screen: SessionDescriptionScreen },
+    CalenderReminderScreen: { screen: CalenderReminderScreen },
+    Player: { screen: PlayerScreen },
+  }, {
+    headerMode: 'none',
+  }) },
   Profile: { screen: ProfileScreen },
 };
 

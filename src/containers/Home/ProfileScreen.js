@@ -22,6 +22,7 @@ class ProfileScreen extends Component {
   }
 
   onLogout = () => {
+    AsyncStorage.removeItem('user_id');
     const userData = AsyncStorage.getItem('google_id').then((value) => {
       if(value !== null) {
         GoogleSignin.signOut()
@@ -34,7 +35,6 @@ class ProfileScreen extends Component {
       }
     });
   
-    AsyncStorage.removeItem('user_id');
     this.props.navigation.dispatch(
       NavigationActions.reset({
         actions: [

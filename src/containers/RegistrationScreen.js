@@ -274,6 +274,9 @@ class RegistrationScreen extends Component {
           access_code: this.state.accessCode,
           last_free_conversation_id: 0,
           halted: 0.0,
+          total_time_divethru: 0,
+          completed_conversation: 0,
+          streak: '',
         };
 
         const updates = {};
@@ -372,6 +375,9 @@ class RegistrationScreen extends Component {
                       access_code: '',
                       last_free_conversation_id: 0,
                       halted: 0.0,
+                      total_time_divethru: 0,
+                      completed_conversation: 0,
+                      streak: '',
                     };
 
                     const updates = {};
@@ -456,6 +462,9 @@ class RegistrationScreen extends Component {
               access_code: '',
               last_free_conversation_id: 0,
               halted: 0.0,
+              total_time_divethru: 0,
+              completed_conversation: 0,
+              streak: '',
             };
 
             const updates = {};

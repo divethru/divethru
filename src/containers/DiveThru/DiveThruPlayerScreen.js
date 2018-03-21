@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { NavigationActions } from 'react-navigation';
 import { View, Text, Image, ImageBackground, TouchableOpacity, StatusBar, AsyncStorage, Modal, Platform, PanResponder, Dimensions } from 'react-native';
 import Sound from 'react-native-sound';
 import Svg, { Path, Circle, G } from 'react-native-svg';
@@ -32,12 +31,15 @@ class DiveThruPlayerScreen extends Component {
       slider: 0,
       currentTime: 0,
       isPlaying: false,
-      isLoaded: false,
+      isLoaded: true,
+      isTimeDisable: false,
       progress: 0,
       modalVisible: false,
+      // angle: this.props.angle,
       bgTimeOne: 'transparent',
       bgTimeTwo: 'transparent',
       bgTimeThree: 'transparent',
+      // meditation_audio_time: [],
     };
     this.duration = 0;
     this.audioState = '';
@@ -46,32 +48,33 @@ class DiveThruPlayerScreen extends Component {
   componentWillMount() {
     StatusBar.setHidden(true);
     const { params } = this.props.navigation.state;
-    // const tab = params ? params.tab : undefined;
-    // // alert(JSON.stringify(tab));
-    // const sessionData = params ? params.rowdata : undefined;
-    // const name = params ? params.name : undefined;
-    // alert(JSON.stringify(sessionData.meditation_audio));
-    // this.session = new Sound(sessionData.meditation_audio, null, (e) => {
-      // alert(e)
-    this.session = new Sound('http://34.215.40.163/Admin/uploads/meditation/day09.mp3', null, (e) => {
-      if (e) {
-        console.log('error loading track:', e);
-      } else {
-        this.session.setCategory('Playback');
-        // if (sessionData.halted > 0.0) {
-        //   this.setState({ isLoaded: true, isResume: true });
-        // } else {
-          this.setState({ isLoaded: true });
-        // }
-      }
-    });
+    const sessionData = params ? params.rowdata : undefined;
+    const bundleName = params ? params.bundleName : undefined;
+    const bundleID = params ? params.bundleId : undefined;
+    // let audioTime = [];
+    // let audios = [];
+    // if (sessionData.meditation_audio_time) {
+    //   audioTime = sessionData.meditation_audio_time;
+    // }
+
+    // if (sessionData.meditation_audio) {
+    //   if (bundleName === '10 Day Program') {
+    //     audios = sessionData.meditation_audio[0];
+    //   } else {
+    //     audios = sessionData.meditation_audio;
+    //   }
+    // }
 
     this.setState({
-      sessionDesc: 'sessionData.session_description',
-      sessionName: 'sessionData.session_name',
-      sessionImg: 'sessionData.session_img',
-      // title: name,
-      halted: 0, // sessionData.halted,
+      title: bundleName,
+      bundleID,
+      meditation_audio: sessionData.meditation_audio,
+      meditation_audio_time: sessionData.meditation_audio_time,
+      sessionDesc: sessionData.session_description,
+      sessionName: sessionData.session_name,
+      session_id: sessionData.session_id,
+      sessionImg: sessionData.session_img,
+      halted: 0,
     });
 
     this._panResponder = PanResponder.create({
@@ -85,14 +88,8 @@ class DiveThruPlayerScreen extends Component {
         const a = this.cartesianToPolar(gs.moveX - xOrigin, gs.moveY - yOrigin);
         this.setState({ progress: a });
         this.sliderValueChange(a);
-        // this.angle = a;
-        // this.props.onValueChange(a);
       },
     });
-  }
-
-  componentDidMount() {
-
   }
 
   componentWillUnmount() {
@@ -101,6 +98,7 @@ class DiveThruPlayerScreen extends Component {
 
   onClickOfInformation = () => {
     const sessionData = {
+      title: this.state.title,
       sessionName: this.state.sessionName,
       sessionDesc: this.state.sessionDesc,
     };
@@ -114,8 +112,8 @@ class DiveThruPlayerScreen extends Component {
   }
 
   onClickOfClose = () => {
-    // this.setState({ isPlaying: false });
-    // this.pause();
+    this.setState({ isPlaying: false });
+    this.pause();
     // this.props.navigation.state.params.returnData();
     this.props.navigation.goBack();
   }
@@ -137,13 +135,14 @@ class DiveThruPlayerScreen extends Component {
       return y > hC ? 0 : 180;
     } else if (y === 0) {
       return x > hC ? 90 : 270;
-    } 
+    } else {
       return (Math.round((Math.atan((y - hC) / (x - hC))) * 180 / Math.PI) +
         (x > hC ? 90 : 270));
-    
+    }
   }
 
   play() {
+    this.setState({ isTimeDisable: true });
     if (this.session && !this.state.isPlaying) {
       this.session.getCurrentTime((seconds) => {
         this.session.setCurrentTime(seconds);
@@ -165,13 +164,13 @@ class DiveThruPlayerScreen extends Component {
     this.session.pause();
     this.clearTimer();
     this.session.getCurrentTime((seconds) => {
-      AsyncStorage.getItem('user_id').then((value) => {
-        if (value != null) {
-          const ref = firebaseApp.database().ref('Users').child(value);
-          ref.update({ halted: seconds });
-          this.setState({ halted: seconds });
-        }
-      }).done();
+      // AsyncStorage.getItem('user_id').then((value) => {
+      //   if (value != null) {
+      //     const ref = firebaseApp.database().ref('Users').child(value);
+      //     ref.update({ halted: seconds });
+      //     this.setState({ halted: seconds });
+      //   }
+      // }).done();
     });
   }
 
@@ -219,18 +218,20 @@ class DiveThruPlayerScreen extends Component {
       this.setState({ isPlaying: false });
       this.pause();
     } else {
-      if (this.session.isLoaded() === true) {
-        if (this.state.isResume === true) {
-          this.setState({ modalVisible: true, isResume: false });
-        } else {
-          if (this.state.halted > 0.0) {
-            this.session.setCurrentTime(this.state.halted);
-            const seek = this.state.halted * (360 / this.session.getDuration());
-            this.setState({ progress: seek, isPlaying: true });
-            this.play();
+      if (this.session) {
+        if (this.session.isLoaded() === true) {
+          if (this.state.isResume === true) {
+            this.setState({ modalVisible: true, isResume: false });
           } else {
-            this.setState({ isPlaying: true });
-            this.play();
+            if (this.state.halted > 0.0) {
+              this.session.setCurrentTime(this.state.halted);
+              const seek = this.state.halted * (360 / this.session.getDuration());
+              this.setState({ progress: seek, isPlaying: true });
+              this.play();
+            } else {
+              this.setState({ isPlaying: true });
+              this.play();
+            }
           }
         }
       }
@@ -250,24 +251,29 @@ class DiveThruPlayerScreen extends Component {
   }
 
   updateUserDataForFreeProgram() {
-    // AsyncStorage.getItem('user_id').then((value) => {
-    //   if (value != null) {
-    //     const ref = firebaseApp.database().ref('Users').child(value);
-    //     ref.update({ last_free_conversation_id: this.state.lastConversationId + 1, halted: 0.0 });
-    //     this.props.navigation.state.params.returnData();
-    //     this.props.navigation.goBack();
-    //   }
-    // }).done();
+    const bundleId = this.state.bundleID;
+    const sessionId = this.state.session_id;
+
+    AsyncStorage.getItem('user_id').then((value) => {
+      if (value != null) {
+        const ref = firebaseApp.database().ref('Users').child(value).child('streak/' + bundleId + '/Session/' + sessionId);
+        ref.update({ total_visited: 1, total_taken_time: this.state.meditation_audio_time[this.state.index] });
+        // this.props.navigation.state.params.returnData();
+        this.props.navigation.goBack();
+      }
+    }).done();
   }
 
-  timeButtonClicked(value) {
-    // if (value === 1) {
-    //   this.setState({ bgTimeOne: '#000000' });
-    // } else if (value === 2) {
-    //   this.setState({ });
-    // } else {
-    //   this.setState({ });
-    // }
+  timeButtonClicked(index) {
+    this.setState({ isLoaded: false, isTimeDisable: true });
+    this.session = new Sound(this.state.meditation_audio[index], null, (e) => {
+      if (e) {
+        console.log('error loading track:', e);
+      } else {
+        this.session.setCategory('Playback');
+        this.setState({ isLoaded: true, isTimeDisable: false });
+      }
+    });
   }
 
   renderPlayer() {
@@ -329,6 +335,7 @@ class DiveThruPlayerScreen extends Component {
       <View style={styles.container}>
         <ImageBackground
           // source={Dashboard}
+          // backgroundColor={colors.red700}
           source={{ uri: this.state.sessionImg }}
           style={styles.backImage}
         >
@@ -349,7 +356,7 @@ class DiveThruPlayerScreen extends Component {
             </View>
             <View>
               <Text style={styles.topText}>
-                {/* {this.state.title} */}
+                {this.state.title}
               </Text>
             </View>
             <View>
@@ -372,33 +379,49 @@ class DiveThruPlayerScreen extends Component {
                   {this.renderPlayer()}
                 </View>
                 <View style={styles.timeContainer}>
-                  <Button
-                    primary
-                    title=""
-                    text="3 min"
-                    upperCase={false}
-                    onPress={() => { this.timeButtonClicked(1, this.setState({ Title: '3 min' })); }}
-                    style={this.state.Title === '3 min' ? timeButtonClickStyles : timeButtonStyles}
-                    // style={timeButtonStyles}
-                  />
-                  <Button
-                    primary
-                    title=""
-                    text="5 min"
-                    upperCase={false}
-                    onPress={() => { this.timeButtonClicked(2, this.setState({ Title: '5 min' })); }}
-                    style={this.state.Title === '5 min' ? timeButtonClickStyles : timeButtonStyles}
-                    // style={timeButtonStyles}
-                  />
-                  <Button
-                    primary
-                    title=""
-                    text="10 min"
-                    upperCase={false}
-                    onPress={() => { this.timeButtonClicked(3, this.setState({ Title: '10 min' })); }}
-                    style={this.state.Title === '10 min' ? timeButtonClickStyles : timeButtonStyles}
-                    // style={timeButtonStyles}
-                  />
+                  <View style={styles.timeInnerContainer}>
+                    { this.state.meditation_audio_time.map((data, index) => {
+                      return (
+                        <Button
+                          primary
+                          title=""
+                          text={data + ' min'}
+                          upperCase={false}
+                          disabled={this.state.isTimeDisable}
+                          onPress={() => { this.timeButtonClicked(index, this.setState({ index })); }}
+                          style={this.state.index === index ? timeButtonClickStyles : timeButtonStyles}
+                        />
+                      );
+                    })
+                    }
+                    {/* <Button
+                      primary
+                      title=""
+                      text={this.state.meditation_audio_time[0]}
+                      upperCase={false}
+                      onPress={() => { this.timeButtonClicked(1, this.setState({ Title: '3 min' })); }}
+                      style={this.state.Title === '3 min' ? timeButtonClickStyles : timeButtonStyles}
+                      // style={timeButtonStyles}
+                    />
+                    <Button
+                      primary
+                      title=""
+                      text={this.state.meditation_audio_time[1]}
+                      upperCase={false}
+                      onPress={() => { this.timeButtonClicked(2, this.setState({ Title: '5 min' })); }}
+                      style={this.state.Title === '5 min' ? timeButtonClickStyles : timeButtonStyles}
+                      // style={timeButtonStyles}
+                    />
+                    <Button
+                      primary
+                      title=""
+                      text={this.state.meditation_audio_time[2]}
+                      upperCase={false}
+                      onPress={() => { this.timeButtonClicked(3, this.setState({ Title: '10 min' })); }}
+                      style={this.state.Title === '10 min' ? timeButtonClickStyles : timeButtonStyles}
+                      // style={timeButtonStyles}
+                    /> */}
+                  </View>
                 </View>
               </View>
             )
@@ -413,10 +436,24 @@ class DiveThruPlayerScreen extends Component {
                 </View>
                 <View style={styles.timeContainer}>
                   <View style={styles.timeInnerContainer}>
-                    <Button
+                    { this.state.meditation_audio_time.map((data, index) => {
+                      return (
+                        <Button
+                          primary
+                          title=""
+                          text={data + ' min'}
+                          upperCase={false}
+                          disabled={this.state.isTimeDisable}
+                          onPress={() => { this.timeButtonClicked(index, this.setState({ index })); }}
+                          style={this.state.index === index ? timeButtonClickStyles : timeButtonStyles}
+                        />
+                      );
+                    })
+                    }
+                    {/* <Button
                       primary
                       title=""
-                      text="3 min"
+                      text="5" // {this.state.meditation_audio_time[0]}
                       upperCase={false}
                       onPress={() => { this.timeButtonClicked(1, this.setState({ Title: '3 min' })); }}
                       style={this.state.Title === '3 min' ? timeButtonClickStyles : timeButtonStyles}
@@ -425,7 +462,7 @@ class DiveThruPlayerScreen extends Component {
                     <Button
                       primary
                       title=""
-                      text="5 min"
+                      text="6" 
                       upperCase={false}
                       onPress={() => { this.timeButtonClicked(2, this.setState({ Title: '5 min' })); }}
                       style={this.state.Title === '5 min' ? timeButtonClickStyles : timeButtonStyles}
@@ -434,12 +471,12 @@ class DiveThruPlayerScreen extends Component {
                     <Button
                       primary
                       title=""
-                      text="10 min"
+                      text="7"
                       upperCase={false}
                       onPress={() => { this.timeButtonClicked(3, this.setState({ Title: '10 min' })); }}
                       style={this.state.Title === '10 min' ? timeButtonClickStyles : timeButtonStyles}
                       // style={timeButtonStyles}
-                    />
+                    /> */}
                   </View>
                 </View>
               </View>

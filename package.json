@@ -30,6 +30,7 @@
     "react-native-material-ui": "^1.19.0",
     "react-native-pagination": "^1.2.8",
     "react-native-progress": "^3.4.0",
+    "react-native-scrollable-tab-view": "^0.8.0",
     "react-native-simple-radio-button": "^2.7.1",
     "react-native-sound": "git+https://github.com/zmxv/react-native-sound.git#fix_android_network_sound",
     "react-native-svg": "^6.2.1",

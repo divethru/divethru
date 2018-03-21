@@ -20,6 +20,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     letterSpacing: 3,
   },
+  freeText: {
+    color: 'white',
+    marginLeft: '10%',
+    marginBottom: '2%',
+    bottom: '2%',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  sessionCountText: {
+    color: 'white',
+    marginLeft: '10%',
+    bottom: '4%',
+    fontWeight: '300',
+    fontSize: 12,
+  },
   FlatListViewStyle: {
     backgroundColor: 'white',
     height: 150,

@@ -33,7 +33,6 @@ class PlayerScreen extends Component {
       isLoaded: false,
       progress: 0,
       modalVisible: false,
-      // angle: this.props.angle,
     };
     this.duration = 0;
     this.audioState = '';
@@ -42,7 +41,8 @@ class PlayerScreen extends Component {
   componentWillMount() {
     StatusBar.setHidden(true);
     const { params } = this.props.navigation.state;
-    const sessionData = params ? params.sessionData : undefined;
+    const sessionData = params ? params.rowdata : undefined;
+    const title = params.bundleName ? params.bundleName : '10 Day Program';
 
     this.session = new Sound(sessionData.meditation_audio, null, (e) => {
       if (e) {
@@ -58,13 +58,16 @@ class PlayerScreen extends Component {
     });
 
     this.setState({
+      title,
       sessionDesc: sessionData.session_description,
       sessionName: sessionData.session_name,
       sessionImg: sessionData.session_img,
+      sessionTime: sessionData.meditation_audio_time,
       lastConversationId: sessionData.last_conversation_id,
       halted: sessionData.halted,
     });
 
+    alert(JSON.stringify(sessionData));
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (e, gs) => true,
       onStartShouldSetPanResponderCapture: (e, gs) => true,
@@ -92,16 +95,13 @@ class PlayerScreen extends Component {
     });
   }
 
-  componentDidMount() {
-    
-  }
-
   componentWillUnmount() {
     StatusBar.setHidden(false);
   }
 
   onClickOfInformation = () => {
     const sessionData = {
+      title: this.state.title,
       sessionName: this.state.sessionName,
       sessionDesc: this.state.sessionDesc,
     };
@@ -221,7 +221,7 @@ class PlayerScreen extends Component {
       this.pause();
     } else {
       if (this.session.isLoaded() === true) {
-        if(this.state.isResume === true){
+        if (this.state.isResume === true) {
           this.setState({ modalVisible: true, isResume: false });
         } else {
           if (this.state.halted > 0.0) {
@@ -254,7 +254,7 @@ class PlayerScreen extends Component {
     AsyncStorage.getItem('user_id').then((value) => {
       if (value != null) {
         const ref = firebaseApp.database().ref('Users').child(value);
-        ref.update({ last_free_conversation_id: this.state.lastConversationId + 1, halted: 0.0 });
+        ref.update({ last_free_conversation_id: this.state.lastConversationId + 1, halted: 0.0, total_time_divethru: this.state.sessionTime });
         this.props.navigation.state.params.returnData();
         this.props.navigation.goBack();
       }
@@ -365,7 +365,7 @@ class PlayerScreen extends Component {
             </View>
             <View>
               <Text style={styles.topText}>
-                10 Day Intro Program
+                {this.state.title}
               </Text>
             </View>
             <View>
@@ -383,17 +383,17 @@ class PlayerScreen extends Component {
               // <TouchableOpacity
               //   onPress={() => { this.changePlayState(); }}
               // >
-                <View style={styles.playerContainer}>
-                  <Text style={styles.text}>
-                    {this.state.sessionName}
-                  </Text>
-                  <View style={styles.sliderContainer}>
-                    {this.renderPlayer()}
-                  </View>
-                  {/* <Text style={[styles.topText, { marginTop: 30 }]}>
-                    Tap anywhere to play
-                  </Text> */}
+              <View style={styles.playerContainer}>
+                <Text style={styles.text}>
+                  {this.state.sessionName}
+                </Text>
+                <View style={styles.sliderContainer}>
+                  {this.renderPlayer()}
                 </View>
+                {/* <Text style={[styles.topText, { marginTop: 30 }]}>
+                  Tap anywhere to play
+                </Text> */}
+              </View>
               // </TouchableOpacity>
             )
             : (
