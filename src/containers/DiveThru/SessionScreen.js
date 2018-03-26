@@ -14,7 +14,7 @@ class SessionScreen extends Component {
     const name = params ? params.name : undefined;
     return {
       headerLeft: (
-        <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.goBack()}>
+        <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.state.params.handleBack()}>
           <Image
             style={{ height: 20, width: 20, margin: 10 }}
             source={IC_BACK}
@@ -53,6 +53,7 @@ class SessionScreen extends Component {
   }
 
   componentDidMount() {
+    this.props.navigation.setParams({ handleBack: this.handleBack.bind(this) });
     const { params } = this.props.navigation.state;
     const sessionData = params ? params.sessionData : undefined;
     const name = params ? params.name : undefined;
@@ -62,6 +63,11 @@ class SessionScreen extends Component {
       bundleName: name,
       bundleId,
     });
+  }
+
+  handleBack() {
+    this.props.navigation.state.params.returnData();
+    this.props.navigation.goBack();
   }
 
   fetchUserSubscriptionType() {
@@ -130,6 +136,7 @@ class SessionScreen extends Component {
         <ScrollView>
           <View>
             <ListView
+              removeClippedSubviews={false}
               dataSource={this.state.dataSource}
               renderRow={rowdata => this.renderGridItem(rowdata)}
               contentContainerStyle={styles.listView}

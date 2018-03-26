@@ -182,7 +182,7 @@ class DiveThruPlayerScreen extends Component {
     this.session = null;
     this.clearTimer();
     this.setState({ isPlaying: false });
-    this.updateUserDataForFreeProgram();
+    this.updateUserDataForPaidCategory();
   }
 
   playProgress() {
@@ -250,16 +250,40 @@ class DiveThruPlayerScreen extends Component {
     this.play();
   }
 
-  updateUserDataForFreeProgram() {
+  updateTotalConversationInDB(value) {
+    const meditationAudioTime = parseInt(this.state.meditation_audio_time[this.state.index], 10);
+    const ref = firebaseApp.database().ref('Users').child(value);
+    ref.once('value').then((dataSnapshot) => {
+      if (dataSnapshot.exists()) {
+        const totalConversation = dataSnapshot.val().completed_conversation;
+        const totalCount = totalConversation + 1;
+        const totalTime = dataSnapshot.val().total_time_divethru + meditationAudioTime;
+        ref.update({ completed_conversation: totalCount, total_time_divethru: totalTime });
+        this.props.navigation.goBack();
+      }
+    });
+  }
+
+  updateUserDataForPaidCategory() {
     const bundleId = this.state.bundleID;
     const sessionId = this.state.session_id;
 
     AsyncStorage.getItem('user_id').then((value) => {
       if (value != null) {
         const ref = firebaseApp.database().ref('Users').child(value).child('streak/' + bundleId + '/Session/' + sessionId);
-        ref.update({ total_visited: 1, total_taken_time: this.state.meditation_audio_time[this.state.index] });
-        // this.props.navigation.state.params.returnData();
-        this.props.navigation.goBack();
+        const meditationAudioTime = parseInt(this.state.meditation_audio_time[this.state.index], 10);
+        ref.once('value').then((dataSnapshot) => {
+          if (dataSnapshot.exists()) {
+            const totalVisited = dataSnapshot.val().total_visited;
+            const totalCount = totalVisited + 1;
+            const totalTime = dataSnapshot.val().total_taken_time + meditationAudioTime;
+            ref.update({ total_visited: totalCount, total_taken_time: totalTime });
+            this.updateTotalConversationInDB(value);
+          } else {
+            ref.update({ total_visited: 1, total_taken_time: meditationAudioTime });
+            this.updateTotalConversationInDB(value);
+          }
+        });
       }
     }).done();
   }
@@ -385,7 +409,7 @@ class DiveThruPlayerScreen extends Component {
                         <Button
                           primary
                           title=""
-                          text={data + ' min'}
+                          text={data + `${'\n'}min`}
                           upperCase={false}
                           disabled={this.state.isTimeDisable}
                           onPress={() => { this.timeButtonClicked(index, this.setState({ index })); }}
@@ -441,7 +465,8 @@ class DiveThruPlayerScreen extends Component {
                         <Button
                           primary
                           title=""
-                          text={data + ' min'}
+                          // text={data + ' min'}
+                          text={data + `${'\n'}min`}
                           upperCase={false}
                           disabled={this.state.isTimeDisable}
                           onPress={() => { this.timeButtonClicked(index, this.setState({ index })); }}

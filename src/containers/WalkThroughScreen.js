@@ -40,6 +40,18 @@ FCM.on(FCMEvent.Notification, async (notif) => {
         notif.finish(WillPresentNotificationResult.All); // other types available: WillPresentNotificationResult.None
         break;
     }
+  } else {
+    FCM.presentLocalNotification({
+      body: notif.fcm.body,
+      priority: 'high',
+      title: notif.fcm.title,
+      sound: 'default',
+      show_in_foreground: true,
+      tag: 'DiveThru',
+      icon: "splash_logo",
+      'large-icon': "splash_logo"
+    });
+    // FCM.presentLocalNotification({ custom_notification: { title: 'a', body: 'b', show_in_foreground: true } });
   }
 });
 

@@ -67,7 +67,6 @@ class PlayerScreen extends Component {
       halted: sessionData.halted,
     });
 
-    alert(JSON.stringify(sessionData));
     this._panResponder = PanResponder.create({
       onStartShouldSetPanResponder: (e, gs) => true,
       onStartShouldSetPanResponderCapture: (e, gs) => true,
@@ -254,9 +253,18 @@ class PlayerScreen extends Component {
     AsyncStorage.getItem('user_id').then((value) => {
       if (value != null) {
         const ref = firebaseApp.database().ref('Users').child(value);
-        ref.update({ last_free_conversation_id: this.state.lastConversationId + 1, halted: 0.0, total_time_divethru: this.state.sessionTime });
-        this.props.navigation.state.params.returnData();
-        this.props.navigation.goBack();
+        const meditationAudioTime = parseInt(this.state.sessionTime, 10);
+        ref.once('value').then((dataSnapshot) => {
+          if (dataSnapshot.exists()) {
+            const totalTime = dataSnapshot.val().total_time_divethru + meditationAudioTime;
+            ref.update({ last_free_conversation_id: this.state.lastConversationId + 1, halted: 0.0, total_time_divethru: totalTime });
+            this.props.navigation.state.params.returnData();
+            this.props.navigation.goBack();
+          }
+        });
+        // ref.update({ last_free_conversation_id: this.state.lastConversationId + 1, halted: 0.0, total_time_divethru: this.state.sessionTime });
+        // this.props.navigation.state.params.returnData();
+        // this.props.navigation.goBack();
       }
     }).done();
   }

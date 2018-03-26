@@ -71,10 +71,10 @@ class DiveThruScreen extends Component {
             initialPage={0}
             renderTabBar={() => <ScrollableTabBar />}
             tabBarUnderlineStyle={{ backgroundColor: colors.black, width: 130 }}
-            tabBarBackgroundColor="#f3f3f3"
+            tabBarBackgroundColor={colors.white}
             tabBarActiveTextColor="#1A1A1A"
             tabBarInactiveTextColor="#535353"
-            tabBarTextStyle={{ fontWeight: '0' }}
+            // tabBarTextStyle={{ fontWeight: '0' }}
           >
             { this.state.tabs }
           </ScrollableTabView>

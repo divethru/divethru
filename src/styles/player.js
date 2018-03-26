@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   timeContainer: {
-    width: '64%',
-    height: '10%',
+    width: '70%',
+    height: '15%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',

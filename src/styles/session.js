@@ -2,6 +2,7 @@ import { Dimensions, StyleSheet } from 'react-native';
 import { colors } from './theme';
 
 const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
@@ -11,17 +12,30 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     backgroundColor: colors.white,
   },
+  // listView: {
+  //   flexDirection: 'row',
+  //   flexWrap: 'wrap',
+  //   flex: 1,
+  //   marginHorizontal: 1,
+  //   justifyContent: 'center',
+  //   // marginLeft: width / 10,
+  // },
+  // gridItem: {
+  //   width: width > 400 ? 170 : 130,
+  //   height: width > 400 ? 170 : 130,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
   listView: {
-    justifyContent: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
     flex: 1,
+    marginLeft: 15,
+    marginRight: 15,
   },
   gridItem: {
-    width: width > 400 ? 170 : 120,
-    height: width > 400 ? 170 : 120,
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: (width - 30) / 2,
+    height: (height - 30) / 4,
   },
   gridItemImage: {
     width: '100%',
@@ -30,9 +44,8 @@ const styles = StyleSheet.create({
   gridItemText: {
     textAlign: 'center',
     position: 'absolute',
-    fontSize: width > 400 ? 20 : 14,
+    fontSize: width > 400 ? 20 : 16,
     color: colors.white,
-    fontWeight: '300',
     marginLeft: '10%',
     marginTop: '20%',
   },

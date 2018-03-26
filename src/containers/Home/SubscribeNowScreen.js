@@ -28,21 +28,6 @@ const data = [
     subTitle: 'PAID ONCE',
     price: '$ 345',
   },
-  {
-    title: 'M O N T H L Y 1',
-    subTitle: 'PAID MONTH',
-    price: '$ 14.99',
-  },
-  {
-    title: 'Y E A R L Y 1',
-    subTitle: 'PAID YEARLY',
-    price: '$ 7.99',
-  },
-  {
-    title: 'L I F E T I M E 2',
-    subTitle: 'PAID ONCE',
-    price: '$ 345',
-  },
 ];
 
 class SubscribeNowScreen extends Component {
@@ -97,7 +82,7 @@ class SubscribeNowScreen extends Component {
     return (
       <View style={styles.container}>
         <ScrollView>
-          <TouchableOpacity style={styles.closebtn} onPress={() => { }}>
+          <TouchableOpacity style={styles.closebtn} onPress={() => { this.props.navigation.goBack(); }}>
             <Image
               style={styles.image}
               source={IC_CLOSE}

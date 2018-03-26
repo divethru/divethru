@@ -138,7 +138,7 @@ class RegistrationScreen extends Component {
   validateEmail(email) {
     // eslint-disable-next-line no-useless-escape
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-   
+    // const re = /^[a-z0-9._-]{2,}+\s@[a-z0-9_-]{2,}+\.([a-z0-9-]{2,4}|[a-z0-9-]{2,}+\.[a-z0-9-]{2,4})$/;
     if (!re.test(email)) {
       this.setState({
         inputEmailColor: colors.red600,
@@ -277,6 +277,7 @@ class RegistrationScreen extends Component {
           total_time_divethru: 0,
           completed_conversation: 0,
           streak: '',
+          visited: 0,
         };
 
         const updates = {};
@@ -378,6 +379,7 @@ class RegistrationScreen extends Component {
                       total_time_divethru: 0,
                       completed_conversation: 0,
                       streak: '',
+                      visited: 0,
                     };
 
                     const updates = {};
@@ -421,10 +423,10 @@ class RegistrationScreen extends Component {
   }
 
   _googleAuth() {
-    GoogleSignin.signOut()
+    GoogleSignin.signOut();
     GoogleSignin.signIn()
-    .then((user) => {        
-      this.setState({user: user});
+    .then((user) => {     
+      this.setState({ user: user });
       const accessToken = firebase.auth.GoogleAuthProvider.credential(user.idToken, user.accessToken);
       const currentDate = Moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       let deviceToken = '';
@@ -465,6 +467,7 @@ class RegistrationScreen extends Component {
               total_time_divethru: 0,
               completed_conversation: 0,
               streak: '',
+              visited: 0,
             };
 
             const updates = {};
