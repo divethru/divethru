@@ -212,7 +212,7 @@ class CalenderReminderScreen extends Component {
 
             <View style={styles.seperator} />
             <Text style={styles.headtext}>D A T E</Text>
-            <View>
+            <View style={{ margin: 10 }}>
               <DatePicker
                 ref={(datepicker) => { this.date = datepicker; }}
                 date={this.state.date}
@@ -228,7 +228,7 @@ class CalenderReminderScreen extends Component {
                   dateInput: {
                     borderColor: colors.transparent,
                     borderWidth: 0.0,
-                    marginRight: width > 320 ? '73%' : '63%'
+                    alignItems: 'flex-start',
                   },
                   btnTextConfirm: {
                     color: '#7dd3d5',
@@ -243,7 +243,7 @@ class CalenderReminderScreen extends Component {
                     marginBottom: 20,
                   },
                   dateText: {
-                    marginLeft: width > 320 ? 5 : -5,
+                    alignItems: 'flex-start',
                   },
                 }}
                 onDateChange={(date) => { this.onDateChange(date); }}
@@ -255,7 +255,7 @@ class CalenderReminderScreen extends Component {
               <View style={{ flexDirection: 'row' }}>
                 <View style={{ width: '90%' }}>
                   <Text style={styles.headtext}>S T A R T  T I M E</Text>
-                  <View>
+                  <View style={{ margin: 10 }}>
                     <DatePicker
                       ref={(datepicker) => { this.time = datepicker; }}
                       date={this.state.time}
@@ -271,7 +271,7 @@ class CalenderReminderScreen extends Component {
                         dateInput: {
                           borderColor: colors.transparent,
                           borderWidth: 0.0,
-                          marginRight: width > 320 ? '72%' : '62%',
+                          alignItems: 'flex-start',
                         },
                         btnTextConfirm: {
                           color: '#7dd3d5',
@@ -286,7 +286,7 @@ class CalenderReminderScreen extends Component {
                           marginBottom: 20,
                         },
                         dateText: {
-                          marginLeft: width > 320 ? -5 : -7,
+                          alignItems: 'flex-start',
                         },
                       }}
                       onDateChange={(time) => { this.onTimeChange(time); }}

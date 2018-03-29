@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, ScrollView, Image, StatusBar } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Image, StatusBar, AsyncStorage } from 'react-native';
 import { PropTypes } from 'prop-types';
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
 import firebaseApp from '../../components/constant';
@@ -18,10 +18,20 @@ const styles = StyleSheet.create({
 });
 
 class DiveThruScreen extends Component {
-  static navigationOptions = () => ({
+  static navigationOptions = ({ navigation }) => ({
     header: null,
     tabBarLabel: 'DiveThru',
-    tabBarIcon: ({ tintColor }) => <Image source={DiveThru} style={{ tintColor }} />,
+    tabBarIcon: ({ tintColor, focused }) => {
+      AsyncStorage.getItem('selectedIndex').then((value) => {
+        if (value !== null || value !== undefined) {
+          if (value !== null) {
+            navigation.state.params.handleSelectedIndex(value);
+          }
+        }
+      });
+      return (<Image source={DiveThru} style={{ tintColor }} />);
+    },
+    // tabBarIcon: ({ tintColor }) => <Image source={DiveThru} style={{ tintColor }} />,
   });
   constructor(props) {
     super(props);
@@ -31,15 +41,24 @@ class DiveThruScreen extends Component {
   }
   componentWillMount() {
     StatusBar.setHidden(false);
+    this.props.navigation.setParams({ handleSelectedIndex: this.handleSelectedIndex.bind(this) });
     this.fetchCategoryName();
     const tabs = () => (
       <Text tabLabel="Tab #1">My</Text>
     );
     this.setState({ tabs });
   }
+
+  handleSelectedIndex(setCurrentIndex) {
+    AsyncStorage.removeItem('selectedIndex');
+    const page = parseInt(setCurrentIndex, 10);
+    setTimeout(() => this.tabView.goToPage(page), 300);
+  }
+
   componentDidMount() {
     this.setState({ loading: true });
   }
+
   fetchCategoryName() {
     const labels = [];
     const ref = firebaseApp.database().ref('Category');
@@ -53,22 +72,25 @@ class DiveThruScreen extends Component {
           labels.forEach((item, index) => {
             tabs.push(
               <ScrollView tabLabel={item.toUpperCase()}>
-                <CategoryScreen index={index} screenProps={this.props} />
+                <CategoryScreen index={index} item={item} screenProps={this.props} />
               </ScrollView>,
             );
           });
           this.setState({ tabs, loading: false });
         }
       }
+     
+      // setTimeout(() => this.tabView.goToPage(setCurrentIndex), 300);
     });
   }
+
   render() {
     return (
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
           <ScrollableTabView
+            ref={(tabView) => { this.tabView = tabView; }}
             style={{ marginTop: 20 }}
-            initialPage={0}
             renderTabBar={() => <ScrollableTabBar />}
             tabBarUnderlineStyle={{ backgroundColor: colors.black, width: 130 }}
             tabBarBackgroundColor={colors.white}

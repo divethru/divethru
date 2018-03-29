@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity, ScrollView, ImageBackground, ListView, Dimensions, AsyncStorage, Animated, RefreshControl, StatusBar } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, ImageBackground, ListView, Dimensions, AsyncStorage, Animated, RefreshControl, StatusBar, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Button } from 'react-native-material-ui';
 import * as Progress from 'react-native-progress';
@@ -14,6 +14,7 @@ import dashboardBG from '../../assets/images/Dashboard_bg.png';
 import dashboardQuotesBG from '../../assets/images/Dashboard_QuotesBG.png';
 import subscribeNowBG from '../../assets/images/SubscribeNow_bg.png';
 import Home from '../../assets/images/ic_home.png';
+import DiveThruScreen from '../DiveThru/DiveThruScreen';
 
 const width = Dimensions.get('window').width;
 
@@ -31,13 +32,7 @@ class HomeScreen extends Component {
       dailyQuotes: '',
       session: [],
       last_conversation_id: 0,
-      dataSourceForDeepDive: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2,
-      }),
-      dataSourceFor10Day: new ListView.DataSource({
-        rowHasChanged: (row1, row2) => row1 !== row2,
-      }),
-      dataSourceForQuickDive: new ListView.DataSource({
+      dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2,
       }),
       refreshing: false,
@@ -59,10 +54,8 @@ class HomeScreen extends Component {
     this.fetchUserLastConversationData().then(() => {
       this.fetch10DayProgramData().then(() => {
         this.fetchQuotesData().then(() => {
-          this.fetchQuickDiveData().then(() => {
-            this.fetchDeepDiveData().then(() => {
-              this.setState({ loading: false });
-            }).catch(() => { });
+          this.fetchCategoryWiseDataHome().then(() => {
+            this.setState({ loading: false });
           }).catch(() => { });
         }).catch(() => { });
       }).catch(() => { });
@@ -102,6 +95,233 @@ class HomeScreen extends Component {
     }).catch(() => { });
   }
 
+  fetchCategoryWiseDataHome() {
+    const ref = firebaseApp.database().ref('Category');
+    const arrayCategory = [];
+    ref.once('value').then((dataSnapshot) => {
+      // console.log('dataSnapshot-->' + JSON.stringify(dataSnapshot));
+      if (dataSnapshot.exists()) {
+        dataSnapshot.forEach((child) => {
+          // alert('kk');
+          const arraySessionAllData = [];
+          const arraySubCategoryAllData = [];
+          const arrayBundleAllData = [];
+          // alert('child-->'+ JSON.stringify(child.val()));
+          if (child.val().Session) {
+            const CategoryName = child.val().category_name;
+            const CategoryDescription = child.val().category_description;
+            if (child.val().Bundle === '' || child.val().SubCategory === '') {
+              let arraySession = [];
+              arraySession = child.val().Session ? child.val().Session : [];
+
+              Object.keys(arraySession).forEach((key) => {
+                const value = arraySession[key];
+                arraySessionAllData.push({
+                  session_name: value.session_name,
+                  session_img: value.session_img,
+                  session_id: value.session_id,
+                  session_description: value.session_description,
+                  meditation_audio: value.meditation_audio[0],
+                  meditation_audio_time: value.meditation_audio_time[0],
+                });
+              });
+              arrayCategory.push({
+                cat_name: CategoryName,
+                cat_desc: CategoryDescription,
+                session: arraySessionAllData,
+              });
+            } else {
+              arrayCategory.push({
+                cat_name: CategoryName,
+                cat_desc: CategoryDescription,
+                session: arraySessionAllData,
+              });
+            }
+          } else if (child.val().Bundle) {
+            const CategoryName = child.val().category_name;
+            const CategoryDescription = child.val().category_description;
+            if (child.val().Session === '' || child.val().SubCategory === '') {
+              let arrayBundle = [];
+              arrayBundle = child.val().Bundle;
+              Object.keys(arrayBundle).forEach((key) => {
+                let value = [];
+                value = arrayBundle[key];
+                const sessionRry = value.Session ? value.Session : [];
+                const arrayNewSession = [];
+
+                if (sessionRry !== undefined) {
+                  Object.keys(sessionRry).forEach((key1, index) => {
+                    const value1 = sessionRry[key1];
+
+                    arrayNewSession.push({
+                      index,
+                      session_name: value1.session_name,
+                      session_img: value1.session_img,
+                      session_id: value1.session_id,
+                      session_description: value1.session_description,
+                      meditation_audio: value1.meditation_audio,
+                      meditation_audio_time: value1.meditation_audio_time,
+                    });
+                  });
+                }
+
+                arrayBundleAllData.push({
+                  bundle_name: value.bundle_name,
+                  bundle_img: value.bundle_img,
+                  bundle_id: value.bundle_id,
+                  bundle_description: value.bundle_description,
+                  session: arrayNewSession,
+
+                });
+              });
+
+              arrayCategory.push({
+                cat_name: CategoryName,
+                cat_desc: CategoryDescription,
+                bundle: arrayBundleAllData,
+              });
+            } else {
+              arrayCategory.push({
+                cat_name: CategoryName,
+                cat_desc: CategoryDescription,
+                bundle: arrayBundleAllData,
+              });
+            }
+          } else if (child.val().SubCategory) {
+            const CategoryName = child.val().category_name;
+            const CategoryDescription = child.val().category_description;
+            if (child.val().Bundle === '' || child.val().Session === '') {
+              let arraySubCategory = [];
+              arraySubCategory = child.val().SubCategory;
+              Object.keys(arraySubCategory).forEach((key) => {
+                const value = arraySubCategory[key];
+                const bundleRry = value.Bundle ? value.Bundle : [];
+                const arrayNewBundle = [];
+                if (bundleRry !== undefined) {
+                  Object.keys(bundleRry).forEach((key1) => {
+                    const value1 = bundleRry[key1];
+                    const sessionRry = value1.Session ? value1.Session : [];
+                    const arrayNewSession = [];
+
+                    if (sessionRry !== undefined) {
+                      Object.keys(sessionRry).forEach((key2, index) => {
+                        const value2 = sessionRry[key2];
+
+                        arrayNewSession.push({
+                          index,
+
+                          session_name: value2.session_name,
+                          session_img: value2.session_img,
+                          session_id: value2.session_id,
+                          session_description: value2.session_description,
+                          meditation_audio: value2.meditation_audio,
+                          meditation_audio_time: value2.meditation_audio_time,
+                        });
+                      });
+                    }
+
+                    arrayNewBundle.push({
+                      bundle_name: value1.bundle_name,
+                      bundle_img: value1.bundle_img,
+                      bundle_id: value1.bundle_id,
+                      bundle_description: value1.bundle_description,
+                      session: arrayNewSession,
+
+                    });
+                  });
+                }
+
+                arraySubCategoryAllData.push({
+                  subcategory_id: value.subcategory_id,
+                  subcategory_name: value.subcategory_name,
+                  subcategory_img: value.subcategory_img,
+                  subcategory_description: value.subcategory_description,
+                  parentcategory: value.parentcategory,
+                  bundle: arrayNewBundle,
+                });
+              });
+
+              arrayCategory.push({
+                cat_name: CategoryName,
+                cat_desc: CategoryDescription,
+                SubCategory: arraySubCategoryAllData,
+              });
+            } else {
+              arrayCategory.push({
+                cat_name: CategoryName,
+                cat_desc: CategoryDescription,
+                SubCategory: arraySubCategoryAllData,
+              });
+            }
+          }
+        });
+        this.setState({ allData: arrayCategory });
+        this.getFinalData();
+      }
+    });
+  }
+
+  getFinalData() {
+    const finalCategory = this.state.allData;
+    const finalData = [];
+    finalCategory.forEach((child, index) => {
+      const arrData = [];
+      const CategoryName = child.cat_name;
+      const CategoryDescription = child.cat_desc;
+      const scrollx = new Animated.Value(0);
+      if (child.session) {
+        const categoryData = child.session;
+        categoryData.forEach((innerchild) => {
+          arrData.push({
+            id: innerchild.session_id,
+            img: innerchild.session_img,
+            name: innerchild.session_name,
+            type: 'session',
+            index,
+          });
+        });
+        const size = 6;
+        this.finalarrData = arrData.slice(0, size);
+      } else if (child.bundle) {
+        const categoryData = child.bundle;
+        categoryData.forEach((innerchild) => {
+          arrData.push({
+            id: innerchild.bundle_id,
+            img: innerchild.bundle_img,
+            name: innerchild.bundle_name,
+            type: 'bundle',
+            index,
+          });
+        });
+        const size = 6;
+        this.finalarrData = arrData.slice(0, size);
+      } else if (child.SubCategory) {
+        const categoryData = child.SubCategory;
+        categoryData.forEach((innerchild) => {
+          arrData.push({
+            id: innerchild.subcategory_id,
+            img: innerchild.subcategory_img,
+            name: innerchild.subcategory_name,
+            type: 'subcategory',
+            index,
+          });
+        });
+        const size = 6;
+        this.finalarrData = arrData.slice(0, size);
+      }
+
+      finalData.push({
+        cat_name: CategoryName,
+        cat_desc: CategoryDescription,
+        arrdata: this.finalarrData,
+        scroll: scrollx,
+      });
+    });
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(finalData),
+    });
+  }
+
   fetch10DayProgramData() {
     const ref = firebaseApp.database().ref('Category').child('Open Dive');
     return ref.once('value').then((dataSnapshot) => {
@@ -130,72 +350,7 @@ class HomeScreen extends Component {
         const size = 6;
         this.openDivesItem = sessionData.slice(0, size);
         this.setState({
-          session: sessionData, dataSourceFor10Day: this.state.dataSourceFor10Day.cloneWithRows(this.openDivesItem),
-        });
-      }
-    }).catch(() => { });
-  }
-
-  fetchQuickDiveData() {
-    const ref = firebaseApp.database().ref('Category').child('Quick Dive');
-    return ref.once('value').then((dataSnapshot) => {
-      if (dataSnapshot.exists()) {
-        const sessionData = [];
-        let ArrBundle = [];
-        const CategoryName = dataSnapshot.val().category_name;
-        const CategoryDescription = dataSnapshot.val().category_description;
-        ArrBundle = dataSnapshot.val().Bundle;
-        this.setState({
-          QuickDiveTitle: CategoryName,
-          QuickDiveDescription: CategoryDescription,
-        });
-
-        Object.keys(ArrBundle).forEach((key) => {
-          const value = ArrBundle[key];
-          sessionData.push({
-            session_name: value.bundle_name,
-            session_img: value.bundle_img,
-            session_id: value.bundle_id,
-            session_description: value.bundle_description,
-
-          });
-        });
-        const size = 6;
-        this.quickDivesItem = sessionData.slice(0, size);
-        this.setState({
-          dataSourceForQuickDive: this.state.dataSourceForQuickDive.cloneWithRows(this.quickDivesItem),
-        });
-      }
-    }).catch(() => { });
-  }
-
-  fetchDeepDiveData() {
-    const ref = firebaseApp.database().ref('Category').child('Deep Dive');
-    return ref.once('value').then((dataSnapshot) => {
-      if (dataSnapshot.exists()) {
-        const sessionData = [];
-        let ArrBundle = [];
-        const CategoryName = dataSnapshot.val().category_name;
-        const CategoryDescription = dataSnapshot.val().category_description;
-        ArrBundle = dataSnapshot.val().SubCategory;
-        this.setState({
-          DeepDiveTitle: CategoryName,
-          DeepDiveDescription: CategoryDescription,
-        });
-
-        Object.keys(ArrBundle).forEach((key) => {
-          const value = ArrBundle[key];
-          sessionData.push({
-            session_name: value.subcategory_name,
-            session_img: value.subcategory_img,
-            session_id: value.subcategory_id,
-            session_description: value.subcategory_description,
-          });
-        });
-        const size = 6;
-        this.deepDivesItem = sessionData.slice(0, size);
-        this.setState({
-          dataSourceForDeepDive: this.state.dataSourceForDeepDive.cloneWithRows(this.deepDivesItem),
+          session: sessionData,
         });
       }
     }).catch(() => { });
@@ -257,38 +412,41 @@ class HomeScreen extends Component {
     });
   }
 
-  renderProgram(category) {
-    return (
-      <TouchableOpacity onPress={() => {}}>
-        <View style={[styles.listViewContainer, { backgroundColor: '#139e8c' }]}>
-          <ImageBackground
-            source={{ uri: category.session_img }}
-            style={styles.backImageOfIntroContainer}
-          >
-            <Text style={styles.listViewText}>{category.session_name}</Text>
-          </ImageBackground>
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
   onRefreshClicked() {
     this.onRefresh = true;
     this.setState({ refreshing: true });
     this.fetchUserLastConversationData().then(() => {
       this.fetch10DayProgramData().then(() => {
         this.fetchQuotesData().then(() => {
-          this.fetchQuickDiveData().then(() => {
-            this.fetchDeepDiveData().then(() => {
-              this.onRefresh = false;
-              this.setState({ refreshing: false });
-            }).catch(() => { });
+          this.fetchCategoryWiseDataHome().then(() => {
+            this.onRefresh = false;
+            this.setState({ refreshing: false });
           }).catch(() => { });
         }).catch(() => { });
       }).catch(() => { });
     }).catch(() => { });
   }
 
+  redirectToDiveThruTab(item) {
+    const i = item.index.toString();
+    AsyncStorage.setItem('selectedIndex', i);
+    this.props.navigation.navigate('DiveThru');
+  }
+
+  renderItem({ item }) {
+    return (
+      <TouchableOpacity onPress={() => { this.redirectToDiveThruTab(item); }} activeOpacity={1}>
+        <View>
+          <ImageBackground
+            source={{ uri: item.img }}
+            style={styles.FlatListImage}
+          >
+            <Text style={styles.FlatListText}>{item.name}</Text>
+          </ImageBackground>
+        </View>
+      </TouchableOpacity>
+    );
+  }
   render() {
     let day = 0;
     if (this.state.last_conversation_id <= 9) {
@@ -298,19 +456,6 @@ class HomeScreen extends Component {
     }
 
     const progress = day / 10;
-    let title = '';
-    let description = '';
-    if (this.state.QuickDive === true) {
-      title = this.state.QuickDiveTitle;
-      description = this.state.QuickDiveDescription;
-    } else if (this.state.DeepDive === true) {
-      title = this.state.DeepDiveTitle;
-      description = this.state.DeepDiveDescription;
-    } else if (this.state.OpenDive === true) {
-      title = this.state.OpenDiveTitle;
-      description = this.state.OpenDiveDescription;
-    }
-
     return (
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
@@ -333,7 +478,7 @@ class HomeScreen extends Component {
                 source={dashboardBG}
                 style={styles.backImageOfIntroContainer}
               >
-                <Text style={styles.dayText}>{'Day ' + day + ' of 10'}</Text>
+                <Text style={styles.dayText}>{`Day ${day} of 10`}</Text>
                 <Text style={styles.introPrgText}>Intro Program</Text>
                 <View>
                   <TouchableOpacity onPress={() => { this.onBegin(); }}>
@@ -366,107 +511,53 @@ class HomeScreen extends Component {
               </ImageBackground>
             </View>
 
-            <View style={styles.categoryContainer}>
-              <View style={styles.categoryInnerContainer}>
-                <Text style={styles.categoryTitle}>Q U I C K  D I V E S</Text>
-                <Button
-                  accent
-                  text="Learn more"
-                  onPress={() => { this.setState({ isLearnMoreClicked: true, QuickDive: true }); }}
-                  upperCase={false}
-                  style={learnMoreButtonStyles}
-                />
-              </View>
-
-              <View style={styles.diveContainer}>
-                <View style={styles.diveInnerContainer}>
-                  <ListView
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { x: this.scrollX } } }],
-                    )}
-                    scrollEventThrottle={16}
-                    dataSource={this.state.dataSourceForQuickDive}
-                    renderRow={category => this.renderProgram(category)}
-                    style={styles.listView}
-                  />
+            <ListView
+              style={styles.SubCategoryList}
+              dataSource={this.state.dataSource}
+              enableEmptySections
+              // cloneWithRows
+              removeClippedSubviews={false}
+              renderRow={data => (
+                <View style={styles.MainList}>
+                  <View style={styles.categoryInnerContainer}>
+                    <Text style={styles.categoryTitle}>{data.cat_name}</Text>
+                    <Button
+                      accent
+                      text="Learn more"
+                      onPress={() => { this.setState({ isLearnMoreClicked: true, title: data.cat_name, description: data.cat_desc }); }}
+                      upperCase={false}
+                      style={learnMoreButtonStyles}
+                    />
+                  </View>
+                  {
+                    (data.arrdata.length > 0)
+                    ?
+                      (<View>
+                        <ScrollView
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          onScroll={Animated.event(
+                          [{ nativeEvent: { contentOffset: { x: data.scroll } } }],
+                        )}
+                        >
+                          <FlatList
+                            horizontal
+                            removeClippedSubviews={false}
+                            data={data.arrdata}
+                            style={styles.FlatListViewStyle}
+                            renderItem={e => this.renderItem(e)}
+                          />
+                        </ScrollView>
+                        <PaginatedListView
+                          listScrollId={data.scroll}
+                          totalLength={data.arrdata.length}
+                        />
+                      </View>)
+                    : null
+                  }
                 </View>
-              </View>
-
-              <PaginatedListView
-                listScrollId={this.scrollX}
-                totalLength={this.quickDivesItem.length}
-              />
-
-              <View style={styles.categoryInnerContainer}>
-                <Text style={styles.categoryTitle}>D E E P  D I V E S</Text>
-                <Button
-                  accent
-                  text="Learn more"
-                  onPress={() => { this.setState({ isLearnMoreClicked: true, DeepDive: true }); }}
-                  upperCase={false}
-                  style={learnMoreButtonStyles}
-                />
-              </View>
-
-              <View style={styles.diveContainer}>
-                <View style={styles.diveInnerContainer}>
-                  <ListView
-                    horizontal
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { x: this.scrollX1 } } }],
-                    )}
-                    scrollEventThrottle={16}
-                    dataSource={this.state.dataSourceForDeepDive}
-                    renderRow={category => this.renderProgram(category)}
-                    style={styles.listView}
-                  />
-                </View>
-              </View>
-
-              <PaginatedListView
-                listScrollId={this.scrollX1}
-                totalLength={this.deepDivesItem.length}
-              />
-
-              <View style={styles.categoryInnerContainer}>
-                <Text style={styles.categoryTitle}>O P E N  D I V E S</Text>
-                <Button
-                  accent
-                  text="Learn more"
-                  onPress={() => { this.setState({ isLearnMoreClicked: true, OpenDive: true }); }}
-                  upperCase={false}
-                  style={learnMoreButtonStyles}
-                />
-              </View>
-
-              <View style={styles.diveContainer}>
-                <View style={styles.diveInnerContainer}>
-                  <ListView
-                    horizontal
-                    onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { x: this.scrollX2 } }}],
-                    )}
-                    scrollEventThrottle={16}
-                    pagingEnabled
-                    showsHorizontalScrollIndicator={false}
-                    onEndReachedThreshold={10}
-                    dataSource={this.state.dataSourceFor10Day}
-                    renderRow={category => this.renderProgram(category)}
-                    style={styles.listView}
-                  />
-                </View>
-              </View>
-              <PaginatedListView
-                listScrollId={this.scrollX2}
-                totalLength={this.openDivesItem.length}
-              />
-            </View>
-
+              )}
+            />
             <View style={[styles.dailyQuotesContainer, { marginTop: 20 }]}>
               <ImageBackground
                 source={subscribeNowBG}
@@ -477,7 +568,7 @@ class HomeScreen extends Component {
                   primary
                   title=""
                   text="S U B S C R I B E  N O W"
-                  onPress={() => { }}
+                  onPress={() => { this.props.navigation.navigate('SubscribeNowScreen'); }}
                   style={buttonStyles}
                 />
               </ImageBackground>
@@ -494,8 +585,8 @@ class HomeScreen extends Component {
             }
             { this.state.isLearnMoreClicked
               ? (<InfoPopup
-                title={title}
-                description={description}
+                title={this.state.title}
+                description={this.state.description}
                 onTouchup={this.CloseModal}
               />
                   )

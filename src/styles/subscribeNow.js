@@ -1,5 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 import { colors } from './theme';
+
+const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
@@ -9,21 +11,21 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
   mainheadingtext: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: '400',
     color: colors.black,
     textAlign: 'center',
     marginTop: 20,
   },
   headtext: {
-    fontSize: 20,
+    fontSize: 14,
     color: colors.grey700,
     textAlign: 'center',
     marginTop: 20,
     marginBottom: 20,
   },
   text: {
-    fontSize: 18,
+    fontSize: 14,
     color: colors.grey700,
     textAlign: 'center',
     marginTop: 10,
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
   //   marginTop: 20,
   // },
   headingtext: {
-    fontSize: 22,
+    fontSize: 16,
     fontWeight: '400',
     color: colors.black,
     textAlign: 'center',
@@ -58,12 +60,13 @@ const styles = StyleSheet.create({
     width: 70,
   },
   txt: {
-    fontSize: 25,
+    fontSize: 16,
     fontWeight: '400',
     color: colors.black,
     textAlign: 'center',
   },
   txtsubscription: {
+    fontSize: 12,
     color: colors.grey900,
     textAlign: 'center',
     marginBottom: 15,
@@ -71,19 +74,19 @@ const styles = StyleSheet.create({
   },
   imagebox: {
     height: 155,
-    width: 130,
+    width: (width - 20) / 3, // 115,
     borderRadius: 5,
     borderColor: '#a25ad6',
     borderWidth: 2,
   },
   imgbox: {
     height: 155,
-    width: 130,
+    width: (width - 20) / 3,
     borderRadius: 5,
   },
   imagebckground: {
     height: 143,
-    width: 119,
+    width: (width - 50) / 3,
     position: 'absolute',
     borderRadius: 5,
     margin: 6,

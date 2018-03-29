@@ -51,6 +51,8 @@ class DiveThruPlayerScreen extends Component {
     const sessionData = params ? params.rowdata : undefined;
     const bundleName = params ? params.bundleName : undefined;
     const bundleID = params ? params.bundleId : undefined;
+    const category = params ? params.category : undefined;
+
     // let audioTime = [];
     // let audios = [];
     // if (sessionData.meditation_audio_time) {
@@ -68,6 +70,7 @@ class DiveThruPlayerScreen extends Component {
     this.setState({
       title: bundleName,
       bundleID,
+      category,
       meditation_audio: sessionData.meditation_audio,
       meditation_audio_time: sessionData.meditation_audio_time,
       sessionDesc: sessionData.session_description,
@@ -250,6 +253,24 @@ class DiveThruPlayerScreen extends Component {
     this.play();
   }
 
+  // updateCurrentStreakData() {
+  //   const category = this.state.category;
+  //   const bundleId = this.state.bundleID;
+  //   const sessionId = this.state.session_id;
+
+  //   AsyncStorage.getItem('user_id').then((value) => {
+  //     if (value != null) {
+  //       const userStreak = {
+  //         session: sessionId,
+  //       };
+  //       const refRemove = firebaseApp.database().ref('Users').child(value).child('currentStreak');
+  //       refRemove.remove();
+  //       const ref = firebaseApp.database().ref('Users').child(value).child('currentStreak/' + category + '/Bundle/' + bundleId + '/Session/' + sessionId);
+  //       ref.set(userStreak);
+  //     }
+  //   });
+  // }
+
   updateTotalConversationInDB(value) {
     const meditationAudioTime = parseInt(this.state.meditation_audio_time[this.state.index], 10);
     const ref = firebaseApp.database().ref('Users').child(value);
@@ -265,6 +286,7 @@ class DiveThruPlayerScreen extends Component {
   }
 
   updateUserDataForPaidCategory() {
+   // this.updateCurrentStreakData();
     const bundleId = this.state.bundleID;
     const sessionId = this.state.session_id;
 

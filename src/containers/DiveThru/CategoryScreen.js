@@ -21,6 +21,7 @@ class CategoryScreen extends Component {
       }),
     };
     this.arrStreak = [];
+    this.arrStreakHasData = false;
   }
 
   componentWillMount() {
@@ -41,9 +42,11 @@ class CategoryScreen extends Component {
           const lastConversation = convo.last_free_conversation_id;
           const halted = convo.halted;
           const type = convo.membership_type;
+          let streakData = [];
           if (convo.streak !== '') {
-            const streakData = convo.streak;
+            streakData = convo.streak;
             this.arrStreak = streakData;
+            this.arrStreakHasData = true;
           }
           this.setState({ last_conversation_id: lastConversation, halted, membershipType: type });
           this.fetchCategoryWiseData();
@@ -112,7 +115,7 @@ class CategoryScreen extends Component {
           if (id === data.bundle_id) {
             if (data.session) {
               sessionData = data.session;
-              this.props.screenProps.navigation.navigate('Session', { sessionData, name, bundleId: data.bundle_id, returnData: this.fetchUserLastConversationData.bind(this) });
+              this.props.screenProps.navigation.navigate('Session', { sessionData, name, item: this.props.item, bundleId: data.bundle_id, returnData: this.fetchUserLastConversationData.bind(this) });
             }
           }
         });
@@ -145,7 +148,7 @@ class CategoryScreen extends Component {
     if (item.session !== null) {
       sessionData = item.session;
       name = item.bundle_name;
-      this.props.screenProps.navigation.navigate('Session', { sessionData, name, bundleId: item.bundle_id, returnData: this.fetchUserLastConversationData.bind(this) });
+      this.props.screenProps.navigation.navigate('Session', { sessionData, name, item: this.props.item, bundleId: item.bundle_id, returnData: this.fetchUserLastConversationData.bind(this) });
     }
   }
   fetchCategoryWiseData() {
@@ -199,11 +202,28 @@ class CategoryScreen extends Component {
                 const sessionRry = value.Session ? value.Session : [];
                 const arrayNewSession = [];
                 let streakVisitedSessionCount = 0;
+                let isSessionAvailable = false;
                 if (sessionRry !== undefined) {
                   Object.keys(sessionRry).forEach((key1, index) => {
                     const value1 = sessionRry[key1];
+                    if (this.arrStreakHasData === true) {
+                      if (Object.keys(this.arrStreak).length > 0) {
+                        Object.keys(this.arrStreak).forEach((streakKey) => {
+                          let streakValue = [];
+                          streakValue = this.arrStreak[streakKey];
+                          if (value.bundle_id === streakKey) {
+                            streakVisitedSessionCount = Object.keys(streakValue.Session).length;
+                            if (streakVisitedSessionCount > 0) {
+                              isSessionAvailable = Object.keys(streakValue.Session).includes(value1.session_id);
+                            }
+                          }
+                        });
+                      }
+                    }
+                    
                     arrayNewSession.push({
                       index,
+                      isSessionAvailable,
                       session_name: value1.session_name,
                       session_img: value1.session_img,
                       session_id: value1.session_id,
@@ -213,17 +233,7 @@ class CategoryScreen extends Component {
                     });
                   });
                 }
-                
-                if (Object.keys(this.arrStreak).length > 0) {
-                  Object.keys(this.arrStreak).forEach((streakKey) => {
-                    let streakValue = [];
-                    streakValue = this.arrStreak[streakKey];
-                    if (value.bundle_id === streakKey) {
-                      streakVisitedSessionCount = Object.keys(streakValue.Session).length;
-                    }
-                  });
-                }
-                
+
                 arrayBundleAllData.push({
                   bundle_name: value.bundle_name,
                   bundle_img: value.bundle_img,
@@ -262,11 +272,27 @@ class CategoryScreen extends Component {
                     const sessionRry = value1.Session ? value1.Session : [];
                     const arrayNewSession = [];
                     let streakVisitedSessionCount = 0;
+                    let isSessionAvailable = false;
                     if (sessionRry !== undefined) {
                       Object.keys(sessionRry).forEach((key2, index) => {
                         const value2 = sessionRry[key2];
+                        if (this.arrStreakHasData === true) {
+                          if (Object.keys(this.arrStreak).length > 0) {
+                            Object.keys(this.arrStreak).forEach((streakKey) => {
+                              let streakValue = [];
+                              streakValue = this.arrStreak[streakKey];
+                              if (value1.bundle_id === streakKey) {
+                                streakVisitedSessionCount = Object.keys(streakValue.Session).length;
+                                if (streakVisitedSessionCount > 0) {
+                                  isSessionAvailable = Object.keys(streakValue.Session).includes(value2.session_id);
+                                }
+                              }
+                            });
+                          }
+                        }
                         arrayNewSession.push({
                           index,
+                          isSessionAvailable,
                           session_name: value2.session_name,
                           session_img: value2.session_img,
                           session_id: value2.session_id,
@@ -274,16 +300,6 @@ class CategoryScreen extends Component {
                           meditation_audio: value2.meditation_audio,
                           meditation_audio_time: value2.meditation_audio_time,
                         });
-                      });
-                    }
-
-                    if (Object.keys(this.arrStreak).length > 0) {
-                      Object.keys(this.arrStreak).forEach((streakKey) => {
-                        let streakValue = [];
-                        streakValue = this.arrStreak[streakKey];
-                        if (value.bundle_id === streakKey) {
-                          streakVisitedSessionCount = Object.keys(streakValue.Session).length;
-                        }
                       });
                     }
 
@@ -342,28 +358,51 @@ class CategoryScreen extends Component {
     }
   }
 
+  freeBundleView(rowdata) {
+    let sessionView = null;
+    let seek = 0;
+    if (rowdata.streakVisitedSessionCount === 0) {
+      seek = 0;
+    } else {
+      seek = rowdata.streakVisitedSessionCount / rowdata.sessionCount;
+    }
+    sessionView = (
+      <View style={{ bottom: '15%', marginTop: '78%' }}>
+        <Text style={styles.freeText}>{rowdata.streakVisitedSessionCount} of {rowdata.sessionCount} Sessions</Text>
+        <Progress.Bar
+          color={'white'}
+          progress={seek}
+          style={styles.FlatListSessionProgres}
+          unfilledColor={'#ffffff5e'}
+          borderWidth={0}
+        />
+      </View>
+    );
+    return sessionView;
+  }
+
   renderGridItem(rowdata) {
     let lock = null;
     if (rowdata.index !== undefined) {
       if (this.state.last_conversation_id > 0) {
         if (rowdata.index < this.state.last_conversation_id) {
           lock = (
-            <View>
-              <View style={{ backgroundColor: colors.black, opacity: 0.4, width: '100%', height: '100%' }} />
-              <Image
-                source={IC_DONE}
-                style={{ width: 20, height: 20, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-              />
-            </View>
+            <Image
+              source={IC_DONE}
+              style={{ width: 20, height: 20, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
+            />
           );
         } else if (rowdata.index === this.state.last_conversation_id) {
           lock = null;
         } else {
           lock = (
-            <Image
-              source={IC_LOCK}
-              style={{ width: 17, height: 17, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-            />
+            <View>
+              <View style={{ backgroundColor: colors.black, opacity: 0.4, width: '100%', height: '100%' }} />
+              <Image
+                source={IC_LOCK}
+                style={{ width: 17, height: 17, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
+              />
+            </View>
           );
         }
       } else {
@@ -371,42 +410,30 @@ class CategoryScreen extends Component {
           lock = null;
         } else {
           lock = (
-            <Image
-              source={IC_LOCK}
-              style={{ width: 17, height: 17, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-            />
+            <View>
+              <View style={{ backgroundColor: colors.black, opacity: 0.4, width: '100%', height: '100%' }} />
+              <Image
+                source={IC_LOCK}
+                style={{ width: 17, height: 17, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
+              />
+            </View>
           );
         }
       }
     }
 
     let sessionView = null;
-    if (this.state.membershipType === 'Free' && rowdata.type === 'bundle') {
+    if (this.state.membershipType === 'Free' && rowdata.type === 'bundle' && rowdata.streakVisitedSessionCount === 0) {
       sessionView = (
         <View style={{ bottom: '15%', marginTop: '80%' }}>
           <Text style={styles.freeText}>Try a free session</Text>
           <Text style={styles.sessionCountText}>{rowdata.sessionCount} Sessions</Text>
         </View>
       );
+    } else if (this.state.membershipType === 'Free' && rowdata.type === 'bundle' && rowdata.streakVisitedSessionCount > 0) {
+      sessionView = this.freeBundleView(rowdata);
     } else if (this.state.membershipType === 'Paid' && rowdata.type === 'bundle') {
-      let seek = 0;
-      if (rowdata.streakVisitedSessionCount === 0) {
-        seek = 0;
-      } else {
-        seek = rowdata.streakVisitedSessionCount / rowdata.sessionCount;
-      }
-      sessionView = (
-        <View style={{ bottom: '15%', marginTop: '78%' }}>
-          <Text style={styles.freeText}>{rowdata.streakVisitedSessionCount} of {rowdata.sessionCount} Sessions</Text>
-          <Progress.Bar
-            color={'white'}
-            progress={seek}
-            style={styles.FlatListSessionProgres}
-            unfilledColor={'#ffffff5e'}
-            borderWidth={0}
-          />
-        </View>
-      );
+      sessionView = this.freeBundleView(rowdata);
     }
 
     return (
@@ -425,34 +452,42 @@ class CategoryScreen extends Component {
     );
   }
 
+  paidBundleView(item) {
+    let sessionView = null;
+    let seek = 0;
+    if (item.streakVisitedSessionCount === 0) {
+      seek = 0;
+    } else {
+      seek = item.streakVisitedSessionCount / Object.keys(item.session).length;
+    }
+    sessionView = (
+      <View style={{ bottom: '15%', marginTop: '85%' }}>
+        <Text style={styles.freeText}>{item.streakVisitedSessionCount} of {Object.keys(item.session).length} Sessions</Text>
+        <Progress.Bar
+          color={'white'}
+          progress={seek}
+          style={styles.FlatListSessionProgres}
+          unfilledColor={'#ffffff5e'}
+          borderWidth={0}
+        />
+      </View>
+    );
+    return sessionView;
+  }
+
   renderItem({ item }) {
     let sessionView = null;
-    if (this.state.membershipType === 'Free') {
+    if (this.state.membershipType === 'Free' && item.streakVisitedSessionCount === 0) {
       sessionView = (
         <View style={{ bottom: '10%', marginTop: '80%' }}>
           <Text style={styles.freeText}>Try a free session</Text>
           <Text style={styles.sessionCountText}>{Object.keys(item.session).length} Sessions</Text>
         </View>
       );
+    } else if (this.state.membershipType === 'Free' && item.streakVisitedSessionCount > 0) {
+      sessionView = this.paidBundleView(item);
     } else {
-      let seek = 0;
-      if (item.streakVisitedSessionCount === 0) {
-        seek = 0;
-      } else {
-        seek = item.streakVisitedSessionCount / Object.keys(item.session).length;
-      }
-      sessionView = (
-        <View style={{ bottom: '15%', marginTop: '85%' }}>
-          <Text style={styles.freeText}>{item.streakVisitedSessionCount} of {Object.keys(item.session).length} Sessions</Text>
-          <Progress.Bar
-            color={'white'}
-            progress={seek}
-            style={styles.FlatListSessionProgres}
-            unfilledColor={'#ffffff5e'}
-            borderWidth={0}
-          />
-        </View>
-      );
+      sessionView = this.paidBundleView(item);
     }
 
     return (
@@ -479,6 +514,7 @@ class CategoryScreen extends Component {
               dataSource={this.state.dataSource}
               enableEmptySections
               // cloneWithRows
+              removeClippedSubviews={false}
               renderRow={rowdata => this.renderGridItem(rowdata)}
               contentContainerStyle={styles.listView}
             />
@@ -518,6 +554,7 @@ class CategoryScreen extends Component {
 CategoryScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   index: PropTypes.number,
+  item: PropTypes.string,
   screenProps: PropTypes.object.isRequired,
 };
 export default CategoryScreen;

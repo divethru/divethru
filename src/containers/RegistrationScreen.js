@@ -485,7 +485,7 @@ class RegistrationScreen extends Component {
             });
           } else {
             this.setState({ loading: false });
-            this.showErrorAlertView('User with this email address already exist.')
+            this.showErrorAlertView('User with this email address already exist.');
           }
         });
       })

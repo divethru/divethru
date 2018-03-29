@@ -1,5 +1,7 @@
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Dimensions } from 'react-native';
 import { colors } from './theme';
+
+const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   container: {
@@ -107,7 +109,6 @@ const styles = StyleSheet.create({
     color: '#3c4b65',
     fontFamily: 'Roboto',
     fontSize: 14,
-    marginLeft: 22,
     backgroundColor: colors.transparent,
   },
   categoryInnerContainer: {
@@ -115,6 +116,7 @@ const styles = StyleSheet.create({
     height: 20,
     flexDirection: 'row',
     marginTop: 20,
+    marginBottom: 10,
   },
   diveContainer: {
     backgroundColor: colors.white,
@@ -156,6 +158,42 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Roboto',
     marginTop: 5,
+  },
+  SubCategoryList: {
+    backgroundColor: colors.white,
+    paddingHorizontal: '5%',
+    alignSelf: 'stretch',
+  },
+  MainList: {
+    flex: 1,
+    marginBottom: 5,
+  },
+  MainListText: {
+    color: colors.grey800,
+    fontSize: 16,
+    marginTop: 20,
+    marginBottom: 20,
+    letterSpacing: 3,
+  },
+  FlatListViewStyle: {
+    backgroundColor: 'white',
+    height: 150,
+  },
+  FlatListImage: {
+    height: 130,
+    width: 130,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  FlatListText: {
+    color: colors.white,
+    fontSize: width > 400 ? 16 : 14,
+    position: 'absolute',
+    textAlign: 'center',
+    marginLeft: '10%',
+    marginTop: '10%',
+    fontFamily: 'Roboto',
+    fontWeight: 'bold',
   },
 });
 
