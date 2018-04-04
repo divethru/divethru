@@ -1,4 +1,5 @@
 import { StackNavigator, TabNavigator, TabBarTop } from 'react-navigation';
+import { Dimensions } from 'react-native';
 import { COLOR as colors } from 'react-native-material-ui';
 import ReminderScreen from './ReminderScreen';
 // import DiveThruScreen from './DiveThruScreen';
@@ -48,19 +49,14 @@ const TabScreen = TabNavigator(components, {
     inactiveBackgroundColor: colors.black,
     inactiveTintColor: colors.black,
     iconStyle: {
-      height: 20,
-      width: 20,
-      marginTop: 8,
+      marginTop: 5,
     },
     indicatorStyle: {
       opacity: 0,
     },
     upperCaseLabel: false,
     labelStyle: {
-      fontWeight: '200',
-      marginTop: 9,
-      marginBottom: 0,
-      fontSize: 12,
+      fontSize: 11,
     },
     scrollEnabled: false,
     showIcon: true,

@@ -132,9 +132,11 @@ class LoginScreen extends Component {
             ref.once('value').then((dataSnapshot) => {
               this.setState({ loading: false });
               const data = dataSnapshot.val();
-              if (data != null){
+              if (data != null) {
                 if (data.activated_on !== '') {
                   AsyncStorage.setItem('user_id', data.user_id);
+                  AsyncStorage.setItem('full_name', data.first_name + ' ' + data.last_name);
+                  AsyncStorage.setItem('emailid', data.email);
                   AsyncStorage.getItem('isMarketingLaunched').then((value) => {
                     const ref = firebaseApp.database().ref('Users').child(data.user_id);
                     ref.update({ device_token: deviceToken });
@@ -196,6 +198,8 @@ class LoginScreen extends Component {
                       const userData = dataSnapshot.val();
                       if (userData != null) {
                         AsyncStorage.setItem('user_id', userData.user_id);
+                        AsyncStorage.setItem('full_name', userData.first_name + ' ' + userData.last_name);
+                        AsyncStorage.setItem('emailid', userData.email);
                         AsyncStorage.setItem('fb_id', json.id);
                         AsyncStorage.getItem('isMarketingLaunched').then((value) => {
                           if (value === 'yes') {
@@ -264,6 +268,8 @@ class LoginScreen extends Component {
                 const userData = dataSnapshot.val();
                 if (userData != null) {
                   AsyncStorage.setItem('user_id', userData.user_id);
+                  AsyncStorage.setItem('full_name', userData.first_name + ' ' + userData.last_name);
+                  AsyncStorage.setItem('emailid', userData.email);
                   AsyncStorage.setItem('google_id', user.id);
                   AsyncStorage.getItem('isMarketingLaunched').then((value) => {
                     this.setState({ loading: false });
@@ -413,7 +419,7 @@ class LoginScreen extends Component {
 
             </View>
           </KeyboardAwareScrollView>
-          <DropdownAlert ref={(ref) => { this.dropdown = ref; }} />
+          <DropdownAlert updateStatusBar={false} ref={(ref) => { this.dropdown = ref; }} />
         </View>
       </Spinner>
     );

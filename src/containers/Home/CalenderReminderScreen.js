@@ -189,7 +189,8 @@ class CalenderReminderScreen extends Component {
         <View style={styles.container}>
           <KeyboardAwareScrollView>
             <StatusBar
-              backgroundColor="rgba(0, 0, 0, 0.30)"
+              translucent
+              backgroundColor="rgba(0, 0, 0, 0.010)"
               animated
               hidden={false}
             />
@@ -339,7 +340,7 @@ class CalenderReminderScreen extends Component {
               style={buttonStyles}
             />
           </KeyboardAwareScrollView>
-          <DropdownAlert ref={(ref) => { this.dropdown = ref; }} />
+          <DropdownAlert updateStatusBar={false} ref={(ref) => { this.dropdown = ref; }} />
         </View>
       </Spinner>
     );

@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
   },
   gridItem: {
     width: (width - 30) / 2,
-    height: (height - 30) / 4,
+    height: (width - 50) / 2, // (height - 30) / 4,
   },
   gridItemImage: {
     width: '100%',
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   gridItemText: {
     textAlign: 'center',
     position: 'absolute',
-    fontSize: width > 400 ? 20 : 16,
+    fontSize: 16,
     color: colors.white,
     marginLeft: '10%',
     marginTop: '20%',

@@ -41,7 +41,8 @@ class SessionDescriptionScreen extends Component {
       <View style={styles.container}>
         <ScrollView>
           <StatusBar
-            backgroundColor="rgba(0, 0, 0, 0.30)"
+            translucent
+            backgroundColor="rgba(0, 0, 0, 0.010)"
             animated
             hidden={false}
           />

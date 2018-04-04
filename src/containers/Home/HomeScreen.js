@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, TouchableOpacity, ScrollView, ImageBackground, ListView, Dimensions, AsyncStorage, Animated, RefreshControl, StatusBar, FlatList } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, ImageBackground, Platform, ListView, Dimensions, AsyncStorage, Animated, RefreshControl, StatusBar, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import FCM, { FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType } from 'react-native-fcm';
 import { Button } from 'react-native-material-ui';
 import * as Progress from 'react-native-progress';
 import firebaseApp from '../../components/constant';
@@ -17,6 +18,58 @@ import Home from '../../assets/images/ic_home.png';
 import DiveThruScreen from '../DiveThru/DiveThruScreen';
 
 const width = Dimensions.get('window').width;
+
+// this shall be called regardless of app state: running, background or not running. Won't be called when app is killed by user in iOS
+FCM.on(FCMEvent.Notification, async (notif) => {
+  // there are two parts of notif. notif.notification contains the notification payload, notif.data contains data payload
+  if (notif.local_notification) {
+    //this is a local notification
+  }
+  if (notif.opened_from_tray) {
+    //iOS: app is open/resumed because user clicked banner
+    //Android: app is open/resumed because user clicked banner or tapped app icon
+  }
+  // await someAsyncCall();
+
+  if (Platform.OS === 'ios') {
+    if (notif._actionIdentifier === 'com.meditation.divethru') {
+      // handle notification action here
+      // the text from user is in notif._userText if type of the action is NotificationActionType.TextInput
+    }
+    //optional
+    //iOS requires developers to call completionHandler to end notification process. If you do not call it your background remote notifications could be throttled, to read more about it see https://developer.apple.com/documentation/uikit/uiapplicationdelegate/1623013-application.
+    //This library handles it for you automatically with default behavior (for remote notification, finish with NoData; for WillPresent, finish depend on "show_in_foreground"). However if you want to return different result, follow the following code to override
+    //notif._notificationType is available for iOS platfrom
+    switch (notif._notificationType) {
+      case NotificationType.Remote:
+        notif.finish(RemoteNotificationResult.NewData); // other types available: RemoteNotificationResult.NewData, RemoteNotificationResult.ResultFailed
+        break;
+      case NotificationType.NotificationResponse:
+        notif.finish();
+        break;
+      case NotificationType.WillPresent:
+        notif.finish(WillPresentNotificationResult.All); // other types available: WillPresentNotificationResult.None
+        break;
+    }
+  } else {
+    FCM.presentLocalNotification({
+      body: notif.fcm.body,
+      priority: 'high',
+      title: notif.fcm.title,
+      sound: 'default',
+      show_in_foreground: true,
+      tag: 'DiveThru',
+      icon: "splash_logo",
+      'large-icon': "splash_logo",
+    });
+    // FCM.presentLocalNotification({ custom_notification: { title: 'a', body: 'b', show_in_foreground: true } });
+  }
+});
+
+FCM.on(FCMEvent.RefreshToken, (token) => {
+  console.log(token);
+  // fcm token may not be available on first load, catch it here
+});
 
 class HomeScreen extends Component {
   static navigationOptions = () => ({
@@ -56,6 +109,14 @@ class HomeScreen extends Component {
         this.fetchQuotesData().then(() => {
           this.fetchCategoryWiseDataHome().then(() => {
             this.setState({ loading: false });
+            FCM.requestPermissions().then(() => {
+              console.log('granted');
+              AsyncStorage.setItem('notification_allow', 'true');
+            })
+            .catch(() => {
+              AsyncStorage.setItem('notification_allow', 'false');
+              console.log('notification permission rejected');
+            });
           }).catch(() => { });
         }).catch(() => { });
       }).catch(() => { });
@@ -103,154 +164,164 @@ class HomeScreen extends Component {
       if (dataSnapshot.exists()) {
         dataSnapshot.forEach((child) => {
           // alert('kk');
-          const arraySessionAllData = [];
-          const arraySubCategoryAllData = [];
-          const arrayBundleAllData = [];
-          // alert('child-->'+ JSON.stringify(child.val()));
-          if (child.val().Session) {
-            const CategoryName = child.val().category_name;
-            const CategoryDescription = child.val().category_description;
-            if (child.val().Bundle === '' || child.val().SubCategory === '') {
-              let arraySession = [];
-              arraySession = child.val().Session ? child.val().Session : [];
+          if (child.key !== '10 Day Intro Program') {
+            const arraySessionAllData = [];
+            const arraySubCategoryAllData = [];
+            const arrayBundleAllData = [];
+            // alert('child-->'+ JSON.stringify(child.val()));
+            if (child.val().Session) {
+              const CategoryName = child.val().category_name;
+              const CategoryDescription = child.val().category_description;
+              if (child.val().Bundle === '' || child.val().SubCategory === '') {
+                let arraySession = [];
+                arraySession = child.val().Session ? child.val().Session : [];
 
-              Object.keys(arraySession).forEach((key) => {
-                const value = arraySession[key];
-                arraySessionAllData.push({
-                  session_name: value.session_name,
-                  session_img: value.session_img,
-                  session_id: value.session_id,
-                  session_description: value.session_description,
-                  meditation_audio: value.meditation_audio[0],
-                  meditation_audio_time: value.meditation_audio_time[0],
-                });
-              });
-              arrayCategory.push({
-                cat_name: CategoryName,
-                cat_desc: CategoryDescription,
-                session: arraySessionAllData,
-              });
-            } else {
-              arrayCategory.push({
-                cat_name: CategoryName,
-                cat_desc: CategoryDescription,
-                session: arraySessionAllData,
-              });
-            }
-          } else if (child.val().Bundle) {
-            const CategoryName = child.val().category_name;
-            const CategoryDescription = child.val().category_description;
-            if (child.val().Session === '' || child.val().SubCategory === '') {
-              let arrayBundle = [];
-              arrayBundle = child.val().Bundle;
-              Object.keys(arrayBundle).forEach((key) => {
-                let value = [];
-                value = arrayBundle[key];
-                const sessionRry = value.Session ? value.Session : [];
-                const arrayNewSession = [];
-
-                if (sessionRry !== undefined) {
-                  Object.keys(sessionRry).forEach((key1, index) => {
-                    const value1 = sessionRry[key1];
-
-                    arrayNewSession.push({
-                      index,
-                      session_name: value1.session_name,
-                      session_img: value1.session_img,
-                      session_id: value1.session_id,
-                      session_description: value1.session_description,
-                      meditation_audio: value1.meditation_audio,
-                      meditation_audio_time: value1.meditation_audio_time,
-                    });
+                Object.keys(arraySession).forEach((key) => {
+                  const value = arraySession[key];
+                  arraySessionAllData.push({
+                    session_name: value.session_name,
+                    session_img: value.session_img,
+                    session_id: value.session_id,
+                    session_description: value.session_description,
+                    meditation_audio: value.meditation_audio[0],
+                    meditation_audio_time: value.meditation_audio_time[0],
                   });
-                }
-
-                arrayBundleAllData.push({
-                  bundle_name: value.bundle_name,
-                  bundle_img: value.bundle_img,
-                  bundle_id: value.bundle_id,
-                  bundle_description: value.bundle_description,
-                  session: arrayNewSession,
-
                 });
-              });
+                arrayCategory.push({
+                  cat_name: CategoryName,
+                  cat_desc: CategoryDescription,
+                  session: arraySessionAllData,
+                });
+              } else {
+                arrayCategory.push({
+                  cat_name: CategoryName,
+                  cat_desc: CategoryDescription,
+                  session: arraySessionAllData,
+                });
+              }
+            } else if (child.val().Bundle) {
+              const CategoryName = child.val().category_name;
+              const CategoryDescription = child.val().category_description;
+              if (child.val().Session === '' || child.val().SubCategory === '') {
+                let arrayBundle = [];
+                arrayBundle = child.val().Bundle;
+                Object.keys(arrayBundle).forEach((key) => {
+                  let value = [];
+                  value = arrayBundle[key];
+                  const sessionRry = value.Session ? value.Session : [];
+                  const arrayNewSession = [];
 
-              arrayCategory.push({
-                cat_name: CategoryName,
-                cat_desc: CategoryDescription,
-                bundle: arrayBundleAllData,
-              });
-            } else {
-              arrayCategory.push({
-                cat_name: CategoryName,
-                cat_desc: CategoryDescription,
-                bundle: arrayBundleAllData,
-              });
-            }
-          } else if (child.val().SubCategory) {
-            const CategoryName = child.val().category_name;
-            const CategoryDescription = child.val().category_description;
-            if (child.val().Bundle === '' || child.val().Session === '') {
-              let arraySubCategory = [];
-              arraySubCategory = child.val().SubCategory;
-              Object.keys(arraySubCategory).forEach((key) => {
-                const value = arraySubCategory[key];
-                const bundleRry = value.Bundle ? value.Bundle : [];
-                const arrayNewBundle = [];
-                if (bundleRry !== undefined) {
-                  Object.keys(bundleRry).forEach((key1) => {
-                    const value1 = bundleRry[key1];
-                    const sessionRry = value1.Session ? value1.Session : [];
-                    const arrayNewSession = [];
+                  if (sessionRry !== undefined) {
+                    Object.keys(sessionRry).forEach((key1, index) => {
+                      const value1 = sessionRry[key1];
 
-                    if (sessionRry !== undefined) {
-                      Object.keys(sessionRry).forEach((key2, index) => {
-                        const value2 = sessionRry[key2];
-
-                        arrayNewSession.push({
-                          index,
-
-                          session_name: value2.session_name,
-                          session_img: value2.session_img,
-                          session_id: value2.session_id,
-                          session_description: value2.session_description,
-                          meditation_audio: value2.meditation_audio,
-                          meditation_audio_time: value2.meditation_audio_time,
-                        });
+                      arrayNewSession.push({
+                        index,
+                        session_name: value1.session_name,
+                        session_img: value1.session_img,
+                        session_id: value1.session_id,
+                        session_description: value1.session_description,
+                        meditation_audio: value1.meditation_audio,
+                        meditation_audio_time: value1.meditation_audio_time,
                       });
-                    }
-
-                    arrayNewBundle.push({
-                      bundle_name: value1.bundle_name,
-                      bundle_img: value1.bundle_img,
-                      bundle_id: value1.bundle_id,
-                      bundle_description: value1.bundle_description,
-                      session: arrayNewSession,
-
                     });
+                  }
+
+                  arrayBundleAllData.push({
+                    bundle_name: value.bundle_name,
+                    bundle_img: value.bundle_img,
+                    bundle_id: value.bundle_id,
+                    bundle_description: value.bundle_description,
+                    session: arrayNewSession,
+
                   });
-                }
-
-                arraySubCategoryAllData.push({
-                  subcategory_id: value.subcategory_id,
-                  subcategory_name: value.subcategory_name,
-                  subcategory_img: value.subcategory_img,
-                  subcategory_description: value.subcategory_description,
-                  parentcategory: value.parentcategory,
-                  bundle: arrayNewBundle,
                 });
-              });
 
-              arrayCategory.push({
-                cat_name: CategoryName,
-                cat_desc: CategoryDescription,
-                SubCategory: arraySubCategoryAllData,
-              });
+                arrayCategory.push({
+                  cat_name: CategoryName,
+                  cat_desc: CategoryDescription,
+                  bundle: arrayBundleAllData,
+                });
+              } else {
+                arrayCategory.push({
+                  cat_name: CategoryName,
+                  cat_desc: CategoryDescription,
+                  bundle: arrayBundleAllData,
+                });
+              }
+            } else if (child.val().SubCategory) {
+              const CategoryName = child.val().category_name;
+              const CategoryDescription = child.val().category_description;
+              if (child.val().Bundle === '' || child.val().Session === '') {
+                let arraySubCategory = [];
+                arraySubCategory = child.val().SubCategory;
+                Object.keys(arraySubCategory).forEach((key) => {
+                  const value = arraySubCategory[key];
+                  const bundleRry = value.Bundle ? value.Bundle : [];
+                  const arrayNewBundle = [];
+                  if (bundleRry !== undefined) {
+                    Object.keys(bundleRry).forEach((key1) => {
+                      const value1 = bundleRry[key1];
+                      const sessionRry = value1.Session ? value1.Session : [];
+                      const arrayNewSession = [];
+
+                      if (sessionRry !== undefined) {
+                        Object.keys(sessionRry).forEach((key2, index) => {
+                          const value2 = sessionRry[key2];
+
+                          arrayNewSession.push({
+                            index,
+
+                            session_name: value2.session_name,
+                            session_img: value2.session_img,
+                            session_id: value2.session_id,
+                            session_description: value2.session_description,
+                            meditation_audio: value2.meditation_audio,
+                            meditation_audio_time: value2.meditation_audio_time,
+                          });
+                        });
+                      }
+
+                      arrayNewBundle.push({
+                        bundle_name: value1.bundle_name,
+                        bundle_img: value1.bundle_img,
+                        bundle_id: value1.bundle_id,
+                        bundle_description: value1.bundle_description,
+                        session: arrayNewSession,
+
+                      });
+                    });
+                  }
+
+                  arraySubCategoryAllData.push({
+                    subcategory_id: value.subcategory_id,
+                    subcategory_name: value.subcategory_name,
+                    subcategory_img: value.subcategory_img,
+                    subcategory_description: value.subcategory_description,
+                    parentcategory: value.parentcategory,
+                    bundle: arrayNewBundle,
+                  });
+                });
+
+                arrayCategory.push({
+                  cat_name: CategoryName,
+                  cat_desc: CategoryDescription,
+                  SubCategory: arraySubCategoryAllData,
+                });
+              } else {
+                arrayCategory.push({
+                  cat_name: CategoryName,
+                  cat_desc: CategoryDescription,
+                  SubCategory: arraySubCategoryAllData,
+                });
+              }
             } else {
+              const CategoryName = child.val().category_name;
+              const CategoryDescription = child.val().category_description;
               arrayCategory.push({
                 cat_name: CategoryName,
                 cat_desc: CategoryDescription,
-                SubCategory: arraySubCategoryAllData,
+                session: [],
               });
             }
           }
@@ -323,7 +394,7 @@ class HomeScreen extends Component {
   }
 
   fetch10DayProgramData() {
-    const ref = firebaseApp.database().ref('Category').child('Open Dive');
+    const ref = firebaseApp.database().ref('Category').child('10 Day Intro Program');
     return ref.once('value').then((dataSnapshot) => {
       if (dataSnapshot.exists()) {
         const sessionData = [];

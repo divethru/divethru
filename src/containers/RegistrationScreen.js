@@ -847,7 +847,7 @@ class RegistrationScreen extends Component {
               </View>
             </View>
           </KeyboardAwareScrollView>
-          <DropdownAlert ref={(ref) => { this.dropdown = ref; }} onClose={data => this.onClose(data)} />
+          <DropdownAlert updateStatusBar={false} ref={(ref) => { this.dropdown = ref; }} onClose={data => this.onClose(data)} />
         </View>
       </Spinner>
     );

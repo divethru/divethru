@@ -126,6 +126,48 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     marginLeft: '1.66%',
   },
+  // popupcontainer: {
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   padding: 20,
+  //   backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  // },
+  innerContainer: {
+    marginTop: 200,
+    marginLeft: 40,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    height: 200,
+    width: '80%',
+    borderRadius: 8,
+  },
+  closebtn: {
+    height: 20,
+    width: 20,
+    alignSelf: 'flex-end',
+    margin: 15,
+  },
+  image: {
+    height: 20,
+    width: 20,
+    alignSelf: 'flex-end',
+  },
+  headingtext: {
+    paddingTop: 15,
+    fontSize: 18,
+    color: colors.black,
+    letterSpacing: 2,
+    paddingRight: 9,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  textinput: {
+    width: '90%',
+    marginTop: 10,
+    height: '43%',
+    borderBottomColor: colors.grey400,
+    borderBottomWidth: 1,
+  },
 });
 
 export const playerStyles = StyleSheet.create({
@@ -209,6 +251,23 @@ export const timeButtonClickStyles = StyleSheet.create({
     borderRadius: 4,
     borderWidth: 2,
     borderColor: colors.white,
+  },
+});
+
+export const popupbuttonStyles = StyleSheet.create({
+  text: {
+    fontSize: 16,
+    color: colors.white,
+    fontFamily: 'Roboto',
+  },
+  container: {
+    position: 'absolute',
+    bottom: 0,
+    height: Platform.OS === 'ios' ? 50 : 55,
+    backgroundColor: '#7dd3d5',
+    justifyContent: 'center',
+    width: '100%',
+    borderRadius: 8,
   },
 });
 

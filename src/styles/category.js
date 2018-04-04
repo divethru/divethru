@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
   gridItem: {
     width: (width - 30) / 2,
-    height: (height - 30) / 4,
+    height: (width - 50) / 2, // (height - 30) / 4,
   },
   // gridItem: {
   //   width: width > 400 ? 170 : 130,
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
   gridItemText: {
     textAlign: 'center',
     position: 'absolute',
-    fontSize: width > 400 ? 20 : 16,
+    fontSize: 16,
     color: colors.white,
     marginLeft: '10%',
     marginTop: '20%',
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   MainListText: {
     color: colors.grey800,
-    fontSize: 16,
+    fontSize: 15,
     marginTop: 20,
     marginBottom: 20,
     letterSpacing: 3,
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   FlatListText: {
     color: colors.white,
-    fontSize: width > 400 ? 20 : 16,
+    fontSize: 16,
     position: 'absolute',
     marginLeft: '10%',
     marginTop: '10%',

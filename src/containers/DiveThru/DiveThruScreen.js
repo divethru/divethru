@@ -31,6 +31,14 @@ class DiveThruScreen extends Component {
       });
       return (<Image source={DiveThru} style={{ tintColor }} />);
     },
+    tabBarOnPress: ({ scene, jumpToIndex }) => {
+      const { route, focused, index } = scene;
+      if (focused) {
+      } else {
+        jumpToIndex(index);
+        navigation.state.params.getAllDataFromDb();
+      }
+    },
     // tabBarIcon: ({ tintColor }) => <Image source={DiveThru} style={{ tintColor }} />,
   });
   constructor(props) {
@@ -42,6 +50,7 @@ class DiveThruScreen extends Component {
   componentWillMount() {
     StatusBar.setHidden(false);
     this.props.navigation.setParams({ handleSelectedIndex: this.handleSelectedIndex.bind(this) });
+    this.props.navigation.setParams({ getAllDataFromDb: this.getAllDataFromDb.bind(this) });
     this.fetchCategoryName();
     const tabs = () => (
       <Text tabLabel="Tab #1">My</Text>
@@ -55,6 +64,14 @@ class DiveThruScreen extends Component {
     setTimeout(() => this.tabView.goToPage(page), 300);
   }
 
+  getAllDataFromDb() {
+    this.fetchCategoryName();
+    const tabs = () => (
+      <Text tabLabel="Tab #1">My</Text>
+    );
+    this.setState({ tabs });
+  }
+
   componentDidMount() {
     this.setState({ loading: true });
   }
@@ -65,7 +82,9 @@ class DiveThruScreen extends Component {
     ref.once('value').then((dataSnapshot) => {
       if (dataSnapshot.exists()) {
         dataSnapshot.forEach((child) => {
-          labels.push(child.key);
+          if (child.key !== '10 Day Intro Program') {
+            labels.push(child.key);
+          }
         });
         if (labels.length > 0) {
           const tabs = [];

@@ -1,6 +1,8 @@
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Dimensions } from 'react-native';
 import { colors } from './theme';
 
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container1: {
     flex: 1,
@@ -87,8 +89,9 @@ const styles = StyleSheet.create({
   },
   VLogoContainer: {
     backgroundColor: colors.transparent,
-    margin: 20,
-    flex: 1,
+    // margin: 20,
+    // flex: 1,
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -109,7 +112,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 250,
-    marginTop: '20%',
+    marginTop: width > 320 ? '20%' : '10%',
   },
   videoView: {
     backgroundColor: colors.white,
@@ -117,12 +120,32 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   PlayerView: {
-    justifyContent: 'center',
+    flex: 1,
+    position: 'absolute',
+    top: (height - 150) / 2,
+    left: (width - 150) / 2,
+    height: '25%',
     backgroundColor: colors.transparent,
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 250,
-    marginTop: '5%',
+  /* bring your own prefixes */
+  // transform: 'translate(-50%, -50%)',
+    // flexDirection:'row',
+    // alignItems:'center',
+    // justifyContent:'center',
+    // // flex: 1,
+    // position: 'absolute',
+    // // justifyContent: 'center',
+    // backgroundColor: colors.red100,
+    // // flexDirection: 'row',
+    // // alignItems: 'center',
+    // width: '50%',
+    // height: '25%',
+    // // marginTop: '30%',
+    // // top: 0,
+    // // bottom: 0,
+    // // left: 0,
+    // // right: 0,
+    // textAlign: 'center',
+    // alignSelf: 'center',
   },
   playerContainer: {
     width: '100%',

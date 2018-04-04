@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, ImageBackground, TouchableOpacity, StatusBar, AsyncStorage, Modal, Platform, PanResponder, Dimensions } from 'react-native';
+import { View, Text, Image, ImageBackground, TouchableOpacity, StatusBar, AsyncStorage, Modal, Platform, PanResponder, Dimensions, TextInput } from 'react-native';
 import Sound from 'react-native-sound';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Moment from 'moment';
+import DropdownAlert from 'react-native-dropdownalert';
 import Svg, { Path, Circle, G } from 'react-native-svg';
 import { Button } from 'react-native-material-ui';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import styles, { playerStyles, buttonStyles } from '../../styles/player';
+import styles, { playerStyles, buttonStyles, popupbuttonStyles } from '../../styles/player';
 import firebaseApp from '../../components/constant';
 import IC_WHITE_CLOSE from '../../assets/images/ic_white_close.png';
 import IC_WHITE_INFO from '../../assets/images/ic_info.png';
@@ -33,6 +36,8 @@ class PlayerScreen extends Component {
       isLoaded: false,
       progress: 0,
       modalVisible: false,
+      playermodalvisible: false,
+      chatBox: 'As I read what I wrote, I connected with...',
     };
     this.duration = 0;
     this.audioState = '';
@@ -42,8 +47,8 @@ class PlayerScreen extends Component {
     StatusBar.setHidden(true);
     const { params } = this.props.navigation.state;
     const sessionData = params ? params.rowdata : undefined;
-    const title = params.bundleName ? params.bundleName : '10 Day Program';
-
+    const title = params.bundleName ? params.bundleName : '10 Day Intro Program';
+    const category = params.category ? params.category : '10 Day Intro Program';
     this.session = new Sound(sessionData.meditation_audio, null, (e) => {
       if (e) {
         console.log('error loading track:', e);
@@ -59,6 +64,7 @@ class PlayerScreen extends Component {
 
     this.setState({
       title,
+      categoryName: category,
       sessionDesc: sessionData.session_description,
       sessionName: sessionData.session_name,
       sessionImg: sessionData.session_img,
@@ -112,6 +118,44 @@ class PlayerScreen extends Component {
   onClickOfCalendar = () => {
     this.props.navigation.navigate('CalenderReminderScreen');
   }
+
+  onClose(data) {
+    if (data.type === 'success') {
+      this.props.navigation.goBack();
+    }
+  }
+
+  closeModal() {
+    this.setState({ playermodalvisible: false });
+  }
+
+  saveJournal = () => {
+    const CurrentDate = Moment().format('YYYY-MM-DD HH:mm:ss');
+    const category = this.state.categoryName;
+    const re = /^[a-zA-Z0-9]{1}/;
+    if (this.state.chatBox === 'As I read what I wrote, I connected with...' || this.state.chatBox === '' || re.test(this.state.chatBox) === false) {
+      this.showErrorAlertView('Please write your journal');
+    } else {
+      AsyncStorage.getItem('user_id').then((value) => {
+        const JournalData = {
+          journal_text: this.state.chatBox,
+          date: CurrentDate,
+          category_name: category,
+          bundle_name: this.state.sessionName,
+          session_name: this.state.title,
+        };
+        const ref = firebaseApp.database().ref('Journal').child(value);
+        ref.push(JournalData);
+        this.updateUserDataForFreeProgram();
+      });
+      this.setState({ playermodalvisible: false });
+    }
+  }
+
+  showErrorAlertView(message) {
+    this.dropdown.alertWithType('error', '', message);
+  }
+
 
   onClickOfClose = () => {
     this.setState({ isPlaying: false });
@@ -182,8 +226,8 @@ class PlayerScreen extends Component {
     this.session.release();
     this.session = null;
     this.clearTimer();
-    this.setState({ isPlaying: false });
-    this.updateUserDataForFreeProgram();
+    this.setState({ isPlaying: false, playermodalvisible: true });
+    // this.updateUserDataForFreeProgram();
   }
 
   playProgress() {
@@ -335,7 +379,7 @@ class PlayerScreen extends Component {
         <View key={i} style={styles.progrssBarFill} />,
       );
     }
-
+    const { animationType, supportedOrientation } = this.props;
     return (
       <View style={styles.container}>
         <ImageBackground
@@ -456,6 +500,37 @@ class PlayerScreen extends Component {
             </View>
           </View>
         </Modal>
+        <Modal
+          animationType={animationType}
+          transparent
+          visible={this.state.playermodalvisible}
+          onRequestClose={() => { this.closeModal(); }}
+          supportedOrientations={supportedOrientation}
+        >
+          <KeyboardAwareScrollView style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', height: '100%' }}>
+            <View style={styles.innerContainer}>
+              <Text style={styles.headingtext}>Write your Journal</Text>
+              <TextInput
+                multiline
+                maxLength={200}
+                placeholder="As I read what I wrote, I connected with..."
+                numberOfLines={3}
+                onChangeText={(e) => { this.setState({ chatBox: e }); }}
+                value={this.state.chatBox}
+                style={styles.textinput}
+                underlineColorAndroid="transparent"
+              />
+              <Button
+                accent
+                text="Add in My Journal"
+                onPress={() => { this.saveJournal(); }}
+                upperCase={false}
+                style={popupbuttonStyles}
+              />
+              <DropdownAlert updateStatusBar={false} ref={(ref) => { this.dropdown = ref; }} onClose={data => this.onClose(data)} />
+            </View>
+          </KeyboardAwareScrollView>
+        </Modal>
       </View>
     );
   }
@@ -493,6 +568,8 @@ PlayerScreen.propTypes = {
   meterColor: PropTypes.string,
   textColor: PropTypes.string,
   playState: PropTypes.string,
+  animationType: PropTypes.string,
+  supportedOrientation: PropTypes.array,
 };
 
 export default PlayerScreen;

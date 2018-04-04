@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, ImageBackground, TouchableOpacity, StatusBar, AsyncStorage, Modal, Platform, PanResponder, Dimensions } from 'react-native';
+import { View, Text, Image, ImageBackground, TouchableOpacity, StatusBar, AsyncStorage, Modal, Platform, PanResponder, Dimensions, TextInput } from 'react-native';
 import Sound from 'react-native-sound';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import Moment from 'moment';
 import Svg, { Path, Circle, G } from 'react-native-svg';
 import { Button } from 'react-native-material-ui';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import styles, { playerStyles, buttonStyles, timeButtonStyles, timeButtonClickStyles } from '../../styles/player';
+import DropdownAlert from 'react-native-dropdownalert';
+import styles, { playerStyles, buttonStyles, timeButtonStyles, timeButtonClickStyles, popupbuttonStyles } from '../../styles/player';
 import firebaseApp from '../../components/constant';
 import IC_WHITE_CLOSE from '../../assets/images/ic_white_close.png';
 import IC_WHITE_INFO from '../../assets/images/ic_info.png';
@@ -40,6 +43,8 @@ class DiveThruPlayerScreen extends Component {
       bgTimeTwo: 'transparent',
       bgTimeThree: 'transparent',
       // meditation_audio_time: [],
+      playermodalvisible: false,
+      chatBox: 'As I read what I wrote, I connected with...',
     };
     this.duration = 0;
     this.audioState = '';
@@ -52,7 +57,7 @@ class DiveThruPlayerScreen extends Component {
     const bundleName = params ? params.bundleName : undefined;
     const bundleID = params ? params.bundleId : undefined;
     const category = params ? params.category : undefined;
-
+    const catId = params ? params.catId : undefined;
     // let audioTime = [];
     // let audios = [];
     // if (sessionData.meditation_audio_time) {
@@ -68,6 +73,7 @@ class DiveThruPlayerScreen extends Component {
     // }
 
     this.setState({
+      category_Id: catId,
       title: bundleName,
       bundleID,
       category,
@@ -144,6 +150,16 @@ class DiveThruPlayerScreen extends Component {
     }
   }
 
+  onClose(data) {
+    if (data.type === 'success') {
+      this.props.navigation.goBack();
+    }
+  }
+
+  closeModal() {
+    this.setState({ playermodalvisible: false });
+  }
+
   play() {
     this.setState({ isTimeDisable: true });
     if (this.session && !this.state.isPlaying) {
@@ -184,8 +200,8 @@ class DiveThruPlayerScreen extends Component {
     this.session.release();
     this.session = null;
     this.clearTimer();
-    this.setState({ isPlaying: false });
-    this.updateUserDataForPaidCategory();
+    this.setState({ isPlaying: false, playermodalvisible: true });
+    // this.updateUserDataForPaidCategory();
   }
 
   playProgress() {
@@ -271,6 +287,33 @@ class DiveThruPlayerScreen extends Component {
   //   });
   // }
 
+  saveJournal = () => {
+    const CurrentDate = Moment().format('YYYY-MM-DD HH:mm:ss');
+    const category = this.state.category;
+    const re = /^[a-zA-Z0-9]{1}/;
+    if (this.state.chatBox === 'As I read what I wrote, I connected with...' || this.state.chatBox === '' || re.test(this.state.chatBox) === false) {
+      this.showErrorAlertView('Please write your journal');
+    } else {
+      AsyncStorage.getItem('user_id').then((value) => {
+        const JournalData = {
+          journal_text: this.state.chatBox,
+          date: CurrentDate,
+          category_name: category,
+          bundle_name: this.state.sessionName,
+          session_name: this.state.title,
+        };
+        const ref = firebaseApp.database().ref('Journal').child(value);
+        ref.push(JournalData);
+        this.updateUserDataForPaidCategory();
+      });
+      this.setState({ playermodalvisible: false });
+    }
+  }
+
+  showErrorAlertView(message) {
+    this.dropdown.alertWithType('error', '', message);
+  }
+
   updateTotalConversationInDB(value) {
     const meditationAudioTime = parseInt(this.state.meditation_audio_time[this.state.index], 10);
     const ref = firebaseApp.database().ref('Users').child(value);
@@ -287,7 +330,13 @@ class DiveThruPlayerScreen extends Component {
 
   updateUserDataForPaidCategory() {
    // this.updateCurrentStreakData();
-    const bundleId = this.state.bundleID;
+    let bundleId = '';
+    if (this.state.category_Id !== undefined) {
+      bundleId = this.state.category_Id;
+    } else {
+      bundleId = this.state.bundleID;
+    }
+    
     const sessionId = this.state.session_id;
 
     AsyncStorage.getItem('user_id').then((value) => {
@@ -377,6 +426,7 @@ class DiveThruPlayerScreen extends Component {
   }
 
   render() {
+    const { animationType, supportedOrientation } = this.props;
     return (
       <View style={styles.container}>
         <ImageBackground
@@ -566,6 +616,37 @@ class DiveThruPlayerScreen extends Component {
             </View>
           </View>
         </Modal>
+        <Modal
+          animationType={animationType}
+          transparent
+          visible={this.state.playermodalvisible}
+          onRequestClose={() => { this.closeModal(); }}
+          supportedOrientations={supportedOrientation}
+        >
+          <KeyboardAwareScrollView style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', height: '100%' }}>
+            <View style={styles.innerContainer}>
+              <Text style={styles.headingtext}>Write your Journal</Text>
+              <TextInput
+                multiline
+                maxLength={200}
+                placeholder="As I read what I wrote, I connected with..."
+                numberOfLines={3}
+                onChangeText={(e) => { this.setState({ chatBox: e }); }}
+                value={this.state.chatBox}
+                style={styles.textinput}
+                underlineColorAndroid="transparent"
+              />
+              <Button
+                accent
+                text="Add in My Journal"
+                onPress={() => { this.saveJournal(); }}
+                upperCase={false}
+                style={popupbuttonStyles}
+              />
+              <DropdownAlert updateStatusBar={false} ref={(ref) => { this.dropdown = ref; }} onClose={data => this.onClose(data)} />
+            </View>
+          </KeyboardAwareScrollView>
+        </Modal>
       </View>
     );
   }
@@ -603,6 +684,9 @@ DiveThruPlayerScreen.propTypes = {
   meterColor: PropTypes.string,
   textColor: PropTypes.string,
   playState: PropTypes.string,
+  animationType: PropTypes.string,
+  supportedOrientation: PropTypes.array,
+  transparent: PropTypes.bool,
 };
 
 export default DiveThruPlayerScreen;

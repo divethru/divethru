@@ -143,7 +143,7 @@ class ForgotPasswordScreen extends Component {
               />
             </View>
           </KeyboardAwareScrollView>
-          <DropdownAlert ref={(ref) => { this.dropdown = ref; }} />
+          <DropdownAlert updateStatusBar={false} ref={(ref) => { this.dropdown = ref; }} />
         </View>
       </Spinner>
     );

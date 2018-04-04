@@ -48,6 +48,7 @@ class SessionScreen extends Component {
         rowHasChanged: (row1, row2) => row1 !== row2,
       }),
     };
+    this.arrSession = [];
   }
 
   componentWillMount() {
@@ -56,17 +57,6 @@ class SessionScreen extends Component {
 
   componentDidMount() {
     this.props.navigation.setParams({ handleBack: this.handleBack.bind(this) });
-    const { params } = this.props.navigation.state;
-    const sessionData = params ? params.sessionData : undefined;
-    const name = params ? params.name : undefined;
-    const item = params ? params.item : undefined;
-    const bundleId = params ? params.bundleId : undefined;
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(sessionData),
-      bundleName: name,
-      bundleId,
-      mainCategoryName: item,
-    });
   }
 
   handleBack() {
@@ -75,17 +65,47 @@ class SessionScreen extends Component {
   }
 
   fetchUserSubscriptionType() {
-    const userData = AsyncStorage.getItem('user_id').then((value) => {
+    // const ref = firebaseApp.database().ref('Users').child('s00XasxYXqSwe3w38Z3KAJFeHx83');
+    // ref.once('value').then((dataSnapshot) => {
+    //   const membership = dataSnapshot.val();
+    //   const type = membership.membership_type;
+    //   this.setState({ membershipType: type });
+    //   const { params } = this.props.navigation.state;
+    //   const sessionData = params ? params.sessionData : undefined;
+    //   const name = params ? params.name : undefined;
+    //   const item = params ? params.item : undefined;
+    //   const bundleId = params ? params.bundleId : undefined;
+    //   this.arrSession = sessionData;
+    //   this.setState({
+    //     dataSource: this.state.dataSource.cloneWithRows(sessionData),
+    //     bundleName: name,
+    //     bundleId,
+    //     mainCategoryName: item,
+    //   });
+    // });
+
+    AsyncStorage.getItem('user_id').then((value) => {
       if (value != null) {
         const ref = firebaseApp.database().ref('Users').child(value);
         ref.once('value').then((dataSnapshot) => {
           const membership = dataSnapshot.val();
           const type = membership.membership_type;
           this.setState({ membershipType: type });
+          const { params } = this.props.navigation.state;
+          const sessionData = params ? params.sessionData : undefined;
+          const name = params ? params.name : undefined;
+          const item = params ? params.item : undefined;
+          const bundleId = params ? params.bundleId : undefined;
+          this.arrSession = sessionData;
+          this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(sessionData),
+            bundleName: name,
+            bundleId,
+            mainCategoryName: item,
+          });
         });
       }
     }).catch(() => { });
-    return userData;
   }
 
   onClickOfRowItem(rowdata, bundleName, bundleId) {
@@ -144,18 +164,30 @@ class SessionScreen extends Component {
     );
   }
   render() {
+    const count = this.arrSession.length;
     return (
       <View style={styles.container}>
-        <ScrollView>
-          <View>
-            <ListView
-              removeClippedSubviews={false}
-              dataSource={this.state.dataSource}
-              renderRow={rowdata => this.renderGridItem(rowdata)}
-              contentContainerStyle={styles.listView}
-            />
-          </View>
-        </ScrollView>
+        { count > 0
+          ? (
+            <ScrollView>
+              <View>
+                <ListView
+                  removeClippedSubviews={false}
+                  dataSource={this.state.dataSource}
+                  renderRow={rowdata => this.renderGridItem(rowdata)}
+                  contentContainerStyle={styles.listView}
+                />
+              </View>
+            </ScrollView>
+          )
+          : (
+            <View style={{ flex: 1 }}>
+              <View style={{ height: 50, backgroundColor: colors.grey100, margin: 10, borderRadius: 5, borderColor: colors.grey400, borderWidth: 2, justifyContent: 'center' }}>
+                <Text style={{ margin: 10 }}>No session available.</Text>
+              </View>
+            </View>
+          )
+        }
       </View>
     );
   }

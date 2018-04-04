@@ -93,7 +93,7 @@ export default class Tutorial extends Component {
   )
 
   fetch10DayProgramData() {
-    const ref = firebaseApp.database().ref('Category').child('Open Dive').child('Session');
+    const ref = firebaseApp.database().ref('Category').child('10 Day Intro Program').child('Session');
     ref.once('value').then((dataSnapshot) => {
       if (dataSnapshot.exists()) {
         const sessionData = [];
@@ -274,7 +274,7 @@ export default class Tutorial extends Component {
     return (<Svg
       width={150}
       height={150}
-      style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', marginTop: 35, marginBottom: 40, backgroundColor: colors.transparent }}
+      style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', backgroundColor: colors.transparent }}
     >
       <Circle
         cx={width / 2}
@@ -346,7 +346,7 @@ export default class Tutorial extends Component {
                 primary
                 title=""
                 text="T A P  A N Y W H E R E  T O  C O N T I N U E"
-                onPress={() => { }}
+                onPress={() => { this.updatePage(1); }}
                 style={buttonStyles}
               />
             </View>
@@ -370,7 +370,7 @@ export default class Tutorial extends Component {
                 primary
                 title=""
                 text="T A P  A N Y W H E R E  T O  C O N T I N U E"
-                onPress={() => { }}
+                onPress={() => { this.updatePage(2); }}
                 style={buttonStyles}
               />
             </View>
@@ -397,7 +397,7 @@ export default class Tutorial extends Component {
                 primary
                 title=""
                 text="T A P  A N Y W H E R E  T O  C O N T I N U E"
-                onPress={() => { }}
+                onPress={() => { this.updatePage(3); }}
                 style={buttonStyles}
               />
             </View>
@@ -422,7 +422,7 @@ export default class Tutorial extends Component {
                 primary
                 title=""
                 text="T A P  A N Y W H E R E  T O  C O N T I N U E"
-                onPress={() => { }}
+                onPress={() => { this.updatePage(4); }}
                 style={buttonStyles}
               />
             </View>
@@ -457,35 +457,90 @@ export default class Tutorial extends Component {
                 primary
                 title=""
                 text="T A P  A N Y W H E R E  T O  C O N T I N U E"
-                onPress={() => { }}
+                onPress={() => { this.updatePage(5); }}
                 style={buttonStyles}
               />
             </View>
           </View>
 
-          <View >
-            <TouchableHighlight
-              style={styles.clearContainer}
-              onPress={() => {
-                this.setState({
-                  count: this.state.count,
-                });
-                this.changePlayState();
-              }}
+          <View style={styles.container6}>
+            <ImageBackground
+              source={walkThroughBg}
+              style={styles.backImage}
             >
-              <View style={styles.container6}>
-                <ImageBackground
-                  source={walkThroughBg}
-                  style={styles.backImage}
+              <View style={{ backgroundColor: colors.transparent, width: '100%', height: '100%' }}>
+                <TouchableOpacity
+                  style={{ backgroundColor: colors.transparent, width: '100%', height: '100%' }}
+                      // style={styles.container6}
+                  onPress={() => {
+                    this.setState({
+                      count: this.state.count,
+                    });
+                    // this.changePlayState();
+                    this.updatePage(6);
+                  }}
                 >
-                  <Text style={styles.playerContainerText}>
-                    Let&apos;s dive in.
-                  </Text>
-                  <Text style={styles.playerText}>
-                    { this.state.session ? this.state.session[0].session_name : 'Conversation 1'}
-                  </Text>
-                  <View style={styles.PlayerView}>
-                    <View style={styles.VLogoContainer}>
+                  <View>
+                    <View style={{ marginTop: '40%' }}>
+                      {/* <ImageBackground
+                        source={walkThroughBg}
+                        style={styles.backImage}
+                      > */}
+                      <Text style={styles.playerContainerText}>
+                        Let&apos;s dive in.
+                      </Text>
+                      <Text style={styles.playerText}>
+                        { this.state.session ? this.state.session[0].session_name : 'Conversation 1'}
+                      </Text>
+
+                      { this.state.isLoaded
+                          ? null
+                          : (<Text style={[styles.loadingext, { marginTop: '70%' }]}>
+                            ( L O A D I N G . . . )
+                            </Text>)
+                        }
+
+                      {/* <View style={styles.PlayerView}>
+                        <View style={styles.VLogoContainer}>
+                        { Platform.OS === 'ios'
+                          ? (
+                            <TouchableOpacity
+                              onPress={() => { this.changePlayState(); }}
+                            >
+                              <View style={styles.playerContainer}>
+                                <Text style={styles.text}>
+                                  {this.state.sessionName}
+                                </Text>
+                                <View style={styles.sliderContainer}>
+                                  {this.renderPlayer()}
+                                </View>
+                              </View>
+                            </TouchableOpacity>
+                          )
+                          : (
+                            <View style={styles.playerContainer}>
+                              <Text style={styles.text}>
+                                {this.state.sessionName}
+                              </Text>
+                              <View style={styles.sliderContainer}>
+                                {this.renderPlayer()}
+                                <Icon onPress={() => { this.changePlayState(); }} name={this.state.isPlaying ? 'pause' : 'play-arrow'} size={50} style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }} />
+                              </View>
+                            </View>
+                          )
+                        }
+                        </View>
+                      </View> */}
+                      {/* </ImageBackground> */}
+                    </View>
+                    {/* <View style={{ backgroundColor: colors.yellow100, marginTop: '40%' }}>
+                    
+                  </View> */}
+                    {/* </TouchableOpacity> */}
+                  </View>
+                </TouchableOpacity>
+                <View style={styles.PlayerView}>
+                  <View style={styles.VLogoContainer}>
                     { Platform.OS === 'ios'
                       ? (
                         <TouchableOpacity
@@ -513,41 +568,35 @@ export default class Tutorial extends Component {
                         </View>
                       )
                     }
-                    </View>
                   </View>
-                  { this.state.isLoaded
-                    ? null
-                    : (<Text style={[styles.loadingext, { marginTop: 10 }]}>
-                      ( L O A D I N G . . . )
-                      </Text>)
-                  }
-                </ImageBackground>
+                </View>
               </View>
-            </TouchableHighlight>
-            <View style={styles.bottomContainer}>
-              <Button
-                primary
-                title=""
-                text="T A P  A N Y W H E R E  T O  P L A Y"
-                onPress={() => { }}
-                style={buttonStyles}
-              />
-            </View>
-          </View>
 
-          <View style={styles.container7}>
-              <ImageBackground
-                source={walkThroughBg}
-                style={styles.backImage}
-              >
+              <View style={styles.bottomContainer}>
                 <Button
                   primary
                   title=""
-                  text="Start to DiveThru"
-                  onPress={() => { this.updatePage(0); }}
-                  style={reminderButtonStyles}
+                  text="T A P  A N Y W H E R E  T O  C O N T I N U E"
+                  onPress={() => { this.updatePage(6); }}
+                  style={buttonStyles}
                 />
-              </ImageBackground>
+              </View>
+            </ImageBackground>
+          </View>
+
+          <View style={styles.container7}>
+            <ImageBackground
+              source={walkThroughBg}
+              style={styles.backImage}
+            >
+              <Button
+                primary
+                title=""
+                text="Start to DiveThru"
+                onPress={() => { this.updatePage(0); }}
+                style={reminderButtonStyles}
+              />
+            </ImageBackground>
           </View>
 
         </IndicatorViewPager>
