@@ -372,7 +372,7 @@ out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 </style>
 </head>
 
-<body>
+<body style="margin-top:118px;">
 <?php include'header.php'; ?>
 
 <!--SLIDER-->
@@ -381,8 +381,8 @@ out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   <div class="container text-center">
        <h2>DIVE THRU WHAT YOU GO THRU</h2>
      <h4>AND RECONNECT WITH YOURSELF </h4>
-     <div class="btn1 btn-primary1  mt-md-5 mt-4 py-2 mx-2 px-3">S U B S C R I B E &nbsp; N O W</div>
-    <div class="btn1 btn-primary1 btn-primary2 mt-md-5 mt-4 py-2 mx-2 px-4">J O I N &nbsp; F O R &nbsp; F R E E</div>
+     <a href="http://34.215.40.163/subscription.php" style="box-shadow: none !important;text-decoration:none;color: #fff;" class="btn1 btn-primary1  mt-md-5 mt-4 py-2 mx-2 px-3">S U B S C R I B E &nbsp; N O W</a>
+    <a href="http://34.215.40.163/registration.php" style="box-shadow: none !important;text-decoration:none;" class="btn1 btn-primary1 btn-primary2 mt-md-5 mt-4 py-2 mx-2 px-4">J O I N &nbsp; F O R &nbsp; F R E E</a>
   </div>
 </div>
   
@@ -448,24 +448,24 @@ out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 <div class="container-fluid py-5">
      <div class="container text-center here">
         
-     <h2>Here's how it works</h2>
+     <h2 style="font-weight: 700;">Here's how it works</h2>
      
      <div class="row justify-content-center">
           <div class="col-md-3 col-7 text-center mt-5">
            <img src="img/round1.png" class="img-fluid" />
-          <h4 class="mt-4">Title</h4>
+          <h4 class="mt-4" style="font-weight: 700;">Title</h4>
           <h6>Subtexts Subtexts</h6>
         </div>
        
        <div class="col-md-3 col-7 text-center mt-5">
            <img src="img/round2.png" class="img-fluid" />
-         <h4 class="mt-4">Title</h4>
+         <h4 class="mt-4" style="font-weight: 700;">Title</h4>
           <h6>Subtexts Subtexts</h6>
         </div>
        
        <div class="col-md-3 col-7 text-center mt-5">
            <img src="img/round3.png" class="img-fluid" />
-         <h4 class="mt-4">Title</h4>
+         <h4 class="mt-4" style="font-weight: 700;">Title</h4>
           <h6>Subtexts Subtexts</h6>
         </div>
      </div>
@@ -477,7 +477,7 @@ out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
        <div class="container">
        <div class="box-slider">
   
-       <h3 class="text-center py-2" style="padding: 0;">Here's What's Inside</h3>
+       <h3 class="text-center py-2" style="padding: 0;font-weight: 700;">Here's What's Inside</h3>
       </div>
 
            <div id="aj1" class="carousel slide" data-ride="carousel" data-interval="false">
@@ -647,7 +647,7 @@ out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
                             </div>
               
                             <div class="col-lg-6">
-                                <h3 class="mb-2 txtpos" style="color: #34495e; ">
+                                <h3 class="mb-2 txtpos" style="color: #34495e; font-weight: 700;">
                                     It's Time To<br> DiveThru 
                                </h3>
                                <br>
@@ -655,9 +655,9 @@ out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
                                    Download the DiveThru app<br>or sign up online to find<br>the peace within.
                               </h6>
                               <br>
-                               <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</button>
+                               <a href="http://34.215.40.163/subscription.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5;box-shadow: none !important;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</a>
                                <br><br>
-                                <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;  background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </button>
+                                <a href="http://34.215.40.163/registration.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5;  box-shadow: none !important; background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </a>
                                 <br><br>
                                 <div>
                                 <img src="img/app atore.png" class="img-responsive plystr " height="40" width="140"> 

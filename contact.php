@@ -88,7 +88,7 @@ return $nodeGetContent;
 <!--SLIDER-->
 <?php 	foreach ($cms as $value) { ?>
 
-			<?php echo "<h2>".$value['page_description']."</h2>"; ?>
+			<?php if($value['page_slug']=="contact") {echo "<h2>".$value['page_description']."</h2>";} ?>
 			<!-- <div class="btn1 btn-primary1 mx-0 mt-3 py-2">C H E C K O U T &nbsp; O U R &nbsp; F A Q</div>
 			<div class="btn1 btn-primary2  mt-3 py-2 px-5 sample-btn-pad">C O N T A C T &nbsp; U S </div>  -->
 	  

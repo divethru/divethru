@@ -12,7 +12,8 @@ use Firebase\Auth\TokenGenerator;
 $fb = Firebase::initialize(FIREBASE_URL, FIREBASE_SECRET);
 
 $category = get("Category");
-
+$cnm[] = "";
+$bnm[] = "";
 
 function get($path){
         $fb = Firebase::initialize(FIREBASE_URL, FIREBASE_SECRET);
@@ -29,23 +30,41 @@ foreach($category as $k => $v){
     if($v['Session'] != ''){
         
          foreach($v['Session'] as $key => $val ){
+            $c2[] = $k;
              $session[] = $val;
              $cat[] = 0;
                 $bdn[] = 0;
+                $bnm[]= "No Bundle";
          }
     }else if($v['SubCategory'] != ''){
         
+        
             foreach($v['SubCategory'] as $s=> $c){
+                    if($c['Bundle'] != ''){
                 foreach($c['Bundle'] as $b => $bl){
                     if($bl['Session'] != ''){
                         
                         foreach($bl['Session'] as $sn => $v2){
+                            $c2[] = $k;
                             $session[] = $v2;
                 $cat[] = $s;
                 $bdn[] = $b;
+                $bnm[] = $bl["bundle_name"];
                         }
                     }
                     //die;
+                }
+                }
+                if($c['Session'] != ''){
+                    foreach ($c['Session'] as $ks => $vs) {
+                        $c2[] = $k;
+                            $session[] = $vs;
+                            echo $ks;
+                $cat[] = $s;
+                $bdn[] = 0;
+                $bnm[] = "No bundle";
+                        # code...
+                    }
                 }
             } 
         
@@ -54,9 +73,11 @@ foreach($category as $k => $v){
                     if($bl2['Session'] != ''){
                         
                         foreach($bl2['Session'] as $b3 => $v3){
+                            $c2[] = $k;
                              $session[] = $v3;
                                             $cat[] = 0;
                             $bdn[] = $b2;
+                            $bnm[] = $bl2["bundle_name"];
                         }
                     }
                     //die;
@@ -213,7 +234,8 @@ die;*/
                                         <tr>
                                             <th>Session Name</th>
                                             <th>Session Description</th>
-                                           
+                                            <th>Session Category</th>
+                                            <th>Session Bundle</th>
                                            <!-- <th>Subcription Type</th>-->    
                                             <th>Image</th>
                                             <th>Action</th>
@@ -233,14 +255,15 @@ die;*/
                                                 echo !empty($u['session_description'])?$u['session_description']:'-';
                                                 echo "</td>";
                                                 
-                                            /*  echo "<td>".$u['session_subcription_type']."</td>";*/
+                                              echo "<td>".$c2[$ky]."</td>";
+                                              echo "<td>".$bnm[$ky]."</td>";
                                                 echo "<td><img src='";
                                                 echo !empty($u['session_img'])?$u['session_img']:'#';
                                                 echo "' width='50' height='50' id='simg'></td>";
                                             
                                                 ?>
                                                 
-                                                <td><!--<a href='#' onclick='edit("<?php //echo $u['session_id'];?>","<?php //echo $bdn[$ky];?>","<?php //echo $cat[$ky];?>");'><i class="material-icons">mode_edit</i></a>--> &nbsp;  <a href='#' onclick='del("<?php echo $u['session_id'];?>","<?php echo $bdn[$ky];?>","<?php echo $cat[$ky];?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
+                                                <td><a href='#' onclick='edit("<?php echo $u['session_id'];?>","<?php echo $bdn[$ky];?>","<?php echo $cat[$ky];?>","<?php echo $c2[$ky]; ?>");'><i class="material-icons">mode_edit</i></a> &nbsp;  <a href='#' onclick='del("<?php echo $u['session_id'];?>","<?php echo $bdn[$ky];?>","<?php echo $cat[$ky];?>","<?php echo $c2[$ky]; ?>");'><i class="material-icons" style="color:#dc5753;">delete</i></a></td>
                                                 <?php 
                                             echo "</tr>";
                                             
@@ -297,14 +320,17 @@ die;*/
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
     <script type="text/javascript">
-        
-            function edit(id,bundle,session){
+        var catRef = firebase.database().ref().child('category');
+    catRef.on('child_changed', function(snapshot) {
+            location.reload(true);
+    });
+            function edit(id,bundle,session,c){
             
-             $.redirect("session_edit.php",{'id':id,'bundle':bundle,'session':session},"POST",null,null,true);
+             $.redirect("session_edit.php",{'id':id,'bundle':bundle,'session':session,'cat':c},"POST",null,null,true);
              
              }
         
-            function del(key,b,s){
+            function del(key,b,s,c){
 //                alert(b);
                 //console.log($("#simg").attr("src"));
             ////var ref = firebase.database().ref('Users');
@@ -331,12 +357,14 @@ die;*/
                             // }else{
                             //     alert('NOt');
                             // }
-                            if(s!=0){               
-                            var ref = firebase.database().ref().child('/Category/Deep Dives/SubCategory/'+s+'/Bundle/'+b+'/Session/' + id).remove();
-                            }else if(b!=0){
-                                var ref = firebase.database().ref().child('/Category/Quick Dive/Bundle/'+b+'/Session/' + id).remove();
+                            if(s!=0 && b!=0){               
+                            var ref = firebase.database().ref().child('/Category/'+c+'/SubCategory/'+s+'/Bundle/'+b+'/Session/' + id).remove();
+                            }else if(b!=0 && s==0){
+                                var ref = firebase.database().ref().child('/Category/'+c+'/Bundle/'+b+'/Session/' + id).remove();
+                            }else if(b==0 && s!=0){
+                                var ref = firebase.database().ref().child('/Category/'+c+'/SubCategory/'+s+'/Session/' + id).remove();
                             }else{
-                                var ref = firebase.database().ref().child('/Category/Open Dive/Session/' + id).remove();
+                                var ref = firebase.database().ref().child('/Category/'+c+'/Session/' + id).remove();
                                 
                             }
                         if(ref){
@@ -344,7 +372,9 @@ die;*/
                                     //alert('This category Deleted Sucessfully');
                                 swal({title: "Deleted!", text: "Session has been deleted.", type: "success"},
                                         function(){ 
-                                         location.reload();
+                                         window.setTimeout(function() {
+                                  window.location.href = "session_list.php";
+                                }, 1000);
                                      }
                                 );
                        // window.location.reload();

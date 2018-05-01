@@ -1,6 +1,6 @@
-      
 firebase.auth().onAuthStateChanged(function(user) {
            if (user) {
+            window.localStorage.setItem('cat','10 Day Intro Program');
          //var email=document.getElementById('email').value;
            //   var password=document.getElementById('password').value;
              //     alert("Login Successfully");
@@ -9,6 +9,8 @@ firebase.auth().onAuthStateChanged(function(user) {
                ref.once('value').then( function(dataSnapshot) {
                           var data = dataSnapshot.val();
                         console.log(data.activated_on);
+                        
+
                     if(data.activated_on != ''){
                                                  var lout = '<a class="nav-link" id="lg" style="padding-right: 1.5rem; padding-left: 1.5rem;" href="#" onclick="sign_out();">LOG OUT<span class="sr-only">(current)</span></a>';
                           $(".log").html(lout);
@@ -23,6 +25,7 @@ firebase.auth().onAuthStateChanged(function(user) {
        });
 
 function login_user() {
+  var history = [];    
  $(".cat").html("");
 // firebase.auth().onAuthStateChanged(function(user) {
 //           if (user) {
@@ -48,13 +51,32 @@ function login_user() {
       console.log(user.uid);
       var lout = '<a class="nav-link" id="lg" style="padding-right: 1.5rem; padding-left: 1.5rem;" href="#" onclick="sg_out();">LOG OUT<span class="sr-only">(current)</span></a>';
             ref.once('value').then( function(dataSnapshot) {
-        window.localStorage.setItem('user',JSON.stringify(dataSnapshot));
+              var currentdate = new Date(); 
+         var datetime = 
+             + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + "  "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+                  firebase.database().ref('Users').child(user.uid).child("lastUpdated_on").set(datetime);
               var data = dataSnapshot.val();
+        window.localStorage.setItem('user',JSON.stringify(dataSnapshot));
+                                      console.log(data.streak);  
+        if(data.streak){
+                                $.map(data.streak, function(value, index) {
+                                      history.push(index);
+                         
+                                });
+                        }
+
+               console.log(JSON.stringify(history));
+window.localStorage.setItem("SessionHistory",JSON.stringify(history));         
               console.log(data);
               // this.props.navigation.navigate('Tutorial');
               if (data.activated_on !== '') {
               console.log($(".log").html(lout));
-                if(data.visited == ""){
+                if(data.visited == "" || data.visited == 0){
 
                 window.location.href = "http://34.215.40.163/welcome.php";
                 }else{
@@ -163,3 +185,168 @@ function login_user() {
     // An error happened.
   });
 }
+//Google Sign Up Code Start
+
+function googlesave_user(){
+	
+	//alert(55);
+	var provider = new firebase.auth.GoogleAuthProvider();
+//	provider.addScope('email');
+	//provider.addScope('user_birthday');
+	provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+	firebase.auth().signInWithPopup(provider).then(function(result) {
+		
+  // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+  
+  				var token = result.credential.accessToken;
+  // The signed-in user info.
+  console.log(result);
+  		 	  var user = result.user;
+  			  var uid = user.uid;
+ 			  var detail = result.additionalUserInfo.profile;
+ 		  	  var first_name = detail.given_name;
+           	  var last_name = detail.family_name;
+           	 //var gender = detail.gender;
+  		   	  var gid = detail.id;
+			  var email=detail.email;
+  		      //var birthday = detail.birthday;
+  		     var loginvia = "Google";
+  //var membership_type = "free";
+  			// ...
+         var ref = firebase.database().ref('Users').child(user.uid);
+          ref.once('value').then( function(dataSnapshot) {
+              if(dataSnapshot.val()!==null){
+                ref.update({"gid":gid});
+                swal({
+                          title: "Login!",
+                          text: "User Login Sucessfully.",
+                          html:true,
+                          type: "success",
+                          showCancelButton: false,
+                          confirmButtonColor: "#86CCEB",
+                          confirmButtonText: "OK",
+                          closeOnConfirm: false
+                      }, function () {
+                          window.setTimeout(function() {
+                          
+                            window.location.href = "welcome.php";
+                          }, 1000);
+                      });
+
+              }else{
+              save_googleuser(uid,first_name,last_name,gid,email);
+              }
+
+          });
+		
+}).catch(function(error){
+  console.log(error.message);
+  $("p#all").html(error.message);
+});
+}
+
+	
+function save_googleuser(uid,first_name,last_name,gid,email) {
+
+			//alert(uid);
+			//return;
+			var currentdate = new Date(); 
+			var datetime = 
+			    + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+			 var PCstatus = 'Mobile';
+			
+			 var isMobile = {
+			    Android: function() {
+			        return navigator.userAgent.match(/Android/i);
+			    },
+			    BlackBerry: function() {
+			        return navigator.userAgent.match(/BlackBerry/i);
+			    },
+			    iOS: function() {
+			        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+			    },
+			    Opera: function() {
+			        return navigator.userAgent.match(/Opera Mini/i);
+			    },
+			    Windows: function() {
+			        return navigator.userAgent.match(/IEMobile/i);
+			    },
+			    any: function() {
+			        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+			    }
+			}
+			if( !isMobile.any() ){
+							 var PCstatus = 'Desktop';
+			}
+
+			    var x = document.getElementsByName("gender");
+			    var s;
+				for (var i = 0, length = x.length; i < length; i++)
+				{
+				 if (x[i].checked)
+				 {
+				  // do whatever you want with the checked radio
+				   s = x[i].value;
+				  //alert(s);
+
+				  // only one radio can be logically checked, don't check the rest
+				  break;
+				 }
+				}
+				
+			//console.log("ss"+uid);
+                 //  var uid = user.uid;
+				   	var data = {
+              "user_id": uid,
+              "first_name": first_name,
+              "last_name": last_name,
+              "visited":0,
+              "email": email,
+              "login_via": "google",
+              "fb_id": "",
+              "google_id": gid,
+              "birthdate":"",
+              "gender":"",
+              "halted": 0.0,
+              "last_free_conversation_id":0,
+              "registered_on":datetime,
+              "lastUpdated_on":datetime,
+              "device_type":PCstatus,
+              "activated_on":"",
+              "activation_code":"",
+              "device_token" : "",
+              "membership_type" : "Free",
+              "total_time_divethru": 0,
+              "completed_conversation": 0,
+              "streak": '',
+            }
+						var updates = {};
+						updates['/Users/' + uid] = data;
+        				firebase.database().ref().update(updates);
+						swal({
+	                        title: "Login!",
+	                        text: "User Login Sucessfully.",
+	                        html:true,
+	                        type: "success",
+	                        showCancelButton: false,
+	                        confirmButtonColor: "#86CCEB",
+	                        confirmButtonText: "OK",
+	                        closeOnConfirm: false
+	                    }, function () {
+	                        window.setTimeout(function() {
+	                        
+	                          window.location.href = "welcome.php";
+	                        }, 1000);
+	                    });
+						
+            	
+				
+}
+
+
+//End Google sign up code

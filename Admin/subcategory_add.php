@@ -183,11 +183,14 @@ return $nodeGetContent;
                                         <?php
                                         if($category){
                                             echo "<option value=''>Select Category</option>";
-                                            foreach($category as $c){
-                                                echo "<option value=".$c['category_name'].">".$c["category_name"]."</option>";
+                                            foreach($category as $k => $c){
+                                                if( $c['Session'] == "" && $c["Bundle"] == ""){
+
+                                                echo '<option value="'.$k.'">'.$c["category_name"].'</option>';
+                                                }
                                             }
                                         }else{
-                                            echo "<option value=''>Nothing selcted</option>";
+                                            echo "<option value=''>Nothing selected</option>";
                                         }
                                         ?>
                                         </select>
@@ -200,7 +203,7 @@ return $nodeGetContent;
                                 
                                <div class="form-group form-float">
                                     <div class="form-line error">
-                                    <label class="form-label">Image</label>
+                                    <label class="form-label">Image (1920 X 1080)</label>
                                     </br>
                                     </br>
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
@@ -299,9 +302,9 @@ $("input[type=file]").checkImageSize();
         }
         
         $(function () {
-                    $('select').find('[value=Open]').remove(); 
-                    $('select').find('[value=Quick]').remove(); 
-        $('select').selectpicker('refresh');    
+//                    $('select').find('[value=Open]').remove(); 
+  //                  $('select').find('[value=Quick]').remove(); 
+    //    $('select').selectpicker('refresh');    
             
     $("form").submit(function(e){
         e.preventDefault();
@@ -344,7 +347,7 @@ $("input[type=file]").checkImageSize();
           name: {
             required:"Please enter your SubCategory Name",
             minlength: "Enter name must be at least 6 characters long",
-            maxlength: "Enter name maximum 15 characters allow"
+            maxlength: "Enter name maximum 50 characters allow"
             },
           subcatimage: {
             required:"Please Select Any image",

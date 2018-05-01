@@ -239,13 +239,13 @@ foreach($session['session_audio'] as $s){
                                         <?php
                                         if($category){
                                             
-                                            foreach($category as $c){
+                                            foreach($category as $ky => $c){
                                                 if($sub['parentcategory'] == $c['category_name']){
                                                     
-                                                    echo "<option value=".$c['category_id']." selected>".$c["category_name"]."</option>";
-                                                }else{
+                                                    echo '<option value="'.$ky.'" selected>'.$c["category_name"].'</option>';
+                                                }else if(($c['session_subcription_type'] != "Free") || $c['Session'] == "" && $c["Bundle"] == ""){
                                                     
-                                                echo "<option value=".$c['category_id'].">".$c["category_name"]."</option>";
+                                                echo '<option value="'.$ky.'">'.$c["category_name"].'</option>';
                                                 }
                                             }
                                         }else{
@@ -262,7 +262,7 @@ foreach($session['session_audio'] as $s){
                                 
                                <div class="form-group form-float">
                                     <div class="form-line error">
-                                    <label class="form-label">Image</label>
+                                    <label class="form-label">Image (1920 X 1080)</label>
                                     </br>
                                     </br>
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
@@ -398,7 +398,7 @@ $('select').selectpicker('refresh');
             'name': {
                 required: true,
                 minlength: 6,
-                maxlength: 15,
+                maxlength: 50,
                 regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
             }, 
             'description': {
@@ -417,7 +417,7 @@ $('select').selectpicker('refresh');
           name: {
             required:"Please enter your SubCategory Name",
             minlength: "Enter name must be at least 6 characters long",
-            maxlength: "Enter name maximum 15 characters allow"
+            maxlength: "Enter name maximum 50 characters allow"
             },
           subcatimage: {
             required:"Please Select Any image",

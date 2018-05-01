@@ -455,4 +455,18 @@ $(function () {
     $.AdminBSB.search.activate();
 
     setTimeout(function () { $('.page-loader-wrapper').fadeOut(); }, 50);
+
+   /* $('.list > li > .ml-menu > li >a').each(function(){
+        $(this).parent().parent().parent().parent().removeClass("active");
+        $(this).parent().removeClass("active");
+                var path = window.location.href;
+                var current = path.substring(path.lastIndexOf('/')+1);
+                var url = $(this).attr('href');
+                if(url == current){
+    
+                    $(this).parent().parent().parent().parent().addClass('active');
+                    $(this).parent().addClass('active');
+                };
+            });  */   
+    
 });

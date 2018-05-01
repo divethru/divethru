@@ -1,3 +1,48 @@
+<?php
+session_start();
+//session_destroy();
+require 'payment.php';
+//require 'vendor/autoload.php';
+
+use PayPal\Rest\ApiContext;
+//use PayPal\Auth\OAuthTokenCredential;
+use PayPal\Api\Payment;
+use PayPal\Api\Payer;
+use PayPal\Api\Details;
+use PayPal\Api\Amount;
+use PayPal\Api\Transaction;
+use PayPal\Api\RedirectUrls;
+use PayPal\Api\Item;
+use PayPal\Api\ItemList;
+use PayPal\Api\CreditCard;
+use PayPal\Api\FundingInstrument;
+use PayPal\Api\Address;
+use PayPal\Api\BillingInfo;
+use PayPal\Api\Cost;
+use PayPal\Api\Currency;
+use PayPal\Api\Invoice;
+use PayPal\Api\InvoiceAddress;
+use PayPal\Api\InvoiceItem;
+use PayPal\Api\MerchantInfo;
+use PayPal\Api\PaymentTerm;
+use PayPal\Api\Phone;
+use PayPal\Api\ShippingInfo;
+
+  if(isset($_GET["paymentId"])){
+  
+      $paymentid = $_GET["paymentId"];
+      try{
+        $paydetail = Payment::get($paymentid,$apiContext);
+        $obj = json_decode($paydetail);
+        
+         //print_r($obj);
+        // die;
+      }catch(Exception $ex){
+//        print_r($ex);
+        echo "Exception";
+      }
+    } 
+  ?>
 <!DOCTYPE html>
 <html style="height: 100%">
 <head>
@@ -12,7 +57,9 @@
 <link rel="stylesheet" href="css/sweetalert.css" type="text/css" >
 <script src="js/sweetalert.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
+<script type="text/javascript" src="js/jquery.redirect.js"></script>
 <script>
+  localStorage.removeItem('cat');
   // Initialize Firebase
   var config = {
     apiKey: "AIzaSyDBWdYDtGJsilqNGOqYMNalE9s-IAGPnTw",
@@ -24,7 +71,7 @@
   };
   firebase.initializeApp(config);
 </script>
-<script src="Admin/js/sign_out.js"></script>
+<script src="js/signout.js"></script>
  <style type="text/css">
    .btn1 {
   display: inline-block;
@@ -48,16 +95,20 @@
     padding: 1rem;
     border-top: 1px solid #e9ecef;
 }
-
+.center{position: absolute;
+    top: 90%;
+    left: 92%; 
+  text-align:center;
+    transform: translateX(-50%) translateY(-50%);}
 
 </style>
 </head>
-<body>
+<body style="margin-top: 100px;">
 
 <?php 
 define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
 define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
-require 'vendor/autoload.php';
+//require 'vendor/autoload.php';
 use Firebase\Firebase;
 use Firebase\Auth\TokenGenerator;
 
@@ -85,7 +136,7 @@ return $nodeGetContent;
       <div class="bannerCenter">
         <p class="bannerDay">Day <span class="day"></span> of 10</p>
       <p class="bannerHeader">Intro Program</p>
-      <button class="bannerButton" id="close_account"  style="outline:none; font-weight: 400;" type="button"><i class="fa fa-play" aria-hidden="true"></i> &nbsp; B E G I N</button>
+      <button class="bannerButton" id="close_account"  style="outline:none; cursor: pointer; font-weight: 400;" type="button"><i class="fa fa-play" aria-hidden="true"></i> &nbsp; B E G I N</button>
 
     </div>
     </center>
@@ -111,7 +162,7 @@ return $nodeGetContent;
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-body text-center">
-        <h1 class="modal-title Modalcat" id="exampleModalLongTitle" style="color: #34495e;">Title</h1>
+        <h1 class="modal-title Modalcat" id="exampleModalLongTitle" style="color: #34495e;font-size: 28px;">Title</h1>
         <br>
        <p style="color: #727272;">Description</p>
 
@@ -139,7 +190,7 @@ return $nodeGetContent;
       </div>
       <div class="modal-footer1 text-center">
         <a href="http://34.215.40.163/player.php" class="btn1 mt-2 mx-1 " style="background-color: #7DD3D5 !important; outline: none !important; color:#FFF;  border-color:  #7DD3D5 !important; text-decoration: none;">Continue with free program</a>
-        <button type="button" class="btn1  mt-2 mx-1 " style="color:#FFF; background-color: #7DD3D5 !important; outline: none !important; border-color:  #7DD3D5 !important;">Purchase for a subscription</button>
+        <a href="http://34.215.40.163/subscription.php" class="btn1  mt-2 mx-1 " style="color:#FFF; text-decoration: none; background-color: #7DD3D5 !important; outline: none !important; border-color:  #7DD3D5 !important;">Purchase for a subscription</a>
     </div>
   </div>
 </div>
@@ -178,7 +229,7 @@ return $nodeGetContent;
        
 <div class="container text-center cardContainers">
     <div class="row Margins text-center">
-    <!--  <div class="col-md-4 boxStyle" style="background-color:#aaa;">
+    <!---  <div class="col-md-4 boxStyle" style="background-color:#aaa;">
       <p class="Center">Having A Bad Day</p>
       </div>
       <div class="col-md-4 boxStyle" style="background-color:#bbb;">
@@ -230,12 +281,32 @@ return $nodeGetContent;
     <br>
     <p class="exploreMore2">EXPLORE MORE</p> 
     </div>-->
+
+<?php if (isset($_GET["paymentId"])) {
+    //echo $_SESSION["userid"];
+?>
+<input type="hidden" class="tr_id" value="<?php echo $obj->id; ?>">
+<input type="hidden" class="payment_type" value="<?php echo $obj->payer->payment_method; ?>">
+<input type="hidden" class="payment_status" value="<?php echo $obj->payer->status; ?>">
+<input type="hidden" class="payment_time" value="<?php echo date("d-m-Y H:i:s", strtotime($obj->create_time)); ?>">
+<input type="hidden" class="state" value="<?php echo $obj->payer->payer_info->shipping_address->state; ?>">
+<input type="hidden" class="payer_id" value="<?php echo $obj->payer->payer_info->payer_id; ?>">
+<input type="hidden" class="email" value="<?php echo $obj->payer->payer_info->email; ?>">
+<input type="hidden" class="total" value="<?php echo $obj->transactions[0]->amount->total; ?>">
+<input type="hidden" class="currency" value="<?php echo $obj->transactions[0]->amount->currency; ?>">
+<input type="hidden" class="full_name" value="<?php echo $obj->payer->payer_info->first_name. ' '. $obj->payer->payer_info->last_name; ?>">
+<input type="hidden" class="description"  value="<?php echo $obj->transactions[0]->description; ?>">
+<input type="hidden" class="city" value="<?php echo $obj->payer->payer_info->shipping_address->city; ?>">
+<?php
+}
+?>
 </div>
 </div>
 
 <script type="text/javascript">
    
-    $(window).load(function(){        
+    $(window).load(function(){  
+    
                $('#exampleModalCenter').modal('show');
               });
 </script>
@@ -290,21 +361,88 @@ return $nodeGetContent;
   </div>
   
 </div>
-------->
+-------->
 <div class="bottomCard" width="100%"> 
     <center>
           <p style="color: #34495e; ">Unlock the Dive thru Library</p>
-      <a href="#" class="bottomCardButton " style="color: #FFF; text-decoration: none;">SUBSCRIBE NOW</a>
+      <a href="http://34.215.40.163/subscription.php" class="bottomCardButton " style="color: #FFF; text-decoration: none;">SUBSCRIBE NOW</a>
     </center>
 </div>
 
 <?php include 'footer.php'; ?>
 
 <script src="js/dashboard.js"></script>
+<script type="text/javascript"> 
+$(document).ready(function(){
 
+      console.log(JSON.parse(window.localStorage.getItem("SessionHistory")));  
+ 
+
+ // $(".playe").on('click','.boxStyle > .bundle',function(e){
+ //  alert();
+ //      console.log($(e.target).attr('class'));
+ //      var flag = false;
+ //      var t ='';
+ //      var SESSION = $(this).attr("id");
+ //      var S = $(this).text();
+ //      var cid = $(this).data("cat");
+ //      var ct = window.localStorage.getItem("cat");
+ //    console.log(ct);
+ //      window.localStorage.setItem("cat",ct);
+ //      window.localStorage.setItem("Snm",S);
+ //      window.localStorage.setItem("cid",cid);
+ //      $.redirect("player.php",{bundle: SESSION},"POST",null,null,true);
+ //      firebase.database().ref("Category/"+ct+"/Session/"+SESSION).on("value", function(snapshot) {
+ //                    window.localStorage.setItem("session", JSON.stringify(snapshot.val()));
+ //                snapshot.forEach(function(childSnapshot) {
+ //                  var data = childSnapshot.val();
+ //                  var key = childSnapshot.key;
+   
+ //              //    alert(key);
+ //                });
+ //              });
+ //  });
+}); 
+</script>
 
 <script>
 $(document).ready(function(){
+
+       /*$('#exampleModalCenter').modal('hide');*/
+var catRef = firebase.database().ref().child('/');
+    catRef.on('child_changed', function(snapshot) {
+      location.reload(true);
+    });
+    $('.header-item > ul li a.nav-link').each(function(){
+                var path = window.location.href;
+                var current = path.substring(path.lastIndexOf('/')+1);
+                var url = $(this).attr('href');
+                if(url == current){
+                    $(this).addClass('active');
+                };
+            });
+
+
+
+  $(".bannerButton").click(function(){
+
+  var day = window.localStorage.getItem('content');
+  window.localStorage.removeItem("cat","10 Day Intro Program");
+  var user = JSON.parse(window.localStorage.getItem('user'));
+//alert(user.membership_type);
+    if(day>8 && day<=10 && user.membership_type == "Free"){
+     // alert(day);
+       $('#exampleModalCenter').modal('show');
+    }else if(day<=8 || user.membership_type == "paid"){
+        
+      var url = "http://34.215.40.163/player.php";
+      window.location.href = url;
+    }else if(day>10 && user.membership_type == "Free"){
+       //alert(day);
+       // alert(user.membership_type);
+      window.location = "subscription.php";
+    }
+  });
     $(".exploreMore").click(function(){
         $(".hiddens").show();
     $(".exploreMore").hide();
@@ -324,8 +462,9 @@ $(document).ready(function(){
 });
 </script>
 
+<!---
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>---->
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

@@ -248,11 +248,11 @@ input.radio {
 .btn-default {
               color:#7dd3d5 !important;
               letter-spacing: 1px;
-              line-height: 25px;
-              border: 2px solid #7dd3d5;
-              border-radius: 40px;
+              line-height: 25px ;
+              border: 2px solid #7dd3d5 ;
+              border-radius: 40px ;
               background: transparent;
-              transition: all 0.3s ease 0s;
+              transition: all 0.3s ease 0s ;
             }
 .btn-default:hover {
               color: #FFF !important;

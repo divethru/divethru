@@ -234,7 +234,10 @@ return $nodeGetContent;
     <!-- Demo Js -->
     <script src="js/demo.js"></script>
 	<script type="text/javascript">
-		
+		var catRef = firebase.database().ref().child('category');
+    catRef.on('child_changed', function(snapshot) {
+            location.reload(true);
+    });
 			function del(key){
 				
 			//var ref = firebase.database().ref('Users');

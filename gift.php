@@ -19,7 +19,7 @@
 <body>
 	<?php include 'header.php'; ?>
 	<div class="container-fluid" style="padding: 80px 0;">
-       <div class="container heading text-center">
+       <div class="container heading text-center" style="margin-top: 8%;">
 	
 		   <h2>UNLOCK THE FULL<br>DIVETHRU EXPERIENCE</h2>
 		  

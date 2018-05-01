@@ -1,4 +1,5 @@
 ﻿
+
 <?php 
 //define('FIREBASE_URL','https://divethrutest.firebaseio.com/');
 //define('FIREBASE_SECRET','gxp2ItQwCsropnMYSEtsqPxEKeJam2G5LTxoaMoE'); 
@@ -105,7 +106,30 @@ foreach($category as $k => $v){
   firebase.initializeApp(config);
         </script>
             
-       <script type="text/javascript" src="js/check_login.js"></script>
+<script type="text/javascript" src="js/check_login.js"></script>
+<style type="text/css">
+    .flex-style{
+ display: flex;
+}
+
+.input-file{
+ opacity: 0;
+ margin-left: -40px;
+ width: 40px;
+ height: 45px;
+}
+
+.icon{
+ width: 48px;
+ height: 45px;
+ background:url(images/upload-black.png); 
+}
+.icon1{
+ width: 48px;
+ height: 45px;
+ background:url(images/audio.png); 
+}
+</style>
 </head>
 
 <body class="theme-red">
@@ -206,8 +230,8 @@ foreach($category as $k => $v){
                                         <?php
                                         if($category){
                                             echo "<option value=''>Select Category</option>";
-                                            foreach($category as $c){
-                                                echo "<option value=".$c['category_id'].">".$c["category_name"]."</option>";
+                                            foreach($category as $ky => $c){
+                                                echo '<option value="'.$ky.'">'.$c["category_name"].'</option>';
                                             }
                                         }else{
                                             echo "<option value='0'>Nothing selcted</option>";
@@ -264,7 +288,7 @@ foreach($category as $k => $v){
                                 
                                <div class="form-group form-float">
                                     <div class="form-line error">
-                                    <label class="form-label">Image</label>
+                                    <label class="form-label">Image (1920 X 1080)</label>
                                     </br>
                                     </br>
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
@@ -340,19 +364,22 @@ foreach($category as $k => $v){
                                     </div>
                                 </div>
                                 
-                                
-                                    <!--<div class="form-group form-float">
-                                    <div class="form-line error">
-                                        <input type="text" class="form-control" id="subname" name="name" required="" aria-required="true" aria-invalid="true">
-                                        <label class="form-label">Subscription Type</label>
-                                    </div>-->
-                              <!--  <label id="name-error" class="error" for="name">This field is required.</label>-->
-                               <!--</div>-->
-                             <!--  <label id="password-error" class="error" for="password">This field is required.</label></div>-->
-                                <!-- <div class="form-group">
-                                    <input type="checkbox" id="checkbox" name="checkbox" aria-required="true">
-                                    <label for="checkbox">I have read and accept the terms</label>
-                               <label id="checkbox-error" class="error" for="checkbox">This field is required.</label></div>-->
+                                 <div class="form-group form-float SINAPP">
+                                    <div class="form-line error " style="display:inline-flex;">
+                                        <input type="checkbox" id="checkbox" class="inapp" name="checkbox">
+                                    <label for="checkbox" style="width:200px;">In App Product</label>
+                                        <div class="form-group inappdetails" style="margin-bottom:0px;">    
+                                                <label for="productid">Product ID : </label>
+                                            <input type="text" name="productid" id="productid" class="with-gap " placeholder="Enter Product Id" style="border:none;">
+
+                                                <label for="active">Active</label>
+                                                <div class="switch" style="display:initial;"><label><input type="checkbox" name="active" id="active"><span class="lever"></span></label></div>
+                                        </div>
+                                        
+                                    </div>
+                                <!--<label id="description-error" class="error" for="description">This field is required.</label>-->
+                                </div>
+
                                 <button class="btn btn-primary waves-effect sessionadd" type="submit"><i class="fa fa-spinner fa-spin"></i>SUBMIT</button>
                             </form>
                         </div>
@@ -389,8 +416,8 @@ foreach($category as $k => $v){
     <script src="plugins/jquery-datatable/extensions/export/vfs_fonts.js"></script>
     <script src="plugins/jquery-datatable/extensions/export/buttons.html5.min.js"></script>
     <script src="plugins/jquery-datatable/extensions/export/buttons.print.min.js"></script> 
-         <script src="plugins/ckeditor/ckeditor.js"></script>
-         <script src="plugins/ckeditor/plugins/placeholder/plugin.js"></script>
+ <!--        <script src="plugins/ckeditor/ckeditor.js"></script>
+         <script src="plugins/ckeditor/plugins/placeholder/plugin.js"></script>---->
          <script src="plugins/jquery-validation/jquery.validate.js"></script>
          <script src="plugins/jquery-validation/additional-methods.js"></script>
          <script src="js/pages/forms/form-validation.js"></script>
@@ -422,12 +449,13 @@ $("input[type=file]").checkImageSize();
         
             
         $(function () {
-
+            $(".SINAPP").hide();
+            $(".inappdetails").hide();
             $(".audio2").hide();
             $(".audio1").hide();
             $(".fa-spinner").hide();
-            var config = {};
-            config.placeholder = 'Description'; 
+      //      var config = {};
+    //        config.placeholder = 'Description'; 
 //CKEDITOR.replace('ckeditor',config);
  //   CKEDITOR.config.height = 300;
     
@@ -454,46 +482,77 @@ $("input[type=file]").checkImageSize();
      $('#sessionimage').selectpicker().change(function(){
         $(this).valid()
     });
- $("#cat").change(function(){
+        $("#cat").change(function(){
         //alert($("#cat option:selected").text());
         var c = $("#cat option:selected").text();
-           $('#bundle').empty().append('<option selected="selected" value="">Select bundle</option>');
-        var op = "";
+         $('#bundle').empty().append('<option selected="selected" value="">Select bundle</option>');
+        var op = "<option selected='selected' value=''>Select SubCategory</option>";
         if($("#cat option:selected").text() == 'Deep Dive'){
-            //  alert(55);
-            $(".sub").show();
+            //alert(55);
             $(".bnd").show();
-            $(".audio1").show();
-            $(".audio2").show();
-
+            $(".sub").show();
         }else if($("#cat option:selected").text() == 'Quick Dive'){
             $(".sub").hide();
             $(".bnd").show();
-            $(".audio1").show();
-            $(".audio2").show();
         }else{
             $(".sub").hide();
             $(".bnd").hide();
-            $(".audio1").hide();
-            $(".audio2").hide();
+            window.subcat = false;
         }
+         $(".SINAPP").hide();
         firebase.database().ref("/Category/"+c).on("value", function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
                 // key
                 var key = childSnapshot.key;
                 // value, could be object
                 var childData = childSnapshot.val();
+                if(childSnapshot.key == "session_subcription_type" && childData == "Paid"){
 //console.log(childSnapshot.key);
+                     $(".audio1").show();
+                        $(".audio2").show();
+                }else{
+                      $(".audio1").hide();
+                      $(".audio2").hide();
+                }
+                //console.log(childData);
             /*  childData.forEach(function(child) {
                     
                 op += "<option value"+child.subcategory_id+">"+child.subcategory_name+"</option>";
                 });*/
                 if(childSnapshot.key == 'SubCategory'){
+                   
                     var t = Object.values(childData);
-                    //console.log(t);
-                    op = "<option value=''>Nothing selected</option>";
+                     if(t != ''){
+
+                   window.subcat = true;
+                        $(".audio1").show();
+                        $(".audio2").show();
+                        $(".sub").show();
+                         $(".bnd").show();
+                    }else if(t == ''){
+                         $(".sub").hide();
+                         $(".bnd").hide(); 
+                        window.bundle = false;                  
+                        window.subcat = false;                  
+                    }  
+                    /*if(Object.keys(value.Bundle).length > 0){
+
+                        window.bundle = true;
+                    }*/
                     $.map(t, function(value, index) {
-                       // console.log(value.subcategory_id);
+                    console.log(Object.keys(value.Bundle).length);
+                    if(Object.keys(value.Bundle).length > 0){
+                         $(".SINAPP").hide();
+                        window.bundle = true;
+                    }
+                    /* Hide bundle if subcategory don't have */
+                    if(Object.keys(value.Bundle).length == 0){
+                                $(".SINAPP").show();
+                                     $(".bnd").hide();
+                                      window.bundle = false;                  
+                                    window.subcat = true;   
+                       }
+                        console.log(Object.keys(value.Bundle).length);
                         op += "<option value="+value.subcategory_id+">"+value.subcategory_name+"</option>";
                     });
     //  console.log(op);
@@ -501,10 +560,23 @@ $("input[type=file]").checkImageSize();
     //   $('.mdb-select').material_select('destroy'); 
                     $('select').selectpicker('refresh');
             }
-            if(childSnapshot.key == 'Bundle'){
+             if(childSnapshot.key == 'Bundle' && c == "Quick Dive"){
+                 window.subcat = false;
+                 window.bundle = true;                
                 //console.log( Object.values(childData));
                 var t = Object.values(childData);
                     console.log(t);
+                if(t != ''){
+                        $(".audio1").show();
+                        $(".audio2").show();
+                         $(".sub").hide();
+                        $(".bnd").show();
+                    }
+                if(t == ''){
+                        $(".bnd").hide();  
+                        window.bundle = false;                  
+                        window.subcat = true;                  
+                }    
                     op = "<option value=''>Nothing selected</option>";
                     $.map(t, function(value, index) {
                        // console.log(value.subcategory_id);
@@ -522,6 +594,18 @@ $("input[type=file]").checkImageSize();
         e.preventDefault();
     });
     
+    /*Hide show Inapp Deatil block on inapp check*/ 
+    $('.inapp').click(function() {
+        if($(this).is(':checked')){
+            $(".inappdetails").show();
+        }else{
+            $(".inappdetails").hide();
+            
+        }
+    });
+
+
+
 //$(".bnd").hide();
  $.validator.addMethod("regex", function(value, element, regexpr) {          
                  return regexpr.test(value);
@@ -565,12 +649,18 @@ $("input[type=file]").checkImageSize();
                     },
                     'bundle':{
                          required: function() {
-                              return $("#cat option:selected").text() != 'Open Dive';
+                              return window.bundle;
                         }
                     },
                     'subcat':{
                          required: function() {
-                              return $("#cat option:selected").text() == 'Deep Dive';
+                              return window.subcat;
+                        }
+                    },
+                    'productid':{
+                        required: function() {
+                               return $(".inapp").is(':checked');
+                               
                         }
                     },
                 },
@@ -578,7 +668,7 @@ $("input[type=file]").checkImageSize();
                   name: {
                     required:"Please enter your Session Name",
                     minlength: "Enter name must be at least 6 characters long",
-                    maxlength: "Enter name maximum 15 characters allow"
+                    maxlength: "Enter name maximum 50 characters allow"
                     },
                   meditaion: {
                     required:"Please Select Any audio",
@@ -592,7 +682,7 @@ $("input[type=file]").checkImageSize();
                   cat:"Please Select category",
                  bundle:"Please Select Bundle",
                   subcat:"Please Select Subcategory",
-                    
+                   productid: "Please Enter Product Id",
                   
                 },
                 highlight: function (input) {
@@ -647,6 +737,15 @@ $("input[type=file]").checkImageSize();
                         var B = Object.values(childData);
                         //var Bb = Object.values(B.Bundle);
                     console.log(B);
+                                if(Object.keys(value.Bundle).length == 0){
+                                     $(".bnd").hide();
+                                      window.bundle = false;                  
+                                    window.subcat = true;   
+                                }else if(Object.keys(value.Bundle).length > 0){
+                                    $(".bnd").show();
+                                      window.bundle = true;                  
+                                    window.subcat = true;   
+                                }
                             $.map(B, function(value, index) {
                                 $.map(value.Bundle, function(value, index) {
                         console.log(value.bundle_category+"=="+s);
@@ -681,7 +780,7 @@ $("input[type=file]").checkImageSize();
                 var catid = $("#cat").val();
                 var scatid = $("#subcat").val();
                     var bundle = $("#bundle").val();
-            
+           // alert(window.bundle+"=="+window.subcat);
             //  alert(bundle);
                 //return;
                 // var desc = CKEDITOR.instances['ckeditor'].getData();
@@ -692,12 +791,26 @@ $("input[type=file]").checkImageSize();
                  var murl = $("#murl").val();
                  var mtime = $("#mtime").val();
                  var subname = $("#subname").val();
-                 if(catnm == 'Deep Dive'){
+                 var inapp = firebase.database().ref('InAppProducts');
+                     var productid = $("#productid").val();
+                    if($("#active").is(':checked')){
+                        
+                    var active = true;
+                    }else{
+                    var active = false;
+                        
+                    }
+
+
+                 if(catnm == 'Deep Dive' || (window.bundle && window.subcat)){
                      var firebaseRef = firebase.database().ref("Category/"+catnm+"/SubCategory/"+scatid+"/Bundle/"+bundle+"/Session");
-                 }else if(catnm == 'Quick Dive'){
+                 }else if((window.bundle && !window.subcat)){
                      
                     var firebaseRef = firebase.database().ref("Category/"+catnm+"/Bundle/"+bundle+"/Session");
-                 }else{
+                 }else if(!window.bundle && window.subcat){
+                     
+                    var firebaseRef = firebase.database().ref("Category/"+catnm+"/SubCategory/"+scatid+"/Session");
+                 }else if(!window.bundle && !window.subcat){
                      
                     var firebaseRef = firebase.database().ref("Category/"+catnm+"/Session");
                  }
@@ -710,6 +823,21 @@ $("input[type=file]").checkImageSize();
 
                 // Get the unique key generated by push()
                 var sid = pushedCatRef.key;
+                if(bundle){
+                    var b = bundle;
+                }else if(scatid){
+
+                    if($('.inapp').is(':checked')){
+
+                     var inappdata = {'product_id':productid,'type':"Session",'session_id':sid,'active':active}; 
+                           // console.log(inappdata);
+                        //$(".inappdetails").show();
+                        inapp.child(sid).set(inappdata);
+                    }
+                    var b = scatid;
+                }else{
+                    var b ="";
+                }
        // alert(sid);
                 firebaseRef.child(sid).set({
                     session_name: sessionnm,
@@ -718,7 +846,8 @@ $("input[type=file]").checkImageSize();
                 //  outro_audio: surl,
                     meditation_audio: audio,
                     meditation_audio_time: audiotime,
-                    budle_id: bundle,
+                    budle_id: b,
+
                     session_id: sid
                 });
                 if(pushedCatRef){

@@ -295,10 +295,18 @@ $(".sessionadd").attr("disabled","disabled");
     
 }
 var audio = []; 
+var time = []; 
+
 if(document.getElementById("maudio")){
 document.getElementById("maudio").addEventListener('change', function(e){ 
     //Get files
 //alert(5);
+if($("#maudio").next().has('.time')){
+    console.log(e.target.files.length);
+$(".time").remove();
+    //var aud = new Audio();
+   // audio = []; 
+}
 $(".sessionadd").attr("disabled", "disabled");
     document.getElementsByClassName("sessionadd").disabled = true;
  $(".fa-spinner").show();
@@ -313,7 +321,7 @@ aud.src = obUrl;
                     aud.onloadedmetadata = function() {
   //return aud.duration;
 var ti = Math.round(aud.duration/60);
-$("#maudio").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
+$("#maudio").after("<span class='time'>Time duration : <b>"+ti+" Minutes</b></span>");
   //$(".meditaoion").append(m);
 };
  audio_time(File);
@@ -325,7 +333,7 @@ $("#maudio").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
         
        var file_data = File;   
        
-    console.log(File);
+    console.log(File.name);
     var form_data = new FormData();                  
     form_data.append('meditation', file_data);
  //   alert(form_data);                             
@@ -348,11 +356,16 @@ $("#maudio").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
             }
             audio.push("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
             $("#murl").val(audio);
-            if($("#cat option:selected").text() == 'Open Dive'){
+            if($("#audio").length){
+                
+            $("#audio").tagsinput("removeAll");
+            $("#audio").tagsinput("add",File.name);
+            }
+         //   if($("#cat option:selected").text() == 'Open Dive'){
 
                         $(".fa-spinner").hide();
             $(".sessionadd").removeAttr("disabled");
-            }
+            //}
             console.log(data); // display response from the PHP script, if any
         }
      });
@@ -365,6 +378,14 @@ if(document.getElementById("maudio2")){
 document.getElementById("maudio2").addEventListener('change', function(e){ 
     //Get files
 //alert(5);
+///$("#maudio2").next().remove();
+if($("#maudio2").next().has('.time2')){
+    console.log(e.target.files.length);
+$(".time2").remove();
+   // var aud = new Audio();
+   // audio = []; 
+
+}
 $(".sessionadd").attr("disabled", "disabled");
     document.getElementsByClassName("sessionadd").disabled = true;
         $(".fa-spinner").show();
@@ -378,7 +399,7 @@ aud.src = obUrl;
                     aud.onloadedmetadata = function() {
   //return aud.duration;
 var ti = Math.round(aud.duration/60);
-$("#maudio2").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
+$("#maudio2").after("<span class='time2'>Time duration : <b>"+ti+" Minutes</b></span>");
   //$(".meditaoion").append(m);
 };
 
@@ -414,6 +435,12 @@ $("#maudio2").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
             }
             audio.push("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
             $("#murl").val(audio);
+            if($("#audio3").length){
+                 $(".fa-spinner").hide();
+            $(".sessionadd").removeAttr("disabled");
+            $("#audio3").tagsinput("removeAll");
+            $("#audio3").tagsinput("add",File.name);
+            }
               //          $(".fa-spinner").hide();
             //$(".sessionadd").removeAttr("disabled");
             console.log(data); // display response from the PHP script, if any
@@ -428,6 +455,13 @@ if(document.getElementById("maudio3")){
 document.getElementById("maudio3").addEventListener('change', function(e){ 
     //Get files
 //alert(5);
+//$("#maudio3").next().remove();
+if($("#maudio3").next().has('.time3')){
+    console.log(e.target.files.length);
+$(".time3").remove();
+   // var aud = new Audio();
+   // audio = []; 
+}
 $(".sessionadd").attr("disabled", "disabled");
     document.getElementsByClassName("sessionadd").disabled = true;
  $(".fa-spinner").show();
@@ -441,7 +475,7 @@ aud.src = obUrl;
                     aud.onloadedmetadata = function() {
   //return aud.duration;
 var ti = Math.round(aud.duration/60);
-$("#maudio3").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
+$("#maudio3").after("<span class='time3'>Time duration : <b>"+ti+" Minutes</b></span>");
   //$(".meditaoion").append(m);
 };
 
@@ -478,6 +512,11 @@ $("#maudio3").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
             $(".fa-spinner").hide();
             audio.push("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
             $("#murl").val(audio);
+            if($("#audio4").length){
+                
+            $("#audio4").tagsinput("removeAll");
+            $("#audio4").tagsinput("add",File.name);
+            }
             $(".sessionadd").removeAttr("disabled");
             console.log(data); // display response from the PHP script, if any
         }
@@ -489,7 +528,6 @@ $("#maudio3").after("<span>Time duration : <b>"+ti+" Minutes</b></span>");
 }
 // Function yo get audio time
 
-    var time = [];
 function audio_time(File){
     obUrl = URL.createObjectURL(File);
        var aud = new Audio();

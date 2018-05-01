@@ -321,7 +321,7 @@ CKEDITOR.replace('ckeditor',config);
                     'name': {
                         required: true,
                         minlength: 6,
-                        maxlength: 15,
+                        maxlength: 50,
                         regex:  /^[a-zA-Z]+$/
                     }
                 },
@@ -329,7 +329,7 @@ CKEDITOR.replace('ckeditor',config);
                   name: {
                     required:"Please enter your CMS Name",
                     minlength: "Enter name must be at least 6 characters long",
-                    maxlength: "Enter name not more then 15 characters."
+                    maxlength: "Enter name not more then 50 characters."
                     },
                   
                   description:"Please enter Description"

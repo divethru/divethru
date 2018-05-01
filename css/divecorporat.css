@@ -1,0 +1,74 @@
+@charset "utf-8";
+/* CSS Document */
+.my-modal {overflow-y: scroll;
+           height: 500px;}
+
+.my-modal h2 {color: #34495e;}
+
+.my-modal p {color: #727272;
+             font-size: 24px;}
+
+.my-modal {width: 700px !important;
+           height: 500px;
+           left: -100px;
+           top: 40px;
+           position: absolute;}
+
+@media(max-width:375px){
+
+.my-modal {width: 300px !important;
+           height: 400px;
+           left: 25px;
+           top: 100px;
+           position: absolute;}
+	
+.my-modal h2 {font-size: 24px;}
+	
+.my-modal p {font-size: 18px;}
+	
+}
+
+@media(min-width:376px) and (max-width:425px){
+	
+.my-modal {width: 350px !important;
+           height: 450px;
+           left: 25px;
+           top: 100px;
+           position: absolute;}
+	
+.my-modal h2 {font-size: 24px;}
+	
+.my-modal p {font-size: 18px;}
+}
+
+@media(min-width:426px) and (max-width:767px){
+	
+.my-modal {width: 400px !important;
+           height: 300px;
+           left: 5px;
+           top: 100px;
+           position: absolute;}
+	
+.my-modal h2 {font-size: 24px;}
+	
+.my-modal p {font-size: 18px;}
+}
+
+@media(min-width:768px) and (max-width:1023px){
+	
+.my-modal {width: 700px !important;
+           height: 500px;
+           left: -100px;
+           top: 100px;
+           position: absolute;}	
+
+.my-modal p {font-size: 20px;}
+}
+
+@media(min-width: 1024px){
+
+.my-modal {width: 900px !important;
+           height: 550px;
+           left: -200px;
+           top: 40px;
+           position: absolute;}

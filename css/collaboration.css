@@ -19,8 +19,8 @@ body {font-family:'Roboto', sans-serif;
     left: 50%; 
 	text-align:center;
     transform: translateX(-50%) translateY(-50%);}
-.btn-pad {padding-left: 75px !important;
-         padding-right: 75px !important;
+.btn-pad {padding-left: 65px !important;
+         padding-right: 65px !important;
          border-color: #7dd3d5;
         border: 2px solid #7dd3d5 !importat;}
 .card1 {
@@ -282,6 +282,11 @@ landscape) {
   font-size: 14px !important;
  padding-left:50px;
 	padding-right: 50px;}
+
+.btn-pad {padding-left: 53px !important;
+         padding-right: 53px !important;
+         border-color: #7dd3d5;
+        border: 2px solid #7dd3d5 !importat;}
 	
 	
 }

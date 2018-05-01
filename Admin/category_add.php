@@ -169,8 +169,8 @@ var config = {
                                         
                                 <div class="form-group form-float">
                                     <div class="form-line error">
-                                        <!--<label class="form-label">Description</label>
-                                        </br>
+                                       <!--<label class="form-label">Description</label>
+                                         </br>
                                         </br>-->
                                         <textarea name="description" id="ckeditor" cols="30" rows="5" class="form-control no-resize" required="" aria-required="true" placeholder="Desciption"></textarea>
                                     </div>
@@ -180,6 +180,9 @@ var config = {
                                         
                                <div class="form-group form-float">
                                     <div class="form-line error">
+                                    	 <label class="form-label">Image(1920 X 1080)</label>
+                                         </br>
+                                        </br>
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
@@ -288,7 +291,7 @@ $("input[type=file]").checkImageSize();
             'name': {
                 required: true,
                 minlength: 6,
-                maxlength: 15,
+                maxlength: 50,
                  regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
             }, 
             'description': {
@@ -307,7 +310,7 @@ $("input[type=file]").checkImageSize();
           name: {
             required:"Please enter your Category Name",
             minlength: "Enter name must be at least 6 characters long",
-            maxlength: "Enter name maximum 15 characters allow"
+            maxlength: "Enter name maximum 50 characters allow"
             },
           catimage: {
             required:"Please Select Any image",

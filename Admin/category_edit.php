@@ -205,7 +205,7 @@ return $nodeGetContent;
                                     </div>  
                                <div class="form-group form-float">
                                     <div class="form-line error">
-                                         <label class="form-label">Image</label>
+                                         <label class="form-label">Image(1920 X 1080)</label>
                                          </br>
                                         </br>
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
@@ -369,7 +369,7 @@ $("input[type=file]").checkImageSize();
             'name': {
                 required: true,
                 minlength: 6,
-                maxlength: 15,
+                maxlength: 50,
                 regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
             }, 
             'description': {
@@ -388,7 +388,7 @@ $("input[type=file]").checkImageSize();
           name: {
             required:"Please enter your Category Name",
             minlength: "Enter name must be at least 6 characters long",
-            maxlength: "Enter name maximum 15 characters allow"
+            maxlength: "Enter name maximum 50 characters allow"
             },
           catimage: {
             required:"Please Select Any image",

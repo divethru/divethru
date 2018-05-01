@@ -13,6 +13,7 @@ session_start();
    <link rel="stylesheet" href="css/reg.css" type="text/css" >
     <link rel="stylesheet" href="css/footercss.css" type="text/css" >
     <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
+    <link href="css/sweetalert.css" rel="stylesheet" />
      <link rel="shortcut icon" href="img/feb.ico" />
     <link rel="stylesheet" type="text/css" href="css/formvalid.css">
     
@@ -74,7 +75,7 @@ session_start();
 button:focus{outline: none;}
 	</style>
   </head>
-  <body background="img/banner.png" style="background-repeat: no-repeat;">
+  <body background="img/banner.png" style="background-repeat: no-repeat; margin-top: 118px;">
     
  		<?php include'header.php'; ?>
 
@@ -95,15 +96,15 @@ button:focus{outline: none;}
 										<p id="p2"  class="p1" style="text-align: left;"></p>
 									  </div>
 									  <div class="form-group-log" id ="login_div">
-									    <input type="password"  name="password" class="form-control-log" id="password"  name="password" placeholder="Password"><span toggle="#password" class="fa fa-fw fa-eye-slash field-icon toggle-password" style="margin-left: 86%;  position: relative;
+									    <input type="password"  name="password" class="form-control-log" id="password"  name="password" placeholder="Password"><span toggle="#password" class="fa fa-fw fa-eye-slash field-icon toggle-password" style="margin-left: 86%; cursor: pointer;  position: relative;
     									bottom: 31px;"></span>
-									    <p id="p3" class="p1" style="margin-top: -12px; text-align: left;"></p>     
+									    <p id="p3" class="p1" style=" text-align: left;"></p>     
 									  </div>
 									  <p style="text-align: right;"><a href="forgetpassword.php" style="text-align:right;color: #a4a4a4; font-size: 14px;">Forgot Your Password?</a></p>
 									  <br>
 									   <div class="form-group-log">
 									  <!--<input type="button" onclick="loginclick()" class="form-control btn btn-primary btn-lg" style="background-color: #7dd3d5;border: none;letter-spacing: 3;font-size: 16px;border-radius: 3px;color: white;" value="LOG IN">-->
-									  <button type="button" class=" btn1 btn-lg" style="background-color: #7dd3d5;border: none;letter-spacing: 3;font-size: 16px; border-radius: 3px;color: white;" id="log" onclick="loginclick()"><i class="fa fa-spinner fa-spin"></i>LOG IN</button>
+									  <button type="button" class=" btn1 btn-lg" style="background-color: #7dd3d5;border: none;letter-spacing: 3;font-size: 16px; cursor: pointer; border-radius: 3px;color: white;" id="log" onclick="loginclick()"><i class="fa fa-spinner fa-spin"></i>LOG IN</button>
 
 									</div>
 									 
@@ -116,9 +117,10 @@ button:focus{outline: none;}
 									  <button type="button" class=" form-control btn btn-primary btn-lg" style="background-color: #3b5998; border: none; border-radius: unset;"><i class="fa fa-facebook fa-lg"></i> &nbsp; &nbsp;Continue With Facebook</button></a>---->
  
  									 <br>
- <button type="button" class="btn1 fb-font" style="background-color: #3b5998; border: none; color: #FFF;  border-radius: 3px; letter-spacing: 3;line-height: 27px;" onclick="fbsave_user();"><i class="fa fa-facebook-official fa-lg" style="color:white"></i>&nbsp;CONTINUE WITH FACEBOOK</button>
-
-<br>
+ <button type="button" class="btn1 fb-font" style="background-color: #3b5998; border: none; color: #FFF;  border-radius: 3px; cursor: pointer; letter-spacing: 3;line-height: 27px;" onclick="fbsave_user();"><i class="fa fa-facebook-official fa-lg" style="color:white"></i>&nbsp;CONTINUE WITH FACEBOOK</button>
+<br><br>
+ <button type="button" class=" form-control btn1 fb-font" onclick="googlesave_user();" style="background-color:#dd4b39; cursor: pointer; border: none; color:#fff;  border-radius: 3px; letter-spacing: 3;line-height: 27px;"><i class="fa fa-google fa-lg" aria-hidden="true"></i>&nbsp;CONTINUE WITH GOOGLE</button>
+ <br>
 									   								</form>
 						  </div>
 						 
@@ -133,6 +135,7 @@ button:focus{outline: none;}
 <?php include 'footer.php'; ?>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="js/bootstrap.min.js" type="text/JavaScript"></script>
@@ -228,12 +231,12 @@ function fbsave_user(){
 	//alert(55);
 	var provider = new firebase.auth.FacebookAuthProvider();
 //	provider.addScope('email');
-provider.addScope('user_birthday');
+//provider.addScope('user_birthday');
 	firebase.auth().signInWithPopup(provider).then(function(result) {
 		var fbuser = firebase.auth().currentUser
-		if(fbuser){
-			 window.location.href = "http://34.215.40.163/welcome.php";
-			}else{
+		// if(fbuser){
+		// 	 window.location.href = "http://34.215.40.163/welcome.php";
+		// 	}else{
   // This gives you a Facebook Access Token. You can use it to access the Facebook API.
   				var token = result.credential.accessToken;
   // The signed-in user info.
@@ -243,14 +246,42 @@ provider.addScope('user_birthday');
  			  var detail = result.additionalUserInfo.profile;
  		  	  var first_name = detail.first_name;
            	  var last_name = detail.last_name;
+           	  var email=detail.email;
            	  var gender = detail.gender;
   		   	  var fbid = detail.id;
-  		      var birthday = detail.birthday;
+  		      var birthday = "";
   		      var loginvia = "Facebook";
   //var membership_type = "free";
   			// ...
-		save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender);
-	}
+  			var ref = firebase.database().ref('Users').child(user.uid);
+          ref.once('value').then( function(dataSnapshot) {
+              if(dataSnapshot.val() !== null){
+
+                ref.update({"fbid":fbid});
+                swal({
+	                        title: "Login!",
+	                        text: "User Login Sucessfully.",
+	                        html:true,
+	                        type: "success",
+	                        showCancelButton: false,
+	                        confirmButtonColor: "#86CCEB",
+	                        confirmButtonText: "OK",
+	                        closeOnConfirm: false
+	                    }, function () {
+	                        window.setTimeout(function() {
+	                        
+	                          window.location.href = "welcome.php";
+	                        }, 1000);
+	                    });
+              }else{
+			save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender);
+              }
+
+          });
+	// }
+}).catch(function(error){
+	console.log(error.message);
+	$("p#all").html(error.message);
 });
 }
 
@@ -263,7 +294,7 @@ function save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender) {
 			var datetime = 
 			    + currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + "  "  
+                + currentdate.getFullYear() + " "  
                 + currentdate.getHours() + ":"  
                 + currentdate.getMinutes() + ":" 
                 + currentdate.getSeconds();
@@ -311,26 +342,49 @@ function save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender) {
 			//	console.log("ss"+uid);
                  //  var uid = user.uid;
 				   	var data = {
-							"user_id": uid,
-							"first_name": first_name,
-							"last_name": last_name,
-							"email": email,
-							"fb_id":fbid,
-							"login_via": "FACEBOOK",
-							"birthdate":birthday,
-							 "gender":gender,
-							 "registered_on":datetime,
-							 "lastUpdated_on":datetime,
-							 "device_type":PCstatus,
-							 "activated_on":"",
-							 "activated_code":"",
-							 "device_token" : "123456789",
-							 "membership_type" : "Free",
+							 "user_id": uid,
+                            "first_name": first_name,
+                            "last_name": last_name,
+                            "email": email,
+                            "fb_id":fbid,
+                            "google_id": "",
+                            "visited":0,
+                            "login_via": "facebook",
+                            "birthdate":"",
+                            "gender":gender,
+                            "registered_on":datetime,
+                            "lastUpdated_on":datetime,
+                            "halted":0.0,
+                            "last_free_conversation_id":0,
+                            "device_type":PCstatus,
+                            "activated_on":"",
+                            "activation_code":"",
+                            "device_token" : "",
+                            "membership_type" : "Free",
+                            "total_time_divethru": 0,
+                            "completed_conversation": 0,
+                            "streak": '',
 						}
 						var updates = {};
 						updates['/Users/' + uid] = data;
         				firebase.database().ref().update(updates);
-        				alert('This User Created Sucessfully');
+        				//alert('This User Created Sucessfully');
+	        				swal({
+	                        title: "Login!",
+	                        text: "User Login Sucessfully.",
+	                        html:true,
+	                        type: "success",
+	                        showCancelButton: false,
+	                        confirmButtonColor: "#86CCEB",
+	                        confirmButtonText: "OK",
+	                        closeOnConfirm: false
+	                    }, function () {
+	                        window.setTimeout(function() {
+	                        
+	                          window.location.href = "welcome.php";
+	                        }, 1000);
+	                    });
+                    
             	
 				
 }	

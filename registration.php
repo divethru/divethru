@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="css/reg.css" type="text/css" >
      <link rel="stylesheet" href="css/footercss.css" type="text/css" >
     <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
+    <link href="css/sweetalert.css" rel="stylesheet" />
      <link rel="shortcut icon" href="img/feb.ico" />
     <link rel="stylesheet" type="text/css" href="css/formvalid.css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -101,7 +102,7 @@
 }
 </style>
   </head>
-  <body background="img/banner.png" style="background-repeat: no-repeat;">
+  <body background="img/banner.png" style="background-repeat: no-repeat; padding-top: 118px;">
     
  		<?php include'header.php'; ?>
 
@@ -173,18 +174,19 @@
                                           <div class="gmsg"><p id="gender" class="p1"></p></div>
 							         
 							           <div class="form-group-log">
-									  <button  type="button"  id="submit" onclick="btnclick();" name="login"  class="btn1 " style="background-color: #7dd3d5; letter-spacing: 4; border: none; border-radius: unset;  line-height: 27px; outline: none; color: white;"><i class="fa fa-spinner fa-spin"></i>GET STARTED</button>
+									  <button  type="button"  id="submit" onclick="btnclick();" name="login"  class="btn1 " style="background-color: #7dd3d5; letter-spacing: 4; border: none; border-radius: unset;  line-height: 27px; cursor: pointer; outline: none; color: white;"><i class="fa fa-spinner fa-spin"></i>GET STARTED</button>
                                          <br><br>
                                     <center><img src="http://34.215.40.163/img/or.png" style="width: 100%" class="img-responsive"></center>
        								</div>
 									
 									<!-- <a href="fblogin.php">-->
-									<button type="button" class=" btn1  fb-font" style="background-color: #3b5998; border: none;  border-radius: 3px; letter-spacing: 3; color: #fff; outline: none; line-height: 27px;" onclick="fbsave_user();"><i class="fa fa-facebook-official fa-lg" style="color:white"></i>&nbsp;CONTINUE WITH FACEBOOK</button><!---</a>-->
-
-									   <br><br>
+									<button type="button" class=" btn1  fb-font" style="background-color: #3b5998; border: none;  border-radius: 3px; letter-spacing: 3; color: #fff; outline: none; line-height: 27px; cursor: pointer;" onclick="fbsave_user();"><i class="fa fa-facebook-official fa-lg" style="color:white"></i>&nbsp;CONTINUE WITH FACEBOOK</button><!---</a>-->
+<br><br>
+ <button type="button" class=" form-control btn1 fb-font" onclick="googlesave_user();" style="background-color:#dd4b39; cursor: pointer; border: none; color:#fff;  border-radius: 3px; letter-spacing: 3;line-height: 27px;"><i class="fa fa-google fa-lg" aria-hidden="true"></i>&nbsp;CONTINUE WITH GOOGLE</button>
+ <br>
         							
 								</form>
-                                <p style="text-align: center;">By signing up, you agree to Dive thru<br> <a href="#" style="color:#5191d6;">  Terms & Conditions</a> And <a href="#" style="color:#5191d6;">Privacy Policy</a></p>
+                                <p style="text-align: center;">By signing up, you agree to Dive thru<br> <a href="http://34.215.40.163/termsandconditions.php" style="color:#5191d6;">  Terms & Conditions</a> And <a href="http://34.215.40.163/privacypolicy.php" style="color:#5191d6;">Privacy Policy</a></p>
 						  </div>
 
 						</div>
@@ -197,6 +199,7 @@
 		<?php include 'footer.php'; ?>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/sweetalert.min.js"></script>
  <script type="text/javascript" src="js/passwordStrength.js"></script>
     <script src="js/bootstrap.min.js" type="text/JavaScript"></script>
 

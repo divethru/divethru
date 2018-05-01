@@ -24,6 +24,16 @@ if($subcat != '0' && $id != '0' ){
 //die;
 
 $category = get("Category");
+$product = get("InAppProducts");
+foreach($product as $in => $v){
+    if($in == $id){
+    $active = $v['active'];
+    $productid = $v['product_id'];
+    $type = $v['type'];
+    $bundle_id = $v['bundle_id'];
+    }
+}
+
 //$subcategory = get("subcategory");
 
 function get($path){
@@ -245,7 +255,7 @@ foreach($category as $k => $v){
                                         if($category){
                                             //echo "<option value='0'>Nothing selcted</option>";
                                             foreach($category as $c){
-                                                if($c["category_name"] == $cat){
+                                                if($c["category_name"] == $cat && $c['session_subcription_type'] != "Free" ){
                                                 echo "<option value=".$c['category_id']." selected>".$c["category_name"]."</option>";
                                                     
                                                 }else{
@@ -291,7 +301,7 @@ foreach($category as $k => $v){
                                 
                                <div class="form-group form-float">
                                     <div class="form-line error">
-                                    <label class="form-label">Image</label>
+                                    <label class="form-label">Image (1920 X 1080)</label>
                                     </br>
                                     </br>
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
@@ -309,13 +319,33 @@ foreach($category as $k => $v){
                                         
                                     </div>
                                 </div>
-                                
+                                <!----  This is for In app purchase section ---->
 
-                             <!--  <label id="password-error" class="error" for="password">This field is required.</label></div>-->
-                                <!-- <div class="form-group">
-                                    <input type="checkbox" id="checkbox" name="checkbox" aria-required="true">
-                                    <label for="checkbox">I have read and accept the terms</label>
-                               <label id="checkbox-error" class="error" for="checkbox">This field is required.</label></div>-->
+                                   <div class="form-group form-float ">
+                                    <div class="form-line error " style="display:inline-flex;">
+                                    <?php if($bundle_id != '') {
+                                        echo '<input type="checkbox" id="checkbox" data-bid="'.$bundle_id.'" class="inapp" name="checkbox" checked>';
+                                    }else {
+                                        echo '<input type="checkbox" id="checkbox" class="inapp" name="checkbox">';
+                                    }?>
+                                    <label for="checkbox" style="width:200px;">In App Product</label>
+                                        <div class="form-group inappdetails" style="margin-bottom:0px;">    
+                                                <label for="productid">Product ID : </label>
+                                            <input type="text" name="productid" id="productid" class="with-gap " placeholder="Product Id" style="border:none;" value="<?php echo $productid; ?>">
+                                            <label for="active">Active</label>
+                                            <?php if($active == 1) {
+                                                echo '<div class="switch" style="display:initial;"><label><input type="checkbox" name="active" id="active" checked><span class="lever"></span></label></div>';
+                                            // echo '<input type="checkbox" name="active" id="active" class="with-gap " checked>';
+                                            } else {
+                                            echo '<div class="switch" style="display:initial;"><label><input type="checkbox" id="active" name="active" ><span class="lever"></span></label></div>';
+                                             }?>
+                                                
+                                        </div>
+                                        
+                                    </div>
+                                <!--<label id="description-error" class="error" for="description">This field is required.</label>-->
+                                </div> 
+
                                 <button class="btn btn-primary waves-effect bundledit" type="submit">SUBMIT</button>
                             </form>
                         </div>
@@ -426,7 +456,27 @@ $("input[type=file]").checkImageSize();
             $(".sub").show();
             
         }
-    
+        if($('.inapp').is(':checked')){
+            window.flag = true;
+            $(".inappdetails").show();
+        }else{
+            $(".inappdetails").hide();
+            window.flag = false;
+        }
+
+     $(".inapp").click(function(){
+        var id= $(this).data("bid");
+        if($(this).is(':checked')){
+           // window.flag = true;
+            $(".inappdetails").show();
+        }else{
+            //window.flag = false;
+
+            $(".inappdetails").hide();
+
+        }
+     });   
+   // alert(window.flag);
     $("#cat").change(function(){
         //alert(55);.
         var op ='';
@@ -493,7 +543,7 @@ $("input[type=file]").checkImageSize();
                     'name': {
                         required: true,
                         minlength: 6,
-                        maxlength: 15,
+                        maxlength: 50,
                         regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
                     }, 
                     'description': {
@@ -505,7 +555,13 @@ $("input[type=file]").checkImageSize();
                     'bundle': {
                       
                         accept: "image/jpeg, image/png,image/gif"
-                    }
+                    },
+                    'productid':{
+                        required: function() {
+                               return $(".inapp").is(':checked');
+                               
+                        }
+                    },
                    
                     
                 },
@@ -513,15 +569,16 @@ $("input[type=file]").checkImageSize();
                   name: {
                     required:"Please enter your Bundle Name",
                     minlength: "Enter name must be at least 6 characters long",
-                    maxlength: "Enter name maximum 15 characters allow"
+                    maxlength: "Enter name maximum 50 characters allow"
                     },
                      description:"Please enter Description",
                     cat:"Please Select category",
                   bundle: {
                     
                     accept: "Select only jpeg,png,gif file formate only!!"
-                    }
-                   
+                    },
+                productid: "Please Enter Product Id", 
+                  
                   
                 },
                 highlight: function (input) {
@@ -610,7 +667,15 @@ $("input[type=file]").checkImageSize();
                 //  var f = "category/"+catnm+"/bundle";
                 }
             
-                
+                var inapp = firebase.database().ref('InAppProducts');
+                     var productid = $("#productid").val();
+                    if($("#active").is(':checked')){
+                        
+                    var active = true;
+                    }else{
+                    var active = false;
+                        
+                    }
                 
                 booksRef.child(bid).once('value').then(function(snap) {
                             var bid = $("#bid").val();
@@ -632,7 +697,7 @@ $("input[type=file]").checkImageSize();
                              var bimg = $("#oldbimg").attr('src');
                                  
                              }
-                             
+ 
                              var subcat = $("#subcat option:selected").val();
                              var data = snap.val();
                              //alert(bid);
@@ -665,6 +730,17 @@ $("input[type=file]").checkImageSize();
                                 }else{
                                     var s = '';
                                 }
+                                window.id = bnid;
+                                var inappdata = {'product_id':productid,'bundle_id':bnid,'type':"Bundle",'active':active}; 
+                                /*if($('.inapp').is(':checked')){
+                                inapp.child(bnid).update(inappdata);
+
+                                }else{
+                                var inappdata = {'product_id':productid,'bundle_id':bnid,'active':active}; 
+                                   // console.log(inappdata);
+                                //$(".inappdetails").show();
+                                inapp.child(bnid).set(inappdata);
+                                }*/
                                     firebaseRef.child(bnid).set({
                                         bundle_name: bundlename,
                                         bundle_description: desc,
@@ -689,6 +765,18 @@ $("input[type=file]").checkImageSize();
                             }else{
                                 var s = '';
                             }
+                            window.id = bnid;
+                          
+                                var inappdata = {'product_id':productid,'bundle_id':bnid,'type':"Bundle",'active':active}; 
+                               /*if($('.inapp').is(':checked')){
+                                inapp.child(bnid).update(inappdata);
+
+                                }else{
+                                var inappdata = {'product_id':productid,'bundle_id':bnid,'active':active}; 
+                                   // console.log(inappdata);
+                                //$(".inappdetails").show();
+                                inapp.child(bnid).set(inappdata);
+                                }*/
                        //alert(subcatnm);
 
                             firebaseRef.child(bnid).set({
@@ -700,10 +788,11 @@ $("input[type=file]").checkImageSize();
                                 bundle_id: bnid,
                                 Session: s,
                             }); 
-                   }
-                           else{
+                   }else if($("#cat option:selected").text() == $("#catid").val()){
                                 
-                                 
+                                window.id = bid;                
+                                var inappdata = {'product_id':productid,'bundle_id':bid,'type':"Bundle",'active':active}; 
+                                
                           data.bundle_category = subcatnm;
                           data.bundle_parent_category = catnm;
                          data.bundle_description = desc;
@@ -712,7 +801,24 @@ $("input[type=file]").checkImageSize();
                           data.bundle_id = bid;
                                 update[bid] = data;
                            }
+                            if($('.inapp').is(':checked')){
+                                //    alert(5);
+                                    if(window.flag){
+                                        inapp.child(bid).remove();
+                                    }
+                                 inapp.child(window.id).set(inappdata);
+                                }else{ 
+                                    if(window.flag){
+                                        inapp.child(bid).remove();
+
+                                    }else{
+                                      //  inapp.child(window.id).set(inappdata);      
+                                    }
+                                   // console.log(inappdata);
+                                //$(".inappdetails").show();
+                                }
                             return booksRef.update(update);
+                           
             });
                             swal({
                                 title: "Updated!",

@@ -1,0 +1,19 @@
+@charset "utf-8";
+/* CSS Document */
+
+body {font-family:'Roboto', sans-serif;
+      font-size:16PX;
+	  color:rgb(52, 73, 94) !important;}
+
+@fontface {font-family:'Roboto', sans-serif;
+           src:url(../fonts/Roboto-Regular.ttf);}
+
+.bg {background-color: #b679d3;}
+
+.bg h2 {font-weight: lighter !important;
+        font-size: 48px;}
+
+@media(max-width:767px){
+	
+	.bg h2 {font-size: 24px;}
+}

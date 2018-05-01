@@ -32,7 +32,7 @@
 }
 button:focus{outline: none;}
 	</style>
-<body>
+<body style="margin-top:118px;">
 
 <!--HEADER-->
 	
@@ -96,7 +96,7 @@ button:focus{outline: none;}
 							<div class="container py-5">
 								<div class="row text-center justify-content-center" >
 
-									<p>It's an app that teaches you how to meditate.<br>
+									<p style="font-weight: 500;">It's an app that teaches you how to meditate.<br>
                                         It's kind of genius.</p>
 
 								</div>
@@ -107,7 +107,7 @@ button:focus{outline: none;}
 							<div class="container py-5">
 								<div class="row text-center justify-content-center" >
 
-									<p>It's an app that teaches you how to meditate.<br>
+									<p style="font-weight: 500;">It's an app that teaches you how to meditate.<br>
                                         It's kind of genius.</p>
 
 								</div>
@@ -118,7 +118,7 @@ button:focus{outline: none;}
 							<div class="container py-5">
 								<div class="row text-center justify-content-center" >
 
-									<p>It's an app that teaches you how to meditate.<br>
+									<p style="font-weight: 500;">It's an app that teaches you how to meditate.<br>
                                         It's kind of genius.</p>
 
 								</div>
@@ -182,7 +182,7 @@ button:focus{outline: none;}
 							<div class="container py-5">
 								<div class="row text-center justify-content-center" >
 
-									<p>It's an app that teaches you how to meditate.<br>
+									<p style="font-weight: 500;">It's an app that teaches you how to meditate.<br>
                                         It's kind of genius.</p>
 
 								</div>
@@ -193,7 +193,7 @@ button:focus{outline: none;}
 							<div class="container py-5">
 								<div class="row text-center justify-content-center" >
 
-									<p>It's an app that teaches you how to meditate.<br>
+									<p style="font-weight: 500;">It's an app that teaches you how to meditate.<br>
                                         It's kind of genius.</p>
 
 								</div>
@@ -204,7 +204,7 @@ button:focus{outline: none;}
 							<div class="container py-5">
 								<div class="row text-center justify-content-center" >
 
-									<p>It's an app that teaches you how to meditate.<br>
+									<p style="font-weight: 500;">It's an app that teaches you how to meditate.<br>
                                         It's kind of genius.</p>
 
 								</div>
@@ -255,7 +255,7 @@ button:focus{outline: none;}
                             </div>
 							
                             <div class="col-lg-6">
-                                <h3 class="mb-2 txtpos" style="color: #34495e; ">
+                                <h3 class="mb-2 txtpos" style="color: #34495e; font-weight: 700;">
                                     It's Time To<br> DiveThru 
                                </h3>
                                <br>
@@ -263,7 +263,7 @@ button:focus{outline: none;}
                                    Download the DiveThru app<br>or sign up online to find<br>the peace within.
                               </h6>
                               <br>
-                               <a href="#" class="btn1 btnpos mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none;  background-color:#7DD3D5 !important;
+                               <a href="subscription.php" class="btn1 btnpos mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none;  background-color:#7DD3D5 !important;
                       border:none;
             color:#fff !important;">SUBSCRIBE NOW</a>
                                <br>

@@ -39,7 +39,7 @@
    
 </style>
   </head>
-  <body>
+  <body style="padding-top: 118px;">
   
 
         <?php include'header.php'; ?>
@@ -61,7 +61,7 @@
                        <a href="#" class="btn1 mx-2  my-2 active2 " style="letter-spacing:3px; text-decoration: none; padding-top: 10px; padding-bottom: 10px;  background-color:#7DD3D5 !important;
                       border:none;
             color:#fff !important;">DOWNLOAD MEDIA KIT</a>
-                       <a href="http://34.215.40.163/registration.php" class="btn1 mx-2 px-4 my-2 btn-pad" style="letter-spacing:3px; padding-top: 10px; padding-bottom: 10px; color: #FFF; text-decoration: none; border-color: #fff;">CONTACT</a>
+                       <a href="http://34.215.40.163/contact.php" class="btn1 mx-2 px-4 my-2 btn-pad" style="letter-spacing:3px; padding-top: 10px; padding-bottom: 10px; color: #FFF; text-decoration: none; border-color: #fff;">CONTACT</a>
                        
                        </div>
                       
@@ -77,6 +77,7 @@
 			      <h2>Meditation for Kids</h2>
 				  <p>We have harnessed the power of guided meditation and journaling to bring you 100s of
 					  conversations that will reconnect you with yourSelf.It’s simple Choose to Dive Thru for 11, 18 or</p>
+				   <p style="color:  #ccc;font-style: italic;">Jan 1 ,2018</p>
 				  
 			  </div>
 			  <div class="col-lg px-0 ">
@@ -87,6 +88,7 @@
 			     <h2>Meditation for Kids</h2>
 				  <p>We have harnessed the power of guided meditation and journaling to bring you 100s of
 					  conversations that will reconnect you with yourSelf.It’s simple Choose to Dive Thru for 11, 18 or</p>
+				   <p style="color:  #ccc;font-style: italic;">Jan 1 ,2018</p>
 			  </div>
 			
 			<div class="col-lg px-0">
@@ -97,6 +99,7 @@
 			     <h2>Meditation for Kids</h2>
 				  <p>We have harnessed the power of guided meditation and journaling to bring you 100s of
 					  conversations that will reconnect you with yourSelf.It’s simple Choose to Dive Thru for 11, 18 or</p>
+				 <p style="color:  #ccc;font-style: italic;">Jan 1 ,2018</p>
 			  </div>
 			
 		</div>
@@ -106,7 +109,7 @@
 		</div>
 		
 		<div class="btn1 btn-primary3 py-2 mx-2 mt-3">D O W N L O A D &nbsp; M E D I A &nbsp; K I T</div>
-		<div class="btn1 btn-primary3 btn-primary5 py-2 mx-2 mt-3">C O N T A C T</div>
+		<a href="http://34.215.40.163/contact.php" style="text-decoration: none;color: #7dd3d5;" class="btn1 btn-primary3 btn-primary5 py-2 mx-2 mt-3">C O N T A C T</a>
 		
 	</div>	
 </div>
@@ -138,7 +141,7 @@ you with everything you need to Dive Thru what you go Thru.
 	</div>
 		
 		<div class="btn1 btn-primary3 py-2 mx-2 mt-3">D O W N L O A D &nbsp; M E D I A &nbsp; K I T</div>
-		<div class="btn1 btn-primary3 btn-primary4 py-2 mx-2 mt-3">L E T ' S&nbsp; C O L L A B O R A T E</div>
+		<a class="btn1 btn-primary3 btn-primary4 py-2 mx-2 mt-3" style="text-decoration:none;color: #7dd3d5;" href="http://34.215.40.163/collaboration.php">L E T ' S&nbsp; C O L L A B O R A T E</a>
 	
 </div>
 <hr />
@@ -154,7 +157,7 @@ you with everything you need to Dive Thru what you go Thru.
 		 </div>
 		 <div class="col-md-8 option pl-md-5 py-3 py-md-5 text-center text-md-left">
 		      <h2>Get To Know Your Self</h2>
-			  <p class="py-4">Create Space to turn within and connect withwho you truly are.</p>
+			  <p class="py-4">Create Space to turn within and connect with who you truly are.</p>
 			 <div class="btn1 btn-primary3">L E A R N &nbsp; M O R E</div>
 		 </div>
 		     </div>
@@ -172,7 +175,7 @@ you with everything you need to Dive Thru what you go Thru.
 		 </div>
 		 <div class="col-md-8 option pl-md-5 py-3 py-md-5 text-center text-md-left">
 		      <h2>Emotional Resilience</h2>
-			  <p class="py-4">Easily adapt to the experiance you face to move through life with greater ease.</p>
+			  <p class="py-4">Easily adapt to the experience you face to move through life with greater ease.</p>
 			 <div class="btn1 btn-primary3">L E A R N &nbsp; M O R E</div>
 		 </div>
 		     </div>
@@ -216,9 +219,9 @@ you with everything you need to Dive Thru what you go Thru.
                                    Download the DiveThru app<br>or sign up online to find<br>the peace within.
                               </h6>
                               <br><br>
-                               <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</button>
+                               <a href="http://34.215.40.163/subscription.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5; box-shadow: none !important;  background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</a>
                                <br><br>
-                                <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;  background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </button>
+                                <a  href="http://34.215.40.163/registration.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5;box-shadow: none !important;   background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </a>
                                 <br><br>
                                 <div>
                                 <img src="img/app atore.png" class="img-responsive plystr mt-3 mt-md-0" height="40" width="140"> 

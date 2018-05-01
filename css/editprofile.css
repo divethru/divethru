@@ -31,3 +31,82 @@
   background-color: #7dd3d5;
   border-color: #7dd3d5;
 }
+
+
+
+.profile-pic {
+    max-width: 200px;
+    max-height: 110px;
+    display: block;
+}
+
+.file-upload {
+    display: none;
+}
+.circle {
+    border-radius: 100% !important;
+    overflow: hidden;
+    width: 120px;
+    height: 120px; 
+    border: 8px solid rgba(230, 229, 229, 0.7);}
+	
+.p-image {
+  position: absolute;
+  top: 208px;
+  right: 145px;
+  color: #000000;
+  transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+}
+.p-image:hover {
+  transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+}
+.upload-button {
+  font-size: 1.2em;
+}
+
+.upload-button:hover {
+  transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+  color: #999;
+}
+
+@media(min-width:375px) and (max-width:424px){
+.p-image {
+  top: 208px;
+  right: 120px !important;
+}
+}
+
+@media(min-width:320px) and (max-width:374px){
+.p-image {
+  top: 208px;
+  right: 94px;
+}
+}
+
+@media(min-width:571px){
+.p-image {
+  top: 208px;
+  right: 220px;}
+}
+
+@media(min-width:768px){
+.p-image {
+  top: 208px;
+  right: 130px;}
+}
+
+@media(min-width:992px){
+.p-image {
+  top: 208px;
+  right: 190px;}
+}
+
+@media(min-width:1200px){
+	
+.p-image {
+  position: absolute;
+  top: 208px;
+  right: 236px;}
+}
+
+

@@ -195,7 +195,7 @@ foreach($category as $k => $v){
 										if($category){
 											echo "<option value=''>Select category</option>";
 											foreach($category as $c){
-												if($c["category_name"] != "Open Dive"){
+												if($c["category_name"] != "Open Dive" && $c['session_subcription_type'] != "Free" ){
 													
 												echo "<option value=".$c['category_id'].">".$c["category_name"]."</option>";
 												}
@@ -227,12 +227,12 @@ foreach($category as $k => $v){
                                     </div>
 								</div>
                                 <!--<label id="description-error" class="error" for="description">This field is required.</label></div>-->
-								
+
 								
 								
 							   <div class="form-group form-float">
                                     <div class="form-line error">
-									<label class="form-label">Image</label>
+									<label class="form-label">Image (1920 X 1080)</label>
 									</br>
 									</br>
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
@@ -245,7 +245,22 @@ foreach($category as $k => $v){
 										
                                     </div>
                                 </div>
-								
+                        <div class="form-group form-float ">
+                                    <div class="form-line error " style="display:inline-flex;">
+                                        <input type="checkbox" id="checkbox" class="inapp" name="checkbox">
+                                    <label for="checkbox" style="width:200px;">In App Product</label>
+                                        <div class="form-group inappdetails" style="margin-bottom:0px;">    
+                                                <label for="productid">Product ID : </label>
+                                            <input type="text" name="productid" id="productid" class="with-gap " placeholder="Product Id" style="border:none;">
+
+                                                <label for="active">Active</label>
+                                                <div class="switch" style="display:initial;"><label><input type="checkbox" name="active" id="active"><span class="lever"></span></label></div>
+                                        </div>
+                                        
+                                    </div>
+                                <!--<label id="description-error" class="error" for="description">This field is required.</label>-->
+                                </div>
+                                
 
                              <!--  <label id="password-error" class="error" for="password">This field is required.</label></div>-->
                                 <!-- <div class="form-group">
@@ -332,6 +347,7 @@ $("input[type=file]").checkImageSize();
 		}
 		
 		$(function () {
+            $(".inappdetails").hide();
 			var config = {};
 			config.placeholder = 'Description'; 
 //CKEDITOR.replace('ckeditor',config);
@@ -348,6 +364,16 @@ $("input[type=file]").checkImageSize();
         $(this).valid()
     });
 
+    /*Hide show Inapp Deatil block on inapp check*/ 
+    $('.inapp').click(function() {
+        if($(this).is(':checked')){
+            $(".inappdetails").show();
+        }else{
+            $(".inappdetails").hide();
+            
+        }
+    });
+
     $.validator.addMethod("regex", function(value, element, regexpr) {          
                  return regexpr.test(value);
                }, "Please enter Only characters"); 
@@ -356,7 +382,7 @@ $("input[type=file]").checkImageSize();
 		            'name': {
 		                required: true,
 		                minlength: 6,
-		                maxlength: 15,
+		                maxlength: 50,
                         regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
 		            }, 
 		            'description': {
@@ -372,7 +398,13 @@ $("input[type=file]").checkImageSize();
 		            'subcat':{
 		          		 required: function() {
                               return $("#cat option:selected").text() == 'Deep Dive';
-                     }
+                     },
+                    'productid':{
+                        required: function() {
+                               return $(".inapp").is(':checked');
+                               
+                        }
+                    },
 		            
 		            
 		        },
@@ -380,7 +412,7 @@ $("input[type=file]").checkImageSize();
 		          name: {
 		            required:"Please enter your Bundle Name",
 		            minlength: "Enter name must be at least 6 characters long",
-		            maxlength: "Enter name maximum 15 characters allow"
+		            maxlength: "Enter name maximum 50 characters allow"
 		            },
 		          bundle: {
 		            required:"Please Select Any image",
@@ -388,7 +420,8 @@ $("input[type=file]").checkImageSize();
 		            },
 		            description:"Please enter Description",
 		            cat:"Please Select category",
-		          	subcat: "Please Select subcategory"
+		          	subcat: "Please Select subcategory",
+                    productid: "Please Enter Product Id",
 		          	}
 		        },
 		        highlight: function (input) {
@@ -503,7 +536,15 @@ $("input[type=file]").checkImageSize();
 					 var desc = $('#ckeditor').val();
 					 var bundlename = $("#bundlename").val();
 					 var bimg = $("#bimgurl").val();
-
+                     var inapp = firebase.database().ref('InAppProducts');
+                     var productid = $("#productid").val();
+                    if($("#active").is(':checked')){
+                        
+                    var active = true;
+                    }else{
+                    var active = false;
+                        
+                    }
 
 				//	var outro = surl.split(',');
 			//console.log(array);
@@ -513,6 +554,14 @@ $("input[type=file]").checkImageSize();
 
 					// Get the unique key generated by push()
 					var bid = pushedCatRef.key;
+
+                       if($('.inapp').is(':checked')){
+
+                            var inappdata = {'product_id':productid,'bundle_id':bid,'type':"Bundle",'active':active}; 
+                           // console.log(inappdata);
+                        //$(".inappdetails").show();
+                        inapp.child(bid).set(inappdata);
+                    } 
 
 					firebaseRef.child(bid).set({
 						bundle_name: bundlename,

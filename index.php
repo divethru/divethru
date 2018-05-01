@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" >
    <link rel="stylesheet" href="css/reg.css" type="text/css" >
     <link rel="stylesheet" href="css/footercss.css" type="text/css" >
-    <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
      <link rel="shortcut icon" href="img/feb.ico" />
     <link rel="stylesheet" type="text/css" href="css/formvalid.css">
      <link href="css/landing-page.min.css" rel="stylesheet">
@@ -19,6 +19,7 @@
     <title>Dive Thru</title>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 <link rel="stylesheet" type="text/css" href="css/homestyle.css">
+<link href="css/testimonialslider.css" rel="stylesheet" type="text/css">
 <style type="text/css">
 
 
@@ -187,14 +188,14 @@
                       border:none;
             color:#fff !important;}
             
-.slide a:hover {background-color:transparent;
+.slide1 a:hover {background-color:transparent;
                 color:#fff !important;}
   
 @media (min-width:320px) and (max-width:446px) {
 
-.slide h1 {font-size:18px !important;}
+.slide1 h1 {font-size:18px !important;}
 
-.slide p {font-size:14px !important;}}
+.slide1 p {font-size:14px !important;}}
 
 /*slider1 over*/
 
@@ -466,23 +467,23 @@
     }
 </style>
   </head>
-  <body>
+  <body style="padding-top: 100px;" >
   
-  <div class="mobileShow"> 
-        <div style="background-image: url('img/getapp.png'); height: 15%; padding: 34px;  min-width: 100%; background-size: cover; background-repeat: no-repeat; background-position: center; color: #FFF;">GET THE APP</div>
+ <!--  <div class="mobileShow"> 
+        <div style="background-image: url('img/getapp.png'); height: 15%; padding: 34px;  min-width: 100%; background-size: cover; padding-left: 40px;   background-repeat: no-repeat; background-position: center; color: #FFF;">GET THE APP</div>
             <div>
               <img class="buttonross" src="img/ic_close.png">
             </div>
-        </div>
+        </div> -->
     
         <?php include'header.php'; ?>
             <header class="masthead text-white text-center">
                   <div class="overlay">
-                    <div style="background-image: url('img/home page_img_1.png'); height: 100%; padding: 0;  min-width: 100%; background-size: cover; background-repeat: no-repeat; background-position: center;"></div>
+                    <div style="background-image: url('img/home page_img_1.png');  height: 100%; padding: 0;  min-width: 100%; background-size: cover; background-repeat: no-repeat; background-position: center;"></div>
                      
                   </div>
                   <div class="container">
-                    <div class="row slide">
+                    <div class="row slide1">
                       <div class="col-xl-12 mx-auto">
                         <h1 class="mb-3" >
                             FIND PEACE WITHIN YOURSELF<br>& HELP YOUTH FIND IT, TOO
@@ -491,7 +492,7 @@
                             AN APP THAT HELPS YOU BETTER UNDERSTAND WHO YOU<br>ARE, HANDLE WHAT LIFE THROWS AT YOU AND ACCEPT/LOVE<br>YOURSELF. PLUS EVERY MONTH YOU DIVETHRU,<br>A YOUTH DIVES THRU, TOO.
                         </p>
                        
-                       <a href="#" class="btn1 mx-2  my-2 active2" style="letter-spacing:3px; text-decoration: none; padding-left:21px !important;
+                       <a href="http://34.215.40.163/subscription.php" class="btn1 mx-2  my-2 active2" style="letter-spacing:3px; text-decoration: none; padding-left:21px !important;
                        padding-right:21px !important; background-color:#7DD3D5 !important;
                       border:none;
             color:#fff !important;">SUBSCRIBE NOW</a>
@@ -565,7 +566,7 @@
                           </div>
                         </div>
 
-                         <a href="#" class="btn1 mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none; padding-left:21px !important;
+                         <a href="http://34.215.40.163/subscription.php" class="btn1 mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none; padding-left:21px !important;
                        padding-right:21px !important; background-color:#7DD3D5 !important;
                       border:none;
             color:#fff !important;">SUBSCRIBE NOW</a>
@@ -593,7 +594,7 @@
                                 <br>
                               <!--   <a href=""><img src="img/play.png" height="100" width="100" data-toggle="modal" data-src="https://www.youtube.com/embed/Jfrjeg26Cwk" data-target="#myModal" ></a> -->
                               <div class="video">
-                                <img src="img/play.png"  class=" video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/Jfrjeg26Cwk" data-target="#myModal">       </div>
+                                <img src="img/play.png" style="cursor: pointer;"  class=" video-btn" data-toggle="modal" data-src="https://www.youtube.com/embed/Jfrjeg26Cwk" data-target="#myModal">       </div>
                                
                               
                             </div>
@@ -643,7 +644,7 @@ yourself? We have a conversation for that.<br><a href="#" style="color:#80429c">
                         <form>
                           <div class="form-row">
                             <div class="col-12 col-md-12 mx-auto">
-                              <a href="#" class="btn1 mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none; padding-left:21px !important;
+                              <a href="http://34.215.40.163/subscription.php" class="btn1 mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none; padding-left:21px !important;
                        padding-right:21px !important; background-color:#7DD3D5 !important;
                       border:none;
             color:#fff !important;">SUBSCRIBE NOW</a>
@@ -657,31 +658,20 @@ yourself? We have a conversation for that.<br><a href="#" style="color:#80429c">
                       </div>
                     </section>
                     <br><br>
-                     <header class="masthead text-white text-center">
+                   <!--   <header class="masthead text-white text-center">
                   <div class="overlay">
                     <div style="background-image: url('img/home page_img_3.png'); height: 100%; padding: 0;  min-width: 100%; background-size: cover; background-repeat: no-repeat; background-position: center;"></div>
                   </div>
                   <div class="container">
                     <div class="row">
                       <div class="col-xl-12 mx-auto">
-                      <div class="yog">
-                        <h1 class="mb-5" style="color: #FFF; font-weight:normal;">
-                            Discover How DiveThru Helps You
-                        </h1>
-                        
-                         <p class="mb-0"> 
-                                    Having a bad day? We have a conversations for that. Wanting a calm mind? We have a<br>
-                                    conversation for that. Feeling insecure? We have a conversation for that. Needing to forgive<br>
-                                    others and yourself? We have a conversation for that. Looking to feel more love? We have a<br>
-                                    conversation for that. Just need to check in? We have a conversation for that.others and<br>
-                                    yourself? We have a conversation for that.
-                        </p>
-                        </div>
+                      
                       </div>
                     </div>
                   </div>
-                </header>
-                 <div class="container-fluid">
+                </header> -->
+
+                 <!-- <div class="container-fluid">
      <div class="container">
           <div class="row j">
                <div class="col-md-6 col-lg-3">
@@ -709,6 +699,70 @@ yourself? We have a conversation for that.<br><a href="#" style="color:#80429c">
                </div>
           </div>
      </div>
+</div> -->
+<div id="aj" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+        <li data-target="#aj" data-slide-to="0" class="active show"></li>
+        <li data-target="#aj" data-slide-to="1" class="show"></li>
+        <li data-target="#aj" data-slide-to="2" class="show"></li>
+        <li data-target="#aj" data-slide-to="3" class="show"></li>
+        </ol>
+            <div class="carousel-inner">
+            
+              <div class="carousel-item active ">
+              <img class="d-block w-100 img-height" src="img/Testimonal1.png" alt="First slide">
+               <div class="carousel-caption center text-style">
+                                  <h2>Discover How DiveThru Helps You</h2>
+                                  <p>Having a bad day? We have a conversations for that. Wanting a calm mind? We have a
+                                     conversation for that. Feeling insecure? We have a conversation for that. Needing to forgive
+                                     others and yourself? We have a conversation for that. Looking to feel more love? We have a
+                                     conversation for that. Just need to check in? We have a conversation for that.others and
+                                     yourself? We have a conversation for that.</p>
+                             </div>
+            </div>
+            
+              <div class="carousel-item">
+              <img class="d-block w-100 img-height" src="img/Testimonal2.png" alt="Second slide">
+              <div class="carousel-caption center text-style">
+                                  <h2>Discover How DiveThru Helps You</h2>
+                                  <p>Having a bad day? We have a conversations for that. Wanting a calm mind? We have a
+                                     conversation for that. Feeling insecure? We have a conversation for that. Needing to forgive
+                                     others and yourself? We have a conversation for that. Looking to feel more love? We have a
+                                     conversation for that. Just need to check in? We have a conversation for that.others and
+                                     yourself? We have a conversation for that.</p>
+                             </div>
+            </div>
+            
+              <div class="carousel-item">
+              <img class="d-block w-100 img-height" src="img/Testimonal3.png" alt="Third slide">
+              <div class="carousel-caption center text-style">
+                                  <h2>Discover How DiveThru Helps You</h2>
+                                  <p>Having a bad day? We have a conversations for that. Wanting a calm mind? We have a
+                                     conversation for that. Feeling insecure? We have a conversation for that. Needing to forgive
+                                     others and yourself? We have a conversation for that. Looking to feel more love? We have a
+                                     conversation for that. Just need to check in? We have a conversation for that.others and
+                                     yourself? We have a conversation for that.</p>
+                             </div>
+            </div>
+            
+              <div class="carousel-item">
+              <img class="d-block w-100 img-height" src="img/Testimonal4.png" alt="Third slide">
+              <div class="carousel-caption center text-style">
+                                  <h2>Discover How DiveThru Helps You</h2>
+                                  <p>Having a bad day? We have a conversations for that. Wanting a calm mind? We have a
+                                     conversation for that. Feeling insecure? We have a conversation for that. Needing to forgive
+                                     others and yourself? We have a conversation for that. Looking to feel more love? We have a
+                                     conversation for that. Just need to check in? We have a conversation for that.others and
+                                     yourself? We have a conversation for that.</p>
+                             </div>
+            </div>
+            </div>
+    <a class="carousel-control-prev" href="#aj" role="button" data-slide="prev">
+    <span><img src="img/ic_back@3x.png" /></span>
+    </a>
+    <a class="carousel-control-next" href="#aj" role="button" data-slide="next">
+    <span><img src="img/ic_previous@3x.png" /></span>
+    </a>
 </div>
                 <section class=" bg-white text-center">
                       <div class="container">
@@ -726,18 +780,18 @@ yourself? We have a conversation for that.<br><a href="#" style="color:#80429c">
                               </h6>
                               <br>
                                
-                               <a href="#" class="btn1 btnpos mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none;  background-color:#7DD3D5 !important;
+                               <a href="http://34.215.40.163/subscription.php" class="btn1 btnpos mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none; cursor: pointer;  background-color:#7DD3D5 !important;
                       border:none;
             color:#fff !important;">SUBSCRIBE NOW</a>
                                <br>
                                  <a href="http://34.215.40.163/registration.php
-                                 " class="btn1 btnpos mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; text-decoration: none; padding-left:18px !important;
+                                 " class="btn1 btnpos mx-2  mt-2  mb-2 active1" style="letter-spacing:3px; cursor: pointer; text-decoration: none; padding-left:18px !important;
                        padding-right:17px !important; background-color:#7DD3D5 !important;
                       border:none;
             color:#fff !important;">JOIN FOR FREE</a>
                                 <br><br>                             <div>
-                                <img src="img/app atore.png" class="img-responsive plystr " height="40" width="140"> 
-                                 <img src="img/google play.png"  class="img-responsive plystr1 "  height="40" width="140"  ></div>
+                                <img src="img/app atore.png" style="cursor: pointer;" class="img-responsive plystr " height="40" width="140"> 
+                                 <img src="img/google play.png" style="cursor: pointer;"  class="img-responsive plystr1 "  height="40" width="140"  ></div>
                                  <br><br>
                             </div>
                            

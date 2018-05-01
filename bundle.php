@@ -22,7 +22,7 @@
   };
   firebase.initializeApp(config);
 </script>
-<script src="Admin/js/sign_out.js"></script>
+<script src="js/login_user.js"></script>
  <style type="text/css">
    .btn1 {
   display: inline-block;
@@ -93,13 +93,24 @@
 	
 	.box {margin: 0 300px !important;}
 }		 
+ .box1a {width: 100%;
+           height: 100%;
+           background-color: rgba(0,0,0,0.5);
+           position: absolute;
+           text-align: center;}
+
+    .box1a i {color: #fff;
+            font-size: 28px;
+            margin-left: 41%;
+            margin-top: 29%;
+            }
 
 </style>
 </head>
 <body>
 
 <?php 
-$bundle = $_POST["bundle"];
+$bundle = isset($_POST["bundle"])?$_POST["bundle"]:"-L8ns8Mw6vmSjrzPITKt";
 define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
 define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
 require 'vendor/autoload.php';
@@ -236,9 +247,20 @@ return $nodeGetContent;
 		 
 		 <div class="row cat Margins text-center">
                    
-			<?php foreach($bundle as $k => $v) 
-                          echo '<div class="col-md-4 col-xs-6 boxStyle" style=" background-image: url('.$v['session_img'].');"><p class="Center bundle" id="'.$v['session_id'].'">'.$v['session_name'].'</p></div>';
-						?>
+			<?php 
+			$i=0;
+				foreach($bundle as $k => $v) {
+
+                          if(strlen($v['session_description']) > 80){
+								
+							$small = substr($v['session_description'], 0, 80).'....';
+							}else{
+								$small = substr($v['session_description'], 0, 80);
+							}
+                          echo '<div class="col-md-4 col-xs-6 hover-box1 p-0 boxStyle" style=" background-image: url('.$v['session_img'].');" id="'.$i.'"><p class="Center bundle" id="'.$v['session_id'].'">'.$v['session_name'].'</p><div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'.$small.'</p><div class="btn btn2 btn-outline-light" id="'.$v['session_id'].'" style="border-radius: 0;">Start to DiveThru</div></div></div>';
+                          $i++;
+                 }
+			?>
 		</div>	
 	 </div>	
 </div>
@@ -301,30 +323,54 @@ return $nodeGetContent;
     
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/jquery.redirect.js"></script>
+    <script type="text/javascript" src="js/dashboardheader.js"></script>
 
 <script>	
+	window.localStorage.removeItem("Snm");
+	window.localStorage.removeItem("bundle");
 /* Changing style of bundle list on seleted and hover*/
 
 $(".list").find('ul > li').on('hover',function(e){
 					$(".list > ul > li.selected").removeClass("selected");
 });
 
+var user = JSON.parse(window.localStorage.getItem('user'));	
+
+if(user.membership_type == 'Free'){
+
+	//$("div.boxStyle").append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
+	console.log($("div.boxStyle").index() );
+	$( "div.boxStyle" ).each(function( index ) {
+		if(index != 0){
+
+			$(this).append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
+		}
+		
+  		
+	});
+}
+
+
 /*Dynamic content of sesion with redirect to player on click*/
 var mn = '<ul style="margin-bottom: 0;">';
 var id = $("h2").attr("id");
+var ct = window.localStorage.getItem("cat");
+
 firebase.database().ref("Category/Quick Dive/Bundle").on("value", function(snapshot) {
 										snapshot.forEach(function(childSnapshot) {
 											var data = childSnapshot.val();
 											var key = childSnapshot.key;
 											if(key == id){
+
 											 mn += ' <li class="my-0 selected" style="border-bottom: 1px solid #ccc;"><p class="pl-4 "  id="'+data.bundle_id+'">'+data.bundle_name+'</p></li>';
 											$("h2").html(data.bundle_name);
+											window.localStorage.setItem("bundle",data.bundle_name);
 											}else{
 											 mn += '<li class="my-0" style="border-bottom: 1px solid #ccc;"><p class="pl-4" id="'+data.bundle_id+'">'+data.bundle_name+'</p></li>';
 											}
 
 						
-											console.log(data.bundle_name);
+											//console.log(data.bundle_name);
 												if(key != 'Session'){
 														flag = false;
 												}else{
@@ -334,7 +380,7 @@ firebase.database().ref("Category/Quick Dive/Bundle").on("value", function(snaps
 								
 										});
 	mn += '</ul>';
-									console.log(mn);
+									//console.log(mn);
 				$(".side").html(mn);
 				$(".list").find('ul > li').on('click',function(e){
 					$(".list > ul > li.selected").removeClass("selected");
@@ -358,7 +404,10 @@ firebase.database().ref("Category/Quick Dive/Bundle").on("value", function(snaps
 					});
 				});
 									$(".Dsess").html(Bundlesession);
-									
+									$('.hover-box1').hover(function() {
+$(".hover-box1").css("top",0);
+          //$(this).toggleClass('hover-box1a');
+     });
 									$("div.col-md-6").find(".row").find(".boxStyle").on('click',function(e){
 
 	var session = [];
@@ -379,8 +428,9 @@ firebase.database().ref("Category/Quick Dive/Bundle").on("value", function(snaps
 							console.log(childSnapshot.val());
 						}
 					}
+					
 						window.localStorage.setItem("cat","Quick Dive");
-				$.redirect("player2.php",{cat: "Quick Dive"},"POST",null,null,true);
+				$.redirect("player.php",{cat: "Quick Dive"},"POST",null,null,true);
 				});
 						
 	});
@@ -389,37 +439,92 @@ firebase.database().ref("Category/Quick Dive/Bundle").on("value", function(snaps
 				alert($(this).find("p").attr('id'));
 				});
 });
-
-
-$("div.py-5").find(".row").find(".boxStyle").on('click',function(e){
-
+$('.hover-box1').each(function(){
+		$(this).hover(function() {
+		$(".hover-box1a").removeAttr('style');
+		$(this).find(".hover-box1a").css("top",0);
+          //$(this).toggleClass('hover-box1a');
+     });
+});
+/*
+$("div.py-5").find(".row").find(".boxStyle > .hover-box1").hover(function() {
+$(".hover-box1a").css("top",0);
+          //$(this).toggleClass('hover-box1a');
+     });*/
+$("div.py-5").find(".row").find(".boxStyle > .hover-box1a > .btn").on('click',function(e){
+	var num = $(this).attr("id");
+var t = 0;
+var lock = false;
 	var session = [];
-		var sessionid = $(this).find(".bundle").attr("id");
+	var a = [];
+		var sessionid = $(".bundle").attr("id");
+	//	alert(sessionid);
 	firebase.database().ref("Category/Quick Dive/Bundle/"+id).on("value", function(snapshot) {
 				snapshot.forEach(function(childSnapshot) {
 							childData = childSnapshot.val(); 
+
 					if(childSnapshot.key == "Session"){
-						
-							$.map(childData, function(value, index) {
+
+								$.map(childData, function(value, index) {
 									if(index == sessionid){
 										window.localStorage.setItem("session",JSON.stringify(value));
-								console.log(value);
+										console.log(value);
 									}
+								//	if(t == 0){
+										
+							session.push(value);
+										a.push(index);
+									//}
+								t++;
 							});
 						if(Object.keys(childSnapshot.val()) == sessionid){
-							session.push(childSnapshot.val());
 							console.log(childSnapshot.val());
 						}
 					}
 						window.localStorage.setItem("cat","Quick Dive");
-				$.redirect("player2.php",{cat: "Quick Dive"},"POST",null,null,true);
+						console.log(session[0].session_id+"=="+a[0]);
+
+						if(user.membership_type == 'Free' ){
+
+								$.redirect("player.php",{cat: "Quick Dive"},"POST",null,null,true);
+						}else if(user.membership_type != 'Free'){
+								$.redirect("player.php",{cat: "Quick Dive"},"POST",null,null,true);
+							
+						}
+				
 				});
 						
 	});
 
 });
 
+$(".nav-link").click(function(e){
+e.preventDefault();
+//$(".dropdown-item").click(function(){
+	var cat = $(this).text();
+	if(cat == "HOME"){
+		window.location = "dashboard.php";
+	}
+	firebase.database().ref("Category").on("value",function(snapshot){
+			snapshot.forEach(function(childSnapshot) {
 
+				if(childSnapshot.hasChild("Bundle") &&  (childSnapshot.key).toUpperCase() == cat.toUpperCase() && childSnapshot.child("Bundle").val() != ""){
+				window.localStorage.setItem("cat",childSnapshot.key);
+				console.log("quick");
+				window.location = "quickdive.php";
+				
+			}
+			if( (childSnapshot.key).toUpperCase() == cat.toUpperCase() && childSnapshot.child("Bundle").val() == ""){
+				console.log("open");
+				window.localStorage.setItem("cat",childSnapshot.key);
+				window.location = "opendive.php";
+				
+			}
+			});
+	});
+	
+
+});
 
 </script>
 

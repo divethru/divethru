@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
      <link rel="shortcut icon" href="img/feb.ico" />
      <link href="css/collaboration.css" rel="stylesheet" type="text/css">
-     
+      <link href="css/reg.css" rel="stylesheet" type="text/css">
       <link href="css/footercss.css" rel="stylesheet" type="text/css">
      <link href="css/landing-page.min.css" rel="stylesheet">
    <!-- <script type="text/javascript" src="js/loginvalidation.js"></script> -->
@@ -41,7 +41,7 @@
    
 </style>
   </head>
-  <body>
+  <body style="padding-top: 100px;">
   
 
         <?php include'header.php'; ?>
@@ -62,8 +62,8 @@
                        
                        <a href="#" class="btn1 mx-2  my-2 active2 btn-pad" style="letter-spacing:3px; text-decoration: none; padding-top: 10px; padding-bottom: 10px; background-color:#7DD3D5 !important;
                       border:none;
-            color:#fff !important;">JOIN FREE</a>
-                       <a href="http://34.215.40.163/registration.php" class="btn1 mx-2 px-4 my-2" style="letter-spacing:3px; padding-top: 10px; padding-bottom: 10px; color: #FFF; text-decoration: none; border-color: #fff;">LET"S COLLABARATE</a>
+            color:#fff !important;">JOIN FOR FREE</a>
+                       <a href="http://34.215.40.163/registration.php" class="btn1 mx-2 px-4 my-2" style="letter-spacing:3px; padding-top: 10px; padding-bottom: 10px; color: #FFF; text-decoration: none; border-color: #fff;">LET'S COLLABARATE</a>
                        
                        </div>
                       
@@ -84,11 +84,11 @@
 							 </div>
 							<p>We have harnessed the power of guided meditation and journaling to bring you 100s of
 					conversations that will reconnect you with yourSelf.It’s simple Choose to Dive Thru for 11, 18 or
-					25 minutes, press, play, meditate, journal, then meditate again. Each session provides
-					you with everything you need to Dive Thru what you go Thru.
+					25 minutes, press, play, meditate, journal, then meditate again. Each session provides<br>
+					you with everything you need to Dive Thru what you go Thru.<br>
 					We have harnessed the power of guided meditation and journaling to bring you 100s of
 					conversations that will reconnect you with yourSelf.It’s simple Choose to Dive Thru for 11, 18 or
-					25 minutes, press, play, meditate, journal, then meditate again. Each session provides
+					25 minutes, press, play, meditate, journal, then meditate again. Each session provides<br>
 					you with everything you need to Dive Thru what you go Thru.
 						    </p>
 						</div>
@@ -167,9 +167,9 @@
                                    Download the DiveThru app<br>or sign up online to find<br>the peace within.
                               </h6>
                               <br><br>
-                               <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</button>
+                               <a href="http://34.215.40.163/subscription.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</a>
                                <br><br>
-                                <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;  background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </button>
+                                <a href="http://34.215.40.163/registration.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5;  background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </a>
                                 <br><br>
                                 <div>
                                 <img src="img/app atore.png" class="img-responsive plystr " height="40" width="140"> 

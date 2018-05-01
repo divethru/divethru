@@ -131,6 +131,9 @@ CirclePlayer.prototype = {
 		});
 
 		this.player.bind($.jPlayer.event.ended + this.eventNamespace, function(event) {
+			
+			$('#exampleModalCenter').modal({backdrop: "static"});
+			
 			self._resetSolution();
 		});
 	},

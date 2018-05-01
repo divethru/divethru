@@ -1,0 +1,117 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+
+@media (max-width:576px){
+	
+.img-height {height: 200px;}
+	
+}
+
+@media(max-width:344px){
+	
+.center{top:5%;}
+
+.center h2 {font-size: 10px;
+            margin-bottom: 10px;
+		padding-bottom: 9px;
+    padding-top: 9px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.center p {font-size: 6px !important;}
+	
+
+}
+
+@media(min-width:345px) and (max-width:425px){
+	
+.center{top:10%;}
+
+.center h2 {font-size: 12px;
+            margin-bottom: 10px;
+padding-bottom: 9px;
+    padding-top: 9px;
+    margin-top: 0px;
+    margin-bottom: 0px;}
+
+.center p {font-size: 8px;}
+	
+
+	
+}
+
+@media(min-width:426px) and (max-width:470px){
+	
+.center{top:10%;}
+
+.center h2 {font-size: 12px;
+            margin-bottom: 10px;}
+
+.center p {font-size: 8px;}
+	
+
+	
+}
+
+@media(min-width:471px) and (max-width:575px){
+	
+.center{top:15%;}
+
+.center h2 {font-size: 14px;
+            margin-bottom: 10px;}
+
+.center p {font-size: 10px;}
+	
+
+	
+}
+
+
+
+@media(min-width:576px) and (max-width:767px){
+	
+.center{top:10%;}
+
+.center h2 {font-size: 24px;
+            margin-bottom: 15px;}
+
+.center p {font-size: 12px;}
+	
+}
+
+@media(min-width:768px) and (max-width:991px){
+	
+.center{top:14%;}
+
+.center h2 {font-size: 32px;
+            margin-bottom: 15px; padding:10px !important;}
+
+.center p {font-size: 14px;}
+	
+}
+
+@media(min-width:992px) and (max-width:1199px){
+	
+.center{top:25%;}
+
+.center h2 {font-size: 42px;
+            margin-bottom: 20px;}
+
+.center p {font-size: 18px;}
+	
+}
+
+
+@media(min-width:1200px){
+	
+.center{top:35%;}
+
+.center h2 {font-size: 42px;
+            margin-bottom: 20px;}
+
+.center p {font-size: 18px;}
+	
+}

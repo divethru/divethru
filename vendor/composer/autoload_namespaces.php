@@ -6,5 +6,12 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'PhpOption\\' => array($vendorDir . '/phpoption/phpoption/src'),
+    'PhpCollection' => array($vendorDir . '/phpcollection/phpcollection/src'),
+    'PayPal' => array($vendorDir . '/paypal/rest-api-sdk-php/lib'),
+    'Metadata\\' => array($vendorDir . '/jms/metadata/src'),
+    'JMS\\Serializer' => array($vendorDir . '/jms/serializer/src'),
+    'JMS\\' => array($vendorDir . '/jms/parser-lib/src'),
     'Illuminate\\Support' => array($vendorDir . '/illuminate/support'),
+    'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
 );

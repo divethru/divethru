@@ -163,6 +163,7 @@ return $nodeGetContent;
                                     <div class="form-line error">
                                         <input type="hidden" id="cid" value="<?php echo  $cms['page_id'];?>">
                                         <input type="text" class="form-control" id="catnm" name="name" value="<?php echo $cms['page_name'];?>" required="" aria-required="true" aria-invalid="true">
+                                        <input type="hidden" class="form-control" id="catslug" name="slug" value="<?php echo $cms['page_slug'];?>" required="" aria-required="true" aria-invalid="true">
                                         <label class="form-label">Name</label>
                                     </div>
                                 </div>
@@ -361,10 +362,11 @@ CKEDITOR.replace('ckeditor',config);
                      var desc = $('#tinymce').val();
                      var catnm = $("#catnm").val();
                      var cid = $("#cid").val();
+                     var slug=$("#catslug").val();
                      var data = {
                         page_name: catnm,
                         page_description: desc,
-                        page_slug:catnm,
+                        page_slug:slug,
                         page_id: cid,
                      };
                      var updates = {};

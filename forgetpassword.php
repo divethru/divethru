@@ -46,7 +46,7 @@
 }
     </style>
   </head>
-  <body background="img/banner.png" style="background-repeat: no-repeat;">
+  <body background="img/banner.png" style="background-repeat: no-repeat; padding-top: 118px;">
     
  		<?php include'header.php'; ?>
 		<div class="container-fluid">

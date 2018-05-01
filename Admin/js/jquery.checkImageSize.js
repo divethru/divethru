@@ -54,14 +54,14 @@
 		                if (imgWidth < minWidth || imgHeight < minHeight) {
 		                    validImage = false;
 		                    if (opts.showError) {
-		                    	swal("Soryy Image Size must Be (1920 * 1080)")
+		                    	swal("Sorry image size must be (1920 * 1080)")
 		                    }
 		                }
 
 		                if (imgWidth > maxWidth || imgHeight > maxHeight) {
 		                    validImage = false;
 		                    if (opts.showError) {
-		                    	swal("Soryy Image Size must Be (1920 * 1080)")
+		                    	swal("Sorry image size must be (1920 * 1080)")
 		                    }
 		                }
 

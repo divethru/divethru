@@ -328,7 +328,7 @@ landscape) and (max-device-width : 1023px){
 </style>  
 </head>
 
-<body>
+<body style="margin-top:118px;">
 	
 <!--SLIDER-->
 	<?php include 'header.php'; ?> 
@@ -526,9 +526,9 @@ you with everything you need to Dive Thru what you go Thru.
                                    Download the DiveThru app<br>or sign up online to find<br>the peace within.
                               </h6>
                               <br>
-                               <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</button>
+                               <a href="http://34.215.40.163/subscription.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5; box-shadow: none!important;  background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</a>
                                <br><br>
-                                <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;  background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </button>
+                                <a href="http://34.215.40.163/registration.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5; box-shadow: none!important; background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </a>
                                 <br><br>
                                 <div>
                                 <img src="img/app atore.png" class="img-responsive plystr " height="40" width="140"> 

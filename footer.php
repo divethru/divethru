@@ -1,3 +1,5 @@
+
+<link href="css/divecorporat.css" rel="stylesheet" type="text/css">
 <div class="container-fluid footer-bg">
      <div class="container">
           <div class="row justify-content-center text-center text-md-left">
@@ -15,10 +17,10 @@
                      <h6>DIVE THRU</h6>
                      <hr class="footer-hr">
                      <ul>
-                         <li><a href="#">Join</a></li>
+                         <li><a href="http://34.215.40.163/registration.php">Join</a></li>
                          <li><a href="http://34.215.40.163/WhyDiveThru.php">Why Dive Thru</a></li>
-                         <li><a href="#">Dive Thru For Corporate</a></li>
-                         <li><a href="#">Dive Thru For Youth</a></li>
+                         <li><a href="javascript:void(0)" data-toggle="modal" data-target="#divecorporateModal">Dive Thru For Corporate</a></li>
+                         <li><a href="http://34.215.40.163/DiveThruKids.php">Dive Thru For Youth</a></li>
                          <li><a href="http://34.215.40.163/gift.php">Gift</a></li>
                       </ul>
                 </div>
@@ -28,7 +30,7 @@
                      <hr class="footer-hr">
                      <ul>
                          <li><a href="http://34.215.40.163/about.php">About Dive Thru</a></li>
-                         <li><a href="#">Press</a></li>
+                         <li><a href="http://34.215.40.163/pressandcollaboration.php">Press</a></li>
                       </ul>
                 </div>
                 
@@ -36,10 +38,10 @@
                      <h6>HELP</h6>
                      <hr class="footer-hr">
                      <ul>
-                         <li><a href="#">Support</a></li>
+                         <li><a href="http://34.215.40.163/support.php">Support</a></li>
                          <li><a href="http://34.215.40.163/contact.php">Contact Us</a></li>
-                         <li><a href="#">Terms & Conditions</a></li>
-                         <li><a href="#">Privacy</a></li>
+                         <li><a href="http://34.215.40.163/termsandconditions.php">Terms & Conditions</a></li>
+                         <li><a href="http://34.215.40.163/privacypolicy.php">Privacy</a></li>
                       </ul>
                 </div>
           
@@ -66,3 +68,21 @@
                     </div>
                                <div class="clearfix"></div>
                 </div>
+
+
+
+<div class="modal fade" id="divecorporateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog " role="document">
+    <div class="modal-content my-modal">
+      
+      <div class="modal-body px-md-5">
+        <h2 style="text-align: left;">Sample Text</h2>
+    <p style="text-align: justify;">Servicebit is the most convenient wat to book appointments with many local service providers. schedule an appointment for appliances, Carpentry, Decorator, Electrical and many other services. Don,t call...just click! Servicebit lets you book anytime, from anywhere - right from your phone. You can also reschedule or cancle appointments booked through Servicebit without having to call the business. This means you can organize your life whenever it's convenient for you - even if the business is closed for the day!</p>
+      
+    <h2 style="text-align: left;">Sample Text</h2>
+    <p style="text-align: justify;">Servicebit is the most convenient wat to book appointments with many local service providers. schedule an appointment for appliances, Carpentry, Decorator, Electrical and many other services. Don,t call...just click! Servicebit lets you book anytime, from anywhere - right from your phone. You can also reschedule or cancle appointments booked through Servicebit without having to call the business. This means you can organize your life whenever it's convenient for you - even if the business is closed for the day!</p> 
+      </div>
+      
+    </div>
+  </div>
+</div>

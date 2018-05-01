@@ -1,3 +1,49 @@
+<?php
+ unlink("ipn/result.txt");
+session_start();
+//session_destroy();
+require 'payment.php';
+//require 'vendor/autoload.php';
+
+use PayPal\Rest\ApiContext;
+//use PayPal\Auth\OAuthTokenCredential;
+use PayPal\Api\Payment;
+use PayPal\Api\Payer;
+use PayPal\Api\Details;
+use PayPal\Api\Amount;
+use PayPal\Api\Transaction;
+use PayPal\Api\RedirectUrls;
+use PayPal\Api\Item;
+use PayPal\Api\ItemList;
+use PayPal\Api\CreditCard;
+use PayPal\Api\FundingInstrument;
+use PayPal\Api\Address;
+use PayPal\Api\BillingInfo;
+use PayPal\Api\Cost;
+use PayPal\Api\Currency;
+use PayPal\Api\Invoice;
+use PayPal\Api\InvoiceAddress;
+use PayPal\Api\InvoiceItem;
+use PayPal\Api\MerchantInfo;
+use PayPal\Api\PaymentTerm;
+use PayPal\Api\Phone;
+use PayPal\Api\ShippingInfo;
+
+	if(isset($_GET["paymentId"])){
+	
+			$paymentid = $_GET["paymentId"];
+			try{
+				$paydetail = Payment::get($paymentid,$apiContext);
+				$obj = json_decode($paydetail);
+				
+				 //print_r($obj);
+				// die;
+			}catch(Exception $ex){
+//				print_r($ex);
+				echo "Exception";
+			}
+		} 
+	?>
 <!doctype html>
 <html>
 <head>
@@ -9,8 +55,12 @@
     <link href="css/subscription.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+    <link rel="stylesheet" href="css/dashheader.css">
     <link rel="stylesheet" href="css/footercss.css" type="text/css" >
-</head>
+<link rel="stylesheet" href="css/sweetalert.css" type="text/css" >
+<script src="js/sweetalert.min.js"></script>
+
+
 <style type="text/css">
 		.btn1 {
       display: block;
@@ -43,18 +93,201 @@
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 button:focus{outline: none;}
+
+.btn3 {
+  display: inline-block;
+  font-weight: 400;
+  color: #FFF;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+
+/* Absolute Center Spinner */
+/*.loading {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}*/
+
+/* Transparent Overlay */
+/*.loading:before {
+  content: '';
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+}*/
+
+/* :not(:required) hides these rules from IE9 and below */
+/*.loading:not(:required) {
+  /* hide "loading..." text */
+ /* font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+
+.loading:not(:required):after {
+  content: '';
+  display: block;
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  margin-top: -0.5em;
+  -webkit-animation: spinner 1500ms infinite linear;
+  -moz-animation: spinner 1500ms infinite linear;
+  -ms-animation: spinner 1500ms infinite linear;
+  -o-animation: spinner 1500ms infinite linear;
+  animation: spinner 1500ms infinite linear;
+  border-radius: 0.5em;
+  -webkit-box-shadow: rgba(175, 107, 191, 0.75) 3.5em 0 0 0, rgba(175, 107, 191, 0.75) 3.1em 3.1em 0 0, rgba(0, 0, 0, 0.75) 0 1.5em 0 0, rgba(0, 0, 0, 0.75) -1.1em 1.1em 0 0, rgba(0, 0, 0, 0.5) -1.5em 0 0 0, rgba(175, 107, 191, 0.5) -3.1em -3.1em 0 0, rgba(175, 107, 191, 0.75) 0 -3.5em 0 0, rgba(175, 107, 191, 0.75) 3.1em -3.1em 0 0;
+  box-shadow: rgba(175, 107, 191, 0.75) 3.5em 0 0 0, rgba(175, 107, 191, 0.75) 3.1em 3.1em 0 0, rgba(175, 107, 191, 0.75) 0 3.5em 0 0, rgba(175, 107, 191, 0.75) -3.1em 3.1em 0 0, rgba(175, 107, 191, 0.75) -3.5em 0 0 0, rgba(175, 107, 191, 0.75) -3.1em -3.1em 0 0, rgba(175, 107, 191, 0.75) 0 -3.5em 0 0, rgba(175, 107, 191, 0.75) 3.1em -3.1em 0 0;
+}*/
+
+/* Animation */
+/*
+@-webkit-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-o-keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner {
+  0% {
+    -webkit-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}*/
+.loader {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+  color: transparent;
+	z-index: 9999;
+	background: url('http://34.215.40.163/img/gif-4.gif') 50% 50% no-repeat rgb(0,0,0,0.5);
+	background-size: 50%; 
+}
 </style>
-<body>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
 
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDBWdYDtGJsilqNGOqYMNalE9s-IAGPnTw",
+    authDomain: "divethru-71c56.firebaseapp.com",
+    databaseURL: "https://divethru-71c56.firebaseio.com",
+    projectId: "divethru-71c56",
+    storageBucket: "divethru-71c56.appspot.com",
+    messagingSenderId: "53159239409"
+  };
+  firebase.initializeApp(config);
+</script>
+<script>
+	$(document).ready(function(){
+		var chkuser=localStorage.getItem('user');
+		if(!chkuser){
+			window.location.href = "http://34.215.40.163/login.php";
+		}
+	});
+</script>
+</head>
 
+<body style="margin-top:118px;">
+	<!--<div class="loading">Loading&#8230;</div>
+	<div class="loader"></div>-->
+<div id="contain"></div>
 
-
-
-
-<!--HEADER-->
-
- <?php include 'header.php'; ?>
+<script type="text/javascript">
+    
 	
+	firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    
+     $('#contain').empty().load('dashbordHeader.php');
+  } else {
+   
+    $('#contain').load('header.php');
+  }
+})
+</script>
+
 <!--UNLOCK DIVE THRU-->
 	
 <div class="container-fluid" style="padding: 80px 0;">
@@ -68,27 +301,27 @@ button:focus{outline: none;}
 			    <div class="col-sm-4 col-10 px-0">
 			       <div class="box1">
 					   <h4>M O N T H L Y</h4>
-					   <h2>$ 14.99</h2>
+					   <h2>$ 12.99</h2>
 					   <p style="font-size: 20px;">PAID MONTH</p>
-					   <a href="" class="btn get-button">GET  AS A GIFT</a>
+					   <a href="javascript:void(0)" class="btn get-button" data-amount="12.99" data-cycle="2" data-plan="M"><i class="fa fa-spinner fa-spin"></i>&nbsp;SUBSCRIBE NOW</a>
 				   </div>
 			   </div>
 		   
 		       <div class="col-sm-4 col-10 px-0">
 			       <div class="box2">
 				       <h4>Y E A R L Y</h4>
-					   <h2>$ 7.99</h2>
+					   <h2>$ 95.88</h2>
 					   <p style="font-size: 20px;">PAID YEARLY</p>
-					   <a href="" class="btn get-button">GET  AS A GIFT</a>
+					   <a href="javascript:void(0)" class="btn get-button" data-amount="95.88" data-cycle="2" data-plan="Y"><i class="fa fa-spinner fa-spin"></i>&nbsp;SUBSCRIBE NOW</a>
 				   </div>
 			   </div>
 			   
 			    <div class="col-sm-4 col-10 px-0">
 			       <div class="box3">
 					   <h4>L I F E  &nbsp; T I M E</h4>
-					   <h2>$ 345</h2>
+					   <h2>$ 300</h2>
 					   <p style="font-size: 20px;">PAID ONCE</p>
-					   <a href="" class="btn get-button">GET  AS A GIFT</a>
+					   <a href="javascript:void(0)" class="btn get-button" data-amount="300" data-cycle="0" data-plan="L"><i class="fa fa-spinner fa-spin"></i>&nbsp;SUBSCRIBE NOW</a>
 				   </div>
 			   </div>
 		   
@@ -700,7 +933,7 @@ button:focus{outline: none;}
 
 					   <div class="col-md-2 col-9 px-0">
 						  <div class="card1 text-white b3">
-							<img class="card-img1" src="img/0.png">
+							<img class="card-img1" src="img/10.png">
 							<div class="card-img-overlay1">
 							   <p class="pt-5">Conversation 1</p>
 							</div>
@@ -767,27 +1000,27 @@ button:focus{outline: none;}
 			    <div class="col-sm-4 col-10 px-0">
 			       <div class="box1">
 					   <h4>M O N T H L Y</h4>
-					   <h2>$ 14.99</h2>
-					   <p style="font-size: 20px;">PAID MONTH</p>
-					   <a href="" class="btn get-button">GET  AS A GIFT</a>
+					   <h2>$ 12.99</h2>
+					   <p style="font-size: 20px;" >PAID MONTH</p>
+					   <a href="javascript:void(0)" class="btn get-button" data-amount="12.99" data-cycle="2" data-plan="M"><i class="fa fa-spinner fa-spin"></i>&nbsp;SUBSCRIBE NOW</a>
 				   </div>
 			   </div>
 		   
 		       <div class="col-sm-4 col-10 px-0">
 			       <div class="box2">
 				       <h4>Y E A R L Y</h4>
-					   <h2>$ 7.99</h2>
+					   <h2>$ 95.88</h2>
 					   <p style="font-size: 20px;">PAID YEARLY</p>
-					   <a href="" class="btn get-button">GET  AS A GIFT</a>
+					   <a href="javascript:void(0)" class="btn get-button" data-amount="95.88" data-cycle="2" data-plan="Y"><i class="fa fa-spinner fa-spin"></i>&nbsp;SUBSCRIBE NOW</a>
 				   </div>
 			   </div>
 			   
 			    <div class="col-sm-4 col-10 px-0">
 			       <div class="box3">
 					   <h4>L I F E &nbsp; T I M E</h4>
-					   <h2>$ 345</h2>
+					   <h2>$ 300</h2>
 					   <p style="font-size: 20px;">PAID ONCE</p>
-					   <a href="" class="btn get-button">GET  AS A GIFT</a>
+					   <a href="javascript:void(0)" class="btn get-button" data-amount="300" data-cycle="0" data-plan="L"><i class="fa fa-spinner fa-spin"></i>&nbsp;SUBSCRIBE NOW</a>
 				   </div>
 			   </div>
 		   
@@ -814,9 +1047,9 @@ button:focus{outline: none;}
                                    Download the DiveThru app<br>or sign up online to find<br>the peace within.
                               </h6>
                               <br>
-                               <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</button>
+                               <a href="http://34.215.40.163/subscription.php"  class="btn3 btnpos" style="border-color: #7dd3d5; text-decoration: none; color: #FFF;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</a>
                                <br><br>
-                                <button type="submit" class="btn btn-primary btnpos" style="border-color: #7dd3d5;  background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </button>
+                                <a href="http://34.215.40.163/registration.php" class="btn3 btnpos" style="border-color: #7dd3d5; text-decoration: none; color: #FFF; background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </a>
                                 <br><br>
                                 <div>
                                 <img src="img/app atore.png" class="img-responsive plystr " height="40" width="140"> 
@@ -828,15 +1061,283 @@ button:focus{outline: none;}
                       </div>
                     </section>
 	
-
+<?php if (isset($_GET["paymentId"])) {
+		//echo $_SESSION["userid"];
+?>
+<input type="hidden" class="tr_id" value="<?php echo $obj->id; ?>">
+<input type="hidden" class="payment_type" value="<?php echo $obj->payer->payment_method; ?>">
+<input type="hidden" class="payment_status" value="<?php echo $obj->payer->status; ?>">
+<input type="hidden" class="payment_time" value="<?php echo $obj->create_time; ?>">
+<input type="hidden" class="state" value="<?php echo $obj->payer->payer_info->shipping_address->state; ?>">
+<input type="hidden" class="payer_id" value="<?php $obj->payer->payer_info->payer_id; ?>">
+<input type="hidden" class="email" value="<?php echo $obj->payer->payer_info->email; ?>">
+<input type="hidden" class="total" value="<?php echo $obj->transactions[0]->amount->total; ?>">
+<input type="hidden" class="currency" value="<?php echo $obj->transactions[0]->amount->currency; ?>">
+<input type="hidden" class="full_name" value="<?php echo $obj->payer->payer_info->first_name. ' '. $obj->payer->payer_info->last_name; ?>">
+<input type="hidden" class="city" value="<?php echo $obj->payer->payer_info->shipping_address->city; ?>">
+<?php
+}
+?>
 <!--FOOTER-->
 <?php include 'footer.php';?>
-
+<script>
+	function sign_out(){
+		firebase.auth().signOut().then(function() {
+  // Sign-out successful.
+  		window.location = "index.php";
+}, function(error) {
+  // An error happened.
+   console.log("Logout Failed!", error);
+});
+	}
+</script>
+<!--
 <script
   src="https://code.jquery.com/jquery-3.3.1.slim.js"
   integrity="sha256-fNXJFIlca05BIO2Y5zh1xrShK3ME+/lYZ0j+ChxX2DA="
-  crossorigin="anonymous"></script>
+  crossorigin="anonymous"></script>---->
+ <script type="text/javascript" src="js/jquery.redirect.js"></script>
 <script src="js/bootstrap.bundle.min.js" type="text/javascript"></script>
+<script src="js/dashboardheader.js" type="text/javascript"></script>
+<script>
+	$("document").ready(function(){
+		$(".loader").hide();
+		$(".get-button").find(".fa-spinner").hide();
+var user = JSON.parse(window.localStorage.getItem('user'));	
 
+/*
+if(user.currentStreak){
+
+          $.map(user.currentstreak, function(value, index) {
+
+            $.map(value, function(value2, index2) {
+            	if(index2 == "SubCategory"){
+		              $.map(value2, function(value3, index3) {
+		              	if(index3 == "Bundle"){
+
+		                	$.map(value3, function(value4, index4) {
+		                		if(index4 == "Session"){
+
+				                	  $.map(value4, function(value5, index5) {
+				                    	console.log(index5);
+				                   		});
+		                		}
+		                 	});
+		              	}else if(index3 == "Session"){
+		              		$.map(value3, function(value4, index4) {
+		                			console.log(index4);
+		                 	});	
+		              	}
+		              });
+        		}else if(index2 == "Bundle"){
+        			$.map(value2, function(value3, index3) {
+
+        			      });
+        		}else if(index2 == "Session"){
+
+        		}
+            });
+          });
+      }
+*/
+console.log(user.user_id);
+var sub = false;
+var pl = "";
+firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
+	 window.localStorage.setItem('user',JSON.stringify(snapshot));
+			snapshot.forEach(function(childSnapshot) {
+					if(childSnapshot.key == 'payment'){
+						$.map(childSnapshot.val(), function(value, index){
+								sub = true;
+								pl = value.subcription_type;
+								$('.get-button').each(function(i, obj) {
+											var plan = $(this).data("plan");
+											//console.log(plan);
+											//console.log(pl);
+											if(pl == 'Monthly' && plan == "M"){
+												$(this).css("background-color","#dc3545a3");
+												$(this).html("UNSUBSCRIBE");
+												$(this).attr("id",value.transaction_id);
+												
+											}
+											if(pl == 'Yearly' && plan == "Y"){
+												$(this).css("background-color","#f44336");
+												$(this).html("UNSUBSCRIBE");
+												$(this).attr("id",value.transaction_id);
+											}
+										//test
+									});
+						});
+					}
+					if(childSnapshot.key == 'membership_type'){
+							//console.log(childSnapshot.val());
+							if(childSnapshot.val() != "Free"){
+								sub = true;
+							}
+					}
+			})
+		});
+//		$.redirect("Process.php",{bundle: bundle},"POST",null,null,true);
+console.log(pl);
+	$(".get-button").click(function(){
+			var plan = $(this).data('plan');
+			var cycle = $(this).data('cycle');
+			var price = $(this).data('amount');
+			//alert(sub);
+		if($(this).html() == "UNSUBSCRIBE"){
+			var sbid = $(this).attr("id");
+			var user = JSON.parse(window.localStorage.getItem('user'));
+			$.post("http://34.215.40.163/SubscriptionCancel.php", {"id": sbid}, function(result){
+			console.log("s"+user.user_id);	
+				console.log(result);
+				if(result == "done"){
+				$(this).css("background-color","#7dd3d5");
+				$(this).html("SUBSCRIBE NOW");
+				$(this).removeAttr("id");
+
+				firebase.database().ref("Users/"+user.user_id).update({"membership_type":"Free"});
+				firebase.database().ref("Users/"+user.user_id+"/payment").set(null);
+	//			swal("You Have Successfully UnSubscribed..!!");
+					
+					swal({title: "Done", text: "You Have Successfully UnSubscribed..!!", type: "success"},
+					   function(){ 
+					       location.reload();
+					   }
+					);
+
+
+				}
+				//
+			});
+		}else{
+
+
+			if(!sub){
+				var user = JSON.parse(window.localStorage.getItem('user'));
+				//$(this).find(".fa-spinner").show();
+			//$(".loader").show();
+				$.post("http://34.215.40.163/test.php", {"price": price}, function(result){
+			        console.log(result);
+			       // $(".loader").hide();
+			       //$(this).find(".fa-spinner").hide();
+			       localStorage.setItem('payment','true');
+			        if(result){
+			        $.redirect("Process.php",{select_cycles: cycle ,product_name : "DiveThru Library","select_plan":plan,"price":price,"userid":user.user_id,"token":result},"POST",null,null,true);
+			        }
+			    });
+			 }else{
+			 //	$(".loader").hide();
+			 	swal("You Have Already Subscribe Our "+pl+" Plan");
+			 }
+		}
+			//alert(plan+"="+cycle+"="+price);
+		
+	 });
+	/*
+$.get('http://34.215.40.163/ipn/result.txt', function(data) {
+   var str = data;
+   var arr = str.split("&");
+   		console.log(data);
+   var eml = "";
+   var txid = "";
+	var pyid = "";
+	var type = "paypal";
+	var status = "";
+	var time = "";
+	var state = "";
+	var total = 0;
+	var currency = "";
+	var full_name = "";
+	var l_name = "";
+	var address = "";
+	var city = "";
+   /*arr.forEach(function(value) {
+   console.log(value);
+   });*/
+/*var $_GET=[];
+window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(a,name,value){$_GET[name]=value;})
+
+//console.log($_GET["auth"]);
+   	for(var i in arr){
+   		//console.log(arr[i].substring(arr[i].indexOf("=")+1));
+       	//console.log(arr[i].substring(arr[i].indexOf("=")+1));
+
+   		switch (arr[i].substring(0, arr[i].indexOf("="))) {
+    case "amount3":
+         total = arr[i].substring(arr[i].indexOf("=")+1);
+        break;
+    case "payer_email":
+         eml = arr[i].substring(arr[i].indexOf("=")+1);
+        break;
+    case "subscr_date":
+         time = arr[i].substring(arr[i].indexOf("=")+1);
+        break;
+    case "payer_id":
+         pyid = arr[i].substring(arr[i].indexOf("=")+1);
+        break;
+    case "payer_status":
+         status = arr[i].substring(arr[i].indexOf("=")+1);
+        break;
+    case "subscr_id":
+         txid = arr[i].substring(arr[i].indexOf("=")+1);
+        break;
+    case "first_name":
+         full_name = arr[i].substring(arr[i].indexOf("=")+1);
+        break;    
+    case "last_name":
+         l_name = arr[i].substring(arr[i].indexOf("=")+1);
+        break;
+    case "address_status":
+        state = arr[i].substring(arr[i].indexOf("=")+1);
+        break;
+    case "address_city":
+       	city = arr[i].substring(arr[i].indexOf("=")+1);
+        break;
+    case "mc_currency":
+        currency = arr[i].substring(arr[i].indexOf("=")+1);
+        break;
+}
+   	}
+if($_GET["auth"]){
+	var n = full_name+" "+l_name;
+   var data = {transection_id:txid,payer_id:pyid,name:n,email:eml,payment_type:type,payment_status:status,payment_time:time,state:state,city:city,price:total,currency:currency};
+   var db = firebase.database();
+   db.ref("Users/"+user.user_id).update({membership_type:"paid"});
+			db.ref("Users/"+user.user_id+"/payment").child(txid).set(data); // Update lalted time on pause
+				window.setTimeout(function() {
+                                  window.location.href = "dashboard.php";
+                                }, 1000);
+}
+console.log(data);
+}, 'text');
+
+		var eml = $(".email").val();
+			var txid = $(".tr_id").val();
+			var pyid = $(".payer_id").val();
+			var type = $(".payment_type").val();
+			var status = $(".payment_status").val();
+			var time = $(".payment_time").val();
+			var state = $(".state").val();
+			var total = $(".total").val();
+			var currency = $(".currency").val();
+			var full_name = $(".full_name").val();
+			var address = $(".address").val();
+			var city = $(".city").val();
+			var data = {transection_id:txid,payer_id:pyid,name:full_name,email:eml,payment_type:type,payment_status:status,payment_time:time,state:state,city:city,price:total,currency:currency};
+			//console.log(data);
+
+			//console.log(txid);
+			if(txid){
+
+						var db = firebase.database();
+			db.ref("Users/"+user.user_id+"/payment").child(txid).set(data); // Update lalted time on pause
+				window.setTimeout(function() {
+                                  window.location.href = "dashboard.php";
+                                }, 1000);
+			}*/
+
+
+	});
+</script>	
 </body>
 </html>

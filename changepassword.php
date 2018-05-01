@@ -7,11 +7,12 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" >
    <link rel="stylesheet" href="css/reg.css" type="text/css" >
+   <link rel="stylesheet" href="css/footercss.css" type="text/css" >
     <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
     
     <title>Dive Thru</title>
   </head>
-  <body background="img/banner.png" style="background-repeat: no-repeat;">
+  <body background="img/banner.png" style="background-repeat: no-repeat; margin-top: 118px;">
     
  		<?php include'header.php'; ?>
 

@@ -206,8 +206,10 @@ img {vertical-align: middle;}
     $(document).ready(function(){
     
     var user = JSON.parse(window.localStorage.getItem('user'));
-      
-
+      if(user.visited != 0){
+// /console.log(user);
+        window.location = "dashboard.php";
+      }
       /*
        * Instance CirclePlayer inside jQuery doc ready
        *

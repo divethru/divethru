@@ -271,7 +271,7 @@ function save_user() {
             var datetime = 
                 + currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + "  "  
+                + currentdate.getFullYear() + " "  
                 + currentdate.getHours() + ":"  
                 + currentdate.getMinutes() + ":" 
                 + currentdate.getSeconds();
@@ -323,7 +323,6 @@ function save_user() {
                             "first_name": first_name,
                             "last_name": last_name,
                             "email": email,
-                            
                             "birthdate":bdate,
                              "gender":s,
                              "login_via": "email",
@@ -333,11 +332,15 @@ function save_user() {
                              "last_free_conversation_id":0,
                              "device_type":PCstatus,
                              "activated_on":"",
-                             "activated_code":"",
-                             "device_token" : "123456789",
+                             "activation_code":"",
+                             "device_token" : "",
                              "fb_id": "",
-                             "visited":"",
-							"membership_type":"Free",
+                             "google_id": "",
+                             "visited":0,
+							               "completed_conversation":0,
+							               "total_time_divethru":0,
+							               "membership_type":"Free",
+                             "streak":""
                         }
                         var updates = {};
                         updates['/Users/' + uid] = data;
@@ -880,7 +883,7 @@ function fbsave_user(){
 	//alert(55);
 	var provider = new firebase.auth.FacebookAuthProvider();
 //	provider.addScope('email');
-	provider.addScope('user_birthday');
+	//provider.addScope('user_birthday');
 	firebase.auth().signInWithPopup(provider).then(function(result) {
 		var fbuser = firebase.auth().currentUser
 		//if(fbuser){
@@ -895,10 +898,11 @@ function fbsave_user(){
  			  var detail = result.additionalUserInfo.profile;
  		  	  var first_name = detail.first_name;
            	  var last_name = detail.last_name;
+			   var email = detail.email;
            	  var gender = detail.gender;
   		   	  var fbid = detail.id;
-  		      var birthday = detail.birthday;
-  		      var loginvia = "Facebook";
+  		      var birthday = "";
+  		      var loginvia = "facebook";
 			  //var membership_type = "free";
   			// ...
 		save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender);
@@ -915,7 +919,7 @@ function save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender) {
             var datetime = 
                 + currentdate.getDate() + "/"
                 + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + "  "  
+                + currentdate.getFullYear() + " "  
                 + currentdate.getHours() + ":"  
                 + currentdate.getMinutes() + ":" 
                 + currentdate.getSeconds();
@@ -968,24 +972,177 @@ function save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender) {
                             "last_name": last_name,
                             "email": email,
                             "fb_id":fbid,
-                            "visited":"",
-                            "login_via": "FACEBOOK",
-                            "birthdate":birthday,
-                             "gender":gender,
-                             "registered_on":datetime,
-                             "lastUpdated_on":datetime,
-                             "halted":0.0,
-                             "last_free_conversation_id":0,
-                             "device_type":PCstatus,
-                             "activated_on":"",
-                             "activated_code":"",
-                             "device_token" : "123456789",
-                             "membership_type" : "Free",
+                            "google_id": "",
+                            "visited":0,
+                            "login_via": "facebook",
+                            "birthdate":"",
+                            "gender":gender,
+                            "registered_on":datetime,
+                            "lastUpdated_on":datetime,
+                            "halted":0.0,
+                            "last_free_conversation_id":0,
+                            "device_type":PCstatus,
+                            "activated_on":"",
+                            "activation_code":"",
+                            "device_token" : "",
+                            "membership_type" : "Free",
+                            "total_time_divethru": 0,
+                            "completed_conversation": 0,
+                            "streak": '',
                         }
                         var updates = {};
                         updates['/Users/' + uid] = data;
                         firebase.database().ref().update(updates);
-                        alert('This User Created Sucessfully');
+                        swal({
+	                        title: "Registered!",
+	                        text: "User Registered Sucessfully.",
+	                        html:true,
+	                        type: "success",
+	                        showCancelButton: false,
+	                        confirmButtonColor: "#86CCEB",
+	                        confirmButtonText: "OK",
+	                        closeOnConfirm: false
+	                    }, function () {
+	                        window.setTimeout(function() {
+	                        
+	                          window.location.href = "welcome.php";
+	                        }, 1000);
+	                    });
                 
                 
 }
+//Google Sign Up Code Start
+
+function googlesave_user(){
+	
+	//alert(55);
+	var provider = new firebase.auth.GoogleAuthProvider();
+//	provider.addScope('email');
+	//provider.addScope('user_birthday');
+	provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+	firebase.auth().signInWithPopup(provider).then(function(result) {
+		
+  // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+  				var token = result.credential.accessToken;
+  // The signed-in user info.
+  console.log(result);
+  		 	  var user = result.user;
+  			  var uid = user.uid;
+ 			  var detail = result.additionalUserInfo.profile;
+ 		  	  var first_name = detail.given_name;
+           	  var last_name = detail.family_name;
+           	 //var gender = detail.gender;
+  		   	  var gid = detail.id;
+			  var email=detail.email;
+  		      //var birthday = detail.birthday;
+  		     var loginvia = "google";
+  //var membership_type = "free";
+  			// ...
+		save_googleuser(uid,first_name,last_name,gid,email);
+			
+});
+}
+
+	
+function save_googleuser(uid,first_name,last_name,gid,email) {
+
+			//alert(uid);
+			//return;
+			var currentdate = new Date(); 
+			var datetime = 
+			    + currentdate.getDate() + "/"
+                + (currentdate.getMonth()+1)  + "/" 
+                + currentdate.getFullYear() + " "  
+                + currentdate.getHours() + ":"  
+                + currentdate.getMinutes() + ":" 
+                + currentdate.getSeconds();
+			 var PCstatus = 'Mobile';
+			
+			 var isMobile = {
+			    Android: function() {
+			        return navigator.userAgent.match(/Android/i);
+			    },
+			    BlackBerry: function() {
+			        return navigator.userAgent.match(/BlackBerry/i);
+			    },
+			    iOS: function() {
+			        return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+			    },
+			    Opera: function() {
+			        return navigator.userAgent.match(/Opera Mini/i);
+			    },
+			    Windows: function() {
+			        return navigator.userAgent.match(/IEMobile/i);
+			    },
+			    any: function() {
+			        return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+			    }
+			}
+			if( !isMobile.any() ){
+							 var PCstatus = 'Desktop';
+			}
+
+			    var x = document.getElementsByName("gender");
+			    var s;
+				for (var i = 0, length = x.length; i < length; i++)
+				{
+				 if (x[i].checked)
+				 {
+				  // do whatever you want with the checked radio
+				   s = x[i].value;
+				  //alert(s);
+
+				  // only one radio can be logically checked, don't check the rest
+				  break;
+				 }
+				}
+				
+			console.log("ss"+uid);
+                 //  var uid = user.uid;
+				   	var data = {
+							"user_id": uid,
+							"first_name": first_name,
+							"last_name": last_name,
+              "visited":0,
+              "email": email,
+              "login_via": "google",
+              "fb_id": "",
+							"google_id": gid,
+							"birthdate":"",
+							"gender":"",
+              "halted": 0.0,
+              "last_free_conversation_id":0,
+							"registered_on":datetime,
+							"lastUpdated_on":datetime,
+							"device_type":PCstatus,
+							"activated_on":"",
+							"activation_code":"",
+							"device_token" : "",
+							"membership_type" : "Free",
+              "total_time_divethru": 0,
+              "completed_conversation": 0,
+              "streak": '',
+						}
+						var updates = {};
+						updates['/Users/' + uid] = data;
+        				firebase.database().ref().update(updates);
+        				swal({
+	                        title: "Registered!",
+	                        text: "User Registered Sucessfully.",
+	                        html:true,
+	                        type: "success",
+	                        showCancelButton: false,
+	                        confirmButtonColor: "#86CCEB",
+	                        confirmButtonText: "OK",
+	                        closeOnConfirm: false
+	                    }, function () {
+	                        window.setTimeout(function() {
+	                        
+	                          window.location.href = "welcome.php";
+	                        }, 1000);
+	                    });
+						 
+}
+
+
+//End Google sign up code

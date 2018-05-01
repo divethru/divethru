@@ -2,6 +2,9 @@
   "require" : {
     "aws/aws-sdk-php": "^3.52",
     "eelkevdbos/firebase-php": "dev-master",
-    "facebook/graph-sdk": "^5.6"
+    "facebook/graph-sdk": "^5.6",
+    "paypal/rest-api-sdk-php": "1.2",
+    "php": ">=5.6",
+	"authorizenet/authorizenet": "~1.9.6"
   }
 }
