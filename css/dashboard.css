@@ -176,7 +176,7 @@ cursor:pointer;
     padding: 0;
     }
 	
-.loader {
+/*.loader {
 	position: fixed;
 	left: 0px;
 	top: 0px;
@@ -184,7 +184,7 @@ cursor:pointer;
 	height: 100%;
 	z-index: 9999;
 	background: url('http://www.downgraf.com/wp-content/uploads/2014/09/01-progress.gif?e44397') 50% 50% no-repeat rgb(249,249,249);
-}
+}*/
 	
 	@media screen and (max-width: 425px){ 
 	  .bannerCenter{

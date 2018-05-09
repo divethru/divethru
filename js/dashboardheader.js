@@ -13,11 +13,11 @@ $(".dropdown-item").click(function(){
 					//alert(value.Bundle);
 				if(page == "MAIN" && value.Bundle != ""){
 				window.localStorage.setItem("cat",childSnapshot.key);
-				//window.location = "DeepMain3.php";
+				window.location = "DeepMain.php";
 					
 				}else if(page == "INDIVIDUAL" && value.Bundle != ""){
 				window.localStorage.setItem("cat",childSnapshot.key);
-				//window.location = "DeepMain.php";
+				window.location = "individual.php";
 					
 				}
 			});

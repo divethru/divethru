@@ -28,7 +28,6 @@ foreach($subacat as $p => $a){
 	}
 }
 
-
 function get($path){
 $fb = Firebase::initialize(FIREBASE_URL, FIREBASE_SECRET);
 
@@ -61,6 +60,7 @@ return $nodeGetContent;
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Deep Dive</title>
+ <link rel="shortcut icon" href="img/feb.ico" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
@@ -70,6 +70,7 @@ return $nodeGetContent;
 <link rel="stylesheet" href="css/footercss.css" type="text/css" >
 <link rel="stylesheet" href="css/sweetalert.css" type="text/css" >
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="js/dashboardheader.js"></script>
 <script src="js/sweetalert.min.js"></script>
 <!-- 
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
@@ -137,6 +138,29 @@ return $nodeGetContent;
     padding-right: 15px;
    /* margin-bottom: 40px;*/
 }
+
+/* Page Loader ================================= */
+.page-loader-wrapper {
+  z-index: 99999999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: #eee;
+  overflow: hidden;
+  text-align: center; }
+  .page-loader-wrapper p {
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #444; }
+  .page-loader-wrapper .loader {
+    position: relative;
+    top: calc(50% - 30px); }
+
 </style>
 <script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
 <script>
@@ -154,13 +178,19 @@ return $nodeGetContent;
 </head>
 
 <body style="margin-top: 150px;">
-	
+	<!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <!-- <div class="loader"> -->
+       <img src="img/loader.gif" style="margin-top: 10% !important;">
+     <!-- </div> -->
+    </div>
+    <!-- #END# Page Loader -->
 <!--HEADER-->
 <?php include 'dashbordHeader.php'; ?>
 <!--EMBODY-->
 	<div class="cat1">    
-
 	     <?php 
+
 		 $content = '';
 			foreach($subacat as $skey => $sval){
 				$content .= '<div class="container-fluid text-center"><div class="container pad2"><div class="row my-5 justify-content-center justify-content-md-start"><h4>'.$sval['subcategory_name'].'</h4></div>';
@@ -183,7 +213,7 @@ return $nodeGetContent;
 							}else{
 								$small = substr($bval['bundle_description'], 0, 80);
 							}
-                          $content .= '<div class="col-md-4 col-xs-6 hover-box1 p-0 boxStyle" style=" background-image: url('.$bval['bundle_img'].');"><p class="Center bundle" id="'.$sval['subcategory_id'].'">'.$bval['bundle_name'].'</p><p class="ptext mt-4" > <span>0</span> Of '.$total.'</p><div class="progress" style="height:7px;width:80%;margin:auto;"><div class="progress-bar" style="height:10px;width:0%;"></div></div>	<div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'.$small.'</p><div class="btn btn2 btn-outline-light" data-total="'.$total.'" data-img="'.$bval['bundle_img'].'" data-bundle= "'.$bval['bundle_name'].'" id="'.$bval['bundle_id'].'" style="border-radius: 0;">S E S S I O N</div></div></div>';
+                          $content .= '<div class="col-md-4 col-xs-6 hover-box1 p-0 boxStyle" style=" background-image: url('.$bval['bundle_img'].');"><p class="Center bundle" id="'.$sval['subcategory_id'].'">'.$bval['bundle_name'].'</p><p class=" mt-5" style="font-size: 18px; "> <span>Try for free</p><div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'.$small.'</p><div class="btn btn2 btn-outline-light" data-total="'.$total.'" data-img="'.$bval['bundle_img'].'" data-bundle= "'.$bval['bundle_name'].'" id="'.$bval['bundle_id'].'" style="border-radius: 0;">S E S S I O N</div></div></div>';
 							}
 							/*$content .= '<div class="col-md-4 col-xs-6 boxStyle" style=" background-image: url('.$bval['bundle_img'].');"><p class="Center bundle" id="'.$bval['bundle_id'].'">'.$bval['bundle_name'].'</p></div>';*/
 						}
@@ -217,9 +247,9 @@ return $nodeGetContent;
       </div>
       
       <div class="modal-body text-center" style="padding-top:0px;">
-		<div class="boxA new-bg" style="top:0;"><div class="row "><div class="col-12"><h4 class="modal-title mb-4 sessionnm " id="exampleModalLongTitle" style="color: white;">Conversation 1</h4><h6 class="mb-4" style="color:white">One Time Subscription. Unlimited Access.</h6></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-6 bg-white"><h4>L I F E T I M E</h4><h2>$ 6.00</h2><a href="javascript:void(0)" class="btn get-button subscribe" style="color: #fff;" data-amount="6" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a>
+		<div class="boxA new-bg" style="top:0;"><div class="row "><div class="col-12"><h4 class="modal-title mb-4 sessionnm " id="exampleModalLongTitle" style="color: white;">Conversation 1</h4><h6 class="mb-4" style="color:white">One Time Subscription. Unlimited Access.</h6></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-6 bg-white"><h4>L I F E T I M E</h4><h2>$ 6.00</h2><a href="javascript:void(0)" class="btn get-button subscribe" style="color: #fff;width:inherit;" data-amount="6" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a>
 		      <div style="margin-top: 8px;margin-bottom: 8px;font-weight: bold;color:#111;"> OR</div>
-		<a href="javascript:void(0)" class="btn get-button freetrial" style="color: #fff; margin-bottom: 25px;" >C O N T I N U E <span>&nbsp;&nbsp;&nbsp;</span> F R E E </a></div></div></div>
+		<a href="javascript:void(0)" class="btn get-button freetrial" style="color: #fff; margin-bottom: 25px;width:inherit;" >C A N C L E </a></div></div></div>
 	</div>	
 
 
@@ -236,10 +266,14 @@ return $nodeGetContent;
       <script type="text/javascript" src="js/jquery.redirect.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
 <script src="js/deepdive.js"></script>
+
 <script src="js/signout.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
+		if(window.screen.width < 770){
 
+ 			$(".page-loader-wrapper").fadeOut();	
+		}
 		localStorage.setItem('package_type','bundle');
 $('a').each(function(){
                 var path = window.location.href;
@@ -255,7 +289,7 @@ $('a').each(function(){
             });  
  });  
 	$(".btn").click(function(){
-		//alert($(this).data("total"));
+	//	alert($(this).data("total"));
 		 var user = JSON.parse(window.localStorage.getItem('user'));
 		var sid = $(".Center").attr("id");
 		var id = $(this).attr("id");

@@ -81,7 +81,7 @@ return $nodeGetContent;
 <title>Session</title>
 <link rel="stylesheet" href="css/dashheader.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+ <link rel="shortcut icon" href="img/feb.ico" />
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -91,7 +91,7 @@ return $nodeGetContent;
 <!-- <link href="css/individual.css" rel="stylesheet" type="text/css"> -->
 
 <link href="css/owl.carousel.min.css" rel="stylesheet" type="text/css">
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
 <script>
   // Initialize Firebase
@@ -104,6 +104,7 @@ return $nodeGetContent;
     messagingSenderId: "53159239409"
   };
   firebase.initializeApp(config);
+
 </script>
 <style type="text/css">
   .btn2 {
@@ -208,24 +209,54 @@ p.owl-caption {
  /* margin: auto;*/
 }
 
-.box1a {width: 100%;
+.box1a {
+/*	width: 100%;
            height: 100%;
            background-color: rgba(0,0,0,0.5);
            position: absolute;
-           text-align: center;}
+           text-align: center;*/
+       }
 
     .box1a i {color: #fff;
             font-size: 28px;
-            margin-left: 41%;
-            margin-top: 29%;
+           /* margin-left: 41%;
+            margin-top: 29%;*/
             }
 
+/* Page Loader ================================= */
+.page-loader-wrapper {
+  z-index: 99999999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: #eee;
+  overflow: hidden;
+  text-align: center; }
+  .page-loader-wrapper p {
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #444; }
+  .page-loader-wrapper .loader {
+    position: relative;
+    top: calc(50% - 30px); }
 
 </style>
 
 </head>
 
 <body style="margin-top: 150px;">
+	 <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <!-- <div class="loader"> -->
+       <img src="img/loader.gif" style="margin-top: 10% !important;">
+     <!-- </div> -->
+    </div>
+    <!-- #END# Page Loader -->
 <!--HEADER-->
 <?php include 'dashbordHeader.php'; ?>
 <div class="container-fluid" >
@@ -365,15 +396,18 @@ p.owl-caption {
 
 
 
-<script
+<!-- <script
   src="https://code.jquery.com/jquery-3.3.1.slim.js"
   integrity="sha256-fNXJFIlca05BIO2Y5zh1xrShK3ME+/lYZ0j+ChxX2DA="
-  crossorigin="anonymous"></script>
+  crossorigin="anonymous"></script> -->
       <script type="text/javascript" src="js/jquery.redirect.js"></script>
      <script src="js/dashboardheader.js" type="text/javascript"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
+
+window.localStorage.removeItem("Dname");
+
 		/*var user = JSON.parse(window.localStorage.getItem('user'));	
 			//for get session paid detail
 		var cname="/IndividualSubscription";
@@ -446,6 +480,7 @@ $('a').each(function(){
 
 	$(".nav-link").click(function(e){
 e.preventDefault();
+console.log($(this).next().find("dropdown-item"));
 //$(".dropdown-item").click(function(){
 	var cat = $(this).text();
 		if(cat == "HOME"){
@@ -457,7 +492,24 @@ e.preventDefault();
 				if(childSnapshot.hasChild("Bundle") &&  (childSnapshot.key).toUpperCase() == cat.toUpperCase() && childSnapshot.child("SubCategory").val() != ""){
 				window.localStorage.setItem("cat",childSnapshot.key);
 				console.log("quick");
-				window.location = "quickdive.php";
+				//window.location = "quickdive.php";
+				
+			}
+			if(childSnapshot.hasChild("SubCategory") &&  (childSnapshot.key).toUpperCase() == cat.toUpperCase() && childSnapshot.child("SubCategory").val() != "" ){
+				//alert($(this).hasClass('nav-link dropdown-toggle dropdown-toggle1'));
+				
+				window.localStorage.setItem("cat",childSnapshot.key);
+				console.log("quick");
+				window.localStorage.setItem("back",false);
+				if(cat=="QUICK DIVE")
+				{
+						window.location = "quickdive.php";
+				}
+
+						
+			
+
+
 				
 			}
 			if( (childSnapshot.key).toUpperCase() == cat.toUpperCase() && childSnapshot.child("SubCategory").val() == ""){
@@ -502,7 +554,7 @@ window.localStorage.removeItem("bundle");
 		});
 	
 	var Shistory = JSON.parse(window.localStorage.getItem("SessionHistory2"));
-console.log(Shistory);
+
 	/*$(".card").click(function(){
 			var session = [];
 		var bid = $("h2").attr('id');
@@ -575,7 +627,6 @@ console.log(Shistory);
 					
 
 						$(this).find( "div.boxStyle" ).each(function( index ) {
-							//alert(index);
 
 							var trace = index;
 							var sid = $(this).find("p").attr("id");
@@ -583,22 +634,27 @@ console.log(Shistory);
 							
 							if(index != 0 && $.inArray(bid,final_conve_data) == -1 && user.membership_type == 'Free'){
 
-								$(this).append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
+								$(this).append('<div class="box1a" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);position: absolute;text-align: center;"><i class="fa fa-lock fa-2x center" style="margin-left: 41%;margin-top: 29%;"></i></div>');
 							}
 							if($.inArray(sid,Shistory) == -1 && user.membership_type != 'Free'){
 
 								if(index == trace+2 ){
 									// Code for making lock icon on next to next session 
-									$(this).append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
+									//$(this).append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
 								}	
 
-								$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0)"><i class="fa fa-check-circle fa-2x center"></i></div>');
+								//$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0)"><i class="fa fa-check-circle fa-2x center"></i></div>');
 							}
+							if($.inArray(sid,Shistory) != -1 && user.membership_type != 'Free'){
 
+
+								$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0);"><i class="fa fa-check-circle fa-2x center" style="top: 88%;left: 88%;"></i></div>');
+							}
 						});
 						
 				  		
 					});
+ $(".page-loader-wrapper").fadeOut();	
 		});
 //}
 
@@ -645,7 +701,7 @@ $('.hover-box1').each(function(){
 						content += '</div>';
 				
 							$(".sess").html(content);
-
+							
 
 															
 								//	if(user.membership_type == 'Free'){
@@ -696,21 +752,21 @@ $('.hover-box1').each(function(){
 					
 							if(index != 0 && $.inArray(bid,final_conve_data) == -1 && user.membership_type == 'Free'){
 
-								$(this).append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
+								$(this).append('<div class="box1a" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);position: absolute;text-align: center;"><i class="fa fa-lock fa-2x center" style="margin-left: 41%;margin-top: 29%;"></i></div>');
 							}
 							
 							if($.inArray(sid,Shistory) != -1 && user.membership_type != 'Free'){
 								
-								$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0)"><i class="fa fa-check-circle fa-2x center"></i></div>');
+								$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0);"><i class="fa fa-check-circle fa-2x center" style="top: 88%;left: 88%;"></i></div>');
 								check = false;
 							}else{
-								alert(index+"=="+(trace+2));
-								if(index == trace+2 && !check){
+								//alert(index+"=="+(trace+2));
+								if(index == trace+2 && !check && user.membership_type != 'Free'){
 									// Code for making lock icon on next to next session 
-									$(this).append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
-								}else if(index != 0 && check){
-									alert(check);
-									$(this).append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
+									//$(this).append('<div class="box1a" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);position: absolute;text-align: center;"><i class="fa fa-lock fa-2x center" style="margin-left: 41%;margin-top: 29%;"></i></div>');
+								}else if(index != 0 && check && user.membership_type != 'Free'){
+								//	alert(check);
+									//$(this).append('<div class="box1a" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);position: absolute;text-align: center;"><i class="fa fa-lock fa-2x center" style="margin-left: 41%;margin-top: 29%;"></i></div>');
 								}
 							}
 						});

@@ -143,6 +143,9 @@ return $nodeGetContent;
     <script type="text/javascript" src="js/playerjs/jquery.jplayer.js"></script>
     <script type="text/javascript" src="js/playerjs/mod.csstransforms.min.js"></script>
     <script type="text/javascript" src="js/playerjs/circle.player.js"></script>
+        <!-- Animation Css -->
+    <!-- <link href="Admin/plugins/animate-css/animate.css" rel="stylesheet" /> -->
+    <!-- <link href="Admin/css/style.css" rel="stylesheet" /> -->
 
 <script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
 <script>
@@ -157,6 +160,7 @@ return $nodeGetContent;
   };
   firebase.initializeApp(config);
   $( window ).on( "load", function() {
+    window.localStorage.removeItem("Dname");
   	//on load hide the box if issue occure delete
     		$(".box1").css("display","none");
     		$(".cp-pause").css("display","none");
@@ -164,6 +168,10 @@ return $nodeGetContent;
     	//over
     });
 </script>
+<!-- <style> body  {opacity:0 ;}</style>
+ <script>
+  window.onload = function() {setTimeout(function(){document.body.style.opacity="100";},2000);};
+ </script> -->
 <style type="text/css">
  .btn1 {
   display: inline-block;
@@ -256,7 +264,7 @@ return $nodeGetContent;
             margin-left: 41%;
             margin-top: 29%;
             }
-body {font-family: roboto; margin:0}
+body {font-family: roboto; margin:0; }
 .box_1 {width: 100%;
       height: 50px;
       }
@@ -586,12 +594,12 @@ var sessiontime = [];
 						  snapshot.forEach(function(childSnapshot) {
 					   var key = childSnapshot.key;
 					var childData = childSnapshot.val();
-							
+						//	alert(key);
 					   if(childData.Bundle != ""){
 						
 								window.sub = false;
 								window.bundle = true;
-								
+               
 								$.map(childData.Bundle, function(value, index) {
 										//	alert(index);
 										if(index == bid){
@@ -640,19 +648,23 @@ var sessiontime = [];
 									}
 								});
 								
-								
+							 $(".page-loader-wrapper").fadeOut();	
 							
-					   }else if(childData.SubCategory != ""){
+					   }
+              if(childData.SubCategory != ""){
 							      
 							  // console.log(childData);
 							   window.sub = true;
 							window.bundle = false;
-							$.map(childData.SubCategory, function(value, index) {
-										if(index == bid){
-										$.map(value.Session, function(value2, index2) {
-											
-											if(index2 == sid){	
-												window.session = [];
+           //    alert(key);
+              
+                window.localStorage.setItem("cat",key);
+              $.map(childData.SubCategory, function(value, index) {
+                    if(index == bid){
+                    $.map(value.Session, function(value2, index2) {
+                      
+                      if(index2 == sid){  
+                        window.session = [];
 												window.sessiontime = [];
                         localStorage.setItem('session_id',$(".current").attr('id'));
                         localStorage.setItem('subcategory_id',$(".box_12 > p").attr("id"));
@@ -692,6 +704,58 @@ var sessiontime = [];
 														window.sessiontime.push(value2.meditation_audio_time[i]);
 													}
 													$(".timeslot").html(ts);
+
+   // var $jp = $('#jquery_jplayer_2');
+   // //$jp.jPlayer( "play", 2);
+   // $jp.on($.jPlayer.event.setmedia,  function(e){
+   // console.log($jp);
+   //     console.log("Current track", e.jPlayer.status.media);
+   //     console.log("Currentr track index", myOtherOne.current);
+
+   //     // For first track (0) - 2 sec, second track (1) - 3 sec, etc.
+   //     var time = myOtherOne.current + 2;
+       
+   //     // Jump to desired time seconds
+   //     setTimeout(function(){ 
+   //       //  $jp.jPlayer( "play", time); 
+   //     }, 100);
+   // });  
+
+                  //for re-do / replay audio
+
+                  if(window.screen.width > 770){
+                  	 var final = JSON.parse(window.localStorage.getItem("cove_data"));
+               console.log(final);	
+
+                      if(user.sessionHalted ){
+                        $.map(user.sessionHalted, function(value, index) {
+                              console.log(index+"=="+window.session_id);
+                              if(index == window.session_id && $.inArray(index,final) != -1 && (value.halted != 0 || value.halted != 0.0)){
+                               //   console.log(value.halted);
+                                $('#memberModal').modal("show");
+                                  $(".continue").click(function(){
+                                  var vid = document.getElementById("jp_audio_0");
+                                    vid.currentTime = value.halted*60; //time is in minute to second (time*60)
+                                   // alert(vid.currentTime);
+                                    $('#memberModal').modal("hide");
+                                  });
+
+                                  // Code for begin with initial 
+                                  $(".start").click(function(){
+                                  	 var vid = document.getElementById("jp_audio_0");
+                                    vid.currentTime = 0; //time is in minute to second (time*60)
+                                    $('#memberModal').modal("hide");
+                                  });
+                                }
+                              });
+                      }else{
+                           var vid = document.getElementById("jp_audio_0");
+                      vid.currentTime = 0; //time is in minute to second (time*60)
+                      }
+                  }
+                 // over
+
+
 											}
 											
 										});		
@@ -699,24 +763,24 @@ var sessiontime = [];
 								});
 //console.log(session);
 							
-							
+							$(".page-loader-wrapper").fadeOut(); 
 						   
 						   }
-
+                     
                 /* pause event Start*/
     
-                    // $("audio").bind('pause',function(){
-                    // //  alert(5);
-                    //   var vid = document.getElementById("jp_audio_0");
-                    //   const currentTime = Math.floor(vid.currentTime)/60;
-                    //  // const min = currentTime/60;
-                    //   console.log("c"+currentTime+user.user_id);
-                    //   var db = firebase.database();
-                    //   if(window.localStorage.getItem("cat") != "10 Day Intro Program"){
-                    //       hdata = {"halted":currentTime};
-                    //    db.ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata); // Update lalted time on pause
-                    //   }
-                    // }); 
+                    $("audio").bind('pause',function(){
+                    //  alert(5);
+                      var vid = document.getElementById("jp_audio_0");
+                      const currentTime = Math.floor(vid.currentTime)/60;
+                     // const min = currentTime/60;
+                      console.log("c"+currentTime+user.user_id);
+                      var db = firebase.database();
+                      if(window.localStorage.getItem("cat") != "10 Day Intro Program"){
+                          hdata = {"halted":currentTime};
+                       firebase.database().ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata); // Update lalted time on pause
+                      }
+                    }); 
                 /*Pause Event end*/
 					   
                   /* Audio Time Event Start*/
@@ -733,6 +797,11 @@ var sessiontime = [];
                     console.log("time"+str );
 
                   });
+
+  
+
+
+
 						});
 				   });
 			   });
@@ -799,34 +868,6 @@ var sessiontime = [];
 			});
 			});*/
 
-//for re-do / replay audio
-
-    if(user.sessionHalted || user.sessionHalted != 0.0){
-      $.map(user.sessionHalted, function(value, index) {
-         //var vid = document.getElementById("jp_audio_0");
-            console.log(index+"=="+window.session_id);
-            if(index == window.session_id){
-                console.log(value.halted);
-              $('#memberModal').modal("show");
-                $(".continue").click(function(){
-                  //alert(value.halted);
-                  vid.currentTime = value.halted*60; //time is in minute to second (time*60)
-                  $('#memberModal').modal("hide");
-                });
-
-                // Code for begin with initial 
-                $(".start").click(function(){
-                  vid.currentTime = 0; //time is in minute to second (time*60)
-                  $('#memberModal').modal("hide");
-                });
-              }
-            });
-    }else{
-         //var vid = document.getElementById("jp_audio_0");
-    vid.currentTime = 0; //time is in minute to second (time*60)
-    }
-
-//over
 
   /* Play auio on halted time Start
     if(user.halted != 0.0 || user.halted != ''){
@@ -855,7 +896,7 @@ var sessiontime = [];
 	  /* Audio ended event Start*/
 	  
 	  $("audio").bind('ended',function(){
-      alert(5);
+    //  alert(5);
 		 // var vid = document.getElementById("jp_audio_1");
 		/*	var db = firebase.database();
 			db.ref("Users/"+user.user_id+"/halted").set(0.0); // Update lalted time on pause
@@ -872,8 +913,38 @@ var sessiontime = [];
     });
     </script>
 </head>
+<style>
+/* Page Loader ================================= */
+.page-loader-wrapper {
+  z-index: 99999999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: #eee;
+  overflow: hidden;
+  text-align: center; }
+  .page-loader-wrapper p {
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #444; }
+  .page-loader-wrapper .loader {
+    position: relative;
+    top: calc(50% - 30px); }
 
+</style>
 <body style="margin-top: 150px;">
+      <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <!-- <div class="loader"> -->
+       <img src="img/loader.gif" style="margin-top: 10% !important;">
+     <!-- </div> -->
+    </div>
+    <!-- #END# Page Loader -->
 <!--HEADER-->
 <?php include 'dashbordHeader.php'; ?>
 <div class="container-fluid  text-center cardContainers" >
@@ -1061,9 +1132,7 @@ var sessiontime = [];
 <div class="modal fade" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-	 <div class="modal-header" style="margin: 0 auto;">
-        <h4 class="modal-title">Modal Header</h4>
-      </div>
+	 
       <div class="modal-body text-center">
         <h2 class="modal-title" id="exampleModalLongTitle" style="color: #34495e;"></h2>
         <br>
@@ -1165,7 +1234,7 @@ e.preventDefault();
 		window.location = "dashboard.php";
 	}
 
-
+/*
 	firebase.database().ref("Category").on("value",function(snapshot){
 			snapshot.forEach(function(childSnapshot) {
 
@@ -1182,7 +1251,7 @@ e.preventDefault();
 				
 			}
 			});
-	});
+	});*/
 	
 
 });
@@ -1207,8 +1276,8 @@ $(".list1 > p").each(function(index){
 var user = JSON.parse(window.localStorage.getItem('user'));
 	if(user.membership_type == "Free"){
 
-	//$(".bg1").append('<div class="box1a" style="top:0;"><i class="fa fa-lock fa-5x center"></i></div>');
-	$(".bg1").append('<div class="boxA new-bg py-3" style="top:0;"><div class="row py-5"><div class="col-12"><h2 class="mb-4 sessionnm">Conversation 1</h2><p>One Subscription. Unlimited Access.</p></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-5 bg-white"><h4>L I F E T I M E</h4><h2>$ 7.99</h2><a href="javascript:void(0)" class="btn get-button" style="color: #fff; margin-bottom: 66px;" data-amount="2" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a></div></div></div></div>	');
+//	$(".bg1").append('<div class="box1a" style="top:0;"><i class="fa fa-lock fa-5x center"></i></div>');
+	$(".bg1").append('<div class="boxA new-bg py-3" style="top:0;"><div class="row py-5"><div class="col-12"><h2 class="mb-4 sessionnm">Conversation 1</h2><p>One Subscription. Unlimited Access.</p></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-5 bg-white"><h4>L I F E T I M E</h4><h2>$ 2</h2><a href="javascript:void(0)" class="btn get-button" style="color: #fff; margin-bottom: 66px;" data-amount="2" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a></div></div></div></div>	');
 }
 			//$(".sess").html("");
 /************************************** Dynamic Session Play ***************************************/
@@ -1219,7 +1288,7 @@ if(window.screen.width > 425){
 if(index){
 	$(".boxA").remove();
 if(user.membership_type == "Free"){
-  $(".bg1").append('<div class="boxA new-bg py-3" style="top:0;"><div class="row py-5"><div class="col-12"><h2 class="mb-4 sessionnm">Conversation 1</h2><p>One Subscription. Unlimited Access.</p></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-5 bg-white"><h4>L I F E T I M E</h4><h2>$ 7.99</h2><a href="javascript:void(0)" class="btn get-button" style="color: #fff; margin-bottom: 66px;" data-amount="2" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a></div></div></div></div>	');
+  $(".bg1").append('<div class="boxA new-bg py-3" style="top:0;"><div class="row py-5"><div class="col-12"><h2 class="mb-4 sessionnm">Conversation 1</h2><p>One Subscription. Unlimited Access.</p></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-5 bg-white"><h4>L I F E T I M E</h4><h2>$ 2</h2><a href="javascript:void(0)" class="btn get-button" style="color: #fff; margin-bottom: 66px;" data-amount="2" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a></div></div></div></div>	');
 //	$(".bg1").append('<div class="box1a" style="top:0;"><i class="fa fa-lock fa-5x center"></i></div>');
 }
 }
@@ -1317,7 +1386,8 @@ if(user.membership_type == "Free"){
 								
 								
 							
-					   }else if(childData.SubCategory != ""){
+					   }
+             if(childData.SubCategory != ""){
 							      
 							  // console.log(childData);
 							   window.sub = true;
@@ -1390,7 +1460,39 @@ if(user.membership_type == "Free"){
 
 						   
 						   }
-					   
+					                     //for re-do / replay audio
+
+                  if(window.screen.width > 770){
+                  	 var final = JSON.parse(window.localStorage.getItem("cove_data"));
+               console.log(final);	
+
+                      if(user.sessionHalted ){
+                        $.map(user.sessionHalted, function(value, index) {
+                              console.log(index+"=="+window.session_id);
+                              if(index == window.session_id && $.inArray(index, final) != -1 && value.halted != 0){
+                                  console.log(value.halted);
+                                $('#memberModal').modal("show");
+                                  $(".continue").click(function(){
+                                  var vid = document.getElementById("jp_audio_0");
+                                    vid.currentTime = value.halted*60; //time is in minute to second (time*60)
+                                  // alert(value.halted*60);
+                                    $('#memberModal').modal("hide");
+                                  });
+
+                                  // Code for begin with initial 
+                                  $(".start").click(function(){
+                                     var vid = document.getElementById("jp_audio_0");
+                                    vid.currentTime = 0; //time is in minute to second (time*60)
+                                    $('#memberModal').modal("hide");
+                                  });
+                                }
+                              });
+                      }else{
+                           var vid = document.getElementById("jp_audio_0");
+                      vid.currentTime = 0; //time is in minute to second (time*60)
+                      }
+                  }
+                 // over
 						});
 				   });
 
@@ -1410,6 +1512,7 @@ if(user.membership_type == "Free"){
 
 
 $(".get-button").click(function(){
+
 	var plan = $(this).data('plan');
 	var cycle = $(this).data('cycle');
 			var price = $(this).data('amount');
@@ -1427,7 +1530,7 @@ $(".get-button").click(function(){
 	});
 			        
 });
-				
+
 /***************************************************************************************/
 
 
@@ -1513,7 +1616,7 @@ var content = '';
 				var ht ='';	
 				var complete = 0;
 				var comper = 0;
-				if(childData.Bundle != "" && childData.Session == "" && childData.Bundle == ""){
+				if(childData.Bundle != "" && childData.Session == "" ){
 					session.push(childData.Session);
 					$.map(childData.Bundle, function(value, index) {
 						content += '<div class="container-fluid "><div class="pad2"><div class="row my-3 px-4 justify-content-start justify-content-md-start"><h4 style="font-size:19px;">'+value.bundle_name+'</h4></div>';
@@ -1551,10 +1654,11 @@ var content = '';
 							
 						
 					});	
-				}else if(childData.SubCategory != "" && childData.Session == "" && childData.Bundle == ""){
+				}
+         if(childData.SubCategory != "" && childData.Session == "" ){
 
           //alert(key);
-              window.localStorage.setItem("cat",key);
+              //window.localStorage.setItem("cat",key);
 												session.push(childData.Session);
 							$.map(childData.SubCategory, function(value, index) {
 								if(value.Session){
@@ -1569,7 +1673,7 @@ var content = '';
 													comper =((complete*100)/total);
 														}
 											});*/
-
+                      var j=0;
 										$.map(value.Session, function(value2, index2) {
 												if(value2.session_description.length <= 20){
 											var desc = value2.session_description.substring(0, 20)+ '....';
@@ -1579,9 +1683,11 @@ var content = '';
 											}
 												if(user.membership_type == "Free"){
 
-												content += '<div class=" hover-box1 new" style=" background-image: url('+value2.session_img+');height:160px;"><p class="newp" id="'+value.subcategory_id+'">'+value2.session_name+'</p>	<div class="hover-box2a text-center text-white" style="padding:7px 0;"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light"  data-subcatname="'+value.subcategory_name+'"  data-sub="'+value.subcategory_id+'" id="'+value2.session_id+'" style="border-radius: 0;" >S E S S I O N</div></div><div class="mb" data-toggle="modal" data-target="#membersubcrModal"><i class="fa fa-lock fa-2x center"></i></div></div>';
+												content += '<div data-count="'+j+'" class=" hover-box1 new" style=" background-image: url('+value2.session_img+');height:160px;"><p class="newp" id="'+value.subcategory_id+'">'+value2.session_name+'</p>	<div class="hover-box2a text-center text-white" style="padding:7px 0;"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light"  data-subcatname="'+value.subcategory_name+'"  data-sub="'+value.subcategory_id+'" id="'+value2.session_id+'" style="border-radius: 0;" >S E S S I O N</div></div><div class="mb" data-img='+value2.session_img+' ><i class="fa fa-lock fa-2x center"></i></div></div>';
+                        j++;
 											}else{
-												content += '<div class=" hover-box1 new" style=" background-image: url('+value2.session_img+');height:160px;"><p class="newp" id="'+value.subcategory_id+'">'+value2.session_name+'</p>	<div class="hover-box2a text-center text-white" style="padding:7px 0;"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" data-subcatname="'+value.subcategory_name+'" data-sub="'+value.subcategory_id+'" id="'+value2.session_id+'" style="border-radius: 0;">S E S S I O N</div></div></div>';
+												content += '<div data-count="'+j+'" class=" hover-box1 new" style=" background-image: url('+value2.session_img+');height:160px;"><p class="newp" id="'+value.subcategory_id+'">'+value2.session_name+'</p>	<div class="hover-box2a text-center text-white" style="padding:7px 0;"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" data-subcatname="'+value.subcategory_name+'" data-sub="'+value.subcategory_id+'" id="'+value2.session_id+'" style="border-radius: 0;">S E S S I O N</div></div></div>';
+                        j++;
 											}
 										});
 												
@@ -1602,14 +1708,27 @@ var content = '';
 //				$(".q-desk").hide();
 				$(".cat1").html();
 				$(".cat1").append(content);
-				$( "div.new" ).each(function( index ) {
-		//if(index != 0 && user.membership_type == 'Free'){
+        $('.hover-box1').each(function(){
+   
+          if($(this).data("count")==0){
+            $(this).find(".mb").css("display","none");
+          }
+            id= $(this).find(".btn2").attr("id");   
+          console.log(window.localStorage.getItem("cove_data"));
+          f_data=JSON.parse(window.localStorage.getItem("cove_data"));
+           if($.inArray(id, f_data) > -1){
+             $(this).find(".mb").css("display","none");
 
-		//	$(this).append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
-		//}
+           }
+        });
+				$( "div.new" ).each(function( index ) {
+		// if(index != 0 && user.membership_type == 'Free'){
+
+		// 	$(this).append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
+		// }
 		
   		
-	});
+	       });
 	
 //}
 $('.owl-carousel').owlCarousel({
@@ -1661,6 +1780,8 @@ $(".pad2").click(function(){
 			var bundleid = $(this).data("sub");
       var subcatname= $(this).data("subcatname"); 
       window.localStorage.setItem("subcategory",subcatname); 
+      window.localStorage.setItem("subcategory_id",$(this).data("sub")); 
+      window.localStorage.setItem("session_id",$(this).attr("id")); 
 		//	alert(bundle);
 				firebase.database().ref("Category").orderByChild("session_id").on("value", function(snapshot) {
 		
@@ -1688,7 +1809,8 @@ $(".pad2").click(function(){
 											//alert("done");
 									}
 								});
-						}else if(childData.SubCategory != ""){
+						}
+             if(childData.SubCategory != ""){
 								$.map(childData.SubCategory, function(value, index) {
 									if(index == bundleid){
 									$.map(value.Session, function(value2, index2) {
@@ -1716,7 +1838,52 @@ $(".pad2").click(function(){
 });
 }
 /************************************** End Change Design On Mobile ***************************************/	
+//for subscription model on mobile view
 
+$("body").on("click",".mb",function(){
+
+  var img=$(this).data("img");
+  var name=$(this).prev().prev().html();
+   console.log($(this).prev().find(".btn").data("sub"));
+   console.log($(this).prev().find(".btn").attr("id"));
+
+  $(".subscrtitle").text(name);
+  $(".subscrtitle").data("subcatid",$(this).prev().find(".btn").data("sub"));
+  $(".subscrtitle").data("sessionid",$(this).prev().find(".btn").attr("id"));
+  
+   // alert($(".subscrtitle").data("sessionid")+$(".subscrtitle").data("subcatid"));
+  $(".subscrbg").css("background-image","url("+img+")");
+
+  $("#membersubcrModal").modal("show");
+ 
+});
+
+  $("body").on("click",".get-button-sub",function(){
+    var plan = $(this).data('plan');
+    var cycle = $(this).data('cycle');
+    var price = $(this).data('amount');
+    
+
+    $.post("http://34.215.40.163/test.php", {"price": price}, function(result){
+                console.log(result);
+        
+        localStorage.setItem('payment','true');
+        localStorage.setItem('session_id',$(".subscrtitle").data("sessionid"));
+        localStorage.setItem('session_name',$(".subscrtitle").html());
+        localStorage.setItem('subcategory_id',$(".subscrtitle").data("subcatid"));
+        localStorage.setItem('prevcat','Quick Dive');
+
+     $.redirect("Process.php",{select_cycles: cycle ,product_name : "session","select_plan":plan,"price":price,"userid":user.user_id,"token":result},"POST",null,null,true);
+   });
+  });
+
+// $(".hover-box1").each(function(){
+//   alert($(this).data("count"));
+// });
+
+
+
+//over
 
 /************************************** Dynamic Change Session Acording To Timeslot ***************************************/	
 
@@ -1953,9 +2120,9 @@ var menuid=$(".list li").data("menu");
                     +currentdate.getFullYear() + "-"
                     + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
                     + ("0" + currentdate.getDate()).slice(-2)  + " "  
-                    + currentdate.getHours() + ":"  
-                    + currentdate.getMinutes() + ":" 
-                    + currentdate.getSeconds();
+                    + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                    + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                    + ("0"+currentdate.getSeconds()).slice(-2);
 
             var firebaseRef = firebase.database().ref();
 
@@ -2000,9 +2167,11 @@ var menuid=$(".list li").data("menu");
       final_conve_data.push(childData['id']);
 			
 		});
-		
-		console.log(final_conve_data);
-	});
+    console.log(final_conve_data);
+    
+		window.localStorage.setItem("cove_data",JSON.stringify(final_conve_data));
+    
+  });
 
 var history=[];
  $.map(user.streak, function(value, index) { 
@@ -2018,34 +2187,45 @@ var history=[];
      if($.inArray(session_id, history) > -1){
         //alert(session_id);
         $(".chk").css("display","unset");
-      
+        
       }   
 
 });
+
 </script>
-
-<!--Onload Modal start -->
 <div class="modal fade" id="membersubcrModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content" style="background-image: url('img/box.png');">
-      <div class="modal-header text-center" style="border-bottom:0px;padding:0px;">
-        
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin:-1rem 0rem -1rem auto;">
-          <span aria-hidden="true" style="color:#fff;">&times;</span>
-        </button>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content subscrbg" style="background-image: url('img/box.png');">
+
+      <!-- Modal Header -->
+      <div class="modal-header text-center" style="border-bottom: 0;">
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #fff;">&times;</button>
       </div>
-      
-      <div class="modal-body text-center" style="padding-top:0px;">
-    <div class="boxA new-bg" style="top:0;"><div class="row "><div class="col-12"><h4 class="modal-title mb-4 sessionnm " id="exampleModalLongTitle" style="color: white;">Conversation 1</h4><h6 class="mb-4" style="color:white">One Time Subscription. Unlimited Access.</h6></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-6 bg-white"><h4>L I F E T I M E</h4><h2>$ 6.00</h2><a href="javascript:void(0)" class="btn get-button subscribe" style="color: #fff;" data-amount="6" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a>
-          <div style="margin-top: 8px;margin-bottom: 8px;font-weight: bold;color:#111;"> OR</div>
-    <a href="javascript:void(0)" class="btn get-button freetrial" style="color: #fff; margin-bottom: 25px;" >C O N T I N U E <span>&nbsp;&nbsp;&nbsp;</span> F R E E </a></div></div></div>
-  </div>  
 
+      <!-- Modal body -->
+      <div class="modal-body text-center" >
+       <div class="" style="top:0;">
+          <div class="row ">
+              <div class="col-12">
+                  <h4 class="modal-title subscrtitle" id="exampleModalLongTitle" style="color: white;padding-bottom: 20px;">Conversation 1</h4>
+                  <h6 class="" style="color:white;padding-bottom: 10px;">One Time Subscription. Unlimited Access.</h6>
+              </div>
+          </div>
+          <div class="row justify-content-center">
+              <div class="col-md-6 col-lg-6 bg-white" style="width: auto;">
+                  <h4 style="color: #80429c;padding-top: 30px;">L I F E T I M E</h4>
+                  <h2 style="padding: 10px;color: #80429c;">$ 2.00</h2><a href="javascript:void(0)" class="btn get-button get-button-sub " style="color: #fff;margin-bottom: 5px;" data-amount="2" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a>
+                  <div style="margin-top: 8px;margin-bottom: 8px;font-weight: bold;color:#111;"> OR</div>
+                  <a href="javascript:void(0)" class="btn "  style="background-color: #7dd3d5;padding-left: 15px;padding-right: 15px;color: #fff; margin-bottom: 25px;" data-dismiss="modal" aria-label="Close">C A N C E L </a></div>
+          </div>
+      </div>
+      </div>
 
-      
+     
+
+    </div>
   </div>
 </div>
-</div>
- <!--Onload modal end -->  
 </body>
 </html>

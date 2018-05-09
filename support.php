@@ -31,7 +31,7 @@ return $nodeGetContent;
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Contact us</title>
-
+ <link rel="shortcut icon" href="img/feb.ico" />
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
 <link href="css/contact.css" rel="stylesheet" type="text/css">
 <link href="css/reg.css" rel="stylesheet" type="text/css">

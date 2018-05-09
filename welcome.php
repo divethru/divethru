@@ -482,6 +482,9 @@ function currentSlide(n) {
   if(n != 6){
     pause();
   }
+  if(n!=5){
+    pausevideo();
+  }
  /* if(n != 5){
     pausevideo();
   }*/

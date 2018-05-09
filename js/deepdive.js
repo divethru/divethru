@@ -69,8 +69,25 @@ firebase.database().ref("Category").orderByChild("session_id").on("value", funct
 								c.push(complete);
 								cp.push(comper);
 							});
-									console.log(c);
-									content += '<div class="col-md-4 col-xs-6 hover-box1 p-0 boxStyle" style=" background-image: url('+value2.bundle_img+');"><p class="Centerblock bundle" id="'+value.subcategory_id+'">'+value2.bundle_name+'</p><p class="ptext mt-4" > <span>'+complete+'</span> Of '+total+'</p><div class="progress" style="height:7px;width:80%;margin:auto;"><div class="progress-bar" style="height:10px;width:'+comper+'%;"></div></div>	<div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" data-sub="'+value.subcategory_id+'"  data-total="'+total+'" data-img="'.value2.bundle_img.'"  data-bundle="'+value2.bundle_name+'" id="'+value2.bundle_id+'" style="border-radius: 0;">S E S S I O N</div></div></div>';
+									console.log(complete);
+									// code for make diiferent on progress bar according to memmbership type
+									if(user.membership_type != "Free"){
+										if(complete >= 1){
+
+											complete = 1;
+											comper = ((complete*100)/total);
+										}
+									}else{
+										complete = complete;
+										comper = ((complete*100)/total);
+									}
+									if(user.membership_type == "Free"){
+												content += '<div class="col-md-4 col-xs-6 hover-box1 p-0 boxStyle" style=" background-image: url('+value2.bundle_img+');"><p class="Centerblock bundle" id="'+value.subcategory_id+'">'+value2.bundle_name+'</p><p class=" mt-5" style="font-size: 18px; "> <span>Try for free</p><div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" data-sub="'+value.subcategory_id+'"  data-total="'+total+'" data-img="'+value2.bundle_img+'"  data-bundle="'+value2.bundle_name+'" id="'+value2.bundle_id+'" style="border-radius: 0;">S E S S I O N</div></div></div>';
+
+									}else{
+											content += '<div class="col-md-4 col-xs-6 hover-box1 p-0 boxStyle" style=" background-image: url('+value2.bundle_img+');"><p class="Centerblock bundle" id="'+value.subcategory_id+'">'+value2.bundle_name+'</p><p class="ptext mt-4" > <span>'+complete+'</span> Of '+total+'</p><div class="progress" style="height:7px;width:80%;margin:auto;"><div class="progress-bar" style="height:10px;width:'+comper+'%;"></div></div>	<div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" data-sub="'+value.subcategory_id+'"  data-total="'+total+'" data-img="'+value2.bundle_img+'"  data-bundle="'+value2.bundle_name+'" id="'+value2.bundle_id+'" style="border-radius: 0;">S E S S I O N</div></div></div>';		
+									}
+								
 								
 								
 							
@@ -91,17 +108,66 @@ if(window.check == true){
 }
 
 				$(".cat1").html(content);
+				 $(".page-loader-wrapper").fadeOut();	
 				$('.hover-box1').hover(function() {
 $(".hover-box1").css("top",0);
           //$(this).toggleClass('hover-box1a');
      });
-				$(".btn").click(function(){
-		var sid = $(this).data('sub');
+	// 			$(".btn").click(function(){
+	// 	var sid = $(this).data('sub');
+	// 	var id = $(this).attr("id");
+	// 	var bundle = $(this).text();
+	// 	window.localStorage.setItem("bundle",bundle);
+	// 	//$.redirect("individual.php",{'bundle': id,'subcatid': sid},"POST",null,null,true);
+	// 	//alert(id);
+	// });
+
+		$(".btn").click(function(){
+		//alert($(this).data("total"));
+		 var user = JSON.parse(window.localStorage.getItem('user'));
+		var sid = $(".Center").attr("id");
 		var id = $(this).attr("id");
-		var bundle = $(this).text();
-		window.localStorage.setItem("bundle",bundle);
-		//$.redirect("individual.php",{'bundle': id,'subcatid': sid},"POST",null,null,true);
-		//alert(id);
+		if(user.membership_type != "Free"){
+			$.redirect("individual.php",{'bundle': id,'subcatid': sid},"POST",null,null,true);
+		}else{
+			if($(this).data("total") > 1){
+
+				$("#memberModal").modal("show");
+				$(".modal-content").css("background-image","url('"+$(this).data("img")+"')");
+				$("#exampleModalLongTitle").html($(this).data("bundle"));
+			}else if($(this).data("total") == 0){
+
+				swal("No session available right now!");
+			}else if($(this).data("total") == 1){
+			$.redirect("individual.php",{'bundle': id,'subcatid': sid},"POST",null,null,true);
+				//swal("No session available right now!");
+			}
+
+			$(".freetrial").click(function(){
+				$("#memberModal").modal("hide");
+				$.redirect("individual.php",{'bundle': id,'subcatid': sid},"POST",null,null,true);
+			});
+
+			$(".subscribe").click(function(){
+				var cycle = $(this).data('cycle');
+				var plan = $(this).data('plan');
+				var price = $(this).data('amount');
+				window.localStorage.setItem("session_name",$("#exampleModalLongTitle").html());
+				$("#memberModal").modal("hide");
+					$.post("http://34.215.40.163/test.php", {"price": price}, function(result){
+			        console.log(result);
+			
+			
+			localStorage.setItem('session_id',id);
+//			localStorage.setItem('session_name',$(".current").html());
+//			localStorage.setItem('subcategory_id',$(".box_12 > p").attr("id"));
+			localStorage.setItem('prevcat','Deep Dive');
+			localStorage.setItem('payment','true');
+				 //$.redirect("Process.php",{select_cycles: cycle ,product_name : "session","select_plan":plan,"price":price,"userid":user.user_id,"token":result},"POST",null,null,true);
+				});
+			});
+		}
+	//	alert(id);
 	});
 			console.log(content);
 });

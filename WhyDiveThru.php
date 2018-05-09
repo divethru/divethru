@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Why DiveThru</title>
-
+ <link rel="shortcut icon" href="img/feb.ico" />
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
  <link rel="stylesheet" href="css/reg.css" type="text/css" >
   <link rel="stylesheet" href="css/footercss.css" type="text/css" >

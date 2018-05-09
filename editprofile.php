@@ -15,6 +15,7 @@
 	<link href="css/jquery-ui.css" rel="stylesheet">
 	<link href="css/sweetalert.css" rel="stylesheet" />
 	 <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	 <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
     <script>
 	
@@ -51,13 +52,13 @@
 			         <br>
 				      <div class="circle mx-auto">
 					       <!-- User Profile Image -->
-					       <img class="profile-pic position-relative img-fluid" src="#" >
+					       <img class="profile-pic position-relative img-fluid" src="http://34.215.40.163/img/profileicon.png" >
 
 					       <!-- Default Image -->
 					       <!-- <i class="fa fa-user fa-5x"></i> -->
 					       <div class="p-image">
 					       <i class="fa fa-camera upload-button"></i>
-					        <input class="file-upload" id="profile_image" type="file" onchange="uplaoduserimg()" accept="image/*"/>
+					        <input class="file-upload" id="profile_image" name="profile_image" type="file" onchange="uplaoduserimg()" accept="image/*"/>
 					        <input type="hidden" id="imgurl">
 					  </div>
 					     </div>
@@ -94,10 +95,10 @@
 					 
 					 
 					 <div class="form-group">
-					 <button  class="btn btn-primary-log w-100 EditProfile " onclick="profileValidation();"  type="button" >S A V E &nbsp; C H A N G E S</button>
+					 <button  class="btn btn-primary-log w-100 EditProfile " style="box-shadow: none !important;" onclick="profileValidation();"  type="button" ><i class="fa fa-spinner fa-spin"></i> &nbsp;S A V E &nbsp; C H A N G E S</button>
 					    <!--  <input type="submit" class="btn btn-primary-log w-100 editProfile" value="S A V E &nbsp; C H A N G E S"> -->
 					 </div>
-					 <h6 style="color: #727272 !important; font-size: 18px;">User <span style="color: #7dd3d5">Support</span></h6>
+					 <h6 style="color: #727272 !important; font-size: 18px;">User <a style="color: #7dd3d5;text-decoration: none;" href="http://34.215.40.163/support.php">Support</a></h6>
 				</form>
 			 </div>
 		 </div>
@@ -105,18 +106,23 @@
 </div>
 <br><br>
 	<?php include'footer.php' ?>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script
+	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+	<!-- <script
   src="https://code.jquery.com/jquery-3.3.1.slim.js"
   integrity="sha256-fNXJFIlca05BIO2Y5zh1xrShK3ME+/lYZ0j+ChxX2DA="
-  crossorigin="anonymous"></script>
+  crossorigin="anonymous"></script> -->
   <script src="js/jquery-1.10.2.js"></script>
 	<script src="js/jquery-ui.js"></script>
 	<script src="js/bootstrap.bundle.js"></script>
-	
+	<script src="js/signout.js"></script>
 	<script src="js/sweetalert.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
+
+			$(".fa-spinner").hide();
+                 
+
+
 		var user = JSON.parse(window.localStorage.getItem('user'));
 		//console.log(user);
 		 var uid = $('#uid').val(user.user_id);
@@ -126,9 +132,13 @@
          var mob=$('#mobile_number').val(user.mobile_number);
          var dob=$('#birthdate').val(user.birthdate);
          var cimg = $("#oldimg").val(user.profile_image);
+         var company = $("#company_name").val(user.company_name);
 		 if(cimg){
-			 
+			
 		$(".profile-pic").attr("src",user.profile_image);
+		 }
+		 else{
+		 	$(".profile-pic").attr("src","http://34.215.40.163/img/profileicon.png");
 		 }
           var data = {
 	            first_name: fname,
@@ -173,8 +183,9 @@
   
 
 		   $(".EditProfile").click(function(){
+		   	 $(".fa-spinner").show();
 		    var uid = $('#uid').val();
-		    alert(uid);
+		    //alert(uid);
 		    var booksRef = firebase.database().ref('Users').child(uid);
 		    
 		    var fname=$('#first_name').val();
@@ -183,9 +194,20 @@
 		    var mob=$('#mobile_number').val();
 		    var dob=$('#birthdate').val();
 		     var cimg = $("#imgurl").val();
+		     if($("#imgurl").val()){
+		     	var cimg = $("#imgurl").val();
+		     }
+		     else{
+		     	var cimg = $(".profile-pic").attr("src");
+		     }
+		     var company = $("#company_name").val();
 		    //alert(fname);
-		    booksRef.update({ first_name: fname, last_name: lname, mobile_number: mob, birthdate: dob, profile_image: cimg }).then(function() {
-		   alert('success');
+		    booksRef.update({ first_name: fname, last_name: lname, mobile_number: mob, birthdate: dob, profile_image: cimg,company_name:company }).then(function() {
+		
+		  swal({title: "Success", text: "Your Profile Update Successfully!!!", type: "success"},
+                                        function(){ 
+                                          $(".fa-spinner").hide();
+                                     });
 		    }).catch(function(error){
 		         alert('err' + error);
 		          });
@@ -209,12 +231,13 @@
 
 			    
 			    
-			    var file_data = $('#profile_image').prop('files')[0];   
+			    var file_data = $('#profile_image').prop('files')[0]; 
+			    console.log(file_data);  
 			    var form_data = new FormData();                  
 			    form_data.append('userprofile', file_data);
 			 //   alert(form_data);                             
 			    $.ajax({
-			        url: 'action.php', // point to server-side PHP script 
+			        url: 'Admin/action.php', // point to server-side PHP script 
 			        dataType: 'text',  // what to expect back from the PHP script, if anything
 			        cache: false,
 			        contentType: false,
@@ -223,7 +246,8 @@
 			        type: 'post',
 			        success: function(data){
 			           // alert(data);
-			            $("#imgurl").val("http://localhost/divethru-DiveThru_web_19_03/"+data.replace(/\n/g, ''));
+			            console.log(data);
+			            $("#imgurl").val("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
 			            $(".EditProfile").removeAttr("disabled");
 			            console.log(data); // display response from the PHP script, if any
 			        }

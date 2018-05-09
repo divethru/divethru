@@ -120,8 +120,9 @@ body {font-family: roboto; margin:0}
       }, {
         cssSelectorAncestor: "#cp_container_2"
       });
-if(window.localStorage.getItem('cat') == 'Deep Dive'){
-  $("#OnloadModalTitle").html(window.localStorage.getItem('prevcat')); 
+if(window.localStorage.getItem('cat') == 'Deep Dive' && !window.localStorage.getItem("Dname")){
+  //$("#OnloadModalTitle").html(window.localStorage.getItem('prevcat')); 
+  $("#OnloadModalTitle").html(window.localStorage.getItem('cat'));
   $(".timeslot").show();
   var bundle = window.localStorage.getItem("bundle");
   $(".txtintro").html(bundle);    
@@ -134,14 +135,15 @@ if(window.localStorage.getItem('cat') == 'Deep Dive'){
      window.session_id = s.session_id;
      window.subcat_id = window.localStorage.getItem("subcategory_id");
         var ts = '';
+        var i = 0 ;
       for(time in s.meditation_audio_time){
         if(ts == 0){
           
-        ts += '<div class="box box1" id="'+s.meditation_audio_time[time]+'"><p>'+s.meditation_audio_time[time]+' <br> min</p></div>'
+        ts += '<div class="box box1" id="'+s.meditation_audio_time[time]+'" data-index="'+i+'"><p>'+s.meditation_audio_time[time]+' <br> min</p></div>'
         }else{
-          ts += '<div class="box " id="'+s.meditation_audio_time[time]+'"><p>'+s.meditation_audio_time[time]+' <br> min</p></div>'
+          ts += '<div class="box " id="'+s.meditation_audio_time[time]+'" data-index="'+i+'"><p>'+s.meditation_audio_time[time]+' <br> min</p></div>'
         }
-        
+        i++;
       } 
       console.log(ts);
   $(".timeslot").html(ts);
@@ -157,8 +159,9 @@ if(window.localStorage.getItem('cat') == 'Deep Dive'){
         cssSelectorAncestor: "#cp_container_2"
       });
   
-}else if(window.localStorage.getItem('cat') == 'Quick Dive'){
-  $("#OnloadModalTitle").html(window.localStorage.getItem('prevcat')); 
+}else if(window.localStorage.getItem('cat') == 'Quick Dive' && !window.localStorage.getItem("Dname")){
+  //$("#OnloadModalTitle").html(window.localStorage.getItem('prevcat')); 
+  $("#OnloadModalTitle").html(window.localStorage.getItem('cat'));
   var cat = window.localStorage.getItem("subcategory");
   $(".txtintro").html(cat);
   $(".timeslot").show();
@@ -172,14 +175,15 @@ if(window.localStorage.getItem('cat') == 'Deep Dive'){
        window.session_id = s.session_id;
        window.subcat_id = window.localStorage.getItem("subcategory_id");
       var ts = '';
+      var i = 0
   for(time in s.meditation_audio_time){
     if(ts == 0){
       
-    ts += '<div class="box " id="'+s.meditation_audio_time[time]+'"><p>'+s.meditation_audio_time[time]+' <br> min</p></div>'
+    ts += '<div class="box box1" id="'+s.meditation_audio_time[time]+'" data-index="'+i+'"><p>'+s.meditation_audio_time[time]+' <br> min</p></div>'
     }else{
-      ts += '<div class="box " id="'+s.meditation_audio_time[time]+'"><p>'+s.meditation_audio_time[time]+' <br> min</p></div>'
+      ts += '<div class="box " id="'+s.meditation_audio_time[time]+'" data-index="'+i+'"><p>'+s.meditation_audio_time[time]+' <br> min</p></div>'
     }
-    
+    i++;
   }
   $(".session").html(s.session_name);
   $(".sdesc").html(s.session_description);
@@ -196,11 +200,26 @@ if(window.localStorage.getItem('cat') == 'Deep Dive'){
         cssSelectorAncestor: "#cp_container_2"
       });
   
-}else if(window.localStorage.getItem('cat') == 'Open Dive'){
-  $("#OnloadModalTitle").html(window.localStorage.getItem('prevcat')); 
+}else if(window.localStorage.getItem('cat') == 'Open Dive' && !window.localStorage.getItem("Dname")){
+ // $("#OnloadModalTitle").html(window.localStorage.getItem('prevcat'));
+ $("#OnloadModalTitle").html(window.localStorage.getItem('cat')); 
   $(".timeslot").show();
    $(".txtintro").html(window.localStorage.getItem('cat'));
 var storedNames = JSON.parse(window.localStorage.getItem("session"));
+var ts = '';
+var i = 0;
+for(time in storedNames.meditation_audio_time){
+    if(ts == 0){
+      
+    ts += '<div class="box box1" id="'+storedNames.meditation_audio_time[time]+'" data-index="'+i+'"><p>'+storedNames.meditation_audio_time[time]+' <br> min</p></div>'
+    }else{
+      ts += '<div class="box " id="'+storedNames.meditation_audio_time[time]+'" data-index="'+i+'"><p>'+storedNames.meditation_audio_time[time]+' <br> min</p></div>'
+    }
+    i++;
+  }
+  console.log(ts);
+$(".timeslot").html(ts);
+
   if(window.localStorage.getItem("Snm")){
             
       //  for (i in storedNames)
@@ -236,8 +255,8 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
         //}
 
   }
-}else if(window.localStorage.getItem('cat')){
-  $("#OnloadModalTitle").html(window.localStorage.getItem('prevcat')); 
+}else if(window.localStorage.getItem('cat') && !window.localStorage.getItem("Dname")){
+  $("#OnloadModalTitle").html(window.localStorage.getItem('cat')); 
   $(".timeslot").hide();
    $(".txtintro").html(window.localStorage.getItem('cat'));
 var storedNames = JSON.parse(window.localStorage.getItem("session"));
@@ -252,7 +271,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
             if(storedNames.session_name == window.localStorage.getItem("Snm")){
               if(window.localStorage.getItem("cid")){
                  window.bundle_id = "";
-                 window.cat_id = window.localStorage.getItem("cid");
+      window.cat_id = window.localStorage.getItem("cid");
         console.log(window.bundle_id);
                   window.session_id = storedNames.session_id;
               }
@@ -277,12 +296,9 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
           //}
         //}
 
-  }
-}else{
-  $(".timeslot").hide();
-     $(".txtintro").html(window.localStorage.getItem('cat'));
-
-var storedNames = JSON.parse(window.localStorage.getItem("session"));
+  }else{
+  	     window.cat_id = window.localStorage.getItem("cid");
+    var storedNames = JSON.parse(window.localStorage.getItem("session"));
         for (i in storedNames)
         {
           var conversation = 1;
@@ -292,7 +308,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
         console.log(conversation+'=='+ window.localStorage.getItem('content')+'='+storedNames[i][j].session_name);
             //if(conversation == 1){
              //if(window.localStorage.getItem("cid")){
-                 window.bundle_id = "-L8pgUGRe-WqZmM-TOKo";
+                 window.bundle_id = "";
                   window.session_id = storedNames[i][j].session_id;
               //}
 
@@ -325,6 +341,96 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
           }
         }
   }
+}else if(window.localStorage.getItem("Dname")){
+$("#OnloadModalTitle").html(window.localStorage.getItem('cat2')); 
+  //$(".timeslot").hide();
+   $(".txtintro").html(window.localStorage.getItem('cat2'));
+
+var SS = JSON.parse(window.localStorage.getItem("session2"));
+ for (i in SS){
+           for(j in SS[i]){
+              conversation = 1;
+
+              if(conversation == window.localStorage.getItem('content')){
+                window.session_id = SS[i][j].session_id;
+              if(SS[i][j].meditation_audio_time.length > 2){
+                $(".timeslot").show();
+                var ts = '';
+                var l = 0;
+               for(time in SS[i][j].meditation_audio_time){
+                 var t = SS[i][j].meditation_audio_time[time];
+                    if(ts == 0){
+                      
+                    ts = ts + '<div class="box box1" id="'+t+'" data-index="'+l+'"><p>'+t+' <br> min</p></div>'
+                    }else{
+                      ts = ts + '<div class="box " id="'+t+'" data-index="'+l+'"><p>'+t+' <br> min</p></div>'
+                    }
+                    l++;
+                  }
+              }
+
+              $(".timeslot").html(ts);
+                  $(".session").html(SS[i][j].session_name);
+               $(".conv").html(SS[i][j].session_name);
+               $(".sdesc").html(SS[i][j].session_description);
+              $(".bg").css('background', 'url('+SS[i][j].session_img+') '); /*Dynamic image from database*/
+              console.log(SS[i][j].meditation_audio[0]);
+              //$('audio').attr('src',storedNames[i][j].meditation_audio[0])[0];
+              //$('audio').attr('type','audio/mp3')[0];
+              var myOtherOne = new CirclePlayer("#jquery_jplayer_2",
+                {
+                  mp3:SS[i][j].meditation_audio[0],
+                // oga:"http://www.jplayer.org/audio/ogg/Miaow-04-Lismore.ogg"
+                }, {
+                cssSelectorAncestor: "#cp_container_2"
+                });
+              }
+
+          }     
+ }
+}else{
+	     window.cat_id = window.localStorage.getItem("cid");
+  $(".timeslot").hide();
+     $(".txtintro").html(window.localStorage.getItem('cat'));
+
+var storedNames = JSON.parse(window.localStorage.getItem("session"));
+        for (i in storedNames)
+        {
+          var conversation = 1;
+           for(j in storedNames[i]){
+
+            if(conversation == window.localStorage.getItem('content')){
+        console.log(conversation+'=='+ window.localStorage.getItem('content')+'='+storedNames[i][j].session_name);
+            //if(conversation == 1){
+             //if(window.localStorage.getItem("cid")){
+                 window.bundle_id = "";
+                  window.session_id = storedNames[i][j].session_id;
+              //}
+
+              $(".conv").html(storedNames[i][j].session_name);
+              $(".sdesc").html(storedNames[i][j].session_description);
+              $(".bg").css('background', 'url('+storedNames[i][j].session_img+') '); /*Dynamic image from database*/
+              console.log(storedNames[i][j].meditation_audio[0]);
+              //$('audio').attr('src',storedNames[i][j].meditation_audio[0])[0];
+              //$('audio').attr('type','audio/mp3')[0];
+              var myOtherOne = new CirclePlayer("#jquery_jplayer_2",
+                {
+                  mp3:storedNames[i][j].meditation_audio[0],
+                // oga:"http://www.jplayer.org/audio/ogg/Miaow-04-Lismore.ogg"
+                }, {
+                cssSelectorAncestor: "#cp_container_2"
+                });
+            }
+
+
+          conversation++;
+          }
+        }
+  }
+
+
+
+
   // Category name on load modal
   /*if(window.localStorage.getItem('cat') || window.localStorage.getItem('cat') != ""){
 
@@ -343,14 +449,28 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
          var vid = document.getElementById("jp_audio_0");
                 console.log(index+"=="+window.session_id);
             if(index == window.session_id){
-                console.log(value.halted);
+            	//console.log(value);
+            	//alert(value.slot);
+                
                 if(value.halted != 0.0 || value.halted != 0){
-                  $('#memberModal').modal("show");
-                  
+                	//alert($(".box1").data("index")+"=="+value.slot);
+                   if(value.slot != undefined){
+                		if($(".box1").data("index") == value.slot){
+                  		//	vid.currentTime = value.halted; //time is in minute to second (time*60)
+                		  $('#memberModal').modal("show");  
+
+                		}
+                	}
+
                 }
                 $(".continue").click(function(){
                   //alert(5);
-                  vid.currentTime = value.halted*60; //time is in minute to second (time*60)
+                  if(value.slot != undefined){
+                		if($(".box1").data("index") == value.slot){
+                  			vid.currentTime = value.halted; //time is in minute to second (time*60)
+                			
+                		}
+                	}
                   $('#memberModal').modal("hide");
                 });
 
@@ -373,7 +493,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
     // code for Continue from where you stop
     $(".continue").click(function(){
       //  alert(user.halted*60);
-      vid.currentTime = user.halted*60; //time is in minute to second (time*60)
+      vid.currentTime = user.halted; //time is in minute to second (time*60)
       $('#memberModal').modal("hide");
     });
 
@@ -392,15 +512,29 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
     
     $("audio").bind('pause',function(){
   //    alert(window.bundle_id);
+  	var slot = '';
+
+      	$(".box").each(function(index){
+    			if($(this).hasClass("box1")){
+    				console.log("test"+$(this).attr('id'));
+    				slot = $(this).attr('id');
+    			}
+    	});
+  	
+
       var vid = document.getElementById("jp_audio_0");
-      const currentTime = Math.floor(vid.currentTime)/60;
+      const currentTime = vid.currentTime;
      // const min = currentTime/60;
       console.log("c"+currentTime+user.user_id);
       var db = firebase.database();
       if(window.localStorage.getItem("cat") == "10 Day Intro Program"){
         db.ref("Users/"+user.user_id+"/halted").set(currentTime); // Update lalted time on pause
       }else if(window.localStorage.getItem("cat") != "10 Day Intro Program"){
+      	if($(".timeslot").css('display') != 'none'){
+          hdata = {"halted":currentTime,"slot":$(".box1").data("index")};
+  		}else{
           hdata = {"halted":currentTime};
+  		}
        db.ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata); // Update lalted time on pause
       }
     }); 
@@ -436,7 +570,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
       console.log("time"+currentTime);
        var str = parseInt(currentTime / 60) + ':' + (currentTime % 60);
        $(".time").html(str);
-      console.log("time"+str );
+      console.log("time"+currentTime);
 
     });
   //  myOtherOne.option("enableRemoveControls", true); // Set option
@@ -615,7 +749,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
     //alert("I want this to appear after the modal has opened!");
 
 //});
-   
+  // alert(window.session_id);
       $(".clsicon").click(function(){
          var vid = document.getElementById("jp_audio_0");
          vid.pause();
@@ -623,7 +757,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
           if(t != "10 Day Intro Program"){ 
          //alert($(".txtintro").html());
         var user = JSON.parse(window.localStorage.getItem('user'));
-             hdata = {"halted":vid.currentTime};
+             hdata = {"halted":vid.currentTime,"slot":$(".box1").data("index")};
          var db = firebase.database();
             db.ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata); // Update lalted time on pause 
           }
@@ -641,11 +775,13 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
          if(window.localStorage.getItem("cat") == "Deep Dive"){
 
          $.redirect(referrer,{"bundle":id},"POST",null,null,true);
-         }
+         }else{
+         	
          window.setTimeout(function() {
                             
                       history.go(-1);
           }, 1000);
+         }
       /*  else if(window.localStorage.getItem("cat") == "10 Day Intro Program"){
           window.location = "opendive.php";
          }*/
@@ -678,7 +814,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
 //$('#myModal').modal(options)
         //$('.mediPlayer').mediaPlayer();
   //  var t1 = $("#jquery_jplayer_2").jPlayer("pause", event.jPlayer.status.currentTime);
- $("#jquery_jplayer_2").jPlayer("play", "10");
+ //$("#jquery_jplayer_2").jPlayer("play", "10");
 //console.log('d'+$("#jquery_jplayer_2").data('jPlayer').status.currentTime);
 //console.log('d'+t);
     });
@@ -726,6 +862,14 @@ function showSlides(n) {
 
 }*/
     $(document).ready(function () {
+
+    	// $(".box").each(function(index){
+    	// 		if($(this).hasClass("box1")){
+    	// 			alert($(this).attr('id'));
+    	// 		}
+    	// });
+    	
+
              console.log(window.subcat_id);
              console.log(window.cat_id);
              console.log(window.bundle_id);
@@ -829,8 +973,12 @@ $("#message-text").keyup(function(){
                     var user = JSON.parse(window.localStorage.getItem('user'));
          var vid = document.getElementById("jp_audio_0");
         var sec = Math.ceil(vid.duration%60);
-          var min = Math.round(vid.duration/60) + (sec<=50?1:0);
+       // alert(sec);
+
+          var min = Math.round(vid.duration/60) + (sec<=50?0:1);
             ;
+            //alert(vid.duration);
+           // alert(min);
       var db = firebase.database();
 
 
@@ -845,8 +993,8 @@ $("#message-text").keyup(function(){
              else{  
 
                     
-            if(user.membership_type != 'Free'){
               db.ref("Users/"+user.user_id+"/completed_conversation").set(user.completed_conversation + 1);
+            if(user.membership_type != 'Free'){
               if(((user.last_free_conversation_id)!=10 && !window.localStorage.getItem('cat')) || ((user.last_free_conversation_id)!=10 && window.localStorage.getItem('cat') == '10 Day Intro Program')){
         
               db.ref("Users/"+user.user_id+"/last_free_conversation_id").set(user.last_free_conversation_id + 1)
@@ -863,20 +1011,36 @@ $("#message-text").keyup(function(){
         }
       }
      }
+     var slot = '';
+
+      	$(".box").each(function(index){
+    			if($(this).hasClass("box1")){
+    				console.log("test"+$(this).attr('id'));
+    				slot = $(this).attr('id');
+    			}
+    	});
       db.ref("Users/"+user.user_id+"/halted").set(0.0); // Update lalted time on pause
       if(window.localStorage.getItem("cat")!="10 Day Intro Program" ){ 
-         hdata = {"halted":0.0};
+         if($(".timeslot").css('display') != 'none'){
+          hdata = {"halted":0.0,"slot":slot};
+  		}else{
+          hdata = {"halted":0.0};
+  		}
         db.ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata); // Update lalted time on pause 
       }
             db.ref("Users/"+user.user_id+"/total_time_divethru").set(user.total_time_divethru + min);
-          
+          if(window.localStorage.getItem("bid") != ''){
 
+			window.bundle_id = window.localStorage.getItem("bid");
+          }
         var cat = window.cat_id;
         var subcat = window.subcat_id;
         var b = window.bundle_id;
         var s = window.session_id;
          var ctnm = localStorage.getItem('cat');
          var subscrb_type = localStorage.getItem('subcription_type');
+
+
         // alert(subscrb_type);
         /* check for streak variable there or not */
     // if(user.membership_type!='Free'){
@@ -886,7 +1050,7 @@ $("#message-text").keyup(function(){
 //alert(ctnm);
 
 
-          if(window.bundle_id != "" && window.subcat_id == ""){
+          if((window.bundle_id != "" && window.subcat_id == "") || (window.bundle_id != "" && window.subcat_id != "")){
                   var data2={Bundle:{[b]:{Session:{[s]:{session:s}}}}};
                 }else if(window.subcat_id != "" && window.bundle_id == ""){
                   var data2={SubCategory:{[subcat]:{Session:{[s]:{session:s}}}}};
@@ -903,8 +1067,8 @@ $("#message-text").keyup(function(){
 
               
 
+
          $.map(user.currentStreak, function(value, index) {
-//alert(ctnm+"=="+index);
             if(ctnm == index){
                 $.map(value, function(value2, index2) {
                   if(index2 == "SubCategory" ){
@@ -1151,10 +1315,11 @@ $("#message-text").keyup(function(){
             
 
         $("#message-text").val("As I read what I wrote, I connected with...");
+       window.bundle_id1= window.localStorage.getItem("bid")
         if(window.localStorage.getItem("cat") == "Deep Dive" || window.localStorage.getItem("cat") == "Open Dive"){
                     var referrer =  document.referrer;
-          //alert(window.localStorage.getItem("cat"));
-          $.redirect(referrer,{"bundle":id},"POST",null,null,true);
+          //alert(window.bundle_id1);
+          $.redirect(referrer,{"bundle":window.bundle_id1},"POST",null,null,true);
          }
          else{
                     //var referrer 

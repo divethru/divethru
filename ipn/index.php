@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 $_SESSION["userid"] = $_POST["userid"];
 require "PAYPAL_IPN.php";

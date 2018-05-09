@@ -5,7 +5,8 @@
 
 
 
-.header {padding: 9px 100px 9px 10px !important; 
+.header {
+  /*padding: 9px 100px 9px 10px !important; */
 	     box-shadow: 0 0px 37px 0 rgba(0,2,0,0.1)}
 
 .logo {float: left; 
@@ -117,11 +118,13 @@ li.dropdown:hover > .dropdown-menu {
 @media (min-width:931px){
 	
 .card p {font-size: 20px;}	
+
 }
 
 @media (min-width:1050px){
 	
 .card p {font-size: 16px;}	
+
 }
 
 @media (min-width:1287px){
@@ -143,7 +146,11 @@ li.dropdown:hover > .dropdown-menu {
 	
 .card p {font-size: 28px;}	
 }
-
+@media(min-width: 931px) and (max-width: 1360px){
+  .ipadnav{
+    margin-right: 10% !important;
+  }
+}
 @media(max-width:991px){
 	
 	.ul-bg {background-color: #7dd3d5 !important;}

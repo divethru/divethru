@@ -59,7 +59,10 @@ use PayPal\Api\ShippingInfo;
 <script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
 <script type="text/javascript" src="js/jquery.redirect.js"></script>
 <script>
+  if(localStorage.getItem('cat')){
   localStorage.removeItem('cat');
+    
+  }
   // Initialize Firebase
   var config = {
     apiKey: "AIzaSyDBWdYDtGJsilqNGOqYMNalE9s-IAGPnTw",
@@ -101,10 +104,37 @@ use PayPal\Api\ShippingInfo;
   text-align:center;
     transform: translateX(-50%) translateY(-50%);}
 
+/* Page Loader ================================= */
+.page-loader-wrapper {
+  z-index: 99999999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: #eee;
+  overflow: hidden;
+  text-align: center; }
+  .page-loader-wrapper p {
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #444; }
+  .page-loader-wrapper .loader {
+    position: relative;
+    top: calc(50% - 30px); }
 </style>
 </head>
 <body style="margin-top: 100px;">
-
+ <!-- Page Loader -->
+    <div class="page-loader-wrapper" style="display: none;">
+        <!-- <div class="loader"> -->
+       <img src="img/loader.gif" style="margin-top: 10% !important;">
+     <!-- </div> -->
+    </div>
+    <!-- #END# Page Loader -->
 <?php 
 define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
 define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
@@ -134,7 +164,7 @@ return $nodeGetContent;
     <div class="mainBanner">
     <center>
       <div class="bannerCenter">
-        <p class="bannerDay">Day <span class="day"></span> of 10</p>
+        <p class="bannerDay">Day <span class="day"></span> of <span class="totalday">10</span></p>
       <p class="bannerHeader">Intro Program</p>
       <button class="bannerButton" id="close_account"  style="outline:none; cursor: pointer; font-weight: 400;" type="button"><i class="fa fa-play" aria-hidden="true"></i> &nbsp; B E G I N</button>
 
@@ -302,7 +332,15 @@ return $nodeGetContent;
 ?>
 </div>
 </div>
+<script type="text/javascript">
+    var slowLoad = window.setTimeout( function() {
+        console.log( "the page is taking its sweet time loading" );
+    }, 2000 );
 
+    window.addEventListener( 'load', function() {
+        window.clearTimeout( slowLoad );
+    }, false );
+</script>
 <script type="text/javascript">
    
     $(window).load(function(){  
@@ -372,6 +410,7 @@ return $nodeGetContent;
 <?php include 'footer.php'; ?>
 
 <script src="js/dashboard.js"></script>
+<script src="js/dashboardheader.js"></script>
 <script type="text/javascript"> 
 $(document).ready(function(){
 
@@ -411,7 +450,7 @@ $(document).ready(function(){
        /*$('#exampleModalCenter').modal('hide');*/
 var catRef = firebase.database().ref().child('/');
     catRef.on('child_changed', function(snapshot) {
-      location.reload(true);
+      //location.reload(true);
     });
     $('.header-item > ul li a.nav-link').each(function(){
                 var path = window.location.href;
@@ -424,25 +463,25 @@ var catRef = firebase.database().ref().child('/');
 
 
 
-  $(".bannerButton").click(function(){
+//   $(".bannerButton").click(function(){
 
-  var day = window.localStorage.getItem('content');
-  window.localStorage.removeItem("cat","10 Day Intro Program");
-  var user = JSON.parse(window.localStorage.getItem('user'));
-//alert(user.membership_type);
-    if(day>8 && day<=10 && user.membership_type == "Free"){
-     // alert(day);
-       $('#exampleModalCenter').modal('show');
-    }else if(day<=8 || user.membership_type == "paid"){
+//   var day = window.localStorage.getItem('content');
+//   //window.localStorage.removeItem("cat","10 Day Intro Program");
+//   var user = JSON.parse(window.localStorage.getItem('user'));
+// //alert(user.membership_type);
+//     if(day>8 && day<=10 && user.membership_type == "Free"){
+//      // alert(day);
+//        $('#exampleModalCenter').modal('show');
+//     }else if(day<=8 || user.membership_type == "paid"){
         
-      var url = "http://34.215.40.163/player.php";
-      window.location.href = url;
-    }else if(day>10 && user.membership_type == "Free"){
-       //alert(day);
-       // alert(user.membership_type);
-      window.location = "subscription.php";
-    }
-  });
+//       var url = "http://34.215.40.163/player.php";
+//       window.location.href = url;
+//     }else if(day>10 && user.membership_type == "Free"){
+//        //alert(day);
+//        // alert(user.membership_type);
+//       window.location = "subscription.php";
+//     }
+//   });
     $(".exploreMore").click(function(){
         $(".hiddens").show();
     $(".exploreMore").hide();

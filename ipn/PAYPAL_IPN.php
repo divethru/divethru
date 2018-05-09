@@ -19,6 +19,9 @@ class PAYAPAL_IPN
 		
 		foreach($_POST as $key => $value){
 			$_SESSION[$key] = $value;
+			if($key == 'custom'){
+				$u = $value;
+			}
 			$postFields .= "&$key=$value";
 		}
 		
@@ -40,9 +43,11 @@ curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
 		$res = curl_exec($ch);
 		//echo curl_error($ch);
 		curl_close($ch);
-
+$fl = $u.'.txt';
+		$f2 = fopen($fl, 'w');
 		$f = fopen('result.txt', 'w');
 		fwrite($f, $res . '-----' . $postFields. '----' . $_SESSION["userid"]);
+		fwrite($f2, $res . '-----' . $postFields. '----' . $_SESSION["userid"]);
 		$_SESSION["field"] = $postFields;
 		echo $res.$_SESSION["userid"];
 	}

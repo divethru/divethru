@@ -24,6 +24,7 @@
     messagingSenderId: "53159239409"
   };
   firebase.initializeApp(config);
+
 </script>
 <!-- <script src="Admin/js/sign_out.js"></script> -->
  <style type="text/css">
@@ -61,10 +62,40 @@
     left: 92%; 
   text-align:center;
     transform: translateX(-50%) translateY(-50%);}
+
+    
+/* Page Loader ================================= */
+.page-loader-wrapper {
+  z-index: 99999999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: #eee;
+  overflow: hidden;
+  text-align: center; }
+  .page-loader-wrapper p {
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #444; }
+  .page-loader-wrapper .loader {
+    position: relative;
+    top: calc(50% - 30px); }
+
 </style>
 </head>
 <body style="margin-top: 118px;">
-
+<!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <!-- <div class="loader"> -->
+       <img src="img/loader.gif" style="margin-top: 10% !important;">
+     <!-- </div> -->
+    </div>
+    <!-- #END# Page Loader -->
 <?php 
 define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
 define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
@@ -257,6 +288,8 @@ return $nodeGetContent;
   window.localStorage.removeItem("bundle");
 
 $(document).ready(function(){
+
+   window.localStorage.removeItem("Dname");
  
   /*$("div.hover-box1a").click(function() {
   alert('5');

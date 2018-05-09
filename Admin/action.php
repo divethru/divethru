@@ -26,6 +26,12 @@ $target_dir = "uploads/meditation/";
 //$target_file = $target_dir . strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["meditation"]["name"]))));
 $target_file = $target_dir . str_replace(array('(',')'),'',strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["meditation"]["name"])))));
 }
+else if(!empty($_FILES["userprofile"]["name"])){
+$target_dir = "uploads/profile_image/";	
+//$target_file = $target_dir . strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["subcat"]["name"]))));
+$target_file = $target_dir . str_replace(array('(',')'),'',strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["userprofile"]["name"])))));
+
+}
 //echo $target_file;
 
 $uploadOk = 1;
@@ -121,6 +127,15 @@ if ($uploadOk == 0) {
 		if (move_uploaded_file($_FILES["meditation"]["tmp_name"], $target_file)) {
 			//echo $target_dir.strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["meditation"]["name"]))));
 			echo $target_dir.str_replace(array('(',')'),'',strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["meditation"]["name"])))));
+		} else {
+			echo "Sorry, there was an error uploading your file.";
+		}
+	}
+	else if(!empty($_FILES["userprofile"]["name"]) ){
+		//echo  $_FILES["userprofile"]["tmp_name"];
+		if (move_uploaded_file($_FILES["userprofile"]["tmp_name"], $target_file)) {
+			//echo $target_dir.strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["meditation"]["name"]))));
+			echo $target_dir.str_replace(array('(',')'),'',strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["userprofile"]["name"])))));
 		} else {
 			echo "Sorry, there was an error uploading your file.";
 		}

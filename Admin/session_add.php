@@ -810,6 +810,8 @@ $("input[type=file]").checkImageSize();
                  }else if(!window.bundle && window.subcat){
                      
                     var firebaseRef = firebase.database().ref("Category/"+catnm+"/SubCategory/"+scatid+"/Session");
+                    firebase.database().ref("Category/"+catnm).child("Bundle").set(null);
+                    //firebase.database().ref("Category/"+catnm+"/Bundle").set(null);
                  }else if(!window.bundle && !window.subcat){
                      
                     var firebaseRef = firebase.database().ref("Category/"+catnm+"/Session");

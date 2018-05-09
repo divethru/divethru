@@ -9,7 +9,7 @@
                       <hr class="footer-hr">
                       <ul>
                          <li><a href="#">Blog</a></li>
-                         <li><a href="#">Facebook Group</a></li>
+                         <li><a href="https://www.facebook.com/DiveThru-2375273575879029/?ref=br_rs">Facebook Group</a></li>
                       </ul>
                  </div>
                 
@@ -58,9 +58,9 @@
                      <div class="container"> 
                           <div class="row justify-content-md-end justify-content-center">   
                              <ul>
-                                <li class="mx-1"><a href="#"><i class="fa fa-facebook"></i></a></li>
-                                <li class="mx-1"><a href="#"><i class="fa fa-twitter"></i></a></li>
-                                <li class="mx-1"><a href="#"><i class="fa fa-instagram"></i></a></li>
+                                <li class="mx-1"><a href="https://www.facebook.com/DiveThru-2375273575879029/?ref=br_rs"><i class="fa fa-facebook"></i></a></li>
+                                <li class="mx-1"><a href="https://twitter.com/divethru_?lang=en"><i class="fa fa-twitter"></i></a></li>
+                                <li class="mx-1"><a href="https://www.instagram.com/divethru_/"><i class="fa fa-instagram"></i></a></li>
                                 <li class="mx-1"><a href="#"><i class="fa fa-apple"></i></a></li>
                                 <li class="mx-1"><a href="#"><i class="fa fa-android"></i></a></li>
                              </ul>

@@ -298,13 +298,27 @@ return $nodeGetContent;
                 qoute_description: desc,
                 qoute_id: qId,
                 createdOn: datetime
-            });
-            //alert(cimg);
-             if(pushedCatRef){
-           
-                swal("Inserted!","Quote has been Inserted.","success");
+            }).then(function(snap){
+                 var daily = firebaseRef.child("DailyQuotes");
+           // daily.on('child_added', function(snapshot) {
+                //alert("update"+JSON.stringify(snapshot.val()));
+                var msg = $(".editor").val();
+                 $.post("http://34.215.40.163/DailyQuotes.php", { message: msg }, function(result) {
+                        console.log(result);
+                 });
+
+                 swal("Inserted!","Quote has been Inserted.","success");
                  $('#form_validation_quote')[0].reset();
-            }
+           // });
+            //alert(cimg);
+            // Code for Sending notification to user when new daily qoutes added
+            
+            //  if(pushedCatRef){
+               
+
+             });           
+
+            //}
         }
      });
         

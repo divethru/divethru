@@ -28,10 +28,40 @@
   
   firebase.initializeApp(config);
 </script>
+<style>
+/* Page Loader ================================= */
+.page-loader-wrapper {
+  z-index: 99999999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: #eee;
+  overflow: hidden;
+  text-align: center; }
+  .page-loader-wrapper p {
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #444; }
+  .page-loader-wrapper .loader {
+    position: relative;
+    top: calc(50% - 30px); }
+
+</style>
 </head>
 
 <body style="margin-top: 100px;">
-
+  <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <!-- <div class="loader"> -->
+       <img src="img/loader.gif" style="margin-top: 10% !important;">
+     <!-- </div> -->
+    </div>
+    <!-- #END# Page Loader -->
 <!--HEADER-->
 	
 <?php   include 'dashbordHeader.php'; ?>
@@ -160,12 +190,14 @@ BODY-->
 <script src="js/dashboardheader.js"></script>
 <script type="text/javascript">
 		$(document).ready(function(){
-			var catRef = firebase.database().ref().child('/');
-    catRef.on('child_changed', function(snapshot) {
-			location.reload(true);
-    });
 var user = JSON.parse(window.localStorage.getItem('user'));
-                  			
+	
+			var catRef = firebase.database().ref("Users").child(user.user_id);
+			// firebase.database().ref('Users/'+user.user_id+"/streak").set(null);
+   //  catRef.on('child_changed', function(snapshot) {
+			// location.reload(true);
+   //  });
+ window.localStorage.setItem("streakcount",10);                 			
 if(user.currentStreak){
      $.map(user.currentStreak, function(value, index) {
             $.map(value, function(value2, index2) {
@@ -175,13 +207,13 @@ if(user.currentStreak){
                             if(index4 == "Bundle"){
                                $.map(value4, function(value5, index5) {
                               	 	$.map(value5, function(value6, index6) {
-                  			$(".currentday").html(Object.keys(value6).length+1);
+                  			$(".currentday").html(Object.keys(value6).length);
                                   		console.log(Object.keys(value6).length);
                                 	});
                                 });
                             }else if(index4 == "Session"){
                                 //$.map(value4, function(value5, index5) {
-                  			$(".currentday").html(Object.keys(value4).length+1);
+                  			$(".currentday").html(Object.keys(value4).length);
                                   		console.log(Object.keys(value4).length);
                                 //});
 
@@ -193,13 +225,13 @@ if(user.currentStreak){
                     //  console.log(index3);
                            $.map(value3, function(value4, index4) {
                                 console.log(Object.keys(value4).length);
-                  			$(".currentday").html(Object.keys(value4).length+1);
+                  			$(".currentday").html(Object.keys(value4).length);
                                   /*$.map(value4, function(value5, index5) {
                                 	});*/
                            });
                     });
                   }else if(index2 == "Session"){
-                  			$(".currentday").html(Object.keys(value2).length+1);
+                  			$(".currentday").html(Object.keys(value2).length);
                                		console.log(Object.keys(value2).length);
                     
                   }
@@ -232,7 +264,9 @@ if(user.currentStreak){
 			   var cnt = [];
 			
 			//console.log(user.currentStreak);
-			var totalconv = user.last_free_conversation_id;
+
+			var totalconv = 0;
+			//var totalconv = user.last_free_conversation_id;
 			 if (user.total_time_divethru > 59) {
 				var min =  user.total_time_divethru % 60;
 				var hour = + Math.floor(user.total_time_divethru / 60);
@@ -249,26 +283,32 @@ if(user.currentStreak){
 			$(".totaltime").html(user.total_time_divethru+'<span style="color:#34495e;">MIN</span>');
 			}
 			//if(user.membership_type != "Free"){
-				
-			$.map(user.streak, function(value, index) {
-				if(value.Session){
-				Object.keys(value.Session).length;
-					$.map(value.Session, function(value2, index2) {
-						if(value2.total_visit){
-							
-						totalconv = totalconv + value2.total_visit;
-						}else{
-						totalconv = totalconv + value2.total_visited;
-							
-						}
-					});
-				}
-			});
-			//}
+			if(user.streak){
+
+				$.map(user.streak, function(value, index) {
+					if(value.Session){
+					Object.keys(value.Session).length;
+						$.map(value.Session, function(value2, index2) {
+							if(value2.total_visit){
+								
+							totalconv = totalconv + value2.total_visit;
+							}else{
+							totalconv = totalconv + value2.total_visited;
+								
+							}
+						});
+					}
+				});
 				$(".compconv").html(totalconv);
-				
+			}
+			else{
+				totalconv=0;
+				$(".compconv").html(totalconv);
+			}
+				// console.log(Journal);
+			
 			firebase.database().ref("Journal").on("value", function(snapshot) {
-				
+				 console.log(snapshot.val());
 					snapshot.forEach(function(childSnapshot) {
 						var key = childSnapshot.key;
 						var childData = childSnapshot.val();
@@ -280,38 +320,62 @@ if(user.currentStreak){
 									month = m_names[dt.getMonth()];
 								    year = dt.getFullYear();
 									var um = m_names[dt.getMonth()];
-									console.log(month);
+									//console.log(month);
 									cnt.push(value);
 								/*	cn += '<div class="row my-md-5 my-3"><div class="col-md-2 col-4 my-auto text-center date"><h4>'+dt.getDate()+'<br>'+value.category_name.slice(0, value.category_name.indexOf(" "))+'</h4></div><div class="col-md-10 col-8 my-auto content"><p>'+value.journal_text+'</p></div></div>';*/
 					t[month+' '+year] = cnt;
 								});
 								/*mn += '<div class="row my-md-5 my-4"><div class="col-12 text-center march"><h2 class="monthyear">'+month.toUpperCase()+' '+year+'</h2></div> </div>';*/
 						}
+						else{
+							$(".page-loader-wrapper").fadeOut();
+						}
 					});
 						var count = 0;
+						//t.reverse();
+						console.log(cnt);
+						// for(var tu in cnt ){
+						// 	console.log(cnt[tu]['date']);
+						// 	var dt = new Date(cnt[tu]['date']);
+						// 	month = m_names[dt.getMonth()];
+						// 	console.log(month);
+						// 	var m_names = ['January', 'February', 'March', 
+      //          'April', 'May', 'June', 'July', 
+      //          'August', 'September', 'October', 'November', 'December'];
 
+						// }
+						// for(var k in t){
+						// //$.each(keys, function(i) {
+						//     //console.log(keys[i]);
+						//     for(j in t[k] ){
+						//     	console.log(t[k]);
+						//     	 console.log(t[k][j]);
+						//     }
+						// }
+						//});
+						
 					for(i in t){
-						console.log(i);
+						//console.log(i);
 						if(count == 0){
 							
 						content += '<div class="row my-md-5 my-4 month"><div class="col-12 text-center march"><h2 class="monthyear">'+i+'</h2></div> </div>';
 						}else{
-						content += '<div class="row my-md-5 my-4 month hidden"><div class="col-12 text-center march"><h2 class="monthyear">'+i+'</h2></div> </div>';
+						content += '<div class="row my-md-5 my-4 month jn hidden"><div class="col-12 text-center march"><h2 class="monthyear">'+i+'</h2></div> </div>';
 							
 						}
-						
-							for(j in t[i]){
+							for(j in t[i] ){
 								var dt = new Date(t[i][j].date.replace(/-/g, "/"));
 								var um = m_names[dt.getMonth()];
 								var fl = um +' '+dt.getFullYear();
-								console.log(j);
+								//console.log(j);
 								
 								if(i == fl){
 									if(j < 10){
-											content += '<div class="row my-md-5 my-3 jn"><div class="col-md-2 col-4 my-auto text-center date"><h4>'+dt.getDate()+'<br>'+t[i][j].category_name+'</h4></div><div class="col-md-10 col-8 my-auto content"><p>'+t[i][j].journal_text+'</p></div></div>';
+											content += '<div class="row my-md-5 my-3 jn" data-count='+j+'><div class="col-md-2 col-4 my-auto text-center date"><h4>'+dt.getDate()+'<br>'+t[i][j].category_name+'</h4></div><div class="col-md-10 col-8 my-auto content"><p>'+t[i][j].journal_text+'</p></div></div>';
+											
 											
 									}else{
-										content += '<div class="row my-md-5 my-3 jn hidden"><div class="col-md-2 col-4 my-auto text-center date"><h4>'+dt.getDate()+'<br>'+t[i][j].category_name+'</h4></div><div class="col-md-10 col-8 my-auto content"><p>'+t[i][j].journal_text+'</p></div></div>';
+										content += '<div class="row my-md-5 my-3 jn hidden" data-count='+j+'><div class="col-md-2 col-4 my-auto text-center date"><h4>'+dt.getDate()+'<br>'+t[i][j].category_name+'</h4></div><div class="col-md-10 col-8 my-auto content"><p>'+t[i][j].journal_text+'</p></div></div>';
 										$(".load").css("display","unset");
 									}
 								
@@ -322,28 +386,70 @@ if(user.currentStreak){
 					}
 					
 				var  clickcount = 0;
+				
 					var fn = mn+cn+'<div class="row my-5 load"><div class="col-12 text-center"><h3><i><u>Load More</u></i></h3></div></div>';
 					$(".jounral").html(content);
+						$(".jn").each(function(index){
+								if($(this).data("count") == 9 && !$(this).hasClass("hidden")){
+					 				$(".month").removeClass("hidden");
+					 				console.log($(".month").html());
+					 			}
+					 				console.log($(this).data("count"));
+					 			
+							});
+					 $(".month").each(function(index){
+
+					 });
 					$(".loadmore").click(function(){
-						//	console.log($(".month").length);
-							$(".month").each(function(index){
-								console.log(index);
-								if(index == clickcount){
-									
-							//alert(clickcount);
+							//console.log($(".month").length);
+							if(parseInt(window.localStorage.getItem("streakcount"))){
+								showcount=parseInt(window.localStorage.getItem("streakcount"));
+								//console.log(showcount+10);
+								window.localStorage.setItem("streakcount",showcount+10);
+							}
+							else{
+								showcount=10
+								window.localStorage.setItem("streakcount",10);
+							}
+							$(".jn").each(function(index){
+								if($(this).hasClass("month")){
+									$(this).addClass("hidden");
 								}
-						
-								if($(this).eq(index).nextAll(".jn").hasClass("hidden")){
-									$(this).eq(index).nextAll(".jn").removeClass("hidden");
-									$(this).eq(index).nextAll(".month").removeClass("hidden");
-									$(".load").css("display","none");
-								}
-								if($(this).eq(index).hasClass("hidden")){
-							//		alert("index"+index);
+
+								if($(this).hasClass("hidden")){
+									for(var i=showcount;i<showcount+10;i++)
+									{
+										if($(this).data("count")==i){
+										//console.log(i);
+											$(this).removeClass("hidden");
+											$(this).removeClass("hidden");
+											$(".month").removeClass("hidden"); //change have to made
+											// $(".load").css("display","none");
+										}
+									}
 								}
 								
 							});
-							clickcount++;
+						 // $(".month").each(function(index){
+							// // 	// console.log(index);
+							// // 	// console.log(clickcount);
+							// // 	//if(index == clickcount){
+									
+							// // //alert(clickcount);
+							// // 	//}
+						
+							//  	if($(this).eq(index).nextAll(".jn").hasClass("hidden")){
+							// // 		//console.log($(this).eq(index).nextAll(".jn").data("count"));
+							//  		 $(this).eq(index).nextAll(".jn").removeClass("hidden");
+							//  		 $(this).eq(index).nextAll(".month").removeClass("hidden");
+							// // 		// $(".load").css("display","none");
+							//  	}
+							// // 	//if($(this).eq(index).hasClass("hidden")){
+							// // //		alert("index"+index);
+							// // 	//}
+								
+							//  });
+							//clickcount++;
 						});
 			console.log(t);
 			//console.log(jQuery.isEmptyObject(t));
@@ -355,13 +461,15 @@ if(user.currentStreak){
 				$(".jounral").html(content);
 				
 			}
-
+			//
 			});
+ 	
 			
 		/*	var journaldes = <?php //echo json_encode($Journal);?>;
 			var jtext=$('#journaltext').val(journaldes.journal_text);
 			console.log(jtext);*/
 
+			$(".page-loader-wrapper").fadeOut();
 		});
 	</script>
 </body>

@@ -96,6 +96,115 @@ firebase.auth().onAuthStateChanged(function(user) {
     }
 });
   
+	var user = JSON.parse(window.localStorage.getItem('user'));
+
+//for dashboard dynamic player base on currentstreak
+var ba_childData;
+var ba_subcat_id;
+var ba_session_id;
+var ba_cat;
+var ba_bundle_id;
+window.Cbnd_id;
+
+
+if(user.currentStreak ){
+
+	firebase.database().ref("Users/"+user.user_id+"/currentStreak").once("value",function(snapshot){
+		console.log(snapshot.val());
+		snapshot.forEach(function(childSnapshot) {
+		 	 ba_childData=childSnapshot.val();
+		 	 window.localStorage.setItem("currentCat",childSnapshot.key);
+		 	console.log(childSnapshot.key);
+		 	ba_cat=childSnapshot.key;
+		 	window.localStorage.setItem("cat2",ba_cat);
+
+		 	if(ba_cat != "10 Day Intro Program")
+		 	{
+			 	if(childSnapshot.hasChild("Session")){
+			 		//alert(5);
+			 	//window.localStorage.setItem("TYPE","Session");
+			 		$.map(ba_childData.Session, function(value, index) {
+			 		
+			 			ba_session_id=index;
+			 			
+			 		});
+			 	}else{
+
+
+				 	$.map(ba_childData.SubCategory, function(value, index) {
+				 		//console.log(value);
+				 		ba_subcat_id=index;
+				 		$.map(value, function(value, index) {
+				 			console.log(value);
+				 			if(index=="Bundle"){
+				 				//window.localStorage.setItem("TYPE","S&B");
+				 				$.map(value, function(value, index) {
+				 					console.log(index);
+				 					ba_bundle_id=index;
+					 				//.localStorage.setItem("currentID", index);
+				 					
+				 					window.Cbnd_id = index;
+				 					$.map(value, function(value, index) {
+					 					console.log("SSS"+Object.keys(value).length);
+					 				//	window.localStorage.setItem("content",Object.keys(value).length);
+					 					$.map(value, function(value, index) {
+						 					//console.log(index);
+						 					ba_session_id=index;
+						 				});
+					 				});
+				 				});
+				 			}
+				 			else{
+				 				//window.localStorage.setItem("TYPE","SubCategory");
+				 				//window.localStorage.setItem("currentID", ba_subcat_id);
+					 			//		window.localStorage.setItem("content",Object.keys(value).length);
+				 				console.log("SSS"+Object.keys(value).length);
+				 				$.map(value, function(value, index) {
+					 				
+						 					console.log(index);
+						 					ba_session_id=index;
+						 		});
+				 			}
+				 		});
+				 	});
+				 }
+			}
+			else{
+
+			}
+		 });
+
+
+	});
+}
+else{
+
+}
+
+//alert(ba_bundle_id);
+
+//for get session paid detail
+	var cname="/IndividualSubscription";
+	var subcate_index=[];
+	var final_conve_data=[];
+	
+	window.cat_index=0;
+	firebase.database().ref("Users/"+user.user_id+cname+"/session").once("value",function(snapshot){
+								//alert();
+		snapshot.forEach(function(childSnapshot) {
+
+  		console.log(childSnapshot.val());
+  		//alert(childSnapshot.val());
+  		childData=childSnapshot.val();
+      final_conve_data.push(childData['id']);
+			
+		});
+    //console.log(final_conve_data);
+    
+		window.localStorage.setItem("cove_data",JSON.stringify(final_conve_data));
+    
+  });
+
   /*Getting last inserted quotes */
 
 firebase.database().ref("DailyQuotes").orderByChild("quote_id").limitToLast(1).on("value", function(snapshot) {
@@ -115,6 +224,7 @@ firebase.database().ref("DailyQuotes").orderByChild("quote_id").limitToLast(1).o
 firebase.database().ref("Category").orderByKey().on("value", function(snapshot) {
 	var c = [];
 	var session = [];
+	var session2 = [];
 	var ht ='';
 	var desc = '';
 			snapshot.forEach(function(childSnapshot) {
@@ -131,14 +241,19 @@ firebase.database().ref("Category").orderByKey().on("value", function(snapshot) 
 				//console.log(childSnapshot.getPriority());
 				c.push(childSnapshot.key);
 				var ht = '<div class="row Margins "><p class="MainMenu1 "><span class="i">'+childSnapshot.key+'</span>&nbsp;&nbsp;<a href="#" class="learnMorestyle" style="outline:none;" data-toggle="modal" data-target="#exampleModalCenter2"><i>LEARN MORE</i></a></p></div><br><div class="container text-center cardContainers"><div class="row Margins text-center playe">';
-				if(childData.session_subcription_type == 'Free' && childSnapshot.key == '10 Day Intro Program'){
+				if(childData.session_subscription_type == 'Free' && childSnapshot.key == '10 Day Intro Program'){
                 console.log(childSnapshot.key);
 					var blen = Object.keys(childData.Bundle).length;
 					var sblen = Object.keys(childData.SubCategory).length;
 					session.push(childData.Session);
 					var cid = childData.category_id;
-						window.localStorage.setItem("cid",cid);
+				//	alert(key);
+						//window.localStorage.setItem("cid",key);
+						window.localStorage.setItem("cid",childData.category_id);
+									window.localStorage.setItem("bid","");
+									window.localStorage.setItem("subcategory_id","");
 					$.map(childData.Session, function(value, index) {
+					//	window.localStorage.setItem("Dname",key);
 					   // console.log(value.subcategory_id);
 						//console.log(value.session_name);
 						//(!window.localStorage.getItem('cat') ||  window.localStorage.getItem('cat') != 'Deep Dive' || window.localStorage.getItem('cat') != 'Quick Dive'){
@@ -162,11 +277,29 @@ firebase.database().ref("Category").orderByKey().on("value", function(snapshot) 
 					i++;
 					});
 				}
-				if(childSnapshot.key == 'Open Dive'){
+				if(childSnapshot.key == 'Open Dive' || childSnapshot.hasChild("Session") || childData.Session != ""){
                 console.log(childSnapshot.key);
-					var blen = Object.keys(childData.Bundle).length;
+					//var blen = Object.keys(childData.Bundle).length;
 					var sblen = Object.keys(childData.SubCategory).length;
 					session.push(childData.Session);
+					//window.localStorage.setItem("TYPE","Session");
+					if(childSnapshot.key == window.localStorage.getItem("currentCat"))
+								{	
+									window.localStorage.setItem("cid",childData.category_id);
+									window.localStorage.setItem("bid","");
+									window.localStorage.setItem("subcategory_id","");
+
+								//change dashboard html value
+								//	$(".bannerHeader").html(childSnapshot.key);
+//$(".day").html(window.localStorage.getItem("content"));
+								//	$(".totalday").html(Object.keys(childData.Session).length);
+
+									//alert(childSnapshot.key);
+								//	window.localStorage.setItem("Dname",childSnapshot.key);
+									console.log(childData.Session);
+								//	window.localStorage.setItem("Slen",Object.keys(childData.Session).length);
+									//session2.push(childData.Session);
+								}
 					$.map(childData.Session, function(value, index) {
 					   // console.log(value.subcategory_id);
 						//console.log(value.session_name);
@@ -194,9 +327,25 @@ firebase.database().ref("Category").orderByKey().on("value", function(snapshot) 
                 console.log(childSnapshot.key);
 					var blen = Object.keys(childData.Bundle).length;
 					var sblen = Object.keys(childData.SubCategory).length;
+					//window.localStorage.setItem("TYPE","Bundle");
 					$.map(childData.Bundle, function(value, index) {
 						//console.log(value.session_name);
-						
+						if(index == window.localStorage.getItem("currentID") && childSnapshot.key == window.localStorage.getItem("currentCat"))
+								{	
+									window.localStorage.setItem("cid",childData.category_id);
+									window.localStorage.setItem("bid",value.bundle_id);
+									window.localStorage.setItem("subcategory_id","");
+										//change dashboard html value
+
+								//	$(".bannerHeader").html(value.bundle_name);
+								//	$(".day").html(window.localStorage.getItem("content"));
+								//	$(".totalday").html(Object.keys(value.Session).length);
+
+									//window.localStorage.setItem("Dname",value.bundle_name);
+									console.log(value.Session);
+									//window.localStorage.setItem("Slen",object.keys(value.Session).length);
+									//session2.push(value.Session);
+								}
 						if(i==window.localStorage.getItem('content')){
 							//$(".conv").html(value.session_name);
 						}
@@ -212,14 +361,62 @@ firebase.database().ref("Category").orderByKey().on("value", function(snapshot) 
 				}
 				/*Deep Dive and new Quick Dive structure*/
 				if(childSnapshot.hasChild("SubCategory")){
+
 				//	alert(childSnapshot.key.length);
                 console.log(childSnapshot.key);
+                if(childData.Bundle){
+
 					var blen = Object.keys(childData.Bundle).length;
+                }else{
+					var blen = 0;
+                	
+                }
 					var sblen = Object.keys(childData.SubCategory).length;
 					$.map(childData.SubCategory, function(value, index) {
 						//sub += index;
-						//console.log(value.session_name);
-						
+						if(!childSnapshot.hasChild('Bundle')){
+								if(index == window.localStorage.getItem("currentID") && childSnapshot.key == window.localStorage.getItem("currentCat"))
+								{	
+									window.localStorage.setItem("cid",childData.category_id);
+									window.localStorage.setItem("bid","");
+									window.localStorage.setItem("subcategory_id",value.subcategory_id);
+									//change dashboard html value
+
+								//	$(".bannerHeader").html(value.subcategory_name);
+								//	$(".day").html(window.localStorage.getItem("content"));
+								//	$(".totalday").html(Object.keys(value.Session).length);
+
+
+									//window.localStorage.setItem("Dname",value.subcategory_name);
+									console.log(value.Session);
+									//window.localStorage.setItem("Slen",Object.keys(value.Session).length);
+									//session2.push(value.Session);
+								}
+						}else{
+
+							$.map(value.Bundle, function(value2, index) {
+								// window.localStorage.setItem("TYPE","S&B");
+								if(value.bundle_id == window.localStorage.getItem("currentID") && childSnapshot.key == window.localStorage.getItem("currentCat"))
+								{
+									//alert(value2.bundle_name);
+									//change dashboard html value
+window.localStorage.setItem("cid",childData.category_id);
+									window.localStorage.setItem("bid",value2.bundle_id);
+									window.localStorage.setItem("subcategory_id",value.subcategory_id);
+									//$(".bannerHeader").html(value2.bundle_name);
+									//$(".day").html(window.localStorage.getItem("content"));
+									//$(".totalday").html(Object.keys(value2.Session).length);
+
+									//window.localStorage.setItem("Dname",value2.bundle_name);
+									//alert(index+"="+window.localStorage.getItem("currentID"));	
+									console.log(value2.Session);
+									//session2.push(value2.Session);
+									//window.localStorage.setItem("Slen",Object.keys(value2.Session).length);
+								}
+								//session.push(value.Session);
+							});
+						}
+//console.log(session2);
 						if(i==window.localStorage.getItem('content')){
 							//$(".conv").html(value.session_name);
 						}
@@ -283,18 +480,24 @@ firebase.database().ref("Category").orderByKey().on("value", function(snapshot) 
 						});		
 
 				//				$(".cat").html(ht);
-				if(window.localStorage.getItem('cat') == '10 Day Intro Program' && childData.session_subcription_type == 'Free' || !window.localStorage.getItem('cat') ){
+				if(window.localStorage.getItem('cat') == '10 Day Intro Program' && childData.session_subscription_type == 'Free' || !window.localStorage.getItem('cat') ){
 					window.localStorage.setItem('session',JSON.stringify(session));
+					window.localStorage.setItem('session2',JSON.stringify(session2));
 				}
 				$(".learnMorestyle").click(function(){
+					//alert(5);
 								if(key == $(this).prev().text()){
 									desc = childData.category_description;
+									var cat = $(this).prev().text();
+									$(".modal-content .modal-body .modal-title").html(cat);
+									$(".modal-body p").html(desc);
 								}
 							});
 			});
 dash();
 
 				$(".learnMorestyle").click(function(){
+					//alert(5);
 				var cat = $(this).prev().text();
 				$(".modal-content .modal-body .modal-title").html(cat);
 				$(".modal-body p").html(desc);
@@ -345,14 +548,23 @@ conversation++;
 	}
 }
 }
-console.log("d"+$(".modal-body").html());	
+console.log("d"+$(".modal-body").html());
+if(window.localStorage.getItem("Dname") == "10 Day Intro Program"){
+//$(".bannerHeader").html(window.localStorage.getItem("Intro Program"));
+}else{
+//$(".bannerHeader").html(window.localStorage.getItem("Dname"));
+}
+//$(".day").html(window.localStorage.getItem("content"));
+//$(".totalday").html(window.localStorage.getItem("Slen"));
+
 //console.log(window.localStorage.getItem('content'));
 $(".bannerButton").click(function(){
 	var day = window.localStorage.getItem('content');
-		window.localStorage.removeItem("cat");
+		//window.localStorage.removeItem("cat",);
 		window.localStorage.setItem("subcategory_id","");
         window.localStorage.setItem("bid","");
-	//window.localStorage.setItem("cat","10 Day Intro Program");
+        //window.localStorage.setItem("cid","-L9J9wr-WF71xLKGpHrn"); // remove after new code for Beign button
+	window.localStorage.setItem("cat","10 Day Intro Program");
 	var user = JSON.parse(window.localStorage.getItem('user'));
 		// if(day>8 && day<=10){
 		// 	 $('#exampleModalCenter').modal('show');
@@ -463,6 +675,13 @@ $(".nav-link").click(function(){
 				//window.location = "quickdive.php";
 				
 			}
+			if(childSnapshot.hasChild("SubCategory") &&  (childSnapshot.key).toUpperCase() == cat.toUpperCase() && childSnapshot.child("SubCategory").val() != ""){
+				window.localStorage.setItem("cat",childSnapshot.key);
+				console.log("quick");
+				window.localStorage.setItem("back",false);
+				//window.location = "quickdive.php";
+				
+			}
 			if( (childSnapshot.key).toUpperCase() == cat.toUpperCase() && childSnapshot.child("Bundle").val() == ""){
 				console.log("open");
 				sessionStorage.setItem("cat", childSnapshot.key);
@@ -484,8 +703,9 @@ var user = JSON.parse(window.localStorage.getItem('user'));
 
 var $_GET=[];
 window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(a,name,value){$_GET[name]=value;});
-//if($_GET['auth']){
-$.get('http://34.215.40.163/ipn/result.txt', function(data) {
+if($_GET['auth']){
+	$(".page-loader-wrapper").css("display","unset");
+$.get('http://34.215.40.163/ipn/'+user.user_id+'.txt', function(data) {
    var str = data;
    var arr = str.split("&");
    		console.log(data);
@@ -512,7 +732,7 @@ window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(a,name,value){$_
 
 console.log($_GET);
    	for(var i in arr){
-   		//console.log(arr[i].substring(arr[i].indexOf("=")+1));
+   		console.log(arr[i].substring(arr[i].indexOf("=")+1));
       // 	console.log(arr[i].substring(0,arr[i].indexOf("=")+1));
 
    		switch (arr[i].substring(0, arr[i].indexOf("="))) {
@@ -567,7 +787,7 @@ console.log($_GET);
     	}
 
         break;
-     case "custom":
+ /*    case "custom":
     	if(arr[i].substring(arr[i].indexOf("=")+1) == "M"){
 
         subcription_type = "Monthly";
@@ -576,11 +796,11 @@ console.log($_GET);
     		
     	}
        
-        break;
+        break;*/
 }
    	}
    var chkauth=localStorage.getItem('payment');
-   //alert(chkauth);
+  // alert(s);
    //window.location.reload();
 if($_GET["auth"] && chkauth=='true'){
 	//alert(subcription_type);
@@ -595,15 +815,22 @@ if($_GET["auth"] && chkauth=='true'){
                     + currentdate.getMinutes() + ":" 
                     + currentdate.getSeconds();
                    // alert(subcription_type);
-   var data = {transaction_id:txid,payer_id:pyid,name:n,email:eml,payment_type:type,payment_status:status,date:time,state:state,city:city,price:total,currency:currency,subcription_type:subcription_type,item_name:item_name};
+   var data = {transaction_id:txid,payer_id:pyid,name:n,email:eml,payment_type:type,payment_status:status,date:time,state:state,city:city,price:total,currency:currency,subscription:'active',subscription_type:subcription_type,item_name:item_name};
    var db = firebase.database();
 
    db.ref("Users/"+user.user_id).update({membership_type:"Paid"});
    db.ref("Users/"+user.user_id).update({lastUpdated_on:datetime});
 			/*db.ref("Users/"+user.user_id+"/payment").child(txid).set(data);*/ // Update lalted time on pause
-			db.ref("Users/"+user.user_id+"/payment").push(data); // Update lalted time on pause
-			window.localStorage.setItem("paymentconfirm","true");
-				
+			db.ref("Users/"+user.user_id+"/payment").push(data).then(function(){
+				$(".page-loader-wrapper").css("display","none");
+						window.localStorage.setItem("paymentconfirm","true");
+				var useremail = user.email;
+				var newtemp2 = '<div style="font-family:verdana;font-size:12px;color:#555555;line-height:14pt"><div style="width:590px"><div style="background:url(http://34.215.40.163/img/e_top.png) no-repeat;width:100%;height:75px;display:block"><div style="padding-top:30px;padding-left:50px;padding-right:50px"> <a href="http://34.215.40.163" target="_blank"><img src="http://34.215.40.163/img/de.png" style="border:none"></a></div></div><div style="background:url(http://34.215.40.163/img/e_mid.png) repeat-y;width:100%;display:block"><div style="padding-left:50px;padding-right:50px;padding-bottom:1px"><div style="border-bottom:1px solid #ededed"></div><div style="margin-bottom:30px"><span style="color:#000;"><br>Thank for your purchase. We have recevied your payment for '+subcription_type+' subscription. <br><br>DiveThru.<br></span></div></div></div></div></div>';
+
+                         $.post("http://34.215.40.163/sendEreceipt.php", { "email": "companytest1206@gmail.com" , "body" : newtemp2 }, function(result) {
+                         
+                            });
+
 				if(window.localStorage.getItem("paymentconfirm")=="true"){
 					var t = '';
 					var useremail = user.email;
@@ -615,32 +842,42 @@ if($_GET["auth"] && chkauth=='true'){
 					//alert(total);
 					console.log(total);
 						t = t + total;
-					 html += '<tr ><td style="padding:15px;">'+item_name+'</td><td >'+subcription_type+'</td><td >$'+total+'</td><td >$'+total+'</td></tr>';
+				//	 html += '<tr ><td style="padding:15px;">'+item_name+'</td><td >'+subcription_type+'</td><td >$'+total+'</td><td >$'+total+'</td></tr>';
 
 					//});
-					html += '<tr style="font-weight:600;"><td style="padding:15px;text-align:right;font-size:20px;" colspan="3">Total</td><td >$'+t+'</td></tr></table></div></div>';
-					console.log(html);
-						 $.post("http://34.215.40.163/sendEreceipt.php", { "email": useremail , "body" : html }, function(result) {
+				//	html += '<tr style="font-weight:600;"><td style="padding:15px;text-align:right;font-size:20px;" colspan="3">Total</td><td >$'+t+'</td></tr></table></div></div>';
+
+
+					var newtemp = '<div style="font-family:verdana;font-size:12px;color:#555555;line-height:14pt"><div style="width:590px"><div style="background:url(http://34.215.40.163/img/e_top.png) no-repeat;width:100%;height:75px;display:block"><div style="padding-top:30px;padding-left:50px;padding-right:50px"> <a href="http://34.215.40.163" target="_blank"><img src="http://34.215.40.163/img/de.png" style="border:none" ></a></div></div><div style="background:url(http://34.215.40.163/img/e_mid.png) repeat-y;width:100%;display:block"><div style="padding-left:50px;padding-right:50px;padding-bottom:1px"><div style="border-bottom:1px solid #ededed"></div><div style="margin:20px 0px;font-size:30px;line-height:30px;text-align:left">Thank you</div><div style="margin-bottom:30px"><span style="color:#000;">For Subscribing, Enjoy DiveThru to find the peace within.<br><br></span><div style="margin-bottom:20px;text-align:left"><b>Transaction ID:&nbsp;</b>'+txid+'<br><b>Date:&nbsp;</b>'+datetime+'</div></div><div><div></div><span></span><table style="width:100%;margin:5px 0"><tbody><tr><td style="text-align:left;font-weight:bold;font-size:12px">Item</td><td style="text-align:right;font-weight:bold;font-size:12px" width="100">Price</td></tr></tbody></table><div style="border-bottom:1px solid #ededed"></div><table style="width:100%;margin:5px 0"><tbody><tr></tr><tr><td style="text-align:left;font-size:12px;padding-right:10px"><span><span style="letter-spacing: 2px;text-transform: uppercase;">'+subcription_type+'</span>&nbsp;('+item_name+')</span></td><td style="text-align:right;font-size:12px"><span>$'+total+'</span><span></span></td></tr></tbody></table><div style="border-bottom:1px solid #ededed"></div><table style="width:100%;margin:5px 0"><tbody><tr><td style="text-align:right;font-size:12px;font-weight:bold;" width="150" colspan="2"><span style="">Total:&nbsp;&nbsp;&nbsp; </span>$'+t+'</td></tr></tbody></table></div></div></div></div></div>';
+
+
+//					console.log(html);
+						 $.post("http://34.215.40.163/sendEreceipt.php", { "email": useremail , "body" : newtemp }, function(result) {
 						 	console.log(result);
 						 	window.localStorage.setItem("paymentconfirm","false");
-						 	swal({title: "Thank you", text: "For Subscription!!", type: "success"},
-                                        function(){ 
-                                         
-                                     }
-                                );
-						 	window.setTimeout(function() {
-                                  window.location.href = "dashboard.php";
-                                }, 3000);
+						 	
+						 	
 						 });
 
+
 				}
+});
 
 
+						 swal({title: "Thank you", text: "For Subscription!!", type: "success"},
+                                        function(){ 
+                            				window.setTimeout(function() {
+			                                  window.location.href = "dashboard.php";
+			                                }, 3000);             
+                                     }
+                                );
 			
 }
 console.log(data);
-}, 'text');
-//}
+}, 'text').fail(function() {
+    window.location.reload(); // reload if file not wriiten
+  });
+}
 
 var eml = $(".email").val();
 			var txid = $(".tr_id").val();
@@ -655,7 +892,7 @@ var eml = $(".email").val();
 			var address = $(".address").val();
 			var city = $(".city").val();
 			var description = $(".description").val();
-			var data = {transaction_id:txid,payer_id:pyid,name:full_name,email:eml,payment_type:type,payment_status:status,date:time,state:state,city:city,price:total,currency:currency,subcription_type:"Lifetime"};
+			var data = {transaction_id:txid,payer_id:pyid,name:full_name,email:eml,payment_type:type,payment_status:status,date:time,state:state,city:city,price:total,currency:currency,subscription:'active',subscription_type:"Lifetime"};
 			//console.log(data);
 			console.log(time);
 			var tranc_data_entry=false;
@@ -695,7 +932,7 @@ var eml = $(".email").val();
 											
 							if(!user.IndividualSubscription){
 
-								data={id:session_id,transaction_id:txid,payer_id:pyid,name:n,email:eml,payment_type:type,payment_status:status,date:time,state:state,city:city,price:total,currency:currency,subcription_type:subcription_type,item_name:item_name};
+								data={id:session_id,transaction_id:txid,payer_id:pyid,name:n,email:eml,payment_type:type,payment_status:status,date:time,state:state,city:city,price:total,currency:currency,subscription:'active',subscription_type:subcription_type,item_name:item_name};
 								console.log(data);
 								//alert(data);
 								db.ref("Users/"+user.user_id+cname).child(cat).push(data);
@@ -729,7 +966,7 @@ var eml = $(".email").val();
 								if(cat_index==cat)
 								{
 									 //alert(cat_index);
-									 data={id:session_id,transaction_id:txid,payer_id:pyid,name:n,email:eml,payment_type:type,payment_status:status,date:time,state:state,city:city,price:total,currency:currency,subcription_type:subcription_type,item_name:item_name};
+									 data={id:session_id,transaction_id:txid,payer_id:pyid,name:n,email:eml,payment_type:type,payment_status:status,date:time,state:state,city:city,price:total,currency:currency,subscription:'active',subscription_type:subcription_type,item_name:item_name};
 									 console.log(data);
 									
 									db.ref("Users/"+user.user_id+cname+"/"+cat_index).push(data);
@@ -743,7 +980,7 @@ var eml = $(".email").val();
 									// console.log(Object.keys(subcate_index));
 									//cat="session2";
 									
-									 data={id:session_id,transaction_id:txid,payer_id:pyid,name:n,email:eml,payment_type:type,payment_status:status,date:time,state:state,city:city,price:total,currency:currency,subcription_type:subcription_type,item_name:item_name};
+									 data={id:session_id,transaction_id:txid,payer_id:pyid,name:n,email:eml,payment_type:type,payment_status:status,date:time,state:state,city:city,price:total,currency:currency,subscription:'active',subscription_type:subcription_type,item_name:item_name};
 									 console.log(data);
 									// //alert(data);
 									 db.ref("Users/"+user.user_id+cname).child(cat).push(data);
@@ -761,28 +998,48 @@ var eml = $(".email").val();
 						}
 						
 			/*db.ref("Users/"+user.user_id+"/payment").child(txid).set(data);*/ // Update lalted time on pause
+				window.localStorage.setItem("paymentconfirm","true");
 
+								var useremail = user.email;
+				var newtemp2 = '<div style="font-family:verdana;font-size:12px;color:#555555;line-height:14pt"><div style="width:590px"><div style="background:url(http://34.215.40.163/img/e_top.png) no-repeat;width:100%;height:75px;display:block"><div style="padding-top:30px;padding-left:50px;padding-right:50px"> <a href="http://34.215.40.163" target="_blank"><img src="http://34.215.40.163/img/de.png" style="border:none"></a></div></div><div style="background:url(http://34.215.40.163/img/e_mid.png) repeat-y;width:100%;display:block"><div style="padding-left:50px;padding-right:50px;padding-bottom:1px"><div style="border-bottom:1px solid #ededed"></div><div style="margin-bottom:30px"><span style="color:#000;"><br>Thank for your purchase. We have recevied your payment for '+subcription_type+' subscription. <br><br>DiveThru.<br></span></div></div></div></div></div>';
+
+                         $.post("http://34.215.40.163/sendEreceipt.php", { "email": "companytest1206@gmail.com" , "body" : newtemp2 }, function(result) {
+                         
+                            });
+				
 			//
 			 // Update lalted time on pause
 				//alert(user.payment);
-				if(user.payment){
+				if(window.localStorage.getItem("paymentconfirm")=="true"){
 					var t = '';
+					var currentdate = new Date(); 
+                var date =  ("0" + currentdate.getDate()).slice(-2)  + "-"
+                    + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                    +currentdate.getFullYear()+ " "  
+                    + currentdate.getHours() + ":"  
+                    + currentdate.getMinutes() + ":" 
+                    + currentdate.getSeconds();
+
 					var useremail = user.email;
+				
+
 					var html = '<div style="font-family: sans-serif;"><div style="background-color:#80429C;text-align:center;"><img src="http://34.215.40.163/img/logo_email.png"></div><div style="margin-top:25px;margin-left: 20px;margin-right: 20px;"><table border="1" style="width:100%;border-collapse: collapse;text-align:center;"><tr style="font-size:20px;background-color: #cccccc8f;"><th style="min-width: 160px;">Item</th><th style="max-width: 30px;padding:15px;">Subscription <br>Type</th><th>Price</th><th style="max-width: 50px;">Amount</th></tr>';
-					$.map(user.payment, function(value, index){
-						/*$.map(index, function(value, index){
+					//$.map(user.payment, function(value, index){
 
-						});*/
-					console.log(value);
-						t = t + value.price;
-					 html += '<tr ><td style="padding:15px;">'+value.item_name+'</td><td >'+value.subcription_type+'</td><td >$'+value.price+'</td><td >$'+value.price+'</td></tr><tr style="font-weight:600;"><td style="padding:15px;text-align:right;font-size:20px;" colspan="3">Total</td><td >$'+t+'</td></tr>';
+					//console.log(value);
+						t = t + total;
 
-					});
+					var newtemp = '<div style="font-family:verdana;font-size:12px;color:#555555;line-height:14pt"><div style="width:590px"><div style="background:url(http://34.215.40.163/img/e_top.png) no-repeat;width:100%;height:75px;display:block"><div style="padding-top:30px;padding-left:50px;padding-right:50px"> <a href="http://34.215.40.163" target="_blank"><img src="http://34.215.40.163/img/de.png" style="border:none" ></a></div></div><div style="background:url(http://34.215.40.163/img/e_mid.png) repeat-y;width:100%;display:block"><div style="padding-left:50px;padding-right:50px;padding-bottom:1px"><div style="border-bottom:1px solid #ededed"></div><div style="margin:20px 0px;font-size:30px;line-height:30px;text-align:left">Thank you</div><div style="margin-bottom:30px"><span style="color:#000;">For Subscribing, Enjoy DiveThru to find the peace within.<br><br></span><div style="margin-bottom:20px;text-align:left"><b>Transaction ID:&nbsp;</b>'+txid+'<br><b>Date:&nbsp;</b>'+date+'</div></div><div><div></div><span></span><table style="width:100%;margin:5px 0"><tbody><tr><td style="text-align:left;font-weight:bold;font-size:12px">Item</td><td style="text-align:right;font-weight:bold;font-size:12px" width="100">Price</td></tr></tbody></table><div style="border-bottom:1px solid #ededed"></div><table style="width:100%;margin:5px 0"><tbody><tr></tr><tr><td style="text-align:left;font-size:12px;padding-right:10px"><span><span style="letter-spacing: 2px;text-transform: uppercase;">'+subcription_type+'</span>&nbsp;('+item_name+')</span></td><td style="text-align:right;font-size:12px"><span>$'+total+'</span><span></span></td></tr></tbody></table><div style="border-bottom:1px solid #ededed"></div><table style="width:100%;margin:5px 0"><tbody><tr><td style="text-align:right;font-size:12px;font-weight:bold;" width="150" colspan="2"><span style="">Total:&nbsp;&nbsp;&nbsp; </span>$'+t+'</td></tr></tbody></table></div></div></div></div></div>';
+
+					// html += '<tr ><td style="padding:15px;">'+value.item_name+'</td><td >'+value.subcription_type+'</td><td >$'+value.price+'</td><td >$'+value.price+'</td></tr><tr style="font-weight:600;"><td style="padding:15px;text-align:right;font-size:20px;" colspan="3">Total</td><td >$'+t+'</td></tr>';
+
+				//	});
 					html += '</table></div></div>';
-					console.log(html);
+					//console.log(html);
 					//alert(html);
-						 $.post("http://34.215.40.163/sendEreceipt.php", { "email": useremail , "body" : html }, function(result) {
+						 $.post("http://34.215.40.163/sendEreceipt.php", { "email": useremail , "body" : newtemp }, function(result) {
 						 	console.log(result);
+						 		window.localStorage.setItem("paymentconfirm","false");
 						 });
 				}
 

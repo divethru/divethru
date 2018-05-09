@@ -52,13 +52,12 @@ function login_user() {
       var lout = '<a class="nav-link" id="lg" style="padding-right: 1.5rem; padding-left: 1.5rem;" href="#" onclick="sg_out();">LOG OUT<span class="sr-only">(current)</span></a>';
             ref.once('value').then( function(dataSnapshot) {
               var currentdate = new Date(); 
-         var datetime = 
-             + currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + "  "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
+                var datetime = ("0" + currentdate.getDate()).slice(-2)  + "-"
+                    + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                    +currentdate.getFullYear()+ " "  
+                    + currentdate.getHours() + ":"  
+                    + currentdate.getMinutes() + ":" 
+                    + currentdate.getSeconds();
                   firebase.database().ref('Users').child(user.uid).child("lastUpdated_on").set(datetime);
               var data = dataSnapshot.val();
         window.localStorage.setItem('user',JSON.stringify(dataSnapshot));

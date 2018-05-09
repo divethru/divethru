@@ -63,6 +63,7 @@ $product_currency = 'USD';
 $cycle_amount = $_POST['price'];
 $cycle = $_POST['select_plan'];
 $_SESSION["userid"] = $_POST["userid"];
+$userid = $_POST["userid"];
 $token = $_POST["token"];
 /*
 if ($_POST['select_plan'] == 'Daily') {
@@ -106,7 +107,7 @@ $notifyURL     = 'http://34.215.40.163/ipn';
 <input type="hidden" name="p3" value="1">
 <input type="hidden" name="t3" value="<?php echo $cycle; ?>">
 <input type="hidden" name="currency_code" value="<?php echo $product_currency; ?>">
-<input type="hidden" name="custom" value="<?php echo $_POST['select_plan']; ?>">
+<input type="hidden" name="custom" value="<?php echo $userid; ?>">
 <input type = "hidden" name = "cancel_return" value = "<?php echo $cancel_return ?>">
 <input type = "hidden" name = "return" value = "<?php echo $success_return; ?>">
 <input type="hidden" name="notify_url" value="<?php echo $notifyURL; ?>">

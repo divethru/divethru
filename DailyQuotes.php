@@ -19,20 +19,28 @@ $date = date("Y-m-d H:s");
 $gmdate = gmdate("Y-m-d H:s");
 $cdate = date("Y-m-d H:s",strtotime($date));
 //echo strtotime($cdate)."==".$gmdate;
+$user = get('Users');
+                //echo "s".$_POST['message'];
+$message = isset($_POST['message'])?$_POST['message']:"Just";
+  
 
-	$c = date("Y-m-d H:i"); //datw
-	$sc = strtotime($cdate); //timestap
-//  echo date_default_timezone_get()."</br>";
-$quote = get('DailyQuotes');
-$DailyQuotes = [];
+    foreach($user as $ky => $u){
+        foreach($u as $k => $v){
+        
+            if($k == 'device_token'){
+                $tokenList[] = $v;
+            }
 
+        }
+    }
+if(count($tokenList) > 0){
+        foreach($tokenList as $key => $value){
+                notify($value,$message);
 
-foreach ($quote as $key => $value) {
-    $DailyQuotes[] = $value["qoute_description"];
+        }
 }
-$length = count($DailyQuotes);
-
-
+// print_r($tokenList);
+// die;
 function get($path){
     	$fb = Firebase::initialize(FIREBASE_URL, FIREBASE_SECRET);
 
@@ -45,18 +53,45 @@ return $nodeGetContent;
 }
 
 
+function notify($token,$msg){
+    
 
-if(count($DailyQuotes)>0){
-        $response['error_code'] = 0;
-        $response['message'] = 'Daily Quotes';
-        $response['status'] = true;
-        $response['quotes'] = $DailyQuotes;
-        //$response['quotes'] = json_encode($DailyQuotes);
-        //$response['quotes'] = $DailyQuotes[$length-1];
-}else{
-        $response['error_code'] = 1;
-        $response['message'] = 'error';
-        $response['status'] = true;
-        $response['quotes'] = $DailyQuotes;
+ $fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+    $notification = [
+            'title' =>'DiveThru',
+            'body' => $msg,
+            'icon' =>'myIcon', 
+            'sound' => 'mySound'
+        ];
+        $extraNotificationData = ["message" => $notification];
+
+        $fcmNotification = [
+            //'registration_ids' => $tokenList, //multple token array
+            'to'        => $token, //single token
+            'notification' => $notification,
+            'data' => $extraNotificationData
+        ];
+
+        $headers = [
+            'Authorization: key=' . API_ACCESS_KEY,
+            'Content-Type: application/json'
+        ];
+
+        if($msg){
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$fcmUrl);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
+        $result = curl_exec($ch);
+        curl_close($ch);
+        }
+
+
+        echo $result;
+       // echo $msg;
+        print_r($fcmNotification);
 }
-echo  json_encode($response);

@@ -85,7 +85,7 @@ foreach($category as $k => $v){
 <head>
     <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <title>Blank Page | Bootstrap Based Admin Template - Material Design</title>
+    <title>Bundle | DiveThru Admin </title>
     <!-- Favicon-->
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
@@ -538,6 +538,7 @@ $("input[type=file]").checkImageSize();
                  return regexpr.test(value);
                }, "Please enter Only characters");
     $(".bundledit").click(function(){
+         // $('.page-loader-wrapper').fadeIn();
         $('#form_validation_bundle').validate({
                 rules: {
                     'name': {
@@ -817,23 +818,26 @@ $("input[type=file]").checkImageSize();
                                    // console.log(inappdata);
                                 //$(".inappdetails").show();
                                 }
-                            return booksRef.update(update);
+                            return booksRef.update(update).then(function(snap){
+                                //  $('.page-loader-wrapper').fadeOut();
+                                  swal({
+                                        title: "Updated!",
+                                        text: "Bundle has been Updated.",
+                                        html:true,
+                                        type: "success",
+                                        showCancelButton: false,
+                                        confirmButtonColor: "#86CCEB",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    }, function () {
+                                        // window.setTimeout(function() {
+                                          window.location.href = "bundle_list.php";
+                                        //}, 1000);
+                                    });
+                            });
                            
             });
-                            swal({
-                                title: "Updated!",
-                                text: "Bundle has been Updated.",
-                                html:true,
-                                type: "success",
-                                showCancelButton: false,
-                                confirmButtonColor: "#86CCEB",
-                                confirmButtonText: "OK",
-                                closeOnConfirm: false
-                            }, function () {
-                                 window.setTimeout(function() {
-                                  window.location.href = "bundle_list.php";
-                                }, 1000);
-                            });
+                            
         }
     });
         
