@@ -1,4 +1,15 @@
+//for user already login
+
+
+    var user=window.localStorage.getItem('user');
+    if(user!=null)
+    {
+     // window.location.href = "dashboard.php";
+    }
+
+
 firebase.auth().onAuthStateChanged(function(user) {
+  //alert(user);
            if (user) {
             window.localStorage.setItem('cat','10 Day Intro Program');
          //var email=document.getElementById('email').value;
@@ -9,11 +20,28 @@ firebase.auth().onAuthStateChanged(function(user) {
                ref.once('value').then( function(dataSnapshot) {
                           var data = dataSnapshot.val();
                         console.log(data.activated_on);
-                        
+                        var date1 = new Date(); 
+
+                    var date2 = new Date(data.lastUpdated_on.substr(0,data.lastUpdated_on.indexOf(' ')));
+                    var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+                    //alert("a"+diffDays);
+                    // Usage gap in days
+                     firebase.database().ref('Users').child(user.uid).child("UsageGap").set(diffDays);   
 
                     if(data.activated_on != ''){
-                                                 var lout = '<a class="nav-link" id="lg" style="padding-right: 1.5rem; padding-left: 1.5rem;" href="#" onclick="sign_out();">LOG OUT<span class="sr-only">(current)</span></a>';
+                          var lout = '<a class="nav-link" id="lg" class="lg" style="rgba(0,0,0,.5) !important" href="#" onclick="sign_out();">LOG OUT<span class="sr-only">(current)</span></a>';
                           $(".log").html(lout);
+
+							$(".nav-link#lg").hover(function(){
+								$(this).css("color","#7dd3d5");
+							});
+
+							$(".nav-link#lg").mouseout(function(){
+								//$(this).css("color","#34495e");
+								//alert("out");
+							});
+
 
                        }
 
@@ -23,6 +51,11 @@ firebase.auth().onAuthStateChanged(function(user) {
               //alert("User does not exist");
            }
        });
+
+
+
+
+
 
 function login_user() {
   var history = [];    
@@ -52,12 +85,12 @@ function login_user() {
       var lout = '<a class="nav-link" id="lg" style="padding-right: 1.5rem; padding-left: 1.5rem;" href="#" onclick="sg_out();">LOG OUT<span class="sr-only">(current)</span></a>';
             ref.once('value').then( function(dataSnapshot) {
               var currentdate = new Date(); 
-                var datetime = ("0" + currentdate.getDate()).slice(-2)  + "-"
+                var datetime = currentdate.getFullYear() + "-"
                     + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
-                    +currentdate.getFullYear()+ " "  
-                    + currentdate.getHours() + ":"  
-                    + currentdate.getMinutes() + ":" 
-                    + currentdate.getSeconds();
+                    + ("0" + currentdate.getDate()).slice(-2)  + " "  
+                    + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                    + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                    + ("0"+currentdate.getSeconds()).slice(-2);
                   firebase.database().ref('Users').child(user.uid).child("lastUpdated_on").set(datetime);
               var data = dataSnapshot.val();
         window.localStorage.setItem('user',JSON.stringify(dataSnapshot));
@@ -71,15 +104,15 @@ function login_user() {
 
                console.log(JSON.stringify(history));
 window.localStorage.setItem("SessionHistory",JSON.stringify(history));         
-              console.log(data);
+
               // this.props.navigation.navigate('Tutorial');
               if (data.activated_on !== '') {
               console.log($(".log").html(lout));
                 if(data.visited == "" || data.visited == 0){
 
-                window.location.href = "http://34.215.40.163/welcome.php";
+                window.location = "welcome.php";
                 }else{
-                  window.location.href = "http://34.215.40.163/dashboard.php";
+                  window.location = "dashboard.php";
                 }
               } else {
 				        document.getElementById("p2").innerHTML = "";
@@ -214,8 +247,28 @@ function googlesave_user(){
   			// ...
          var ref = firebase.database().ref('Users').child(user.uid);
           ref.once('value').then( function(dataSnapshot) {
+
+
               if(dataSnapshot.val()!==null){
+
+                var data = dataSnapshot.val();
                 ref.update({"gid":gid});
+        window.localStorage.setItem('user',JSON.stringify(dataSnapshot));
+                if(!ref.visited)
+                {
+                  firebase.database().ref('Users').child(user.uid).child("visited").set(1);
+                }else{
+
+                  firebase.database().ref('Users').child(user.uid).child("visited").set(user.visted+1);
+                }
+var currentdate = new Date(); 
+                var datetime = currentdate.getFullYear() + "-"
+                    + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                    + ("0" + currentdate.getDate()).slice(-2)  + " "  
+                    + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                    + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                    + ("0"+currentdate.getSeconds()).slice(-2);
+                  firebase.database().ref('Users').child(user.uid).child("lastUpdated_on").set(datetime);
                 swal({
                           title: "Login!",
                           text: "User Login Sucessfully.",
@@ -228,7 +281,12 @@ function googlesave_user(){
                       }, function () {
                           window.setTimeout(function() {
                           
-                            window.location.href = "welcome.php";
+                            if(data.visited == "" || data.visited == 0){
+
+                            window.location = "welcome.php";
+                            }else{
+                              window.location = "dashboard.php";
+                            }
                           }, 1000);
                       });
 
@@ -250,13 +308,12 @@ function save_googleuser(uid,first_name,last_name,gid,email) {
 			//alert(uid);
 			//return;
 			var currentdate = new Date(); 
-			var datetime = 
-			    + currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
+                var datetime = currentdate.getFullYear() + "-"
+                    + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                    + ("0" + currentdate.getDate()).slice(-2)  + " "  
+                    + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                    + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                    + ("0"+currentdate.getSeconds()).slice(-2);
 			 var PCstatus = 'Mobile';
 			
 			 var isMobile = {
@@ -316,7 +373,7 @@ function save_googleuser(uid,first_name,last_name,gid,email) {
               "registered_on":datetime,
               "lastUpdated_on":datetime,
               "device_type":PCstatus,
-              "activated_on":"",
+              "activated_on":datetime,
               "activation_code":"",
               "device_token" : "",
               "membership_type" : "Free",

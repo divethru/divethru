@@ -213,7 +213,7 @@ return $nodeGetContent;
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
                                                 <div class='flex-style'>
                                                 <div class='icon'></div>
-                                                <input name="file" class="check-image-size input-file" id="catimage" type="file" onchange="uplaodfile()" accept="image/*" />
+                                                <input name="file" class="check-image-size input-file" id="catimage" type="file" data-min-width="1920" data-min-height="1080" data-max-width="1920" data-max-height="1080" onchange="uplaodfile()" accept="image/*" />
                                                 </div>
                                                 <br>
                                                 <img src="<?php echo $category["category_img"];?>" id="oldimg" width="50" height="50">
@@ -368,7 +368,7 @@ $("input[type=file]").checkImageSize();
         rules: {
             'name': {
                 required: true,
-                minlength: 6,
+                minlength: 2,
                 maxlength: 50,
                 regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
             }, 

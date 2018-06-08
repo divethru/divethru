@@ -14,6 +14,18 @@ $fb = Firebase::initialize(FIREBASE_URL, FIREBASE_SECRET);
 $bundle = '';
 $category = get("Category");
 
+/* Start Getting tags from table */
+
+$tag = get("Tags");
+$t = [];
+foreach($tag as $k => $v){
+    if(isset($v["tags"])){
+        $t[$v["tags_category"]] = explode(",",$v["tags"]);
+    }
+}
+
+/* End Getting tags from table */
+
 function get($path){
         $fb = Firebase::initialize(FIREBASE_URL, FIREBASE_SECRET);
 
@@ -128,6 +140,12 @@ foreach($category as $k => $v){
  width: 48px;
  height: 45px;
  background:url(images/audio.png); 
+}
+.tags label{
+    min-width: 300px;
+}
+#productid{
+    width: 80%;
 }
 </style>
 </head>
@@ -284,7 +302,34 @@ foreach($category as $k => $v){
                                 </div>
                                 <!--<label id="description-error" class="error" for="description">This field is required.</label></div>-->
                                 
+                                                                                                
+                                  <div class="form-group form-float">
+                                    <div class="form-line error">
+                                       <!-- <label class="form-label">Description</label>
+                                        </br>
+                                        </br>-->
+                                        <textarea name="qdescription" id="qdesc" cols="30" rows="5" class="form-control no-resize" required="" aria-required="true" placeholder="Session Quote Desciption"></textarea>
+                                    </div>
+                                <!--<label id="description-error" class="error" for="description">This field is required.</label>-->
+                                </div>
                                 
+                                   
+                               <div class="form-group form-float">
+                                    <div class="form-line error">
+                                    <label class="form-label">Quote Image (464 X 464)</label>
+                                    </br>
+                                    </br>
+                                     <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
+                                            <div class="dropzone-previews"></div>
+                                            <div class="fallback"> <!-- this is the fallback if JS isn't working -->
+                                                <input name="qimage" class=" check-image-size form-control " id="qimage" type="file" data-min-width="464" data-min-height="464" data-max-width="464" data-max-height="464" onchange="uplaodqimg()" accept="image/*" />
+                                                <br>
+                                                <input type="hidden" id="qimgurl">
+                                        <!--    </div> -->
+
+                                        
+                                    </div>
+                                </div>
                                 
                                <div class="form-group form-float">
                                     <div class="form-line error">
@@ -294,7 +339,8 @@ foreach($category as $k => $v){
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                                                <input name="session" class="check-image-size form-control " id="sessionimage" type="file" onchange="uplaodsimgfile()" accept="image/*" />
+                                                <input name="session" class="check-image-size form-control " data-min-width="1920" data-min-height="1080" data-max-width="1920" data-max-height="1080" id="sessionimage" type="file" onchange="uplaodsimgfile()" accept="image/*" />
+                                                <br>
                                                 <input type="hidden" id="simgurl">
                                         <!--    </div> -->
 
@@ -325,7 +371,7 @@ foreach($category as $k => $v){
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
                                                 <input name="meditaion" class="form-control" id="maudio" type="file"  accept="audio/*" style="width:auto;display:inline;"/>
-    
+                                            
                                                 <input type="hidden" id="murl">
                                                 <input type="hidden" id="mtime">
                                         <!--    </div> -->
@@ -364,6 +410,26 @@ foreach($category as $k => $v){
                                     </div>
                                 </div>
                                 
+                                <?php
+                                    $a = ["chk_decyour","chk_hopacc","chk_premo","chk_obface"];
+                                    $i = 0;
+                                    $j = 0;
+                                        foreach($t as $key => $val){
+                                            echo '<div class="form-group form-float sessiontag">
+                                    <div class="form-line error " ><label class="form-label">'.$key.'</label><br><br><div class="demo-checkbox tags">';
+                                                foreach($val as $k => $v){
+                                                    echo '<input type="checkbox" name="'.$a[$i].'" id="'.$v.'" class="filled-in" value="'.$v.'">
+                                        <label for="'.$v.'">'.$v.'</label>';
+                                                $j++;
+                                                }
+                                                echo "</div></div></div>";
+                                                $i++;
+                                        }
+                                        //die;
+                                    ?>
+
+
+
                                  <div class="form-group form-float SINAPP">
                                     <div class="form-line error " style="display:inline-flex;">
                                         <input type="checkbox" id="checkbox" class="inapp" name="checkbox">
@@ -371,7 +437,7 @@ foreach($category as $k => $v){
                                         <div class="form-group inappdetails" style="margin-bottom:0px;">    
                                                 <label for="productid">Product ID : </label>
                                             <input type="text" name="productid" id="productid" class="with-gap " placeholder="Enter Product Id" style="border:none;">
-
+                                            <br>
                                                 <label for="active">Active</label>
                                                 <div class="switch" style="display:initial;"><label><input type="checkbox" name="active" id="active"><span class="lever"></span></label></div>
                                         </div>
@@ -449,11 +515,14 @@ $("input[type=file]").checkImageSize();
         
             
         $(function () {
+          $(".sessiontag").show();
             $(".SINAPP").hide();
             $(".inappdetails").hide();
             $(".audio2").hide();
             $(".audio1").hide();
             $(".fa-spinner").hide();
+                window.fav = [];
+
       //      var config = {};
     //        config.placeholder = 'Description'; 
 //CKEDITOR.replace('ckeditor',config);
@@ -491,15 +560,21 @@ $("input[type=file]").checkImageSize();
             //alert(55);
             $(".bnd").show();
             $(".sub").show();
+            $(".sessiontag").hide();
+            $(".SINAPP").hide();
         }else if($("#cat option:selected").text() == 'Quick Dive'){
-            $(".sub").hide();
-            $(".bnd").show();
+            $(".sub").show();
+            $(".bnd").hide();
+            $(".sessiontag").show();
+            $(".SINAPP").show();
         }else{
             $(".sub").hide();
             $(".bnd").hide();
+            $(".SINAPP").hide();
+            $(".sessiontag").show();
             window.subcat = false;
         }
-         $(".SINAPP").hide();
+         // $(".SINAPP").hide();
         firebase.database().ref("/Category/"+c).on("value", function(snapshot) {
             snapshot.forEach(function(childSnapshot) {
                 // key
@@ -519,6 +594,8 @@ $("input[type=file]").checkImageSize();
                     
                 op += "<option value"+child.subcategory_id+">"+child.subcategory_name+"</option>";
                 });*/
+
+
                 if(childSnapshot.key == 'SubCategory'){
                    
                     var t = Object.values(childData);
@@ -528,10 +605,15 @@ $("input[type=file]").checkImageSize();
                         $(".audio1").show();
                         $(".audio2").show();
                         $(".sub").show();
+                        if($("#cat option:selected").text() == 'Quick Dive'){
+                         $(".bnd").hide();
+                        }else{
                          $(".bnd").show();
+                        }
                     }else if(t == ''){
                          $(".sub").hide();
                          $(".bnd").hide(); 
+                         $(".SINAPP").show();
                         window.bundle = false;                  
                         window.subcat = false;                  
                     }  
@@ -540,7 +622,10 @@ $("input[type=file]").checkImageSize();
                         window.bundle = true;
                     }*/
                     $.map(t, function(value, index) {
+
+                    if(value.Bundle && value.Bundle != ""){
                     console.log(Object.keys(value.Bundle).length);
+
                     if(Object.keys(value.Bundle).length > 0){
                          $(".SINAPP").hide();
                         window.bundle = true;
@@ -552,10 +637,11 @@ $("input[type=file]").checkImageSize();
                                       window.bundle = false;                  
                                     window.subcat = true;   
                        }
-                        console.log(Object.keys(value.Bundle).length);
+                    }
+                       // console.log(Object.keys(value.Bundle).length);
                         op += "<option value="+value.subcategory_id+">"+value.subcategory_name+"</option>";
                     });
-    //  console.log(op);
+      //console.log(op);
                         $("#subcat").html(op);
     //   $('.mdb-select').material_select('destroy'); 
                     $('select').selectpicker('refresh');
@@ -616,15 +702,22 @@ $("input[type=file]").checkImageSize();
                 rules: {
                     'name': {
                         required: true,
-                        minlength: 6,
+                        minlength: 2,
                         maxlength: 50,
                         //alphanumeric : ture,
                         regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
                     }, 
                     'description': {
                         required: true
+                    },
+                    'qdescription': {
+                        required: true
                     }, 
                     'session': {
+                        required: true,
+                        accept: "image/jpeg, image/png,image/gif"
+                    },
+                    'qimage': {
                         required: true,
                         accept: "image/jpeg, image/png,image/gif"
                     }, 
@@ -663,6 +756,22 @@ $("input[type=file]").checkImageSize();
                                
                         }
                     },
+                     "chk_decyour": {
+                        required: true,
+                        minlength: 1
+                    },
+                    "chk_hopacc": {
+                        required: true,
+                        minlength: 1
+                    },
+                     "chk_premo": {
+                        required: true,
+                        minlength: 1
+                    },
+                     "chk_obface": {
+                        required: true,
+                        minlength: 1
+                    }
                 },
                 messages: {
                   name: {
@@ -678,11 +787,20 @@ $("input[type=file]").checkImageSize();
                     required:"Please Select Any image",
                     accept: "Select only jpeg,png,gif file formate only!!"
                     },
+                  qimage: {
+                    required:"Please Select Any image",
+                    accept: "Select only jpeg,png,gif file formate only!!"
+                    },
                   description:"Please enter Description",
+                  qdescription:"Please enter session quote Description",
                   cat:"Please Select category",
-                 bundle:"Please Select Bundle",
+                  bundle:"Please Select Bundle",
                   subcat:"Please Select Subcategory",
-                   productid: "Please Enter Product Id",
+                  productid: "Please Enter Product Id",
+                  "chk_decyour":"Please select at least one tag",
+                  "chk_hopacc":"Please select at least one tag",
+                  "chk_premo":"Please select at least one tag",
+                  "chk_obface":"Please select at least one tag"
                   
                 },
                 highlight: function (input) {
@@ -732,7 +850,7 @@ $("input[type=file]").checkImageSize();
                     var t = Object.values(childData);
                     var key = Object.keys(childData);
                     $.map(childData, function(value, index) {
-                        if(childData.Bundle != '' && index == sid){
+                        if(value.Bundle != '' && index == sid){
                             
                         var B = Object.values(childData);
                         //var Bb = Object.values(B.Bundle);
@@ -759,7 +877,7 @@ $("input[type=file]").checkImageSize();
                             });
                         }
                     });
-    //  console.log(op);
+      console.log(op);
     //   $('.mdb-select').material_select('destroy'); 
             }
 
@@ -771,11 +889,29 @@ $("input[type=file]").checkImageSize();
     });
    
     
-    
+    $(".fa-spinner").hide();
     $(".sessionadd").click(function(){
         var temp=$('#form_validation_session').valid();
         if(temp==true){
-           
+
+                       $("input:checkbox[name=chk_hopacc]:checked").each(function(){
+                                window.fav.push($(this).val());
+                        }); 
+
+                        $("input:checkbox[name=chk_decyour]:checked").each(function(){
+                            window.fav.push($(this).val());
+                        });
+
+                        $("input:checkbox[name=chk_premo]:checked").each(function(){
+                            window.fav.push($(this).val());
+                        });
+
+                        $("input:checkbox[name=chk_obface]:checked").each(function(){
+                            window.fav.push($(this).val());
+                        });
+
+
+
                 var catnm = $("#cat option:selected").text();
                 var catid = $("#cat").val();
                 var scatid = $("#subcat").val();
@@ -785,8 +921,10 @@ $("input[type=file]").checkImageSize();
                 //return;
                 // var desc = CKEDITOR.instances['ckeditor'].getData();
                  var desc = $('#ckeditor').val();
+                 var qdesc = $('#qdesc').val();
                  var sessionnm = $("#sessionname").val();
                  var simg = $("#simgurl").val();
+                 var qimg = $("#qimgurl").val();
             //   var surl = $("#surl").val();
                  var murl = $("#murl").val();
                  var mtime = $("#mtime").val();
@@ -810,15 +948,18 @@ $("input[type=file]").checkImageSize();
                  }else if(!window.bundle && window.subcat){
                      
                     var firebaseRef = firebase.database().ref("Category/"+catnm+"/SubCategory/"+scatid+"/Session");
-                    firebase.database().ref("Category/"+catnm).child("Bundle").set(null);
+                   // firebase.database().ref("Category/"+catnm).child("Bundle").set(null);
                     //firebase.database().ref("Category/"+catnm+"/Bundle").set(null);
                  }else if(!window.bundle && !window.subcat){
                      
                     var firebaseRef = firebase.database().ref("Category/"+catnm+"/Session");
                  }
                 var audio = murl.split(',');
+                
                 var audiotime = mtime.split(',');
         //console.log(array);
+      //  alert(audio.length);
+
                 //var catRef = firebaseRef.child("category").child(catnm).child("session");
 
                 var pushedCatRef = firebaseRef.push();
@@ -844,16 +985,17 @@ $("input[type=file]").checkImageSize();
                 firebaseRef.child(sid).set({
                     session_name: sessionnm,
                     session_description: desc,
+                    session_quote_description: qdesc,
                     session_img: simg,
+                    session_quote_img: qimg,
                 //  outro_audio: surl,
                     meditation_audio: audio,
                     meditation_audio_time: audiotime,
                     budle_id: b,
-
-                    session_id: sid
-                });
-                if(pushedCatRef){
-               
+                    session_id: sid,
+                    tag : window.fav.toString()
+                }).then(function(snap){
+                    
                    swal({
                         title: "Inserted!",
                         text: "Session has been Inserted.",
@@ -869,6 +1011,9 @@ $("input[type=file]").checkImageSize();
                           window.location.href = "session_list.php";
                         }, 1000);
                     });
+                });
+                if(pushedCatRef){
+               
                     
                 }
                 //alert(cimg);

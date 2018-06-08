@@ -23,7 +23,7 @@
 <style type="text/css">
 
 
-<!--NEW-->
+<!---NEW--->
 
 
   .logo img {width: 180px !important;
@@ -466,6 +466,45 @@
         position:absolute;
     }
 </style>
+<!-- Firebase Start -->
+<script src="js/jquery.min.js"></script>  
+<script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDBWdYDtGJsilqNGOqYMNalE9s-IAGPnTw",
+    authDomain: "divethru-71c56.firebaseapp.com",
+    databaseURL: "https://divethru-71c56.firebaseio.com",
+    projectId: "divethru-71c56",
+    storageBucket: "divethru-71c56.appspot.com",
+    messagingSenderId: "53159239409"
+  };
+  firebase.initializeApp(config);
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+      firebase.auth().onAuthStateChanged(function(user) {
+    
+    // window.user = user;
+  if (user) {
+    // User is signed in..
+    //var index = url+'/index.php';
+    //if(window.location.href != index){
+        //window.location.href = previousurl;
+    //}
+    //return;
+   //  var lout = '<a class="nav-link" id="lg" style="padding-right: 1.5rem; padding-left: 1.5rem;" href="#" onclick="sign_out();">LOG OUT<span class="sr-only">(current)</span></a>';
+     //  console.log($(".log").html(lout));
+     window.location = "dashboard.php";
+    console.log(user);
+  } else {
+    // No user is signed in.
+  }
+});
+    });
+  </script>
+  <!-- Firebase End -->
   </head>
   <body style="padding-top: 100px;" >
   

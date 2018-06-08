@@ -80,10 +80,10 @@
 
     // default options
     $.fn.checkImageSize.defaults = {
-        minWidth: 1920,		// Numeric; Pixel value
+       /* minWidth: 1920,		// Numeric; Pixel value
         minHeight: 1080,		// Numeric; Pixel value
         maxWidth: 1920,		// Numeric; Pixel value
-        maxHeight: 1080,	// Numeric; Pixel value
+        maxHeight: 1080,	// Numeric; Pixel value*/
         showError: true,	// Boolean; Whether to show error messages
         ignoreError: false	// Boolean; Whether to ignore error and let the image pass through
     };

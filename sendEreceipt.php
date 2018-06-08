@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$mill = "companytest1206@gmail.com";
+$mill = isset($_POST["email"])?$_POST["email"]:"companytest1206@gmail.com";
 $body = isset($_POST["body"])?$_POST["body"]:"test";
 /*
 if(!isset($_POST['mail'])){

@@ -1,3 +1,12 @@
+<?php
+define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
+define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
+require 'vendor/autoload.php';
+use Firebase\Firebase;
+use Firebase\Auth\TokenGenerator;
+ ?>
+
+
 <!doctype html>
 <html>
 <head>
@@ -10,7 +19,14 @@
  <link rel="stylesheet" href="css/reg.css" type="text/css" >
  <link href="css/subscription.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="css/footercss.css" type="text/css" >
- <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
+ <!-- <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css"> -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+ <link rel="stylesheet" href="css/dashheader.css">
+ 
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+<script src="js/credential.js"></script>
+
 <style type="text/css">
   /*SLIDER3 START*/
 .btn-primary2 {
@@ -370,19 +386,43 @@ out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         position:absolute;
     }
 </style>
+<script>
+    $(document).ready(function(){
+
+    var user=window.localStorage.getItem('user');
+    if(user!=null)
+    {
+    //alert(user);
+      $( "#result" ).load( "dashbordHeader.php", function() {
+        //alert( "Load was performed." );
+
+        $(".page-loader-wrapper").fadeOut();
+      });
+        
+    }
+    else{
+        $( "#result" ).load( "header.php", function() {
+        //alert( "Load was performed1 ." );
+        $(".page-loader-wrapper").fadeOut();
+      });
+      
+    }
+  });
+
+  </script>
 </head>
 
 <body style="margin-top:118px;">
-<?php include'header.php'; ?>
-
+<?php //include'header.php'; ?>
+  <div id="result"></div>
 <!--SLIDER-->
   
 <div class="container-fluid slider-bg mb-0">
   <div class="container text-center">
        <h2>DIVE THRU WHAT YOU GO THRU</h2>
      <h4>AND RECONNECT WITH YOURSELF </h4>
-     <a href="http://34.215.40.163/subscription.php" style="box-shadow: none !important;text-decoration:none;color: #fff;" class="btn1 btn-primary1  mt-md-5 mt-4 py-2 mx-2 px-3">S U B S C R I B E &nbsp; N O W</a>
-    <a href="http://34.215.40.163/registration.php" style="box-shadow: none !important;text-decoration:none;" class="btn1 btn-primary1 btn-primary2 mt-md-5 mt-4 py-2 mx-2 px-4">J O I N &nbsp; F O R &nbsp; F R E E</a>
+     <a href="subscription.php" style="box-shadow: none !important;text-decoration:none;color: #fff;" class="btn1 btn-primary1  mt-md-5 mt-4 py-2 mx-2 px-3">S U B S C R I B E &nbsp; N O W</a>
+    <a href="registration.php" style="box-shadow: none !important;text-decoration:none;" class="btn1 btn-primary1 btn-primary2 mt-md-5 mt-4 py-2 mx-2 px-4">J O I N &nbsp; F O R &nbsp; F R E E</a>
   </div>
 </div>
   
@@ -655,9 +695,9 @@ out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
                                    Download the DiveThru app<br>or sign up online to find<br>the peace within.
                               </h6>
                               <br>
-                               <a href="http://34.215.40.163/subscription.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5;box-shadow: none !important;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</a>
+                               <a href="subscription.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5;box-shadow: none !important;   background-color: #7dd3d5;">S U B S C R I B E &nbsp; N O W</a>
                                <br><br>
-                                <a href="http://34.215.40.163/registration.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5;  box-shadow: none !important; background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </a>
+                                <a href="registration.php" class="btn btn-primary btnpos" style="border-color: #7dd3d5;  box-shadow: none !important; background-color: #7dd3d5;"> &nbsp;J O I N &nbsp; F O R &nbsp; F R E E &nbsp;  </a>
                                 <br><br>
                                 <div>
                                 <img src="img/app atore.png" class="img-responsive plystr " height="40" width="140"> 
@@ -670,10 +710,10 @@ out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
                     </section>
 
 <?php include 'footer.php'; ?>
-<script
+<!-- <script
   src="https://code.jquery.com/jquery-3.3.1.slim.js"
   integrity="sha256-fNXJFIlca05BIO2Y5zh1xrShK3ME+/lYZ0j+ChxX2DA="
-  crossorigin="anonymous"></script>
+  crossorigin="anonymous"></script> -->
 <script src="js/bootstrap.bundle.min.js"></script>
  <script type="text/javascript">
 

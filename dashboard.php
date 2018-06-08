@@ -47,6 +47,9 @@ use PayPal\Api\ShippingInfo;
 <html style="height: 100%">
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv='cache-control' content='no-cache'>
+<meta http-equiv='expires' content='0'>
+<meta http-equiv='pragma' content='no-cache'>
 <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
@@ -74,7 +77,228 @@ use PayPal\Api\ShippingInfo;
   };
   firebase.initializeApp(config);
 </script>
-<script src="js/signout.js"></script>
+
+
+<script>
+// $(document).ready(function(){
+
+//   var user = JSON.parse(window.localStorage.getItem('user'));
+//   if(user.currentStreak ){
+// //alert(5);
+//   firebase.database().ref("Users/"+user.user_id+"/currentStreak").once("value",function(snapshot){
+//     console.log(snapshot.val());
+//     snapshot.forEach(function(childSnapshot) {
+//        ba_childData=childSnapshot.val();
+//        window.localStorage.setItem("currentCat",childSnapshot.key);
+//       console.log(childSnapshot.key);
+//       ba_cat=childSnapshot.key;
+//       window.localStorage.setItem("cat2",ba_cat);
+//       window.localStorage.setItem("subcategory_id","");
+//       window.localStorage.setItem("bid","");
+//     //  if(ba_cat != "10 Day Intro Program")
+//      // {
+//         if(childSnapshot.hasChild("Session")){
+//           //alert(5);
+//              // window.localStorage.setItem("subcategory_id","");
+//         window.localStorage.setItem("TYPE","Session");
+//                         var b ="";
+//         getStreak(b,b,ba_cat);
+//             if(ba_childData.streak){
+                      
+//                      $(".day").html(ba_childData.streak);
+//             window.localStorage.setItem("content",ba_childData.streak);
+//                     }
+//            //$(".day").html(Object.keys(value).length);
+//           $.map(ba_childData.Session, function(value, index) {
+//         //   alert(value.streak);
+//             ba_session_id=index;
+//            // alert(Object.keys(value).length);
+//           });
+//         }else{
+
+
+//           $.map(ba_childData.SubCategory, function(value, index) {
+//             //console.log(value);
+//             ba_subcat_id=index;
+//                       window.localStorage.setItem("subcategory_id",index);
+//             $.map(value, function(value, index) {
+//              // alert(index);
+//               if(index=="Bundle"){
+//                 window.localStorage.setItem("TYPE","S&B");
+//                 $.map(value, function(value, index) {
+//                   console.log(index);
+//                   ba_bundle_id=index;
+//                         getStreak(ba_subcat_id,index,ba_cat);
+//                             window.localStorage.setItem("bid",index);
+//                   window.localStorage.setItem("currentID", index);
+                  
+//                   window.Cbnd_id = index;
+//                   $.map(value, function(value, index) {
+//                     console.log("SSS"+Object.keys(value).length);
+//                     // $(".day").html(Object.keys(value).length);
+//                    //   alert(index);
+//                      if(index == "streak"){
+//                     window.localStorage.setItem("content",value);
+//                      $(".day").html(value);
+//                     }
+
+//                   });
+//                 });
+//               }
+//               else{
+//                 var b ="";
+//                                 getStreak(ba_subcat_id,b,ba_cat);
+//                 window.localStorage.setItem("TYPE","SubCategory");
+               
+//                 window.localStorage.setItem("currentID", ba_subcat_id);
+//                     if(index == "streak"){
+//                     window.localStorage.setItem("content",value);
+                      
+//                      $(".day").html(value);
+//                     }
+//                     if(index == "Session"){
+//                       var i = 0;
+//                      $.map(value, function(value, index){
+//                         if(i == Object.keys(value).length){
+//                           //alert(index);
+//                           window.localStorage.setItem("SESSIONID",index);
+//                         }
+//                         i++;
+//                      });
+//                     }
+//                 //console.log("SSS"+Object.keys(value).length);
+//                console.log("SSS"+index);
+                
+//               }
+//             });
+//           });
+//          }
+//       // }
+//       // else{
+
+//       // }
+//      });
+
+
+//   });
+// }else{
+//   window.localStorage.setItem("TYPE","Session");
+//            window.localStorage.setItem("cid","-L9J9wr-WF71xLKGpHrn");
+//                        $(".day").html(0);
+// var b = "";
+//   getStreak(b,b,"10 Day Intro Program");
+//  window.localStorage.setItem("content",0);
+//  window.localStorage.setItem("Slen",10);
+//  window.localStorage.setItem("Dname","Intro Program");
+// }
+
+//   var session2 = [];
+// //var Sub = window.localStorage.getItem("subcategory_id");
+// //var bid = window.localStorage.getItem("bid");
+// //var CT = window.localStorage.getItem("cat2");
+
+// function getStreak(Sub,bid,CT){
+// if(Sub != "" && bid !=""){
+  
+//   firebase.database().ref("Category/"+CT+"/SubCategory/"+Sub+"/Bundle/"+bid).on("value", function(snapshot) {
+//         snapshot.forEach(function(childSnapshot) {
+//             var key = childSnapshot.key;
+//             // value, could be object
+//             var childData = childSnapshot.val();
+//             console.log(childData);
+//             if(key == "bundle_name"){
+//                     $(".bannerHeader").html(childData);
+//                   window.localStorage.setItem("Dname",childData);
+//             }
+//                       if(key == "Session"){
+//                   session2.push(childData);
+//                    $(".totalday").html(Object.keys(childData).length);
+//                   window.localStorage.setItem("Slen",Object.keys(childData).length);
+//                       }
+//           });
+    
+//     window.localStorage.setItem('session2',JSON.stringify(session2));
+//   });
+// }else if(Sub!= "" && bid == ""){
+//   firebase.database().ref("Category/"+CT+"/SubCategory/"+Sub).on("value", function(snapshot) {
+//           snapshot.forEach(function(childSnapshot) {
+//             var key = childSnapshot.key;
+//             // value, could be object
+//             //alert(key);
+//             var childData = childSnapshot.val();
+//             //alert(childData);
+//             if(key == "subcategory_name"){
+//                 $(".bannerHeader").html(childData);
+//                 window.localStorage.setItem("Dname",childData);
+//             }
+//             if(key == "Session"){
+//                                   session2.push(childData);
+//                                   $(".day").html(window.localStorage.getItem("content"));
+//                                    $(".totalday").html(Object.keys(childData).length);
+//                   window.localStorage.setItem("Slen",Object.keys(childData).length);
+              
+//             }     
+//             console.log(session2);
+//           });
+//     window.localStorage.setItem('session2',JSON.stringify(session2));
+//   });
+// }else if(Sub == "" && bid != ""){
+//   firebase.database().ref("Category/"+CT+"/Bundle/"+bid).on("value", function(snapshot) {
+//           snapshot.forEach(function(childSnapshot) {
+//             var key = childSnapshot.key;
+//             // value, could be object
+//             var childData = childSnapshot.val();
+//                 if(key == "bundle_name"){
+//                   window.localStorage.setItem("Dname",childData);
+//                                       $(".bannerHeader").html(childData);
+//                 }
+//                 if(key == "Session"){
+//                   session2.push(childData);
+//                    $(".totalday").html(Object.keys(childData).length);
+//                   window.localStorage.setItem("Slen",Object.keys(childData).length);
+//                 }
+//             console.log(childData);
+//           });   
+//     window.localStorage.setItem('session2',JSON.stringify(session2));
+//   });
+// }else if(Sub == "" && bid == ""){
+//   firebase.database().ref("Category/"+CT).on("value", function(snapshot) {
+//           snapshot.forEach(function(childSnapshot) {
+//             var key = childSnapshot.key;
+//             // value, could be object
+//             var childData = childSnapshot.val();
+//                   window.localStorage.setItem("Dname",CT);
+                  
+//                   //  alert(key);
+//                   if(CT == "10 Day Intro Program"){
+
+//                     $(".bannerHeader").html("Intro Program");
+//                   }else{   
+//                     $(".bannerHeader").html(CT);
+//                   }
+
+
+//                   if(key == "Session"){
+//                     session2.push(childData);
+//  $(".totalday").html(Object.keys(childData).length);
+//                   window.localStorage.setItem("Slen",Object.keys(childData).length);
+//                     //alert(Object.keys(childData).length);
+//             //console.log(Object.keys(childData).length);
+//                   }
+//                     console.log("10 DAY===");
+//           });
+//   window.localStorage.setItem('cat2',CT);
+//   window.localStorage.setItem('session2',JSON.stringify(session2));
+//                     console.log(session2);
+//   });
+// }
+
+// }
+
+
+// });
+</script>
+
  <style type="text/css">
    .btn1 {
   display: inline-block;
@@ -131,7 +355,7 @@ use PayPal\Api\ShippingInfo;
  <!-- Page Loader -->
     <div class="page-loader-wrapper" style="display: none;">
         <!-- <div class="loader"> -->
-       <img src="img/loader.gif" style="margin-top: 10% !important;">
+       <img src="img/transaction_loader.gif" style="margin-top: 10% !important;">
      <!-- </div> -->
     </div>
     <!-- #END# Page Loader -->
@@ -408,14 +632,37 @@ return $nodeGetContent;
 </div>
 
 <?php include 'footer.php'; ?>
-
-<script src="js/dashboard.js"></script>
-<script src="js/dashboardheader.js"></script>
+<script src="js/signout.js?version=<?php echo constant("version");?>"></script>
+<script src="js/dashboard.js?version=<?php echo constant("version");?>"></script>
+<script src="js/dashboardheader.js?version=<?php echo constant("version");?>"></script>
 <script type="text/javascript"> 
 $(document).ready(function(){
+window.h3 = [];
+  firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+        // key
+        var key = childSnapshot.key;
+        // value, could be object
+        var childData = childSnapshot.val();
 
+          if(key == "streak"){
+            $.map(childData, function(value, index) {
+              $.map(value, function(value2, index2) {
+                $.map(value2, function(value3, index3) {
+                  window.h3.push(index3);
+                  console.log(index3);  
+                });
+              });
+            });
+          }
+
+      });
+      window.localStorage.setItem("SessionHistory2",JSON.stringify(window.h3));
+    });
       console.log(JSON.parse(window.localStorage.getItem("SessionHistory")));  
- 
+//  $(".bannerHeader").html(window.localStorage.getItem("Dname"));
+// $(".day").html(window.localStorage.getItem("content"));
+// $(".totalday").html(window.localStorage.getItem("Slen"));
 
  // $(".playe").on('click','.boxStyle > .bundle',function(e){
  //  alert();

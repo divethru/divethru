@@ -5,6 +5,7 @@
     "facebook/graph-sdk": "^5.6",
     "paypal/rest-api-sdk-php": "1.2",
     "php": ">=5.6",
-	"authorizenet/authorizenet": "~1.9.6"
+	"authorizenet/authorizenet": "~1.9.6",
+    "abraham/twitteroauth": "^0.7.4"
   }
 }

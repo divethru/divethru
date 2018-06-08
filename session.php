@@ -5,6 +5,7 @@
  <link rel="shortcut icon" href="img/feb.ico" />
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="js/opendive.js"></script>
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link rel="stylesheet" href="css/dashboard.css">
@@ -281,6 +282,7 @@ return $nodeGetContent;
 <script type="text/javascript" src="js/jquery.redirect.js"></script>
 <script src="js/jquery.backDetect.min.js"></script>
 
+
 <script src="js/opendive.js"></script>
 <script src="js/dashboardheader.js"></script>
 
@@ -307,6 +309,7 @@ $(document).ready(function(){
   
   
 });
+/*
   function sign_out()
 {
   firebase.auth().signOut().then(function() {
@@ -314,7 +317,7 @@ $(document).ready(function(){
   }, function(error) {
     // An error happened.
   });
-}
+}*/
 
   $("div.cat1").on('click','.boxStyle > .bundle',function(e){
      var user = JSON.parse(window.localStorage.getItem('user'));
@@ -324,15 +327,23 @@ $(document).ready(function(){
       var SESSION = $(this).attr("id");
       var S = $(this).text();
       var cid = $(this).data("cat");
+            var CN = $(this).data("count");
       var ct = window.localStorage.getItem("cat");
     console.log(ct);
       window.localStorage.setItem("cat",ct);
       window.localStorage.setItem("Snm",S);
       window.localStorage.setItem("cid",cid);
+            window.localStorage.setItem("streak",CN);
             window.localStorage.setItem("subcategory_id","");
       window.localStorage.setItem("bid","");
       if(user.membership_type == "Free" && $(this).next().attr("class") == "box1"){
+        if(ct == "10 Day Intro Program"){
           swal("You have already listen..!!");
+
+        }else{
+          
+       $.redirect("player.php",{bundle: SESSION},"POST",null,null,true);
+        }
       }else{
 
        $.redirect("player.php",{bundle: SESSION},"POST",null,null,true);

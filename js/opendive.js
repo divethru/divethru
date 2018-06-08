@@ -32,7 +32,7 @@ if(window.localStorage.getItem("cat") ){
 		var ct = "Open Dive";
 			
 		}
-		console.log(ct);
+		//alert(ct);
 		// if(ct=="10 Day Intro Program"){
 		// 	history.pushState(null, null, '/10DayIntroProgram');
 		// }
@@ -109,43 +109,45 @@ firebase.database().ref("Category").orderByKey().on("value", function(snapshot) 
 					session.push(childData.Session);
 				 var cid = childData.category_id;
 					var temp = 0;
+					var count = 1;
 					$.map(childData.Session, function(value, index) {
 						var loc = user.last_free_conversation_id;
 						//alert(loc);
 						
 						if( (loc-1 >= temp  && childSnapshot.key != "Open Dive" )){
 							//alert("a");
-							ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p><div class="box1"><i class="fa fa-check-circle center"></i></div></div>';
+							ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-count ="'+count+'" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p><div class="box1"><i class="fa fa-check-circle center"></i></div></div>';
 						}else if((loc == temp && user.membership_type == "Free" && childSnapshot.key != "Open Dive") || (temp == 0 && user.membership_type == "Free" && childSnapshot.key != "Open Dive")){
 							//alert("b");
-							ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p></div>';
+							ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-count ="'+count+'" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p></div>';
 						}else if (user.membership_type == "Free" ){
 							if(temp == 0 && $.inArray(value.session_id,Shistory) != -1)
 							{
 							//alert(temp);
-								ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p><div class="box1"><i class="fa fa-check-circle center"></i></div></div>';
+								ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-count ="'+count+'"data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p><div class="box1"><i class="fa fa-check-circle center"></i></div></div>';
 							}
 							else if(temp !=0 ){
 								//alert("temp");
-								ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p><div class="box1a"><i class="fa fa-lock fa-2x center"></i></div></div>';
+								ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-count ="'+count+'" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p><div class="box1a"><i class="fa fa-lock fa-2x center"></i></div></div>';
 							}
 							else if($.inArray(value.session_id,Shistory) == -1 && temp == 0 )
 							{
-								ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p></div>';
+								ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-count ="'+count+'" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p></div>';
 							}
 						}else if( ($.inArray(value.session_id,Shistory) != -1 && childSnapshot.key == "Open Dive") ){
 							//alert("c");
 							trace = trace + temp;
-							ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p><div class="box1"><i class="fa fa-check-circle center"></i></div></div>';
+							ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-count ="'+count+'" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p><div class="box1"><i class="fa fa-check-circle center"></i></div></div>';
 						}else if($.inArray(value.session_id,Shistory) == -1 && user.membership_type != "Free"){
 							//alert("d");
-							ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p></div>';
+							ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-count ="'+count+'" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p></div>';
 						}else if(((trace+2) == temp && user.membership_type != "Free") || (temp == 0 && user.membership_type != "Free" )){
 							//alert("e");
-							ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p><div class="box1a"><i class="fa fa-lock fa-2x center"></i></div></div>';
+							ht = ht + '<div class="col-md-4 col-xs-6 boxStyle position-relative p-0 " style=" background-image: url('+value.session_img+'); "><p class="Center bundle" data-count ="'+count+'" data-cat="'+cid+'" id="'+value.session_id+'">'+value.session_name+'</p><div class="box1a"><i class="fa fa-lock fa-2x center"></i></div></div>';
 						}
 							//alert(loc+"=="+temp);
 						temp++;
+						count++;
 					});	
 				}	
 
@@ -241,8 +243,8 @@ conversation++;
 console.log($(".modal-body p").html());	*/
 //console.log(window.localStorage.getItem('content'));
 $(".bannerButton").click(function(){
-		var url = "http://localhost/DiveThru/player.php";
-		window.location.href = url;
+	//	var url = "http://localhost/DiveThru/player.php";
+	//	window.location.href = url;
 
 	});
 	

@@ -55,8 +55,9 @@ use PayPal\Api\ShippingInfo;
 <title>Subscription</title>
     
     <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
-    <link href="css/subscription.css" rel="stylesheet" type="text/css"><!-- 
-    <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css"> -->
+    <link href="css/subscription.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
     <link rel="stylesheet" href="css/dashheader.css">
     <link rel="stylesheet" href="css/footercss.css" type="text/css" >
@@ -115,7 +116,12 @@ button:focus{outline: none;}
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-
+@media (min-width:768px) and (max-height: 1028px){
+	.UNSUBSCRIBE{
+		background-color: #f44336 !important;
+		/*color: red;*/
+	}
+}
 /* Absolute Center Spinner */
 /*.loading {
   position: fixed;
@@ -1172,15 +1178,20 @@ firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
 						$.map(childSnapshot.val(), function(value, index){
 							//	sub = true;
 								pl = value.subscription_type;
-
+								if(user.membership_type == "Free" && value.subscription != 'active'){
+									sub = false;
+								}else{
+									sub = true;
+								}
 								$('.get-button').each(function(i, obj) {
 											var plan = $(this).data("plan");
 											console.log(plan);
 											console.log(pl);
 											if(pl == 'Monthly' && plan == "M"){
 												if(value.subscription == 'active'){
-													$(this).css("background-color","#dc3545a3");
+													$(this).css("background-color","#f44336");
 													$(this).html("UNSUBSCRIBE");
+													$(this).addClass("UNSUBSCRIBE");
 													$(this).attr("id",value.transaction_id);
 													$(this).attr("data-pid",index);
 													$(this).attr("data-subcrb_type",value.payment_type);
@@ -1188,10 +1199,15 @@ firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
 													
 												}
 											}
+											if(value.subscription == 'active'){
+												$(this).attr("data-subcrb_type",value.payment_type);
+													console.log(value.payment_type);
+											}
 											if(pl == 'Yearly' && plan == "Y"){
 												if(value.subscription == 'active'){
 													$(this).css("background-color","#f44336");
 													$(this).html("UNSUBSCRIBE");
+													$(this).addClass("UNSUBSCRIBE");
 													$(this).attr("id",value.transaction_id);
 													$(this).attr("data-pid",index);
 													$(this).attr("data-subcrb_type",value.payment_type);
@@ -1209,10 +1225,10 @@ firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
 					if(childSnapshot.key == 'membership_type'){
 							console.log(childSnapshot.val());
 							if(childSnapshot.val() != "Free"){
-								sub = true;
+								//sub = true;
 								console.log(sub);
 							}else{
-								sub = false;
+								//sub = false;
 
 							}
 					}
@@ -1237,7 +1253,8 @@ firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
 		if($(this).html() == "UNSUBSCRIBE"){
 			var sbid = $(this).attr("id");
 			var subcrb_type = $(this).data("subcrb_type");
-			// if(subcrb_type=="paypal"){
+			$(this).removeClass("UNSUBSCRIBE");
+			if(subcrb_type=="paypal"){
 
 				var user = JSON.parse(window.localStorage.getItem('user'));
 				$.post("http://34.215.40.163/SubscriptionCancel.php", {"id": sbid}, function(result){
@@ -1280,9 +1297,12 @@ firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
 					}
 					//
 				});
-			//}else{
-			// 	swal("You have subscribe DiveThru from our app ");
-			// }
+			}else{
+				swal({title: "You have to unsubscribe from app"},
+					function(){
+						window.location.href = "subscriptionInfo.php";
+				});
+			}
 		}else{
 console.log("check"+sub);
 
@@ -1301,7 +1321,16 @@ console.log("check"+sub);
 			    });
 			 }else{
 			 //	$(".loader").hide();
-			 	swal("You have already subscribe our "+pl+" plan");
+				 var subcrb_type = $(this).data("subcrb_type");
+				if(subcrb_type=="paypal"){
+				 	swal("You have already subscribe our "+pl+" plan");
+				 }
+				 else{
+				 	swal({title: "You have to unsubscribe from app"},
+					function(){
+							window.location.href = "subscriptionInfo.php";
+					});
+				 }
 			 }
 		}
 			//alert(plan+"="+cycle+"="+price);

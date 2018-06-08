@@ -1,3 +1,12 @@
+//for user already login
+ $(document).ready(function(){
+
+    var user=window.localStorage.getItem('user');
+    if(user!=null)
+    {
+      //window.location.href = "dashboard.php";
+    }
+  });
 //Firebase registration
 $(".fa-spinner").hide();
 /* COde for static login 
@@ -24,6 +33,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     //return;
    //  var lout = '<a class="nav-link" id="lg" style="padding-right: 1.5rem; padding-left: 1.5rem;" href="#" onclick="sign_out();">LOG OUT<span class="sr-only">(current)</span></a>';
      //  console.log($(".log").html(lout));
+     window.location = "login.php";
     console.log(user);
   } else {
       var log = 'http://34.215.40.163/registration.php';
@@ -384,7 +394,7 @@ function _calculateAge() { // birthday is a date
         var  dob= document.getElementById("birthdate").value;
         //alert(dob);
         var date2=new Date(dob);
-        var pattern = /^\d{1,2}\/\d{1,2}\/\d{4}$/; //Regex to validate date format (dd/mm/yyyy)
+        var pattern = /^\d{4}\-\d{1,2}\-\d{1,2}$/; //Regex to validate date format (dd/mm/yyyy)
         if (pattern.test(dob)) {
             var y1 = date1.getFullYear(); //getting current year
             var y2 = date2.getFullYear(); //getting dob year
@@ -399,7 +409,7 @@ function _calculateAge() { // birthday is a date
                   document.getElementById("bdt").innerHTML = "";
             }
         } else {
-            alert("Please Input in (dd/mm/yyyy) format!");
+            alert("Please Input in (yyyy-mm-dd) format!");
         }
 }
 
@@ -990,22 +1000,63 @@ function save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender) {
                         }
                         var updates = {};
                         updates['/Users/' + uid] = data;
-                        firebase.database().ref().update(updates);
+
+
+
+                        var ref = firebase.database().ref('Users').child(uid);
+           ref.once('value').then( function(dataSnapshot) {
+              if(dataSnapshot.val() !== null){
+                  var data = dataSnapshot.val();
+                  window.localStorage.setItem('user',JSON.stringify(dataSnapshot));
+                  if(!ref.visited)
+                  {
+                   // firebase.database().ref('Users').child(uid).child("visited").set(1);
+                  }else{
+
+                   // firebase.database().ref('Users').child(uid).child("visited").set(data.visted+1);
+                  }
+
+                  var currentdate = new Date(); 
+                var datetime = currentdate.getFullYear() + "-"
+                    + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                    + ("0" + currentdate.getDate()).slice(-2)  + " "  
+                    + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                    + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                    + ("0"+currentdate.getSeconds()).slice(-2);
+                 // firebase.database().ref('Users').child(uid).child("lastUpdated_on").set(datetime);
+                      swal({
+                          title: "Already Registered!",
+                          text: "User already registered.",
+                          html:true,
+                          type: "info",
+                          showCancelButton: false,
+                          confirmButtonColor: "#86CCEB",
+                          confirmButtonText: "OK",
+                          closeOnConfirm: false
+                      });
+              }else{
+
+                         firebase.database().ref().update(updates);
                         swal({
-	                        title: "Registered!",
-	                        text: "User Registered Sucessfully.",
-	                        html:true,
-	                        type: "success",
-	                        showCancelButton: false,
-	                        confirmButtonColor: "#86CCEB",
-	                        confirmButtonText: "OK",
-	                        closeOnConfirm: false
-	                    }, function () {
-	                        window.setTimeout(function() {
-	                        
-	                          window.location.href = "welcome.php";
-	                        }, 1000);
-	                    });
+                          title: "Registered!",
+                          text: "User Registered Sucessfully.",
+                          html:true,
+                          type: "success",
+                          showCancelButton: false,
+                          confirmButtonColor: "#86CCEB",
+                          confirmButtonText: "OK",
+                          closeOnConfirm: false
+                      }, function () {
+                          window.setTimeout(function() {
+                          
+                            window.location.href = "welcome.php";
+                          }, 1000);
+                      });
+              }
+
+           });
+
+
                 
                 
 }
@@ -1122,22 +1173,61 @@ function save_googleuser(uid,first_name,last_name,gid,email) {
 						}
 						var updates = {};
 						updates['/Users/' + uid] = data;
-        				firebase.database().ref().update(updates);
-        				swal({
-	                        title: "Registered!",
-	                        text: "User Registered Sucessfully.",
-	                        html:true,
-	                        type: "success",
-	                        showCancelButton: false,
-	                        confirmButtonColor: "#86CCEB",
-	                        confirmButtonText: "OK",
-	                        closeOnConfirm: false
-	                    }, function () {
-	                        window.setTimeout(function() {
-	                        
-	                          window.location.href = "welcome.php";
-	                        }, 1000);
-	                    });
+
+
+                 var ref = firebase.database().ref('Users').child(uid);
+           ref.once('value').then( function(dataSnapshot) {
+              if(dataSnapshot.val() !== null){
+                  var data = dataSnapshot.val();
+                  window.localStorage.setItem('user',JSON.stringify(dataSnapshot));
+                  if(!ref.visited)
+                  {
+                   // firebase.database().ref('Users').child(uid).child("visited").set(1);
+                  }else{
+
+                   // firebase.database().ref('Users').child(uid).child("visited").set(data.visted+1);
+                  }
+
+                  var currentdate = new Date(); 
+                var datetime = currentdate.getFullYear() + "-"
+                    + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                    + ("0" + currentdate.getDate()).slice(-2)  + " "  
+                    + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                    + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                    + ("0"+currentdate.getSeconds()).slice(-2);
+                 // firebase.database().ref('Users').child(uid).child("lastUpdated_on").set(datetime);
+                      swal({
+                          title: "Already Registered!",
+                          text: "User already registered.",
+                          html:true,
+                          type: "info",
+                          showCancelButton: false,
+                          confirmButtonColor: "#86CCEB",
+                          confirmButtonText: "OK",
+                          closeOnConfirm: false
+                      });
+              }else{
+
+                        firebase.database().ref().update(updates);
+                  swal({
+                          title: "Registered!",
+                          text: "User Registered Sucessfully.",
+                          html:true,
+                          type: "success",
+                          showCancelButton: false,
+                          confirmButtonColor: "#86CCEB",
+                          confirmButtonText: "OK",
+                          closeOnConfirm: false
+                      }, function () {
+                          window.setTimeout(function() {
+                          
+                            window.location.href = "welcome.php";
+                          }, 1000);
+                      });
+              }
+            });
+
+        				
 						 
 }
 

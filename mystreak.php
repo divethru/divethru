@@ -111,14 +111,14 @@ BODY-->
 			      <img src="img/stat reminder logo.png" style="width: 80px; height: 80px;" />
 				  <h6 class="pt-3">TOTAL TIME</h6>
 				  <h6>DIVING THRU</h6>
-				  <h2 class="pt-3 totaltime">10<span style="color:#34495e;">MIN</span></h2>
+				  <h2 class="pt-3 totaltime">0<span style="color:#34495e;">MIN</span></h2>
 			  </div>
 			 <div class="line"></div>
 			 <div class="col-md-4 col-lg-4 text-center option">
 			     <img src="img/stat divethru logo.png" style="width: 80px; height: 80px;" />
 				  <h6 class="pt-3">COMPLETED</h6>
 				  <h6>CONVERSATION</h6>
-				  <h2 class="pt-3 compconv">30</h2>
+				  <h2 class="pt-3 compconv">0</h2>
 			 </div>
 		 </div>
 	   <hr class="mt-5"/>
@@ -193,65 +193,15 @@ BODY-->
 var user = JSON.parse(window.localStorage.getItem('user'));
 	
 			var catRef = firebase.database().ref("Users").child(user.user_id);
-			// firebase.database().ref('Users/'+user.user_id+"/streak").set(null);
-   //  catRef.on('child_changed', function(snapshot) {
-			// location.reload(true);
-   //  });
- window.localStorage.setItem("streakcount",10);                 			
-if(user.currentStreak){
-     $.map(user.currentStreak, function(value, index) {
-            $.map(value, function(value2, index2) {
-                  if(index2 == "SubCategory" ){
-                    $.map(value2, function(value3, index3) {
-                          $.map(value3, function(value4, index4) {
-                            if(index4 == "Bundle"){
-                               $.map(value4, function(value5, index5) {
-                              	 	$.map(value5, function(value6, index6) {
-                  			$(".currentday").html(Object.keys(value6).length);
-                                  		console.log(Object.keys(value6).length);
-                                	});
-                                });
-                            }else if(index4 == "Session"){
-                                //$.map(value4, function(value5, index5) {
-                  			$(".currentday").html(Object.keys(value4).length);
-                                  		console.log(Object.keys(value4).length);
-                                //});
-
-                            }
-                         });
-                    });
-                  }else if(index2 == "Bundle"){
-                    $.map(value2, function(value3, index3) {
-                    //  console.log(index3);
-                           $.map(value3, function(value4, index4) {
-                                console.log(Object.keys(value4).length);
-                  			$(".currentday").html(Object.keys(value4).length);
-                                  /*$.map(value4, function(value5, index5) {
-                                	});*/
-                           });
-                    });
-                  }else if(index2 == "Session"){
-                  			$(".currentday").html(Object.keys(value2).length);
-                               		console.log(Object.keys(value2).length);
-                    
-                  }
-                });
-
-     });
-}
-
-			$('a').each(function(){
-                var path = window.location.href;
-                var current = path.substring(path.lastIndexOf('/')+1);
-                var url = $(this).attr('href');
-                if(url == current){
-                    $(this).addClass('active');
-                };
-            });     
-  
-  
 			
-			var m_names = ['January', 'February', 'March', 
+			//console.log(catRef);
+			// firebase.database().ref('Users/'+user.user_id+"/streak").set(null);
+    catRef.on('child_changed', function(snapshot) {
+			location.reload(true);
+    });
+ window.localStorage.setItem("streakcount",10);
+ //console.log(user); 
+ var m_names = ['January', 'February', 'March', 
                'April', 'May', 'June', 'July', 
                'August', 'September', 'October', 'November', 'December'];
 			   var month = '';
@@ -266,45 +216,126 @@ if(user.currentStreak){
 			//console.log(user.currentStreak);
 
 			var totalconv = 0;
-			//var totalconv = user.last_free_conversation_id;
+
+
+ firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
+ 	window.localStorage.setItem("user",JSON.stringify(snapshot.val()));
+ 	var data=snapshot.val();
+	 	if(data.currentStreak){
+	     $.map(data.currentStreak, function(value, index) {
+	            $.map(value, function(value2, index2) {
+	                  if(index2 == "SubCategory" ){
+	                    $.map(value2, function(value3, index3) {
+	                          $.map(value3, function(value4, index4) {
+	                            if(index4 == "Bundle"){
+	                               $.map(value4, function(value5, index5) {
+	                              	 	$.map(value5, function(value6, index6) {
+	                              	 		if(index6 == "Session"){
+
+	                  					$(".currentday").html(Object.keys(value6).length);
+	                              	 		}
+	                                  		//alert("DEP"+Object.keys(value6).length+"index"+index6);
+	                                  		//console.log(value6);
+	                                	});
+	                                });
+	                            }else if(index4 == "Session"){
+	                                //$.map(value4, function(value5, index5) {
+	                  			$(".currentday").html(Object.keys(value4).length);
+	                                  		console.log(Object.keys(value4).length);
+	                                //});
+
+	                            }
+	                         });
+	                    });
+	                  }else if(index2 == "Bundle"){
+	                    $.map(value2, function(value3, index3) {
+	                    //  console.log(index3);
+	                           $.map(value3, function(value4, index4) {
+	                                console.log(Object.keys(value4).length);
+	                                if(index4 == "Session"){
+
+	                  					$(".currentday").html(Object.keys(value4).length);
+	                                }
+	                                  /*$.map(value4, function(value5, index5) {
+	                                	});*/
+	                           });
+	                    });
+	                  }else if(index2 == "Session"){
+	                  			$(".currentday").html(Object.keys(value2).length);
+	                               		console.log(Object.keys(value2).length);
+	                    
+	                  }
+	                });
+
+	     });
+	}
+//var totalconv = user.last_free_conversation_id;
 			 if (user.total_time_divethru > 59) {
-				var min =  user.total_time_divethru % 60;
-				var hour = + Math.floor(user.total_time_divethru / 60);
-				
-				if(min > 0){
+				var min =  data.total_time_divethru % 60;
+				var hour = + Math.floor(data.total_time_divethru / 60);
+			//	alert(hour)
+				/*if(min > 0){
 					
 				$(".totaltime").html(hour+'<span style="color:#34495e;">HOURS</span>'+min+'<span style="color:#34495e;">MIN</span>');
+				}else{*/
+				if(hour > 1){
+
+				$(".totaltime").html(hour+'<span style="color:#34495e;">hrs</span>');
 				}else{
 					
-				$(".totaltime").html(hour+'<span style="color:#34495e;">HOURS</span>');
-				}
+				$(".totaltime").html(hour+'<span style="color:#34495e;">hr</span>');
+				}	
+				//}
  			}else{
 				
-			$(".totaltime").html(user.total_time_divethru+'<span style="color:#34495e;">MIN</span>');
+			$(".totaltime").html(data.total_time_divethru+'<span style="color:#34495e;">MIN</span>');
 			}
 			//if(user.membership_type != "Free"){
-			if(user.streak){
+				console.log(data.completed_conversation);
+				$(".compconv").html(data.completed_conversation);
+ 	//console.log(snapshot.val()); 
+ 	$(".page-loader-wrapper").fadeOut();
+ });
+ var user = JSON.parse(window.localStorage.getItem('user'));
+ //console.log(user); 
 
-				$.map(user.streak, function(value, index) {
-					if(value.Session){
-					Object.keys(value.Session).length;
-						$.map(value.Session, function(value2, index2) {
-							if(value2.total_visit){
+
+
+			$('a').each(function(){
+                var path = window.location.href;
+                var current = path.substring(path.lastIndexOf('/')+1);
+                var url = $(this).attr('href');
+                if(url == current){
+                    $(this).addClass('active');
+                };
+            });     
+  
+  
+			
+			
+			
+			// if(user.streak){
+
+			// 	$.map(user.streak, function(value, index) {
+			// 		if(value.Session){
+			// 		Object.keys(value.Session).length;
+			// 			$.map(value.Session, function(value2, index2) {
+			// 				if(value2.total_visit){
 								
-							totalconv = totalconv + value2.total_visit;
-							}else{
-							totalconv = totalconv + value2.total_visited;
+			// 				totalconv = totalconv + value2.total_visit;
+			// 				}else{
+			// 				totalconv = totalconv + value2.total_visited;
 								
-							}
-						});
-					}
-				});
-				$(".compconv").html(totalconv);
-			}
-			else{
-				totalconv=0;
-				$(".compconv").html(totalconv);
-			}
+			// 				}
+			// 			});
+			// 		}
+			// 	});
+			// 	$(".compconv").html(totalconv);
+			// }
+			// else{
+			// 	totalconv=0;
+			// 	$(".compconv").html(totalconv);
+			// }
 				// console.log(Journal);
 			
 			firebase.database().ref("Journal").on("value", function(snapshot) {
@@ -328,7 +359,7 @@ if(user.currentStreak){
 								/*mn += '<div class="row my-md-5 my-4"><div class="col-12 text-center march"><h2 class="monthyear">'+month.toUpperCase()+' '+year+'</h2></div> </div>';*/
 						}
 						else{
-							$(".page-loader-wrapper").fadeOut();
+							//$(".page-loader-wrapper").fadeOut();
 						}
 					});
 						var count = 0;
@@ -353,14 +384,22 @@ if(user.currentStreak){
 						//     }
 						// }
 						//});
-						
+						var c = 0; 
 					for(i in t){
 						//console.log(i);
 						if(count == 0){
 							
-						content += '<div class="row my-md-5 my-4 month"><div class="col-12 text-center march"><h2 class="monthyear">'+i+'</h2></div> </div>';
+						content += '<div class="row my-md-5 my-4 month" data-count="'+c+'"><div class="col-12 text-center march"><h2 class="monthyear">'+i+'</h2></div> </div>';
+						c++;
 						}else{
-						content += '<div class="row my-md-5 my-4 month jn hidden"><div class="col-12 text-center march"><h2 class="monthyear">'+i+'</h2></div> </div>';
+							if(c < 10){
+						content += '<div class="row my-md-5 my-4 month jn" data-count="'+c+'"><div class="col-12 text-center march"><h2 class="monthyear">'+i+'</h2></div> </div>';
+
+							}else{
+						content += '<div class="row my-md-5 my-4 month jn hidden" data-count="'+c+'"><div class="col-12 text-center march"><h2 class="monthyear">'+i+'</h2></div> </div>';
+								
+							}
+						c++;
 							
 						}
 							for(j in t[i] ){
@@ -371,12 +410,14 @@ if(user.currentStreak){
 								
 								if(i == fl){
 									if(j < 10){
-											content += '<div class="row my-md-5 my-3 jn" data-count='+j+'><div class="col-md-2 col-4 my-auto text-center date"><h4>'+dt.getDate()+'<br>'+t[i][j].category_name+'</h4></div><div class="col-md-10 col-8 my-auto content"><p>'+t[i][j].journal_text+'</p></div></div>';
-											
+											content += '<div class="row my-md-5 my-3 jn" data-count='+c+'><div class="col-md-2 col-4 my-auto text-center date"><h4>'+dt.getDate()+'<br>'+t[i][j].category_name+'</h4></div><div class="col-md-10 col-8 my-auto content"><p>'+t[i][j].journal_text+'</p></div></div>';
+
+										c++;
 											
 									}else{
-										content += '<div class="row my-md-5 my-3 jn hidden" data-count='+j+'><div class="col-md-2 col-4 my-auto text-center date"><h4>'+dt.getDate()+'<br>'+t[i][j].category_name+'</h4></div><div class="col-md-10 col-8 my-auto content"><p>'+t[i][j].journal_text+'</p></div></div>';
+										content += '<div class="row my-md-5 my-3 jn hidden" data-count='+c+'><div class="col-md-2 col-4 my-auto text-center date"><h4>'+dt.getDate()+'<br>'+t[i][j].category_name+'</h4></div><div class="col-md-10 col-8 my-auto content"><p>'+t[i][j].journal_text+'</p></div></div>';
 										$(".load").css("display","unset");
+										c++;
 									}
 								
 								}
@@ -391,17 +432,20 @@ if(user.currentStreak){
 					$(".jounral").html(content);
 						$(".jn").each(function(index){
 								if($(this).data("count") == 9 && !$(this).hasClass("hidden")){
-					 				$(".month").removeClass("hidden");
+					 				//$(".month").removeClass("hidden");
 					 				console.log($(".month").html());
+					 				
 					 			}
 					 				console.log($(this).data("count"));
+					 				clickcount=$(this).data("count");
 					 			
 							});
 					 $(".month").each(function(index){
 
 					 });
 					$(".loadmore").click(function(){
-							//console.log($(".month").length);
+
+							//console.log(clickcount);
 							if(parseInt(window.localStorage.getItem("streakcount"))){
 								showcount=parseInt(window.localStorage.getItem("streakcount"));
 								//console.log(showcount+10);
@@ -424,7 +468,11 @@ if(user.currentStreak){
 											$(this).removeClass("hidden");
 											$(this).removeClass("hidden");
 											$(".month").removeClass("hidden"); //change have to made
-											// $(".load").css("display","none");
+											//console.log(clickcount+"=="+i);
+											if(clickcount == i){
+
+												$(".load").css("display","none");
+											}
 										}
 									}
 								}
@@ -469,7 +517,7 @@ if(user.currentStreak){
 			var jtext=$('#journaltext').val(journaldes.journal_text);
 			console.log(jtext);*/
 
-			$(".page-loader-wrapper").fadeOut();
+			//$(".page-loader-wrapper").fadeOut();
 		});
 	</script>
 </body>

@@ -8,12 +8,14 @@ use Firebase\Auth\TokenGenerator;
 
 //echo $id;
 //die;
+
 $fb = Firebase::initialize(FIREBASE_URL, FIREBASE_SECRET);
 
 $subacat = [];
 $bundle = [];
 $Bundle = [];
 $Sub = [];
+$Schk = false;
 $sub = get("Category/Quick Dive");
 foreach($sub as $key => $value)
 {
@@ -21,7 +23,17 @@ foreach($sub as $key => $value)
 			if($value != ""){
 				
 				foreach($value as $k => $v){
-					$Sub[] = $v;
+            foreach($v as $s => $sa){
+              if(isset($v["Session"])){
+                  $Schk = true;
+              }else{
+                  $Schk = false;
+              }
+          }
+          if($Schk){
+            
+               $Sub[] = $v;
+          }
 				}
 			}
 		}
@@ -44,7 +56,7 @@ $b=0;
 //$id = $_POST['bundle'];
 if(count($Sub)>0){
 	foreach($Sub as $s => $sa){
-		if($sa["Session"]){
+		if($sa["Session"] ){
 			if($s == 0){
 				$sid = isset($_POST['bundle'])? $_POST['bundle']:$sa['subcategory_id'];
 			}
@@ -200,12 +212,18 @@ return $nodeGetContent;
 .list1 p {  
 	 color: #34495e;
 	 font-size: 21px;
-
+text-align: left;
 }
 .list ul li  {
-	font-size: 18px;
+	font-size: 16px;
 	color: gray;
 		cursor: pointer;
+   /* white-space: nowrap;*/
+    width: 245px;
+    /*overflow: hidden;*/
+    text-overflow: ellipsis;
+    list-style: disc;
+    text-align: left;
 }
 
 .currentbundle{
@@ -508,6 +526,23 @@ p.owl-caption {
     padding: 1rem;
     border-top: 1px solid #e9ecef;
 }
+.side-scroll{
+  max-height: 594px;
+  overflow-y : scroll;
+  overflow-x: hidden;
+}
+/*.side-scroll::-webkit-scrollbar {
+    width: 0.5em;
+}
+.side-scroll::-webkit-scrollbar-thumb {
+    background: #80429c;
+}
+.side-scroll::-moz-scrollbar:vertical {
+    width: 0.5em;
+}
+.side-scroll::-moz-scrollbar-thumb:vertical {
+    background: #80429c;
+}*/
 </style>
 <script type="text/javascript">
 
@@ -515,13 +550,13 @@ var sessiontime = [];
 			var session = [];
       var ctime=0;
     $(document).ready(function(){
-
-
+      window.status="true";
+      window.slotSL = "true";
 
 			 window.session = [];
     		firebase.auth().onAuthStateChanged(function(user) {
   if (!user) {
-          window.location.href = "http://34.215.40.163/login.php";
+          window.location.href = "login.php";
         // User is signed in.
     } else{
     	console.log(user.uid);
@@ -532,7 +567,6 @@ var sessiontime = [];
 
     }
 });
-
 
 
 
@@ -577,6 +611,9 @@ var sessiontime = [];
 			var sid = $(".current").attr("id");
 			 window.bundle_id=bid ;
     window.session_id=sid ;
+   // alert(bid);
+    //alert(sid);
+    localStorage.setItem('session_id',sid);
 			//$("ul > li").removeClass("current");
 		//	$(this).addClass("current");
 			//var bid = $(this).data("cat");
@@ -605,9 +642,10 @@ var sessiontime = [];
 										if(index == bid){
 											window.session = [];
 											window.sessiontime = [];
-										$.map(value.Session, function(value2, index2) {
-											if(index2 == sid){	
-												$(".conv").html(value2.session_name);
+                    $.map(value.Session, function(value2, index2) {
+                      if(index2 == sid){  
+                      window.localStorage.setItem("SESSIONDATA",JSON.stringify(value2));
+                        $(".conv").html(value2.session_name);
 												$(".sessionnm").html(value2.session_name);
 												$("#exampleModalLongTitle").html(value2.session_name);
 												$(".modal-body > p").html(value2.session_description);
@@ -635,9 +673,9 @@ var sessiontime = [];
 													ts = '';
 												for(i in value2.meditation_audio_time){
 													if(i == 0){
-														ts += '<div class="box box1" id="'+childData[i]+'"><p>'+childData[i]+' <br> min</p></div>'
+														ts += '<div class="box box1" id="'+childData[i]+'" data-index="'+i+'"><p>'+childData[i]+' <br> min</p></div>'
 													}else{
-														ts += '<div class="box " id="'+childData[i]+'"><p>'+childData[i]+' <br> min</p></div>'
+														ts += '<div class="box " id="'+childData[i]+'" data-index="'+i+'"><p>'+childData[i]+' <br> min</p></div>'
 													}
 													window.sessiontime.push(value2.meditation_audio_time[i]);
 												}
@@ -664,6 +702,7 @@ var sessiontime = [];
                     $.map(value.Session, function(value2, index2) {
                       
                       if(index2 == sid){  
+                      window.localStorage.setItem("SESSIONDATA",JSON.stringify(value2));
                         window.session = [];
 												window.sessiontime = [];
                         localStorage.setItem('session_id',$(".current").attr('id'));
@@ -697,9 +736,9 @@ var sessiontime = [];
 														ts = '';
 													for(i in value2.meditation_audio_time){
 														if(i == 0){
-															ts += '<div class="box box1" id="'+value2.meditation_audio_time[i]+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
+															ts += '<div class="box box1" id="'+value2.meditation_audio_time[i]+'" data-index="'+i+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
 														}else{
-															ts += '<div class="box " id="'+value2.meditation_audio_time[i]+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
+															ts += '<div class="box " id="'+value2.meditation_audio_time[i]+'" data-index="'+i+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
 														}
 														window.sessiontime.push(value2.meditation_audio_time[i]);
 													}
@@ -722,21 +761,35 @@ var sessiontime = [];
    // });  
 
                   //for re-do / replay audio
-
-                  if(window.screen.width > 770){
+                  //alert(model_hide);
+                  if(window.screen.width > 770 ){
+                 // alert("out"+window.status);
+                  //alert("FALSE");
                   	 var final = JSON.parse(window.localStorage.getItem("cove_data"));
                console.log(final);	
+                    firebase.database().ref("Users/"+user.user_id).on("value",function(snapshot){
+                    var child=snapshot.val();
 
-                      if(user.sessionHalted ){
-                        $.map(user.sessionHalted, function(value, index) {
+                       if((child.sessionHalted && child.membership_type != "Free") || (user.sessionHalted && $.inArray(index,final) != -1)){
+                      //  alert(3);
+                        $.map(child.sessionHalted, function(value, index) {
                               console.log(index+"=="+window.session_id);
-                              if(index == window.session_id && $.inArray(index,final) != -1 && (value.halted != 0 || value.halted != 0.0)){
-                               //   console.log(value.halted);
+                              if(((index == window.session_id && child.membership_type != "Free") || (index == window.session_id && $.inArray(index,final) != -1)) && (value.halted != 0 || value.halted != 0.0)&& window.status=="true"){
+                             // alert(value.halted);
+                              //alert(value.slot);
+
+                           //  alert("in"+window.status);
+                           if(value.slot != undefined){
+                              if($(".box1").data("index") == value.slot){
+
                                 $('#memberModal').modal("show");
+                              }
+                            }
                                   $(".continue").click(function(){
                                   var vid = document.getElementById("jp_audio_0");
-                                    vid.currentTime = value.halted*60; //time is in minute to second (time*60)
+                                    vid.currentTime = value.halted; //time is in minute to second (time*60)
                                    // alert(vid.currentTime);
+
                                     $('#memberModal').modal("hide");
                                   });
 
@@ -744,14 +797,19 @@ var sessiontime = [];
                                   $(".start").click(function(){
                                   	 var vid = document.getElementById("jp_audio_0");
                                     vid.currentTime = 0; //time is in minute to second (time*60)
+                                      hdata = {"halted":0.0,"slot":$(".box1").data("index")};
+                                    firebase.database().ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata);
                                     $('#memberModal').modal("hide");
                                   });
                                 }
                               });
                       }else{
                            var vid = document.getElementById("jp_audio_0");
-                      vid.currentTime = 0; //time is in minute to second (time*60)
+                     // vid.currentTime = 0; //time is in minute to second (time*60)
                       }
+
+                    });
+
                   }
                  // over
 
@@ -766,20 +824,102 @@ var sessiontime = [];
 							$(".page-loader-wrapper").fadeOut(); 
 						   
 						   }
+               $("audio").bind('play',function(){
+                 window.status="false";
+                window.slotSL = "false";
+                         $("body").off("click",".box");
+
+               });
                      
                 /* pause event Start*/
     
                     $("audio").bind('pause',function(){
-                    //  alert(5);
+                         $("body").on("click",".box",function(){
+                          
+                $(".box").removeClass('box1');
+  //alert(window.slotSL);
+
+  $(this).addClass('box1');
+  var vid = document.getElementById("jp_audio_0");
+       
+        console.log(window.sessiontime);
+     
+      for(t in window.sessiontime){
+        if(window.sessiontime[t] == $(this).attr('id')){
+
+          vid.src = window.session[t];
+          $('.cp-pause').css("display","none");
+          $('.cp-play').css("display","inherit");
+          window.status="true";
+       //   window.slotSL = "true";
+           if (vid.paused == false) {
+            vid.src = window.session[t];
+          }
+        }
+
+      }
+
+     firebase.database().ref("Users/"+user.user_id).on("value",function(snapshot){
+
+      var child=snapshot.val();
+      console.log(child);
+        if((window.localStorage.getItem("cat") != "10 Day Intro Program") && (child.sessionHalted ) ){
+         // alert(2);
+      $.map(child.sessionHalted, function(value, index) {
+         var vid = document.getElementById("jp_audio_0");
+                console.log(index+"=="+window.session_id);
+            if(index == window.session_id){
+              console.log(value);
+             // alert(value.halted);
+             // alert("S"+value.slot);
+                
+                if(value.halted != 0.0 || value.halted != 0){
+                 // alert($(".box1").data("index")+"=="+value.slot);
+                   if(value.slot != undefined ){
+                    if($(".box1").data("index") == value.slot && window.status=="true"){
+                      //  vid.currentTime = value.halted; //time is in minute to second (time*60)
+                      $('#memberModal').modal("show");  
+
+                    }
+                  }
+
+                }
+                $(".continue").click(function(){
+                  //alert(5);
+                  if(value.slot != undefined){
+                    if($(".box1").data("index") == value.slot){
+                        vid.currentTime = value.halted; //time is in minute to second (time*60)
+                      
+                    }
+                  }
+                  $('#memberModal').modal("hide");
+                });
+
+                // Code for begin with initial 
+                $(".start").click(function(){
+                  vid.currentTime = 0; //time is in minute to second (time*60)
+                      hdata = {"halted":0.0,"slot":$(".box1").data("index")};
+                        firebase.database().ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata);
+                  $('#memberModal').modal("hide");
+                });
+              }
+            });
+        }
+      });
+    });
+                      //alert(5);
+                      window.status="false";
+                      window.slotSL = "true";
                       var vid = document.getElementById("jp_audio_0");
-                      const currentTime = Math.floor(vid.currentTime)/60;
+                      const currentTime = vid.currentTime;
                      // const min = currentTime/60;
                       console.log("c"+currentTime+user.user_id);
                       var db = firebase.database();
                       if(window.localStorage.getItem("cat") != "10 Day Intro Program"){
-                          hdata = {"halted":currentTime};
+                          hdata = {"halted":currentTime,"slot":$(".box1").data("index")};
                        firebase.database().ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata); // Update lalted time on pause
-                      }
+                      } 
+                       $('#memberModal').modal("hide");
                     }); 
                 /*Pause Event end*/
 					   
@@ -791,6 +931,7 @@ var sessiontime = [];
                           const duration = Math.floor(vid.duration);
                     //var min = currentTime/60;
               //alert(vid.currentTime);
+              window.status = "false";
                     console.log("time"+currentTime);
                      var str = parseInt(currentTime / 60) + ':' + (currentTime % 60);
                      $(".time").html(str);
@@ -951,7 +1092,7 @@ var sessiontime = [];
   <div class="container cat1">
      <div class="row mt-5 q-desk">
 
-           <div class="col-md-4 col-lg-3 mt-5 px-md-5 px-lg-0">
+           <div class="col-md-4 col-lg-4 mt-1 px-md-5  side-scroll">
 			  <?php 
 			  
 				$sidebar = '';
@@ -972,12 +1113,18 @@ var sessiontime = [];
 							 		$i=0;
 									foreach($bv as $bkey => $bval){										
 							 if($s['bundle_id'] == $bval['budle_id']){
-									if($bid == $bkey){
+									if(isset($_POST['Qsid'])){
+                    if($_POST['Qsid'] == $bkey){
+
+                    $sidebar .= '<li class="current" data-cat="'.$s['bundle_id'].'" data-menu="'.$i.'" id="'.$bval['session_id'].'">'.$bval['session_name'].'</li>';
+                    }
+                    $i++;
+                  }else if($bid == $bkey){
 										
-										$sidebar .= '<li class="current" data-cat='.$s['bundle_id'].' data-menu='.$i.' id='.$bval['session_id'].'>'.$bval['session_name'].'</li>';
+										$sidebar .= '<li class="current" data-cat='.$s['bundle_id'].' data-menu="'.$i.'"" id="'.$bval['session_id'].'">'.$bval['session_name'].'</li>';
 										$i++;
 									}else{
-										$sidebar .= '<li  data-cat='.$s['bundle_id'].' data-menu='.$i.' id='.$bval['session_id'].'>'.$bval['session_name'].'</li>';	
+										$sidebar .= '<li  data-cat="'.$s['bundle_id'].'" data-menu="'.$i.'" id="'.$bval['session_id'].'">'.$bval['session_name'].'</li>';	
 										$i++;
 									}
 							 }
@@ -991,11 +1138,11 @@ var sessiontime = [];
 				}else if(count($Sub)>0){
 					foreach($Sub as $skey => $s){
 					if($sid == $s['subcategory_id']){
-					 $sidebar .= '<div class="row  list1"><p  id='.$s['subcategory_id'].'>'.$s['subcategory_name'].'</p></div>';
+					 $sidebar .= '<div class="row  list1"><p  id="'.$s['subcategory_id'].'">'.$s['subcategory_name'].'</p></div>';
 						
 					}else{
 						
-					 $sidebar .= '<div class="row list1"><p id='.$s['subcategory_id'].'>'.$s['subcategory_name'].'</p></div>';
+					 $sidebar .= '<div class="row list1"><p id="'.$s['subcategory_id'].'">'.$s['subcategory_name'].'</p></div>';
 					}
 					 if(count($bundle)>0){
 						 if(!empty($bundle[$s['subcategory_id']])){
@@ -1005,12 +1152,17 @@ var sessiontime = [];
 							 		$i=0;
 									foreach($bv as $bkey => $bval){										
 							 if($s['subcategory_id'] == $bval['budle_id']){
-									if($bid == $bkey){
+									if(isset($_POST['Qsid']) && $_POST['Qsid'] == $bkey){
+                    
+
+                    $sidebar .= '<li class="current" data-cat="'.$s['subcategory_id'].'" data-menu="'.$i.'" id="'.$bval['session_id'].'">'.$bval['session_name'].'</li>';
+                      $i++;
+                  }else if($bid == $bkey && !isset($_POST['Qsid'])){
 										
-										$sidebar .= '<li class="current" data-cat='.$s['subcategory_id'].' data-menu='.$i.' id='.$bval['session_id'].'>'.$bval['session_name'].'</li>';
+										$sidebar .= '<li class="current" data-cat="'.$s['subcategory_id'].'" data-menu="'.$i.'" id="'.$bval['session_id'].'">'.$bval['session_name'].'</li>';
 										$i++;
 									}else{
-										$sidebar .= '<li  data-cat='.$s['subcategory_id'].' data-menu='.$i.' id='.$bval['session_id'].'>'.$bval['session_name'].'</li>';
+										$sidebar .= '<li  data-cat="'.$s['subcategory_id'].'" data-menu="'.$i.'" id="'.$bval['session_id'].'">'.$bval['session_name'].'</li>';
 										$i++;	
 									}
 							 }
@@ -1030,7 +1182,7 @@ var sessiontime = [];
 		   </div>
 		   
     
-        <div class="col-md-8 col-lg-9 bg1 position-relative px-0">
+        <div class="col-md-6 col-lg-7 offset-lg-1 offset-md-1 bg1 position-relative px-0">
               <div class="box_1 pad">
 				<div class="box_11 text-center">
 					<a data-toggle="modal" data-target="#exampleModalCenter2">
@@ -1042,7 +1194,7 @@ var sessiontime = [];
 				</div>
 				<div class="clearfix"></div>
 			</div>
-      <div class="" style="top:0;"><i class="fa fa-check-circle fa-3x center chk" style="position: absolute;top: 7%;color: #fff;left: 92%;z-index: 5;display: none;"></i></div>
+      <div class="tick" style="top:0;"><i class="fa fa-check-circle fa-3x center chk" style="position: absolute;top: 7%;color: #fff;left: 92%;z-index: 5;display: none;"></i></div>
 			<div class="container txt-top" >
 					  
 				<div class="row text-center">
@@ -1071,7 +1223,7 @@ var sessiontime = [];
 									</div>
 				<!-- 	<span class="time" style="font-size: 25px;color:white;">00:00</span> -->
 								</center>
-								<h6 class="conv1">Tap anywhere to play</h6>
+								<!-- <h6 class="conv1">Tap anywhere to play</h6> -->
 							</div>
 				</div>
 
@@ -1180,7 +1332,7 @@ var sessiontime = [];
 
 
       <script type="text/javascript" src="js/jquery.redirect.js"></script>
-     <script src="js/dashboardheader.js" type="text/javascript"></script>
+     <script src="js/dashboardheader.js?version=<?php echo constant("version");?>" type="text/javascript"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
 <script src="js/owl.carousel.min.js"></script>
 
@@ -1211,6 +1363,24 @@ function sign_out(){
 $("document").ready(function(){
 
 /************** Jounral validation ****************/
+$("body").on("click",".get-button",function(){
+
+  var plan = $(this).data('plan');
+  var cycle = $(this).data('cycle');
+      var price = $(this).data('amount');
+//  alert(result);
+  $.post("http://34.215.40.163/test.php", {"price": price}, function(result){
+              console.log(result);
+      
+      localStorage.setItem('payment','true');
+      localStorage.setItem('session_id',$(".current").attr('id'));
+      localStorage.setItem('session_name',$(".current").html());
+      localStorage.setItem('subcategory_id',$(".box_12 > p").attr("id"));
+      localStorage.setItem('prevcat','Quick Dive');
+   $.redirect("Process.php",{select_cycles: cycle ,product_name : "session","select_plan":plan,"price":price,"userid":user.user_id,"token":result},"POST",null,null,true);
+  });
+           
+});
 
 var seesion_id1=0;
 		$("#message-text").keyup(function(){
@@ -1274,10 +1444,40 @@ $(".list1 > p").each(function(index){
 			var sessiontime = [];
 			var session = [];
 var user = JSON.parse(window.localStorage.getItem('user'));
+// load_data=JSON.parse(window.localStorage.getItem("cove_data"));
+// ses_id=window.localStorage.getItem("session_id");
+// console.log(load_data);
+// if($.inArray(ses_id, load_data) == -1){
+//   console.log("0=="+ses_id);
+// }
+// else{
+//   console.log("1=="+ses_id);
+// }
+var history=[];
+ $.map(user.streak, function(value, index) { 
+    $.map(value, function(value, index) { 
+      $.map(value, function(value, index) { 
+        console.log(index);
+        history.push(index);
+      });
+    });
+ });
+
 	if(user.membership_type == "Free"){
+    //Start showing tick for single session purchase else hide
+     var final = JSON.parse(window.localStorage.getItem("cove_data"));
+     var id = $(".current").attr("id");
+        $(".tick").hide();
+    if($.inArray(id, history) > -1){
+      if($.inArray(id, final) > -1 ){
+        $(".tick").show();
+       }
+    }
+
+    // End  showing tick for single session purchase else hide
 
 //	$(".bg1").append('<div class="box1a" style="top:0;"><i class="fa fa-lock fa-5x center"></i></div>');
-	$(".bg1").append('<div class="boxA new-bg py-3" style="top:0;"><div class="row py-5"><div class="col-12"><h2 class="mb-4 sessionnm">Conversation 1</h2><p>One Subscription. Unlimited Access.</p></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-5 bg-white"><h4>L I F E T I M E</h4><h2>$ 2</h2><a href="javascript:void(0)" class="btn get-button" style="color: #fff; margin-bottom: 66px;" data-amount="2" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a></div></div></div></div>	');
+	$(".bg1").append('<div class="boxA new-bg py-3" style="top:0;"><div class="row py-5"><div class="col-12"><h2 class="mb-4 sessionnm">Conversation 1</h2><p>One Subscription. Unlimited Access.</p></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-5 bg-white"><h4>L I F E T I M E</h4><h2>$ 2.79</h2><a href="javascript:void(0)" class="btn get-button" style="color: #fff; margin-bottom: 66px;" data-amount="2.79" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a></div></div></div></div>	');
 }
 			//$(".sess").html("");
 /************************************** Dynamic Session Play ***************************************/
@@ -1287,8 +1487,8 @@ if(window.screen.width > 425){
 			//alert(index);
 if(index){
 	$(".boxA").remove();
-if(user.membership_type == "Free"){
-  $(".bg1").append('<div class="boxA new-bg py-3" style="top:0;"><div class="row py-5"><div class="col-12"><h2 class="mb-4 sessionnm">Conversation 1</h2><p>One Subscription. Unlimited Access.</p></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-5 bg-white"><h4>L I F E T I M E</h4><h2>$ 2</h2><a href="javascript:void(0)" class="btn get-button" style="color: #fff; margin-bottom: 66px;" data-amount="2" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a></div></div></div></div>	');
+if(user.membership_type == "Free" ){
+  $(".bg1").append('<div class="boxA new-bg py-3" style="top:0;"><div class="row py-5"><div class="col-12"><h2 class="mb-4 sessionnm">Conversation 1</h2><p>One Subscription. Unlimited Access.</p></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-5 bg-white"><h4>L I F E T I M E</h4><h2>$ 2.79</h2><a href="javascript:void(0)" class="btn get-button" style="color: #fff; margin-bottom: 66px;" data-amount="2.79" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a></div></div></div></div>	');
 //	$(".bg1").append('<div class="box1a" style="top:0;"><i class="fa fa-lock fa-5x center"></i></div>');
 }
 }
@@ -1337,6 +1537,7 @@ if(user.membership_type == "Free"){
                       
                     if(index == bid){
                     $.map(value.Session, function(value2, index2) {
+                      window.localStorage.setItem("SESSIONDATA",JSON.stringify(value2));
 											if(index2 == sid){	
 												window.session = [];
 												window.sessiontime = [];
@@ -1351,7 +1552,7 @@ if(user.membership_type == "Free"){
 													if(i == 0){
 														var vid = document.getElementById("jp_audio_0");
 														  vid.pause();
-														  vid.currentTime=0;
+														 // vid.currentTime=0;
 														  vid.src = value2.meditation_audio[i];
 														var myOtherOne = new CirclePlayer("#jquery_jplayer_2",
 														  {
@@ -1363,6 +1564,8 @@ if(user.membership_type == "Free"){
 														  });
 														$('.cp-pause').css("display","none");
 														$('.cp-play').css("display","inherit");
+                            window.status="true";
+                            window.slotSL = "true";
 													//console.log(myOtherOne);
 													}
 													window.session.push(value2.meditation_audio[i]);
@@ -1371,9 +1574,9 @@ if(user.membership_type == "Free"){
 													ts = '';
 												for(i in value2.meditation_audio_time){
 													if(i == 0){
-														ts += '<div class="box box1" id="'+value2.meditation_audio_time[i]+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
+														ts += '<div class="box box1" id="'+value2.meditation_audio_time[i]+'" data-index="'+i+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
 													}else{
-														ts += '<div class="box " id="'+value2.meditation_audio_time[i]+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
+														ts += '<div class="box " id="'+value2.meditation_audio_time[i]+'" data-index="'+i+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
 													}
 													window.sessiontime.push(value2.meditation_audio_time[i]);
 												}
@@ -1397,9 +1600,10 @@ if(user.membership_type == "Free"){
                       
               $.map(childData.SubCategory, function(value, index) {
                     if(index == bid){
-										$.map(value.Session, function(value2, index2) {
-											
-											if(index2 == sid){	
+                    $.map(value.Session, function(value2, index2) {
+                      
+                      if(index2 == sid){  
+                      window.localStorage.setItem("SESSIONDATA",JSON.stringify(value2));
 												window.session = [];
 												window.sessiontime = [];
 													$(".conv").html(value2.session_name);
@@ -1425,7 +1629,7 @@ if(user.membership_type == "Free"){
 															//var vid = document.getElementById("jp_audio_0");
 														  var vid = document.getElementById("jp_audio_0");
 														  vid.pause();
-														  vid.currentTime=0;	
+														 // vid.currentTime=0;	
 														  vid.src = value2.meditation_audio[i];
 															var myOtherOne = new CirclePlayer("#jquery_jplayer_2",
 															  {
@@ -1437,6 +1641,8 @@ if(user.membership_type == "Free"){
 															  });
 															$('.cp-pause').css("display","none");
 															$('.cp-play').css("display","inherit");
+                              window.status="true";
+                              window.status = "true";
 														//console.log(myOtherOne);
 														}
 														window.session.push(value2.meditation_audio[i]);
@@ -1445,9 +1651,9 @@ if(user.membership_type == "Free"){
 														ts = '';
 													for(i in value2.meditation_audio_time){
 														if(i == 0){
-															ts += '<div class="box box1" id="'+value2.meditation_audio_time[i]+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
+															ts += '<div class="box box1" id="'+value2.meditation_audio_time[i]+'" data-index="'+i+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
 														}else{
-															ts += '<div class="box " id="'+value2.meditation_audio_time[i]+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
+															ts += '<div class="box " id="'+value2.meditation_audio_time[i]+'" data-index="'+i+'"><p>'+value2.meditation_audio_time[i]+' <br> min</p></div>'
 														}
 														window.sessiontime.push(value2.meditation_audio_time[i]);
 													}
@@ -1462,36 +1668,63 @@ if(user.membership_type == "Free"){
 						   }
 					                     //for re-do / replay audio
 
-                  if(window.screen.width > 770){
+                  if(window.screen.width > 770 ){
                   	 var final = JSON.parse(window.localStorage.getItem("cove_data"));
                console.log(final);	
 
-                      if(user.sessionHalted ){
-                        $.map(user.sessionHalted, function(value, index) {
-                              console.log(index+"=="+window.session_id);
-                              if(index == window.session_id && $.inArray(index, final) != -1 && value.halted != 0){
-                                  console.log(value.halted);
-                                $('#memberModal').modal("show");
-                                  $(".continue").click(function(){
-                                  var vid = document.getElementById("jp_audio_0");
-                                    vid.currentTime = value.halted*60; //time is in minute to second (time*60)
-                                  // alert(value.halted*60);
-                                    $('#memberModal').modal("hide");
-                                  });
+                  firebase.database().ref("Users/"+user.user_id).on("value",function(snapshot){
+                    var child=snapshot.val();
 
-                                  // Code for begin with initial 
-                                  $(".start").click(function(){
-                                     var vid = document.getElementById("jp_audio_0");
-                                    vid.currentTime = 0; //time is in minute to second (time*60)
-                                    $('#memberModal').modal("hide");
-                                  });
-                                }
-                              });
-                      }else{
-                           var vid = document.getElementById("jp_audio_0");
-                      vid.currentTime = 0; //time is in minute to second (time*60)
-                      }
-                  }
+      console.log(child);
+                    if((child.sessionHalted && child.membership_type != "Free") || (user.sessionHalted && $.inArray(index,final) != -1) ){
+                      //alert(1);
+                              $.map(child.sessionHalted, function(value, index) {
+                                 var vid = document.getElementById("jp_audio_0");
+                                        console.log(index+"=="+window.session_id);
+                                    if(index == window.session_id && window.status=="true"){
+                                      console.log(value.halted);
+                      // alert("in"+window.status);
+                                     //alert(value.halted);
+                                        
+                                        if(value.halted != 0.0 || value.halted != 0){
+                                        //  alert($(".box1").data("index")+"=="+value.slot);
+                                           if(value.slot != undefined){
+                                            if($(".box1").data("index") == value.slot){
+                                              //  vid.currentTime = value.halted; //time is in minute to second (time*60)
+
+                                              $('#memberModal').modal("show");  
+
+                                            }
+                                          }
+
+                                        }
+                                        $(".continue").click(function(){
+                                          //alert(5);
+                                          if(value.slot != undefined){
+                                            if($(".box1").data("index") == value.slot){
+                                                vid.currentTime = value.halted; //time is in minute to second (time*60)
+                                              
+                                            }
+                                          }
+                                          $('#memberModal').modal("hide");
+                                        });
+
+                                        // Code for begin with initial 
+                                        $(".start").click(function(){
+                                          vid.currentTime = 0; //time is in minute to second (time*60)
+                                      hdata = {"halted":0.0,"slot":$(".box1").data("index")};
+                                    firebase.database().ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata);
+                                          $('#memberModal').modal("hide");
+                                        });
+                                      }
+                                    });
+                              }else{
+                                   var vid = document.getElementById("jp_audio_0");
+                             // vid.currentTime = 0; //time is in minute to second (time*60)
+                              }
+                            });
+
+                   }
                  // over
 						});
 				   });
@@ -1511,25 +1744,7 @@ if(user.membership_type == "Free"){
 			//alert(result);
 
 
-$(".get-button").click(function(){
 
-	var plan = $(this).data('plan');
-	var cycle = $(this).data('cycle');
-			var price = $(this).data('amount');
-//	alert(result);
-	$.post("http://34.215.40.163/test.php", {"price": price}, function(result){
-			        console.log(result);
-			
-			localStorage.setItem('payment','true');
-			localStorage.setItem('session_id',$(".current").attr('id'));
-			localStorage.setItem('session_name',$(".current").html());
-			localStorage.setItem('subcategory_id',$(".box_12 > p").attr("id"));
-			localStorage.setItem('prevcat','Quick Dive');
-
-	 $.redirect("Process.php",{select_cycles: cycle ,product_name : "session","select_plan":plan,"price":price,"userid":user.user_id,"token":result},"POST",null,null,true);
-	});
-			        
-});
 
 /***************************************************************************************/
 
@@ -1683,10 +1898,10 @@ var content = '';
 											}
 												if(user.membership_type == "Free"){
 
-												content += '<div data-count="'+j+'" class=" hover-box1 new" style=" background-image: url('+value2.session_img+');height:160px;"><p class="newp" id="'+value.subcategory_id+'">'+value2.session_name+'</p>	<div class="hover-box2a text-center text-white" style="padding:7px 0;"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light"  data-subcatname="'+value.subcategory_name+'"  data-sub="'+value.subcategory_id+'" id="'+value2.session_id+'" style="border-radius: 0;" >S E S S I O N</div></div><div class="mb" data-img='+value2.session_img+' ><i class="fa fa-lock fa-2x center"></i></div></div>';
+												content += '<div data-count="'+j+'" class=" hover-box1 new" style=" background-image: url('+value2.session_img+');height:160px;"><p class="newp" id="'+value.subcategory_id+'">'+value2.session_name+'</p>	<div class="hover-box2a text-center text-white" style="padding:7px 0;"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light"  data-subcatname="'+value.subcategory_name+'"  data-sub="'+value.subcategory_id+'" id="'+value2.session_id+'" style="border-radius: 0;" data-menu="'+j+'">S E S S I O N</div></div><div class="mb" data-img='+value2.session_img+' ><i class="fa fa-lock fa-2x center"></i></div></div>';
                         j++;
 											}else{
-												content += '<div data-count="'+j+'" class=" hover-box1 new" style=" background-image: url('+value2.session_img+');height:160px;"><p class="newp" id="'+value.subcategory_id+'">'+value2.session_name+'</p>	<div class="hover-box2a text-center text-white" style="padding:7px 0;"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" data-subcatname="'+value.subcategory_name+'" data-sub="'+value.subcategory_id+'" id="'+value2.session_id+'" style="border-radius: 0;">S E S S I O N</div></div></div>';
+												content += '<div data-count="'+j+'" class=" hover-box1 new" style=" background-image: url('+value2.session_img+');height:160px;"><p class="newp" id="'+value.subcategory_id+'">'+value2.session_name+'</p>	<div class="hover-box2a text-center text-white" style="padding:7px 0;"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" data-subcatname="'+value.subcategory_name+'" data-sub="'+value.subcategory_id+'" id="'+value2.session_id+'" style="border-radius: 0;" data-menu="'+j+'">S E S S I O N</div></div></div>';
                         j++;
 											}
 										});
@@ -1711,7 +1926,7 @@ var content = '';
         $('.hover-box1').each(function(){
    
           if($(this).data("count")==0){
-            $(this).find(".mb").css("display","none");
+            //$(this).find(".mb").css("display","none");
           }
             id= $(this).find(".btn2").attr("id");   
           console.log(window.localStorage.getItem("cove_data"));
@@ -1779,6 +1994,8 @@ $(".pad2").click(function(){
 			var bundle = $(this).attr("id");
 			var bundleid = $(this).data("sub");
       var subcatname= $(this).data("subcatname"); 
+      
+       window.localStorage.setItem("streak",$(this).data("menu")+1);
       window.localStorage.setItem("subcategory",subcatname); 
       window.localStorage.setItem("subcategory_id",$(this).data("sub")); 
       window.localStorage.setItem("session_id",$(this).attr("id")); 
@@ -1886,9 +2103,22 @@ $("body").on("click",".mb",function(){
 //over
 
 /************************************** Dynamic Change Session Acording To Timeslot ***************************************/	
+ // function slotchange(){
 
+    
+
+ // }
+
+// if(window.slotSL == "true"){
+
+//   alert("IF"+window.slotSL);
+// } else {
+//   alert("ELSE"+window.slotSL);
+// }
         $("body").on("click",".box",function(){
             $(".box").removeClass('box1');
+  //alert(window.slotSL);
+
   $(this).addClass('box1');
   var vid = document.getElementById("jp_audio_0");
        
@@ -1900,55 +2130,136 @@ $("body").on("click",".mb",function(){
           vid.src = window.session[t];
           $('.cp-pause').css("display","none");
           $('.cp-play').css("display","inherit");
+          window.status="true";
+       //   window.slotSL = "true";
            if (vid.paused == false) {
             vid.src = window.session[t];
           }
         }
 
       }
-      //alert($(this).attr('id'));
 
+     firebase.database().ref("Users/"+user.user_id).on("value",function(snapshot){
+
+      var child=snapshot.val();
+      console.log(child);
+        if((window.localStorage.getItem("cat") != "10 Day Intro Program") && (child.sessionHalted ) ){
+         // alert(2);
+      $.map(child.sessionHalted, function(value, index) {
+         var vid = document.getElementById("jp_audio_0");
+                console.log(index+"=="+window.session_id);
+            if(index == window.session_id){
+              console.log(value);
+             // alert(value.halted);
+             // alert("S"+value.slot);
+                
+                if(value.halted != 0.0 || value.halted != 0){
+                 // alert($(".box1").data("index")+"=="+value.slot);
+                   if(value.slot != undefined ){
+                    if($(".box1").data("index") == value.slot && window.status=="true"){
+                      //  vid.currentTime = value.halted; //time is in minute to second (time*60)
+                      $('#memberModal').modal("show");  
+
+                    }
+                  }
+
+                }
+                $(".continue").click(function(){
+                  //alert(5);
+                  if(value.slot != undefined){
+                    if($(".box1").data("index") == value.slot){
+                        vid.currentTime = value.halted; //time is in minute to second (time*60)
+                      
+                    }
+                  }
+                  $('#memberModal').modal("hide");
+                });
+
+                // Code for begin with initial 
+                $(".start").click(function(){
+                  vid.currentTime = 0; //time is in minute to second (time*60)
+                      hdata = {"halted":0.0,"slot":$(".box1").data("index")};
+                        firebase.database().ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata);
+                  $('#memberModal').modal("hide");
+                });
+              }
+            });
+        }else{
+        //  alert("Else");
+             var vid = document.getElementById("jp_audio_0");
+       // vid.currentTime = 0; //time is in minute to second (time*60)
+        }
+      });
     
     });
 /************************************** End Dynamic Change Session Acording To Timeslot ***************************************/	
 	
 	// for first free conversion
 $(".list li").click(function(){
-
+ var user = JSON.parse(window.localStorage.getItem('user'));
   var menuid=$(this).data("menu");
   var id=$(this).attr("id");
-  console.log(history);
   localStorage.setItem('session_id',id);
   localStorage.setItem('subcategory_id',$(this).data('cat'));
-  if(menuid==0 && user.membership_type == "Free"){
-  	$(".boxA").css("display","none");
-  	$(".box1a").css("display","none");
-  }
-  else{
-  	//for subscribe conversation
-  	if($.inArray(id, final_conve_data) > -1){
-  		$(".boxA").css("display","none");
-  		$(".box1a").css("display","none");
+  //if(menuid==0 && user.membership_type == "Free"){
+    //$(".boxA").css("display","none");
+    //$(".box1a").css("display","none");
+ // }
+ // else{
+    //for subscribe conversation
+                     var final = JSON.parse(window.localStorage.getItem("cove_data"));
 
-  	}
-    else{
-      $(".chk").css("display","none");
+    if($.inArray(id, final_conve_data) > -1){
+     
+      $(".boxA").css("display","none");
+      $(".box1a").css("display","none");
+      if($.inArray(id, history) > -1 ){
+        //alert("sf"+session_id);
+        $(".tick").show();
+        $(".chk").css("display","block");
+        
+      } 
     }
-  }
+    else{
+      $(".boxA").css("display","inherit");
+      $(".box1a").css("display","inherit");      
+      if($.inArray(id, history) > -1  && user.membership_type!="Free"){
+       // alert("f"+id);
+        $(".chk").css("display","inherit");
+        
+      }else{
+
+        $(".chk").css("display","none");
+      } 
+    }
+
+ // console.log(history);
+    
+  //}
   console.log(final_conve_data);
 
  });
+ses_id=window.localStorage.getItem("session_id");
+  console.log(ses_id);
+load_data=JSON.parse(window.localStorage.getItem("cove_data"));
+if($.inArray(ses_id, load_data) > -1){
+  console.log(ses_id);
+      $(".boxA").css("display","none");
+      $(".box1a").css("display","none");
+
+}
+
 var menuid=$(".list li").data("menu");
   if(menuid==0 && user.membership_type == "Free"){
-  	$(".boxA").css("display","none");
-  	$(".box1a").css("display","none");
+  //	$(".boxA").css("display","none");
+  //	$(".box1a").css("display","none");
   }
 
 
 	/* Jounral and streak entry code*/
 	
 	 $(".journaladd").click(function(){
-		 
+		                     window.localStorage.setItem("referrer",document.URL);
 		                     var user = JSON.parse(window.localStorage.getItem('user'));
          var vid = document.getElementById("jp_audio_0");
         var sec = Math.ceil(vid.duration%60);
@@ -1969,8 +2280,8 @@ var menuid=$(".list li").data("menu");
              else{  
 
 
-             	      if(user.membership_type != 'Free'){
               db.ref("Users/"+user.user_id+"/completed_conversation").set(user.completed_conversation + 1);
+                    if(user.membership_type != 'Free'){
      }else if(user.membership_type == 'Free'){
       if(((user.last_free_conversation_id)!=10 && !window.localStorage.getItem('cat')) || ((user.last_free_conversation_id)!=10 && window.localStorage.getItem('cat') == '10 Day Intro Program')){
         
@@ -2002,7 +2313,10 @@ var menuid=$(".list li").data("menu");
   var Cur_subcat_id=window.localStorage.getItem('subcategory_id');
   var Cur_cat=window.localStorage.getItem('cat');
 //alert(Cur_cat);
+
   console.log(user.currentStreak);
+  var count=$(".current").data("menu")+1;
+  window.localStorage.setItem("streak",count);
    if(user.currentStreak){
           //alert('t');
           $.map(user.currentStreak, function(value, index) {
@@ -2031,13 +2345,15 @@ var menuid=$(".list li").data("menu");
                                   {
                                     var data2={session:Cur_session_id};
                                     db.ref("Users/"+user.user_id+"/currentStreak/"+Cur_cat).child("SubCategory/"+Cur_subcat_id+"/Session/").child(Cur_session_id).set(data2);
+                                    db.ref("Users/"+user.user_id+"/currentStreak/"+Cur_cat).child("SubCategory/"+Cur_subcat_id).update({"streak":count});
+
                                   }
 
                               });
                           }
                           else if(C_type=='Bundle')
                           {
-                              var data2={SubCategory:{[Cur_subcat_id]:{Session:{[Cur_session_id]:{session:Cur_session_id}}}}};
+                              var data2={SubCategory:{[Cur_subcat_id]:{Session:{[Cur_session_id]:{session:Cur_session_id}},streak:count}}};
 
                               // db.ref("Users/"+user.user_id+"/currentStreak/"+C_type).remove();
                               db.ref("Users/"+user.user_id+"/currentStreak/").child(Cur_cat).set(data2);
@@ -2046,7 +2362,7 @@ var menuid=$(".list li").data("menu");
                         }); 
                       }
                       else{
-                        var data2={[Cur_subcat_id]:{Session:{[Cur_session_id]:{session:Cur_session_id}}}};
+                        var data2={[Cur_subcat_id]:{Session:{[Cur_session_id]:{session:Cur_session_id}},streak:count}};
                         db.ref("Users/"+user.user_id+"/currentStreak/"+Cur_cat).child('SubCategory').set(data2);
                       }
                    }); 
@@ -2054,14 +2370,14 @@ var menuid=$(".list li").data("menu");
               }
               else{
                 //alert('c');
-                var data2={[Cur_cat]:{SubCategory:{[Cur_subcat_id]:{Session:{[Cur_session_id]:{session:Cur_session_id}}}}}};
+                var data2={[Cur_cat]:{SubCategory:{[Cur_subcat_id]:{Session:{[Cur_session_id]:{session:Cur_session_id}},streak:count}}}};
                 db.ref("Users/"+user.user_id+"/currentStreak").set(data2);
               } 
           });
       }
       else{
         //alert('f');
-        var data2={[Cur_cat]:{SubCategory:{[Cur_subcat_id]:{Session:{[Cur_session_id]:{session:Cur_session_id}}}}}};
+        var data2={[Cur_cat]:{SubCategory:{[Cur_subcat_id]:{Session:{[Cur_session_id]:{session:Cur_session_id}},streak:count}}}};
         db.ref("Users/"+user.user_id+"/currentStreak").set(data2);
       }
 //CurrentStreak over
@@ -2090,7 +2406,7 @@ var menuid=$(".list li").data("menu");
           /* check for same bundle if it is then update */
         //  alert(index);
         //  alert(Cur_subcat_id);
-        
+
           $.map(value.Session, function(value, index) { 
               if(index == window.session_id){
           //alert(value.total_taken_time+"=="+min);
@@ -2112,9 +2428,21 @@ var menuid=$(".list li").data("menu");
         
       });
      }
-
-
              $('#exampleModalCenter').modal('hide');
+     history.push(window.session_id);
+            // alert(history);
+             var final = JSON.parse(window.localStorage.getItem("cove_data"));
+if(($.inArray(window.session_id, history) > -1  && user.membership_type!="Free" ) || ($.inArray(window.session_id, history) > -1  && $.inArray(window.session_id, final) != -1) ){
+             //alert(window.session_id);
+//alert("f"+s);
+       // alert("f"+id);
+       $(".tick").show();
+        $(".chk").css("display","inherit");
+        
+      }else{
+
+        $(".chk").css("display","none");
+      } 
             var currentdate = new Date(); 
                 var datetime = 
                     +currentdate.getFullYear() + "-"
@@ -2126,7 +2454,7 @@ var menuid=$(".list li").data("menu");
 
             var firebaseRef = firebase.database().ref();
 
-            var catname = $(".modal-title").html();
+            var catname =window.localStorage.getItem('cat');
             var bundlename = $(".box_12 > p").html();
              var sessionname =  $(".conv").html();
             //alert(s.session_name);
@@ -2144,34 +2472,37 @@ var menuid=$(".list li").data("menu");
                 bundle_name:bundlename,
                 session_name: sessionname,
                 date: datetime
+            }).then(function(snap){
+                $("#message-text").val("As I read what I wrote, I connected with...");
+                var Sessiondata = JSON.parse(window.localStorage.getItem("SESSIONDATA"));
+                $.redirect("summary.php",{"nm":Sessiondata.session_name,"qimg":Sessiondata.session_quote_img,"qdesc":Sessiondata.session_quote_description},"POST",null,null,true);
             });
 
         }
                 
-		$("#message-text").val("As I read what I wrote, I connected with...");
-		 
-	 });
-	//for get session paid detail
-	var cname="/IndividualSubscription";
-	var subcate_index=[];
-	var final_conve_data=[];
 	
-	window.cat_index=0;
-	firebase.database().ref("Users/"+user.user_id+cname+"/session").once("value",function(snapshot){
-								//alert();
-		snapshot.forEach(function(childSnapshot) {
-
-  		console.log(childSnapshot.val());
-  		//alert(childSnapshot.val());
-  		childData=childSnapshot.val();
-      final_conve_data.push(childData['id']);
-			
-		});
-    console.log(final_conve_data);
-    
-		window.localStorage.setItem("cove_data",JSON.stringify(final_conve_data));
+            
     
   });
+//for get session paid detail
+  var cname="/IndividualSubscription";
+  var subcate_index=[];
+  var final_conve_data=[];
+  
+  window.cat_index=0;
+  firebase.database().ref("Users/"+user.user_id+cname+"/session").once("value",function(snapshot){
+                //alert();
+    snapshot.forEach(function(childSnapshot) {
+
+      console.log(childSnapshot.val());
+      //alert(childSnapshot.val());
+      childData=childSnapshot.val();
+      final_conve_data.push(childData['id']);
+      
+    });
+    console.log(final_conve_data);
+    
+    window.localStorage.setItem("cove_data",JSON.stringify(final_conve_data));
 
 var history=[];
  $.map(user.streak, function(value, index) { 
@@ -2182,13 +2513,17 @@ var history=[];
       });
     });
  });
+    //  var final = JSON.parse(window.localStorage.getItem("cove_data"));
     console.log(history);
        // alert(session_id);
      if($.inArray(session_id, history) > -1){
-        //alert(session_id);
-        $(".chk").css("display","unset");
+       // alert(session_id);
+        $(".chk").css("display","block");
         
-      }   
+      } 
+		 
+	 });
+  
 
 });
 
@@ -2215,7 +2550,7 @@ var history=[];
           <div class="row justify-content-center">
               <div class="col-md-6 col-lg-6 bg-white" style="width: auto;">
                   <h4 style="color: #80429c;padding-top: 30px;">L I F E T I M E</h4>
-                  <h2 style="padding: 10px;color: #80429c;">$ 2.00</h2><a href="javascript:void(0)" class="btn get-button get-button-sub " style="color: #fff;margin-bottom: 5px;" data-amount="2" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a>
+                  <h2 style="padding: 10px;color: #80429c;">$ 2.79</h2><a href="javascript:void(0)" class="btn get-button get-button-sub " style="color: #fff;margin-bottom: 5px;" data-amount="2.79" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a>
                   <div style="margin-top: 8px;margin-bottom: 8px;font-weight: bold;color:#111;"> OR</div>
                   <a href="javascript:void(0)" class="btn "  style="background-color: #7dd3d5;padding-left: 15px;padding-right: 15px;color: #fff; margin-bottom: 25px;" data-dismiss="modal" aria-label="Close">C A N C E L </a></div>
           </div>

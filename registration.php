@@ -25,7 +25,7 @@
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$('.bdate').datepicker({
-			dateFormat: 'dd/mm/yy',
+			dateFormat: 'yy-mm-dd',
                 changeMonth: true,
                 changeYear: true,
                 yearRange: "-100:+0",
@@ -232,7 +232,12 @@ $("form").keypress(function(e) {
       if(e.which == 13) {
       //  alert('You pressed enter!');
       //$("#go").click();
-        save_user();
+      var password = $("#password").val();
+            var confirmPassword = $("#confirmpassword").val();
+            if (password == confirmPassword) {
+                save_user();
+              
+            }
         //$(this).reset();  // Reset all form data
       }
     });
@@ -447,31 +452,32 @@ var password1 = $("#password").val();
 		}else{
 					  cpwd_status = 1;
 		}
-
+if(password1 != confirmPassword){
+    return false;
+    pwd_status = 0;
+}else{
+    pwd_status = 1;
+}
 
 
 
 
 
 	// To check Form field is empty or not.
-	if (first_name.value.length == 0  || last_name.value.length == 0 || email.value.length == 0 || password.value.length == 0  || gen_status === 0 || birthdate_status == 0) {
+	if (first_name.value.length == 0  || last_name.value.length == 0 || email.value.length == 0 || password.value.length == 0  || gen_status === 0 || birthdate_status == 0 || pwd_status == 0) {
 		//document.getElementById('head').innerHTML = "* All fields are mandatory *"; // This segment displays the validation rule for all fields
 
 
 		return false;
 	}
 
-	if (first_name.value.length == 1  || last_name.value.length == 1 || email.value.length == 1 || password.value.length == 1  || gen_status === 1 || birthdate_status == 1) {
+	if (first_name.value.length == 1  || last_name.value.length == 1 || email.value.length == 1 || password.value.length == 1  || gen_status === 1 || birthdate_status == 1 || pwd_status == 1) {
 		//document.getElementById('head').innerHTML = "* All fields are mandatory *"; // This segment displays the validation rule for all fields
 
 		return true;
 	}
 
-if(password1 != confirmPassword){
-    return false;
-}else{
-    pwd_status = 1;
-}
+
 // Check each input in the order that it appears in the form.
 if (inputfAlphabet(first_name, "* For your First name please use alphabets only ")) {
 if (inputlAlphabet(last_name, "* For your Last name please use alphabets only ")) {

@@ -36,11 +36,11 @@ firebase.database().ref("Category").orderByChild("session_id").on("value", funct
 				//localStorage.setItem('prevcat',key);
 				window.check = true;
 					$.map(childData.SubCategory, function(value, index) {
+						if(value.Bundle != "" && value.Bundle){
 						
 						content += '<div class="container-fluid text-center"><div class="container pad2"><div class="row my-5 justify-content-center justify-content-md-start"><h4>'+value.subcategory_name+'</h4></div>';
 						
 							content += '<div class="row px-5 bnd">';
-						
 						$.map(value.Bundle, function(value2, index2) {
 								window.check = false;
 							if(value2.Session){
@@ -81,11 +81,12 @@ firebase.database().ref("Category").orderByChild("session_id").on("value", funct
 										complete = complete;
 										comper = ((complete*100)/total);
 									}
-									if(user.membership_type == "Free"){
-												content += '<div class="col-md-4 col-xs-6 hover-box1 p-0 boxStyle" style=" background-image: url('+value2.bundle_img+');"><p class="Centerblock bundle" id="'+value.subcategory_id+'">'+value2.bundle_name+'</p><p class=" mt-5" style="font-size: 18px; "> <span>Try for free</p><div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" data-sub="'+value.subcategory_id+'"  data-total="'+total+'" data-img="'+value2.bundle_img+'"  data-bundle="'+value2.bundle_name+'" id="'+value2.bundle_id+'" style="border-radius: 0;">S E S S I O N</div></div></div>';
+									var final = JSON.parse(window.localStorage.getItem("cove_data2"));
+									if(user.membership_type != "Free" || $.inArray(value2.bundle_id,final) != -1){
 
-									}else{
 											content += '<div class="col-md-4 col-xs-6 hover-box1 p-0 boxStyle" style=" background-image: url('+value2.bundle_img+');"><p class="Centerblock bundle" id="'+value.subcategory_id+'">'+value2.bundle_name+'</p><p class="ptext mt-4" > <span>'+complete+'</span> Of '+total+'</p><div class="progress" style="height:7px;width:80%;margin:auto;"><div class="progress-bar" style="height:10px;width:'+comper+'%;"></div></div>	<div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" data-sub="'+value.subcategory_id+'"  data-total="'+total+'" data-img="'+value2.bundle_img+'"  data-bundle="'+value2.bundle_name+'" id="'+value2.bundle_id+'" style="border-radius: 0;">S E S S I O N</div></div></div>';		
+									}else{
+												content += '<div class="col-md-4 col-xs-6 hover-box1 p-0 boxStyle" style=" background-image: url('+value2.bundle_img+');"><p class="Centerblock bundle" id="'+value.subcategory_id+'">'+value2.bundle_name+'</p><p class=" mt-5" style="font-size: 18px; "> <span>Try for free</p><div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" data-sub="'+value.subcategory_id+'"  data-total="'+total+'" data-img="'+value2.bundle_img+'"  data-bundle="'+value2.bundle_name+'" id="'+value2.bundle_id+'" style="border-radius: 0;">S E S S I O N</div></div></div>';
 									}
 								
 								
@@ -98,6 +99,7 @@ firebase.database().ref("Category").orderByChild("session_id").on("value", funct
 						});	
 						content += '</div>';
 						content += '</div></div>';
+					}
 					});	
 				}	
 			//	ht +='</div></div>';
@@ -121,13 +123,13 @@ $(".hover-box1").css("top",0);
 	// 	//$.redirect("individual.php",{'bundle': id,'subcatid': sid},"POST",null,null,true);
 	// 	//alert(id);
 	// });
-
+var final = JSON.parse(window.localStorage.getItem("cove_data2"));
 		$(".btn").click(function(){
 		//alert($(this).data("total"));
 		 var user = JSON.parse(window.localStorage.getItem('user'));
 		var sid = $(".Center").attr("id");
 		var id = $(this).attr("id");
-		if(user.membership_type != "Free"){
+		if($.inArray(id,final) != -1 || user.membership_type != "Free"){
 			$.redirect("individual.php",{'bundle': id,'subcatid': sid},"POST",null,null,true);
 		}else{
 			if($(this).data("total") > 1){
@@ -163,7 +165,7 @@ $(".hover-box1").css("top",0);
 //			localStorage.setItem('subcategory_id',$(".box_12 > p").attr("id"));
 			localStorage.setItem('prevcat','Deep Dive');
 			localStorage.setItem('payment','true');
-				 //$.redirect("Process.php",{select_cycles: cycle ,product_name : "session","select_plan":plan,"price":price,"userid":user.user_id,"token":result},"POST",null,null,true);
+				 $.redirect("Process.php",{select_cycles: cycle ,product_name : "session","select_plan":plan,"price":price,"userid":user.user_id,"token":result},"POST",null,null,true);
 				});
 			});
 		}

@@ -209,7 +209,7 @@ return $nodeGetContent;
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                                                <input name="subcatimage" class="check-image-size form-control" id="subcatimage" type="file" onchange="uplaodsubimgfile()" accept="image/*" />
+                                                <input name="subcatimage" class="check-image-size form-control" id="subcatimage" type="file" data-min-width="1920" data-min-height="1080" data-max-width="1920" data-max-height="1080" onchange="uplaodsubimgfile()" accept="image/*" />
                                                 <input type="hidden" id="subimgurl">
                                         <!--    </div> -->
 
@@ -327,7 +327,7 @@ $("input[type=file]").checkImageSize();
         rules: {
             'name': {
                 required: true,
-                minlength: 6,
+                minlength: 2,
                 maxlength: 50,
                 regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
             }, 
@@ -421,12 +421,8 @@ $("input[type=file]").checkImageSize();
             subcategory_id: subid,
             //bundle:''
             Bundle:''
-        });
-        //alert(cimg);
-        //alert(55);
-                if(pushedCatRef){
-                
-                     swal({
+        }).then(function(snap){
+             swal({
                         title: "Inserted!",
                         text: "Subcategory has been Inserted.",
                         html:true,
@@ -441,6 +437,12 @@ $("input[type=file]").checkImageSize();
                           window.location.href = "subcategory_list.php";
                         }, 1000);
                     });
+        });
+        //alert(cimg);
+        //alert(55);
+                if(pushedCatRef){
+                
+                    
             }
            }
     });

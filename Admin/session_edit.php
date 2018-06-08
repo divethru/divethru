@@ -108,6 +108,19 @@ foreach($category as $k => $v){
 				}
 	}
 }
+
+/* Start tag's code */
+
+$tag = get("Tags");
+$t2 = [];
+foreach($tag as $k => $v){
+    if(isset($v["tags"])){
+        $t2[$v["tags_category"]] = explode(",",$v["tags"]);
+    }
+}
+
+/* End tag's code */
+
 //print_r($bundle);
 //die;
 function get($path){
@@ -149,6 +162,20 @@ $a[$k]= $whatIWant;
 foreach($session['meditation_audio_time'] as $k2 => $t){
         $time[$k2] = $t ;
 }
+
+/* start code from fetching tag's from session*/
+
+if(isset($session['tag'])){
+$Stag = explode(',',$session['tag']);
+    
+}else{
+    
+$Stag = [];
+}
+
+/* end code from fetching tag's from session*/
+
+
 //print_r($a);
 //die;
 $mp3 = implode($a,',');
@@ -240,6 +267,9 @@ $mp3 = implode($a,',');
  width: 48px;
  height: 45px;
  background:url(images/audio.png); 
+}
+#productid{
+    width: 80%;
 }
 </style>
 </head>
@@ -421,6 +451,40 @@ $mp3 = implode($a,',');
                                 </div>
                                 <!--<label id="description-error" class="error" for="description">This field is required.</label></div>-->
                                 
+
+                                    <div class="form-group form-float">
+                                    <div class="form-line error">
+                                       <!-- <label class="form-label">Description</label>
+                                        </br>
+                                        </br>-->
+                                        <textarea name="qdescription" id="qdesc" cols="30" rows="5" class="form-control no-resize" required="" aria-required="true" placeholder="Session Quote Desciption"><?php echo isset($session['session_quote_description'])?$session['session_quote_description']:"";?></textarea>
+                                    </div>
+                                <!--<label id="description-error" class="error" for="description">This field is required.</label>-->
+                                </div>
+                                
+                                   
+                               <div class="form-group form-float">
+                                    <div class="form-line error">
+                                    <label class="form-label">Quote Image (464 X 464)</label>
+                                    </br>
+                                    </br>
+                                     <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
+                                            <div class="dropzone-previews"></div>
+                                            <div class="fallback"> <!-- this is the fallback if JS isn't working -->
+                                                <div class='flex-style'>
+                                                    <div class='icon'></div>
+                                                    <input name="qimage" class=" check-image-size form-control input-file" id="qimage" type="file" data-min-width="464" data-min-height="464" data-max-width="464" data-max-height="464" onchange="uplaodqimg()" accept="image/*" />
+                                                </div>
+                                                <br>
+                                                <?php if( isset($session['session_quote_img'])) {?>
+                                                <img src="<?php echo $session['session_quote_img'];?>" id="oldqimg" width="50" height="50">
+                                                <?php } ?>
+                                                <input type="hidden" id="qimgurl">
+                                        <!--    </div> -->
+
+                                        
+                                    </div>
+                                </div>
                                 
                                 
                                <div class="form-group form-float">
@@ -433,7 +497,7 @@ $mp3 = implode($a,',');
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
                                                 <div class='flex-style'>
                                                 <div class='icon'></div>
-                                                <input name="session" class=" form-control input-file" id="sessionimage" type="file" onchange="uplaodsimgfile()" accept="image/*" />
+                                                <input name="session" class=" form-control input-file" id="sessionimage" type="file" data-min-width="1920" data-min-height="1080" data-max-width="1920" data-max-height="1080"onchange="uplaodsimgfile()" accept="image/*" />
                                                 </div>
                                                 <br>
 												<img src="<?php echo $session['session_img'];?>" id="oldsimg" width="50" height="50">
@@ -514,6 +578,39 @@ $mp3 = implode($a,',');
                                     </div>
                                 </div>
                                 
+
+                                <?php
+                                    $a = ["chk_decyour","chk_hopacc","chk_premo","chk_obface"];
+                                    $i = 0;
+                                        foreach($t2 as $key => $val){
+                                            echo '<div class="form-group form-float sessiontag">
+                                    <div class="form-line error " ><label class="form-label">'.$key.'</label><br><br><div class="demo-checkbox tags">';
+                                                foreach($val as $k => $v){
+                                                    if(count($Stag)>0){
+                                                        if(in_array($v,$Stag)){
+                                                            
+                                                        echo '<input type="checkbox" name="'.$a[$i].'" id="'.$v.'" class="filled-in" value="'.$v.'" checked>
+                                        <label for="'.$v.'">'.$v.'</label>';
+                                                        }else{
+                                                                
+                                                    echo '<input type="checkbox" name="'.$a[$i].'" id="'.$v.'" class="filled-in" value="'.$v.'">
+                                        <label for="'.$v.'">'.$v.'</label>';
+
+                                                        }
+                                                    }else{
+                                                        
+                                                    echo '<input type="checkbox" name="'.$a[$i].'" id="'.$v.'" class="filled-in" value="'.$v.'">
+                                        <label for="'.$v.'">'.$v.'</label>';
+                                                    }
+                                                }
+                                                echo "</div></div></div>";
+                                                $i++;
+                                        }
+                                        //die;
+                                    ?>    
+
+
+
                                     <!----  This is for In app purchase section ---->
 
                                    <div class="form-group form-float SINAPP">
@@ -527,6 +624,7 @@ $mp3 = implode($a,',');
                                         <div class="form-group inappdetails" style="margin-bottom:0px;">    
                                                 <label for="productid">Product ID : </label>
                                             <input type="text" name="productid" id="productid" class="with-gap " placeholder="Product Id" style="border:none;" value="<?php echo $productid; ?>">
+                                            <br>
                                             <label for="active">Active</label>
                                             <?php if($active == 1) {
                                                 echo '<div class="switch" style="display:initial;"><label><input type="checkbox" name="active" id="active" checked><span class="lever"></span></label></div>';
@@ -537,6 +635,7 @@ $mp3 = implode($a,',');
                                                 
                                         </div>
                                         
+                                    </div>
                                     </div>
 
 
@@ -599,8 +698,12 @@ $mp3 = implode($a,',');
     <!--     <script type="text/javascript" src="../register_user.js"></script>-->
     <!-- Custom Js -->
 
-      <
+      
     <script src="js/admin.js"></script>
+    <script src="js/jquery.checkImageSize.js"></script>
+<script>
+$("input[type=file]").checkImageSize();
+</script>
     <script type="text/javascript" src="js/upload.js"></script>
 	<script type="text/javascript">
 		
@@ -625,6 +728,7 @@ $mp3 = implode($a,',');
             window.subcat = false;
             window.bundle = false;
             window.session = true;
+            window.fav = [];
            // $(".fa-spinner").hide();
 			$(".audio2").hide();
             $(".audio1").hide();
@@ -636,6 +740,7 @@ $mp3 = implode($a,',');
                 $(".audio1").show();
                 $(".audio2").show();
                 $(".SINAPP").hide();
+                $(".sessiontag").show();                
              }
              else if($("#subid").val()==0 && $("#bid").val() != 0){
                 $(".sub").hide();
@@ -643,24 +748,28 @@ $mp3 = implode($a,',');
                  $(".audio1").show();
                 $(".audio2").show();
                 $(".SINAPP").hide();
+                $(".sessiontag").hide();
              }else if($("#subid").val()!=0 && $("#bid").val() == 0){
                 $(".sub").show();
                 $(".bnd").hide();
                  $(".audio1").show();
                 $(".audio2").show();
                 $(".SINAPP").show();
+                $(".sessiontag").show();
              }else if($("#subid").val() == 0 && $("#bid").val() == 0 && category_name_edit != "10 Day Intro Program"){
                      $(".audio1").show();
                 $(".audio2").show();
                 $(".sub").hide();
                 $(".bnd").hide();
                 $(".SINAPP").hide();
+                $(".sessiontag").show();
              }else if($("#subid").val() == 0 && $("#bid").val() == 0 && category_name_edit == "10 Day Intro Program"){
                      $(".audio1").hide();
                 $(".audio2").hide();
                 $(".sub").hide();
                 $(".bnd").hide();
                 $(".SINAPP").hide();
+                $(".sessiontag").show();
              }
 			/*
 			$(".dropdown-menu.inner li").each(function( index ) {
@@ -790,10 +899,16 @@ $("#cat").change(function(){
                     op = "<option value=''>Select Subcategory</option>";
                     $.map(t, function(value, index) {
                         $(".SINAPP").hide();
+                        if(!value.Bundle && value.Bundle == ""){
+                            
+                             $(".bnd").hide();
+                        }
+                        if(value.Bundle && value.Bundle != ""){
+
                         if(Object.keys(value.Bundle).length > 0){
 
-                        window.bundle = true;
-                    }
+                                 window.bundle = true;
+                          }
                     /* Hide bundle if subcategory don't have */
                     if(Object.keys(value.Bundle).length == 0){
                                  //    $(".bnd").hide();
@@ -801,6 +916,7 @@ $("#cat").change(function(){
                                       window.bundle = false;                  
                                     window.subcat = true;   
                        }
+                        }
                        // window.bundle = true;
                        // console.log(value.subcategory_id);
                         op += "<option value="+value.subcategory_id+">"+value.subcategory_name+"</option>";
@@ -810,7 +926,7 @@ $("#cat").change(function(){
     //   $('.mdb-select').material_select('destroy'); 
                     $('select').selectpicker('refresh');
             }
-            if(childSnapshot.key == 'Bundle'){
+            if(childSnapshot.key == 'Bundle' && childData != ""){
                 //console.log( Object.values(childData));
                
                 var t = Object.values(childData);
@@ -871,15 +987,16 @@ $("#cat").change(function(){
                     var t = Object.values(childData);
                     var key = Object.keys(childData);
                     $.map(childData, function(value, index) {
-                        if(childData.Bundle != '' && index == sid){
+                        if(value.Bundle != '' && index == sid){
                             
                         var B = Object.values(childData);
 
-                        if(Object.keys(value.Session).length > 0){
-                                     $(".bnd").hide();
+                        if(Object.keys(value.Bundle).length > 0){
+                                     $(".bnd").show();
                                       window.bundle = false;                  
                                     window.subcat = true;   
                                 }else if(Object.keys(value.Bundle).length == 0){
+                                    $(".bnd").hide();
                                      window.bundle = false;                  
                                     window.subcat = true;   
                                 }else if(Object.keys(value.Bundle).length > 0){
@@ -903,7 +1020,7 @@ $("#cat").change(function(){
                             });
                         }
                     });
-    //  console.log(op);
+      //console.log(op);
     //   $('.mdb-select').material_select('destroy'); 
             }
 
@@ -913,6 +1030,10 @@ $("#cat").change(function(){
           $("#bundle").empty().html(op);
                     $('select').selectpicker('refresh');
     });
+
+
+
+
      $.validator.addMethod("regex", function(value, element, regexpr) {          
                  return regexpr.test(value);
                }, "Please enter Only characters"); 
@@ -921,7 +1042,7 @@ $("#cat").change(function(){
                 rules: {
                     'name': {
                         required: true,
-                        minlength: 6,
+                        minlength: 2,
                         maxlength: 50,
                         //alphanumeric : ture,
                         regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
@@ -929,10 +1050,17 @@ $("#cat").change(function(){
                     'description': {
                         required: true
                     }, 
+                    'qdescription': {
+                        required: true
+                    }, 
                     'session': {
                        // required: true,
                         accept: "image/jpeg, image/png,image/gif"
                     }, 
+                    'qimage': {
+                       // required: true,
+                        accept: "image/jpeg, image/png,image/gif"
+                    },
                     'meditaion': {
                         required: function() {
                               return $("#audio").val() == "";
@@ -970,6 +1098,22 @@ $("#cat").change(function(){
                                
                         }
                     },
+                      "chk_decyour": {
+                        required: true,
+                        minlength: 1
+                    },
+                     "chk_hopacc": {
+                        required: true,
+                        minlength: 1
+                    },
+                     "chk_premo": {
+                        required: true,
+                        minlength: 1
+                    },
+                     "chk_obface": {
+                        required: true,
+                        minlength: 1
+                    }
                 },
                 messages: {
                   name: {
@@ -985,11 +1129,20 @@ $("#cat").change(function(){
                     required:"Please Select Any image",
                     accept: "Select only jpeg,png,gif file formate only!!"
                     },
+                qimage: {
+                    required:"Please Select Any image",
+                    accept: "Select only jpeg,png,gif file formate only!!"
+                   },
                   description:"Please enter Description",
+                   qdescription:"Please enter session quote Description",
                   cat:"Please Select category",
                  bundle:"Please Select Bundle",
                   subcat:"Please Select Subcategory",
                 productid: "Please Enter Product Id", 
+                 "chk_decyour":"Please select at least one tag",
+                    "chk_hopacc":"Please select at least one tag",
+                    "chk_premo":"Please select at least one tag",
+                    "chk_obface":"Please select at least one tag"
                   
                 },
                 highlight: function (input) {
@@ -1014,7 +1167,18 @@ $("#cat").change(function(){
 		var temp=$('#form_validation_session').valid();
 		if(temp==true){
 		        	 	
-
+                        $("input:checkbox[name=chk_hopacc]:checked").each(function(){
+                                window.fav.push($(this).val());
+                        });   
+                        $("input:checkbox[name=chk_decyour]:checked").each(function(){
+                            window.fav.push($(this).val());
+                        });
+                        $("input:checkbox[name=chk_premo]:checked").each(function(){
+                            window.fav.push($(this).val());
+                        });
+                        $("input:checkbox[name=chk_obface]:checked").each(function(){
+                            window.fav.push($(this).val());
+                        });
 
 
 						var old = $("#catnm").val();
@@ -1110,7 +1274,7 @@ $("#cat").change(function(){
 								 ref ='Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/';
 								}
 							//	  Ref = firebase.database().ref('Category/'+childSnapshot.key+'/SubCategory/'+sub+'/Bundle/'+bnd+'/Session/');
-							}else if(childSnapshot.hasChild("Bundle")) {
+							}else if(childSnapshot.hasChild("Bundle") && window.bundle) {
 								
 								if(bnd != $("#bundle option:selected").val()){
 									
@@ -1128,7 +1292,7 @@ $("#cat").change(function(){
 								  ref = 'Category/'+childSnapshot.key+'/Bundle/'+bnd+'/Session/'+s;
 								}
 								//  Ref = firebase.database().ref('Category/'+childSnapshot.key+'/Bundle/'+bnd+'/Session/');
-							}else{
+							}else if(!window.subcat && !window.bundle){
 								  //Ref = firebase.database().ref('Category/'+childSnapshot.key+'/Session/');
 									/*Referance for fetching old value for update  */
 								// booksRef = firebase.database().ref('Category/'+childSnapshot.key+'/Session/');
@@ -1189,12 +1353,13 @@ $("#cat").change(function(){
 			  booksRef.child(s).once('value').then(function(snap) {
 								var sessionid = $("#sid").val();
 								var desc = $('#ckeditor').val();
+                                 var qdesc = $('#qdesc').val();
 								var sessionnm = $("#sessionname").val();
 								var subname = $("#subname").val();
                                  var scatid = $("#subcat option:selected").val();
 								var sid = $("#sid").val();
 								var bundle = $("#bundle option:selected").val();
-							
+							    var TAG = window.fav.toString();
 								var cat = $("#cat option:selected").val();
 								var catnm = $("#cat option:selected").text();
 								
@@ -1205,11 +1370,37 @@ $("#cat").change(function(){
 								 var simg = $("#oldsimg").attr('src');
 									 
 								 }
+
+                                 if($("#qimgurl").val()){
+                                 var qimg = $("#qimgurl").val();
+                                     
+                                 }else{
+                                 var qimg = $("#oldqimg").attr('src');
+                                     
+                                 }
+
 							var data = snap.val();
 							console.log(data);
+                            var currentdate = new Date(); 
+                   var datetime = +currentdate.getFullYear() + "-"
+                    + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                    + ("0" + currentdate.getDate()).slice(-2)  + " "  
+                    + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                    + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                    + ("0"+currentdate.getSeconds()).slice(-2);
 							data.session_name = sessionnm;
 							data.session_description = desc;
+                             data.session_quote_description = qdesc;
 							data.session_img = simg;
+                             data.session_quote_img = qimg;
+                             data.updatedon = datetime;
+                             if(window.subcat && window.bundle){
+
+                                 data.tag = null;
+                             }else{
+                                 data.tag = TAG; 
+                             }
+
                             var oldm = data.meditation_audio;
                             var oldmt = data.meditation_audio_time;
                             if($("#murl").val()){   
@@ -1226,7 +1417,10 @@ $("#cat").change(function(){
                                     }else if(audio.length >1 && audio.length <3){
                                         var naudio = oldm.concat(audio);
                                       data.meditation_audio = naudio;
-
+                                       /* if(naudio.length == 3){
+                                              $(".fa-spinner").hide();
+                                              $(".sessionadd").removeAttr("disabled");
+                                        }*/
                                     }else if(audio.length == 3){
                                              data.meditation_audio = audio;
                                     }
@@ -1268,30 +1462,30 @@ $("#cat").change(function(){
 								var p = Ref.push();
 								var k = p.key;
 
-                                 window.id = k;
+                                 window.id = s;
                                 var inappdata = {'product_id':productid,'type':"Session",'session_id':k,'active':active}; 
 
-								data.session_id = k;
+								data.session_id = s;
 							//	data.session_id = k;
-								Ref.child(k).set(data);
+								Ref.child(s).set(data);
 					}else if(old == $("#cat option:selected").text() && sub != $("#subcat option:selected").val() && sub != 0){
 				console.log(sub+"=="+$("#subcat option:selected").text());
 						var p = Ref.push();
 								var k = p.key;
-                                 window.id = k;
+                                 window.id = s;
                                 var inappdata = {'product_id':productid,'type':"Session",'session_id':k,'active':active}; 
-								data.session_id = k;
+								data.session_id = s;
 								//data.session_id = k;
-								Ref.child(k).set(data);
+								Ref.child(s).set(data);
 					}else if(old == $("#cat option:selected").text() && sub == $("#subcat option:selected").val() && bnd != $("#bundle option:selected").val() && sub != 0 && bnd != 0)
 					{
 							console.log(data);
 							var p = Ref.push();
 								var k = p.key;
-								data.session_id = k;
-                                 window.id = k;
+								data.session_id = s;
+                                 window.id = s;
                                 var inappdata = {'product_id':productid,'type':"Session",'session_id':k,'active':active}; 
-								Ref.child(k).set(data);
+								Ref.child(s).set(data);
 					}else{
 							console.log(data);
 						 window.id = sessionid;
@@ -1316,14 +1510,8 @@ $("#cat").change(function(){
                                 //$(".inappdetails").show();
                           }
 
-					return booksRef.update(update);
-			  
-			});
-		});
-		
-
-            		 
-            		
+					return booksRef.update(update).then(function(snap){
+                        
                            swal({
                                 title: "Updated!",
                                 text: "Session has been Updated.",
@@ -1338,6 +1526,14 @@ $("#cat").change(function(){
                                   window.location.href = "session_list.php";
                                 }, 1000);
                             });
+                    });
+			  
+			});
+		});
+		
+
+            		 
+            		
                      
             	
              

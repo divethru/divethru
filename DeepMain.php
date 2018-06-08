@@ -175,6 +175,30 @@ return $nodeGetContent;
   };
   firebase.initializeApp(config);
 </script>
+<script>
+			 var user = JSON.parse(window.localStorage.getItem('user'));
+	var cname="/IndividualSubscription";
+	
+	
+	var final_conve_data1=[];
+
+
+firebase.database().ref("Users/"+user.user_id+cname+"/bundle").once("value",function(snapshot){
+								//alert();
+		snapshot.forEach(function(childSnapshot) {
+
+  		console.log(childSnapshot.val());
+  		//alert(childSnapshot.val());
+  		childData=childSnapshot.val();
+      final_conve_data1.push(childData['id']);
+			
+		});
+    //console.log(final_conve_data);
+    
+		window.localStorage.setItem("cove_data2",JSON.stringify(final_conve_data1));
+    
+  });
+</script>
 </head>
 
 <body style="margin-top: 150px;">
@@ -247,7 +271,7 @@ return $nodeGetContent;
       </div>
       
       <div class="modal-body text-center" style="padding-top:0px;">
-		<div class="boxA new-bg" style="top:0;"><div class="row "><div class="col-12"><h4 class="modal-title mb-4 sessionnm " id="exampleModalLongTitle" style="color: white;">Conversation 1</h4><h6 class="mb-4" style="color:white">One Time Subscription. Unlimited Access.</h6></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-6 bg-white"><h4>L I F E T I M E</h4><h2>$ 6.00</h2><a href="javascript:void(0)" class="btn get-button subscribe" style="color: #fff;width:inherit;" data-amount="6" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a>
+		<div class="boxA new-bg" style="top:0;"><div class="row "><div class="col-12"><h4 class="modal-title mb-4 sessionnm " id="exampleModalLongTitle" style="color: white;">Conversation 1</h4><h6 class="mb-4" style="color:white">One Time Subscription. Unlimited Access.</h6></div></div><div class="row justify-content-center new-bg1"><div class="col-md-6 col-lg-6 bg-white"><h4>L I F E T I M E</h4><h2>$ 6.99</h2><a href="javascript:void(0)" class="btn get-button subscribe" style="color: #fff;width:inherit;" data-amount="6.99" data-cycle="0" data-plan="L">G O <span>&nbsp;&nbsp;&nbsp;</span>U N L I M I T E D</a>
 		      <div style="margin-top: 8px;margin-bottom: 8px;font-weight: bold;color:#111;"> OR</div>
 		<a href="javascript:void(0)" class="btn get-button freetrial" style="color: #fff; margin-bottom: 25px;width:inherit;" >C A N C L E </a></div></div></div>
 	</div>	
@@ -265,9 +289,8 @@ return $nodeGetContent;
   crossorigin="anonymous"></script>-->
       <script type="text/javascript" src="js/jquery.redirect.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/deepdive.js"></script>
+<script src="js/deepdive.js?version=<?php echo constant("version");?>"></script>
 
-<script src="js/signout.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
 		if(window.screen.width < 770){
@@ -290,10 +313,11 @@ $('a').each(function(){
  });  
 	$(".btn").click(function(){
 	//	alert($(this).data("total"));
+	var final = JSON.parse(window.localStorage.getItem("cove_data2"));
 		 var user = JSON.parse(window.localStorage.getItem('user'));
 		var sid = $(".Center").attr("id");
 		var id = $(this).attr("id");
-		if(user.membership_type != "Free"){
+		if($.inArray(id,final) != -1 || user.membership_type != "Free"){
 			$.redirect("individual.php",{'bundle': id,'subcatid': sid},"POST",null,null,true);
 		}else{
 			if($(this).data("total") > 1){
@@ -319,18 +343,18 @@ $('a').each(function(){
 				var plan = $(this).data('plan');
 				var price = $(this).data('amount');
 				window.localStorage.setItem("session_name",$("#exampleModalLongTitle").html());
-				$("#memberModal").modal("hide");
-					$.post("http://34.215.40.163/test.php", {"price": price}, function(result){
-			        console.log(result);
+					//$.post("http://34.215.40.163/test.php", {"price": price}, function(result){
+			       // console.log(result);
 			
+				 $.redirect("Process.php",{select_cycles: cycle ,product_name : "session","select_plan":plan,"price":price,"userid":user.user_id,"token":""},"POST",null,null,true);
 			
 			localStorage.setItem('session_id',id);
 //			localStorage.setItem('session_name',$(".current").html());
 //			localStorage.setItem('subcategory_id',$(".box_12 > p").attr("id"));
 			localStorage.setItem('prevcat','Deep Dive');
 			localStorage.setItem('payment','true');
-				 //$.redirect("Process.php",{select_cycles: cycle ,product_name : "session","select_plan":plan,"price":price,"userid":user.user_id,"token":result},"POST",null,null,true);
-				});
+				//});
+				$("#memberModal").modal("hide");
 			});
 		}
 	//	alert(id);

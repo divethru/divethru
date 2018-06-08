@@ -270,7 +270,7 @@ foreach($session['session_audio'] as $s){
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
                                                 <div class='flex-style'>
                                                 <div class='icon'></div>
-                                                <input name="file" class="check-image-size form-control input-file" id="subcatimage" type="file" onchange="uplaodsubimgfile()" accept="image/*" />
+                                                <input name="file" class="check-image-size form-control input-file" id="subcatimage" type="file" data-min-width="1920" data-min-height="1080" data-max-width="1920" data-max-height="1080" onchange="uplaodsubimgfile()" accept="image/*" />
                                                 </div>
                                                 <br>
                                                 <img src="<?php echo $sub['subcategory_img'];?>" id="oldsubimg" width=50 height=50>
@@ -397,7 +397,7 @@ $('select').selectpicker('refresh');
         rules: {
             'name': {
                 required: true,
-                minlength: 6,
+                minlength: 2,
                 maxlength: 50,
                 regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
             }, 
@@ -516,10 +516,8 @@ $('select').selectpicker('refresh');
                                   var update = {};
                                   update[subid] = null;
                                   update[subid] = data;
-                        return booksRef.update(update);
-                    });
-                       
-                           swal({
+                        return booksRef.update(update).then(function(snap){
+                            swal({
                                 title: "Updated!",
                                 text: "SubCategory has been Updated.",
                                 html:true,
@@ -532,6 +530,10 @@ $('select').selectpicker('refresh');
                                 
                                   window.location.href = "subcategory_list.php";
                             });
+                        });
+                    });
+                       
+                           
                        
             }
        

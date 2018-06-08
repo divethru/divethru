@@ -34,6 +34,28 @@ foreach($product as $in => $v){
     }
 }
 
+/* Start code of tag's */
+
+if(isset($bundle['tag'])){
+$Btag = explode(',',$bundle['tag']);
+    
+}else{
+    
+$Btag = [];
+}
+
+
+$tag = get("Tags");
+$t2 = [];
+foreach($tag as $k => $v){
+    if(isset($v["tags"])){
+        $t2[$v["tags_category"]] = explode(",",$v["tags"]);
+    }
+}
+
+
+/* End code of tag's */
+
 //$subcategory = get("subcategory");
 
 function get($path){
@@ -64,7 +86,7 @@ return $nodeGetContent;
 foreach($category as $k => $v){
     
             $catnm[] = $v['category_name'];
-    if($v['SubCategory'] != ''){
+    if($v['SubCategory'] != '' && $v['category_name'] == $cat){
         foreach($v['SubCategory'] as $key => $value){
             
             $subcategory[] = $value;
@@ -150,6 +172,12 @@ foreach($category as $k => $v){
  width: 48px;
  height: 45px;
  background:url(images/upload-black.png); 
+}
+.tags label{
+    min-width: 300px;
+}
+#productid{
+    width: 80%;
 }
 </style>
 </head>
@@ -309,7 +337,7 @@ foreach($category as $k => $v){
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
                                                 <div class='flex-style'>
                                                 <div class='icon'></div>
-                                                <input name="bundle" class="check-image-size form-control input-file" id="bundleimage" type="file" onchange="uplaodbimgfile()" accept="image/*" />
+                                                <input name="bundle" class="check-image-size form-control input-file" id="bundleimage" type="file" data-min-width="1920" data-min-height="1080" data-max-width="1920" data-max-height="1080" onchange="uplaodbimgfile()" accept="image/*" />
                                                 </div>
                                                 <br>
                                                 <img src="<?php echo $bundle['bundle_img']?>" id="oldbimg" width="50" height="50">
@@ -319,6 +347,41 @@ foreach($category as $k => $v){
                                         
                                     </div>
                                 </div>
+
+
+                                                                <?php
+                                    $a = ["chk_decyour","chk_hopacc","chk_premo","chk_obface"];
+                                    $i = 0;
+                                        foreach($t2 as $key => $val){
+                                            echo '<div class="form-group form-float sessiontag">
+                                    <div class="form-line error " ><label class="form-label">'.$key.'</label><br><br><div class="demo-checkbox tags">';
+                                                foreach($val as $k => $v){
+                                                    if(count($Btag)>0){
+                                                        if(in_array($v,$Btag)){
+                                                            
+                                                        echo '<input type="checkbox" name="'.$a[$i].'" id="'.$v.'" class="filled-in" value="'.$v.'" checked>
+                                        <label for="'.$v.'">'.$v.'</label>';
+                                                        }else{
+                                                                
+                                                    echo '<input type="checkbox" name="'.$a[$i].'" id="'.$v.'" class="filled-in" value="'.$v.'">
+                                        <label for="'.$v.'">'.$v.'</label>';
+
+                                                        }
+                                                    }else{
+                                                        
+                                                    echo '<input type="checkbox" name="'.$a[$i].'" id="'.$v.'" class="filled-in" value="'.$v.'">
+                                        <label for="'.$v.'">'.$v.'</label>';
+                                                    }
+                                                }
+                                                echo "</div></div></div>";
+                                                $i++;
+                                        }
+                                        //die;
+                                    ?>
+                                
+
+
+
                                 <!----  This is for In app purchase section ---->
 
                                    <div class="form-group form-float ">
@@ -332,6 +395,7 @@ foreach($category as $k => $v){
                                         <div class="form-group inappdetails" style="margin-bottom:0px;">    
                                                 <label for="productid">Product ID : </label>
                                             <input type="text" name="productid" id="productid" class="with-gap " placeholder="Product Id" style="border:none;" value="<?php echo $productid; ?>">
+                                            <br>
                                             <label for="active">Active</label>
                                             <?php if($active == 1) {
                                                 echo '<div class="switch" style="display:initial;"><label><input type="checkbox" name="active" id="active" checked><span class="lever"></span></label></div>';
@@ -449,7 +513,7 @@ $("input[type=file]").checkImageSize();
         ]
     });
     //alert($("#cat").val());
-    if($("#cat option:selected").text() != 'Deep Dives'){
+    if($("#cat option:selected").text() != 'Deep Dive'){
             $(".sub").hide();
             
         }else{
@@ -488,7 +552,7 @@ $("input[type=file]").checkImageSize();
             
         }else{
             $(".sub").show();
-            
+            $("#subcat").html();
         }
         
         /* Code For disable bundle in  open dive */
@@ -530,10 +594,10 @@ $("input[type=file]").checkImageSize();
 
     
     
-    $("form").submit(function(e){
-        e.preventDefault();
-    });
-    
+        $("form").submit(function(e){
+            e.preventDefault();
+        });
+        
     $.validator.addMethod("regex", function(value, element, regexpr) {          
                  return regexpr.test(value);
                }, "Please enter Only characters");
@@ -543,7 +607,7 @@ $("input[type=file]").checkImageSize();
                 rules: {
                     'name': {
                         required: true,
-                        minlength: 6,
+                        minlength: 2,
                         maxlength: 50,
                         regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
                     }, 
@@ -557,29 +621,52 @@ $("input[type=file]").checkImageSize();
                       
                         accept: "image/jpeg, image/png,image/gif"
                     },
-                    'productid':{
-                        required: function() {
-                               return $(".inapp").is(':checked');
-                               
+                    'subcat':{
+                         required: function() {
+                              return $("#cat option:selected").text() == 'Deep Dive';
                         }
                     },
+                    'productid':{
+                        required: function() {
+                               return $(".inapp").is(':checked'); 
+                        }
+                    },
+                      "chk_decyour": {
+                        required: true,
+                        minlength: 1
+                    },
+                     "chk_hopacc": {
+                        required: true,
+                        minlength: 1
+                    },
+                     "chk_premo": {
+                        required: true,
+                        minlength: 1
+                    },
+                     "chk_obface": {
+                        required: true,
+                        minlength: 1
+                    }
                    
-                    
                 },
                 messages: {
-                  name: {
+                name: {
                     required:"Please enter your Bundle Name",
                     minlength: "Enter name must be at least 6 characters long",
                     maxlength: "Enter name maximum 50 characters allow"
                     },
-                     description:"Please enter Description",
-                    cat:"Please Select category",
-                  bundle: {
+                description:"Please enter Description",
+                cat:"Please Select category",
+                bundle: {
                     
                     accept: "Select only jpeg,png,gif file formate only!!"
                     },
+                subcat:"Please Select Subcategory",
                 productid: "Please Enter Product Id", 
-                  
+                  "chk_decyour":"Please select at least one tag",
+                    "chk_hopacc":"Please select at least one tag",
+                    "chk_premo":"Please select at least one tag",
+                    "chk_obface":"Please select at least one tag"  
                   
                 },
                 highlight: function (input) {
@@ -593,11 +680,26 @@ $("input[type=file]").checkImageSize();
                 },
                 submitHandler: function(form) {
 
+                        $("input:checkbox[name=chk_hopacc]:checked").each(function(){
+                                window.fav.push($(this).val());
+                        });   
+                        $("input:checkbox[name=chk_decyour]:checked").each(function(){
+                            window.fav.push($(this).val());
+                        });
+                        $("input:checkbox[name=chk_premo]:checked").each(function(){
+                            window.fav.push($(this).val());
+                        });
+                        $("input:checkbox[name=chk_obface]:checked").each(function(){
+                            window.fav.push($(this).val());
+                        });
+
+
+
                 var bid = $("#bid").val();
                 var ocat = $("#catid").val();
                 var cat = $("#cat").val();
                 var catnm = $("#cat option:selected").text();
-                
+                var TAG = window.fav.toString();                
                 var subcatnm = $("#subcat option:selected").text();
                  var desc = $('#ckeditor').val();
                  var bundlename = $("#bundlename").val();
@@ -698,7 +800,13 @@ $("input[type=file]").checkImageSize();
                              var bimg = $("#oldbimg").attr('src');
                                  
                              }
- 
+                            var currentdate = new Date(); 
+                            var datetime = +currentdate.getFullYear() + "-"
+                                    + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                                    + ("0" + currentdate.getDate()).slice(-2)  + " "  
+                                    + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                                    + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                                    + ("0"+currentdate.getSeconds()).slice(-2);
                              var subcat = $("#subcat option:selected").val();
                              var data = snap.val();
                              //alert(bid);
@@ -749,7 +857,9 @@ $("input[type=file]").checkImageSize();
                                         bundle_category: subcatnm,
                                         bundle_img: bimg,
                                         bundle_id: bnid,
-                                        Session: s
+                                        Session: s,
+                                        tag: TAG,
+                                        updated_on:datetime
                                     }); 
                                              
                                              
@@ -788,6 +898,8 @@ $("input[type=file]").checkImageSize();
                                 bundle_img: bimg,
                                 bundle_id: bnid,
                                 Session: s,
+                                tag: TAG,
+                                updated_on:datetime
                             }); 
                    }else if($("#cat option:selected").text() == $("#catid").val()){
                                 
@@ -800,6 +912,8 @@ $("input[type=file]").checkImageSize();
                           data.bundle_name = bundlename;
                           data.bundle_img = bimg;
                           data.bundle_id = bid;
+                           data.tag = TAG;
+                          data.updated_on = datetime;
                                 update[bid] = data;
                            }
                             if($('.inapp').is(':checked')){

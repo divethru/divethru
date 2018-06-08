@@ -55,6 +55,7 @@ class ComposerStaticInitcf86469f8d290ceefcd1ecaffdaeeb44
         'A' => 
         array (
             'Aws\\' => 4,
+            'Abraham\\TwitterOAuth\\' => 21,
         ),
     );
 
@@ -118,6 +119,10 @@ class ComposerStaticInitcf86469f8d290ceefcd1ecaffdaeeb44
         'Aws\\' => 
         array (
             0 => __DIR__ . '/..' . '/aws/aws-sdk-php/src',
+        ),
+        'Abraham\\TwitterOAuth\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/abraham/twitteroauth/src',
         ),
     );
 

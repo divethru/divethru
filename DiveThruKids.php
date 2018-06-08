@@ -1,3 +1,11 @@
+<?php
+define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
+define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
+require 'vendor/autoload.php';
+use Firebase\Firebase;
+use Firebase\Auth\TokenGenerator;
+ ?>
+
 <!doctype html>
 <html>
 <head>
@@ -11,6 +19,13 @@
     <link href="css/reg.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i" rel="stylesheet">
+
+ <link rel="stylesheet" href="css/dashheader.css">
+ 
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+<script src="js/credential.js"></script>
+
   <style type="text/css">
   /*SLIDER3 START*/
 
@@ -325,13 +340,39 @@ landscape) and (max-device-width : 1023px){
         width:100%;
         position:absolute;
     }
-</style>  
+</style> 
+
+ <script>
+    $(document).ready(function(){
+
+    var user=window.localStorage.getItem('user');
+    if(user!=null)
+    {
+    //alert(user);
+      $( "#result" ).load( "dashbordHeader.php", function() {
+        //alert( "Load was performed." );
+
+        $(".page-loader-wrapper").fadeOut();
+      });
+        
+    }
+    else{
+        $( "#result" ).load( "header.php", function() {
+        //alert( "Load was performed1 ." );
+        $(".page-loader-wrapper").fadeOut();
+      });
+      
+    }
+  });
+
+  </script>
 </head>
 
 <body style="margin-top:118px;">
 	
 <!--SLIDER-->
-	<?php include 'header.php'; ?> 
+	<?php //include 'header.php'; ?> 
+   <div id="result"></div>
 <div class="container-fluid slider">
         	
         <div class="container text-center">
@@ -546,10 +587,10 @@ you with everything you need to Dive Thru what you go Thru.
 
 
 
-<script
+<!-- <script
   src="https://code.jquery.com/jquery-3.3.1.slim.js"
   integrity="sha256-fNXJFIlca05BIO2Y5zh1xrShK3ME+/lYZ0j+ChxX2DA="
-  crossorigin="anonymous"></script>
+  crossorigin="anonymous"></script> -->
 <script src="js/bootstrap.bundle.min.js" type="text/javascript"></script>
  <script type="text/javascript">
 

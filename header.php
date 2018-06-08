@@ -3,6 +3,14 @@
         height: 40px;
     }
 
+#lg:hover{
+	color: #7dd3d5;
+}
+
+#lg:not(:hover){
+	color: rgba(0,0,0,.5) !important;
+}
+
 @media only screen and (max-width: 991px) {
     .loginline {
 		padding-left: 10px;
@@ -110,7 +118,7 @@
 										  </li>
 
 										  <li class="nav-item li-border navs-pad">
-											<a class="nav-link" href="#" onmouseover='this.style.color="#7dd3d5"' 
+											<a class="nav-link" href="http://divethru.com/blog/" target="_blank" onmouseover='this.style.color="#7dd3d5"' 
 							onmouseout='this.style.color="#34495e"'>BLOG</a>
 										  </li>
 										  <li class="nav-item li-border navs-pad">
@@ -123,7 +131,7 @@
 										  </li>
 										  <li class="loginline mobile-hide" style="
 							border: 0.5px solid lightgray;"></li>
-										  <li class="nav-item li-border navs-pad">
+										  <li class="nav-item li-border navs-pad log">
 											<a class="nav-link" href="http://34.215.40.163/login.php"  onmouseover='this.style.color="#7dd3d5"' 
 							onmouseout='this.style.color="#34495e"'>LOGIN</a>
 										  </li>

@@ -281,7 +281,7 @@ return $nodeGetContent;
 <script type="text/javascript" src="js/jquery.redirect.js"></script>
 <script src="js/jquery.backDetect.min.js"></script>
 
-<script src="js/opendive.js"></script>
+<script src="js/opendive.js?version=<?php echo constant("version");?>"></script>
 
 
 <script>
@@ -325,6 +325,8 @@ $(document).ready(function(){
       var SESSION = $(this).attr("id");
       var S = $(this).text();
       var cid = $(this).data("cat");
+      var CN = $(this).data("count");
+      alert(CN);
       var ct = window.localStorage.getItem("cat");
     console.log(ct);
       window.localStorage.setItem("cat",ct);
@@ -332,7 +334,8 @@ $(document).ready(function(){
       window.localStorage.setItem("cid",cid);
       window.localStorage.setItem("subcategory_id","");
       window.localStorage.setItem("bid","");
-      $.redirect("player.php",{bundle: SESSION},"POST",null,null,true);
+      window.localStorage.setItem("streak",CN);
+     // $.redirect("player.php",{bundle: SESSION},"POST",null,null,true);
       firebase.database().ref("Category/"+ct+"/Session/"+SESSION).on("value", function(snapshot) {
                     window.localStorage.setItem("session", JSON.stringify(snapshot.val()));
                 snapshot.forEach(function(childSnapshot) {

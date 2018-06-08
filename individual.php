@@ -12,13 +12,24 @@ $fb = Firebase::initialize(FIREBASE_URL, FIREBASE_SECRET);
 
 $subacat = [];
 $bundle = [];
+$Bchk = false;
+$Schk = false;
 $sub = get("Category/Deep Dive");
 foreach($sub as $key => $value)
 {
 		if($key == "SubCategory"){
 			
 			foreach($value as $k => $v){
+				foreach($v as $s => $sa){
+              if(isset($v["Bundle"]) && $v["Bundle"] != ""){
+                  $Bchk = true;
+              }else{
+                  $Bchk = false;
+              }
+          }
+          if($Bchk){
 				$subacat[] = $v;
+          }
 			}
 			
 			
@@ -48,7 +59,10 @@ foreach($subacat as $p => $a){
 		$bnd = $val['bundle_name'];
 		$bid = $val['bundle_id'];
 		foreach($val['Session'] as $sk => $sess){
-			$session [] = $sess;
+			if($val['Session'] != "" && isset($val['Session'])){
+
+				$session [] = $sess;
+			}
 		}
 	}
 	$b++;
@@ -106,6 +120,32 @@ return $nodeGetContent;
   firebase.initializeApp(config);
 
 </script>
+<script type="text/javascript">
+			var user = JSON.parse(window.localStorage.getItem('user'));	
+	window.h = [];
+	firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
+			snapshot.forEach(function(childSnapshot) {
+				// key
+				var key = childSnapshot.key;
+				// value, could be object
+				var childData = childSnapshot.val();
+
+					if(key == "streak"){
+						$.map(childData, function(value, index) {
+							$.map(value, function(value2, index2) {
+								$.map(value2, function(value3, index3) {
+									window.h.push(index3);
+									console.log(index3);	
+								});
+							});
+						});
+					}
+
+			});
+			window.localStorage.setItem("SessionHistory2",JSON.stringify(window.h));
+		});
+</script>
+
 <style type="text/css">
   .btn2 {
   display: inline-block;
@@ -138,6 +178,7 @@ return $nodeGetContent;
 	font-size: 18px;
 	color: gray;
 		cursor: pointer;
+		list-style: disc;
 }
 
 .currentbundle{
@@ -222,6 +263,23 @@ p.owl-caption {
            /* margin-left: 41%;
             margin-top: 29%;*/
             }
+.side-scroll{
+  max-height: 594px;
+  overflow-y : scroll;
+  overflow-x: hidden;
+}
+/*.side-scroll::-webkit-scrollbar {
+    width: 0.5em;
+}
+.side-scroll::-webkit-scrollbar-thumb {
+    background: #80429c;
+}
+.side-scroll::-moz-scrollbar:vertical {
+    width: 0.5em;
+}
+.side-scroll::-moz-scrollbar-thumb:vertical {
+    background: #80429c;
+}*/
 
 /* Page Loader ================================= */
 .page-loader-wrapper {
@@ -263,7 +321,7 @@ p.owl-caption {
   <div class="container">
      <div class="row mt-5">
 
-           <div class="col-md-4 col-lg-2 mt-5 px-md-5 px-lg-0">
+           <div class="col-md-4 col-lg-3 mt-5 side-scroll">
 			  <?php 
 			  //echo $id;
 			  //die;
@@ -362,13 +420,14 @@ p.owl-caption {
 		   </div>
 		   
     
-           <div class="col-md-8 col-lg-10 sess">
+           <div class="col-md-8 col-lg-9 sess">
                 
-			   <h3 style="margin-bottom: 50px;color: #34495e;font-size: 26px;" id="<?php echo $bid;?>"><?php echo $bnd;?></h3>
+			   <h3 style="margin-bottom: 50px;color: #34495e;font-size: 26px;text-align: justify;" id="<?php echo $bid;?>"><?php echo $bnd;?></h3>
                     <div class="row mx-lg-5 mx-md-3 justify-content-center justify-content-md-start">
            <!--BOX1-->
 					<?php
 					 $i=0;
+					 $count = 1 ;
 					$SeS = '';
 						foreach($session as $sk => $sv){
 							if(strlen($sv['session_description']) > 25){
@@ -377,8 +436,9 @@ p.owl-caption {
 							}else{
 								$small = substr($sv['session_description'], 0, 25);
 							}
-							$SeS .= '<div class="col-lg-4 col-md-6 col-7 hover-box1 p-0 boxStyle deepin" style=" background-image: url('.$sv['session_img'].');" id="'.$i.'"><p class="Center bundle" id="'.$sv['session_id'].'">'.$sv['session_name'].'</p><div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'.$small.'</p><div class="btn btn2 btn-outline-light" id="'.$sv['session_id'].'" style="border-radius: 0;">Start to DiveThru</div></div></div>';
+							$SeS .= '<div class="col-lg-4 col-md-6 col-7 hover-box1 p-0 boxStyle deepin" style=" background-image: url('.$sv['session_img'].');" id="'.$i.'"><p class="Center bundle" id="'.$sv['session_id'].'">'.$sv['session_name'].'</p><div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'.$small.'</p><div class="btn btn2 btn-outline-light" id="'.$sv['session_id'].'" data-count="'.$count.'" style="border-radius: 0;">Start to DiveThru</div></div></div>';
 							$i=0;
+							$count ++;
 						}	
 						echo $SeS;
 			//			die;
@@ -402,12 +462,72 @@ p.owl-caption {
   crossorigin="anonymous"></script> -->
       <script type="text/javascript" src="js/jquery.redirect.js"></script>
      <script src="js/dashboardheader.js" type="text/javascript"></script>
+     <script src="js/signout.js"></script>
+
 <script src="js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
-
+ var pos = $(".current").position().top;
+ $( "div.side-scroll" ).scrollTop((pos-10));
 window.localStorage.removeItem("Dname");
+		var user = JSON.parse(window.localStorage.getItem('user'));	
 
+//function streak(){
+	window.h = [];
+	firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
+			snapshot.forEach(function(childSnapshot) {
+				// key
+				var key = childSnapshot.key;
+				// value, could be object
+				var childData = childSnapshot.val();
+
+					if(key == "streak"){
+						$.map(childData, function(value, index) {
+							$.map(value, function(value2, index2) {
+								$.map(value2, function(value3, index3) {
+									window.h.push(index3);
+									console.log(index3);	
+								});
+							});
+						});
+					}
+
+			});
+			window.localStorage.setItem("SessionHistory2",JSON.stringify(window.h));
+		});
+//}
+
+			var catRef = firebase.database().ref("Users").child(user.user_id);
+			
+			//console.log(catRef);
+			// firebase.database().ref('Users/'+user.user_id+"/streak").set(null);
+    catRef.on('child_changed', function(snapshot) {
+			
+window.h = [];
+	firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
+			snapshot.forEach(function(childSnapshot) {
+				// key
+				var key = childSnapshot.key;
+				// value, could be object
+				var childData = childSnapshot.val();
+
+					if(key == "streak"){
+						$.map(childData, function(value, index) {
+							$.map(value, function(value2, index2) {
+								$.map(value2, function(value3, index3) {
+									window.h.push(index3);
+									console.log(index3);	
+								});
+							});
+						});
+					}
+
+			});
+			window.localStorage.setItem("SessionHistory2",JSON.stringify(window.h));
+		});
+
+  });
+	console.log(window.localStorage.getItem("SessionHistory2"));
 		/*var user = JSON.parse(window.localStorage.getItem('user'));	
 			//for get session paid detail
 		var cname="/IndividualSubscription";
@@ -452,7 +572,7 @@ if(window.performance.navigation.type>0){
 	window.localStorage.setItem("back",false);	
 }
 	
-	/* Sign out method */
+	/* Sign out method 
 
 function sign_out(){
 		firebase.auth().signOut().then(function() {
@@ -463,7 +583,7 @@ function sign_out(){
 		   console.log("Logout Failed!", error);
 		});
 	}
-
+*/
 $('a').each(function(){
                 var path = window.location.href;
                 var current = path.substring(path.lastIndexOf('/')+1);
@@ -530,28 +650,7 @@ window.localStorage.removeItem("bundle");
 		window.localStorage.removeItem("Snm");
 		var user = JSON.parse(window.localStorage.getItem('user'));	
 		var oldb = window.localStorage.getItem("bid");
-		window.h = [];
-	firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
-			snapshot.forEach(function(childSnapshot) {
-				// key
-				var key = childSnapshot.key;
-				// value, could be object
-				var childData = childSnapshot.val();
-
-					if(key == "streak"){
-						$.map(childData, function(value, index) {
-							$.map(value, function(value2, index2) {
-								$.map(value2, function(value3, index3) {
-									window.h.push(index3);
-									console.log(index3);	
-								});
-							});
-						});
-					}
-
-			});
-			window.localStorage.setItem("SessionHistory2",JSON.stringify(window.h));
-		});
+		
 	
 	var Shistory = JSON.parse(window.localStorage.getItem("SessionHistory2"));
 
@@ -606,7 +705,13 @@ window.localStorage.removeItem("bundle");
 							  		
 								});*/
 							
+			var catRef = firebase.database().ref("Users").child(user.user_id);
+			
+			//console.log(catRef);
+			// firebase.database().ref('Users/'+user.user_id+"/streak").set(null);
+    // catRef.on('child_changed', function(snapshot) {
 
+    // });
 		var cname="/IndividualSubscription";
 		var subcate_index=[];
 		var final_conve_data=[];
@@ -622,32 +727,51 @@ window.localStorage.removeItem("bundle");
 	      final_conve_data.push(childData['id']);
 				
 			});
+			console.log(final_conve_data);
+
+//					var totalLen = 1 ;		
 				$( ".col-md-8 > 	.row" ).each(function( index ) {
 					var bid = $(".current").attr("id");
-					
-
+//alert(totalLen+index);
+	var Shistory = JSON.parse(window.localStorage.getItem("SessionHistory2"));
 						$(this).find( "div.boxStyle" ).each(function( index ) {
-
 							var trace = index;
 							var sid = $(this).find("p").attr("id");
-							console.log(Shistory);
+							console.log(JSON.parse(window.localStorage.getItem("SessionHistory2")));
 							
-							if(index != 0 && $.inArray(bid,final_conve_data) == -1 && user.membership_type == 'Free'){
+							/* May be issue comes becuase can't check $.inArray(sid,Shistory) <= -1*/
+							if(index != 0 && $.inArray(bid,final_conve_data) == -1 && user.membership_type == 'Free' ){
 
-								$(this).append('<div class="box1a" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);position: absolute;text-align: center;"><i class="fa fa-lock fa-2x center" style="margin-left: 41%;margin-top: 29%;"></i></div>');
+								$(this).append('<div class="box1a" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);position: absolute;text-align: center;"><i class="fa fa-lock fa-2x center" style="left: 88%;top: 88%;"></i></div>');
 							}
-							if($.inArray(sid,Shistory) == -1 && user.membership_type != 'Free'){
+							/* May be issue comes becuase can't check $.inArray(sid,Shistory) <= -1 */
 
-								if(index == trace+2 ){
+							if($.inArray(sid,Shistory) != -1 ){
+
+								if(user.membership_type == 'Free'){
+									//alert("check");
+
 									// Code for making lock icon on next to next session 
-									//$(this).append('<div class="box1a"><i class="fa fa-lock fa-2x center"></i></div>');
-								}	
+
+									if(index == 0 && $.inArray(bid,final_conve_data == -1)){
+// alert(index);
+									$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0);"><i class="fa fa-check-circle fa-2x center" style="top: 88%;left: 88%;"></i></div>');
+									}else if(index != 0  && final_conve_data.length != 0 && $.inArray(bid,final_conve_data != -1)){
+// alert(index);
+									$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0);"><i class="fa fa-check-circle fa-2x center" style="top: 88%;left: 88%;"></i></div>');
+
+									}
+
+								}else if(user.membership_type != 'Free'){
+									//alert(222);
+									$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0);"><i class="fa fa-check-circle fa-2x center" style="top: 88%;left: 88%;"></i></div>');
+								}
 
 								//$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0)"><i class="fa fa-check-circle fa-2x center"></i></div>');
 							}
-							if($.inArray(sid,Shistory) != -1 && user.membership_type != 'Free'){
+							if($.inArray(sid,Shistory) != -1 && user.membership_type != "Free"){
 
-
+//alert(sid);
 								$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0);"><i class="fa fa-check-circle fa-2x center" style="top: 88%;left: 88%;"></i></div>');
 							}
 						});
@@ -682,8 +806,10 @@ $('.hover-box1').each(function(){
 				snapshot.forEach(function(childSnapshot) {
 					childData = childSnapshot.val(); 
 					var i = 0;
+					var count = 1;
 					content += '<h3 style="margin-bottom: 50px;color: #34495e;font-size: 26px;" id="'+childData1.bundle_id+'">'+childData1.bundle_name+'</h3>';
 					if(childSnapshot.key == "Session"){
+					//alert(Object.keys(childData).length);
 						content += ' <div class="row mx-lg-5 mx-md-3 justify-content-center justify-content-md-start">';
 						$.map(childData, function(value, index) {
 							if(value.session_description.length >= 25){
@@ -695,8 +821,9 @@ $('.hover-box1').each(function(){
 							var desc = value.session_description.substring(0, 25);
 							}
 
-							content += '<div class="col-lg-4 col-md-6 col-7 hover-box1 p-0 boxStyle deepin" style=" background-image: url('+value.session_img+');" id="'+i+'"><p class="Center bundle" id="'+value.session_id+'">'+value.session_name+'</p><div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" id="'+value.session_id+'" style="border-radius: 0;">Start DiveThru</div></div></div>';
+							content += '<div class="col-lg-4 col-md-6 col-7 hover-box1 p-0 boxStyle deepin" style=" background-image: url('+value.session_img+');" id="'+i+'"><p class="Center bundle" id="'+value.session_id+'">'+value.session_name+'</p><div class="hover-box1a text-center text-white"><h2>Description</h2><p class="m-0">'+desc+'</p><div class="btn btn2 btn-outline-light" id="'+value.session_id+'" data-count="'+count+'" style="border-radius: 0;">Start DiveThru</div></div></div>';
 							i++;
+							count++;
 						});
 						content += '</div>';
 				
@@ -751,22 +878,23 @@ $('.hover-box1').each(function(){
 							console.log(final_conve_data);
 					
 							if(index != 0 && $.inArray(bid,final_conve_data) == -1 && user.membership_type == 'Free'){
-
-								$(this).append('<div class="box1a" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);position: absolute;text-align: center;"><i class="fa fa-lock fa-2x center" style="margin-left: 41%;margin-top: 29%;"></i></div>');
+//alert(5);
+								$(this).append('<div class="box1a" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);position: absolute;text-align: center;"><i class="fa fa-lock fa-2x center" style="left: 88%;top: 88%;"></i></div>');
 							}
 							
-							if($.inArray(sid,Shistory) != -1 && user.membership_type != 'Free'){
-								
+							if($.inArray(sid,Shistory) != -1 && user.membership_type != "Free"){
+								//alert(sid);
 								$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0);"><i class="fa fa-check-circle fa-2x center" style="top: 88%;left: 88%;"></i></div>');
 								check = false;
 							}else{
+								//alert(index);
 								//alert(index+"=="+(trace+2));
-								if(index == trace+2 && !check && user.membership_type != 'Free'){
+								if(index == 0 && $.inArray(sid,Shistory) != -1 && user.membership_type == 'Free'){
+									//alert(check);
 									// Code for making lock icon on next to next session 
-									//$(this).append('<div class="box1a" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);position: absolute;text-align: center;"><i class="fa fa-lock fa-2x center" style="margin-left: 41%;margin-top: 29%;"></i></div>');
-								}else if(index != 0 && check && user.membership_type != 'Free'){
-								//	alert(check);
-									//$(this).append('<div class="box1a" style="width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);position: absolute;text-align: center;"><i class="fa fa-lock fa-2x center" style="margin-left: 41%;margin-top: 29%;"></i></div>');
+									$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0);"><i class="fa fa-check-circle fa-2x center" style="top: 88%;left: 88%;"></i></div>');
+								}else if ($.inArray(bid,final_conve_data) != -1&& $.inArray(sid,Shistory) != -1 && user.membership_type == 'Free'){
+										$(this).append('<div class="box1a" style="background-color:rgba(0,0,0,0.0);"><i class="fa fa-check-circle fa-2x center" style="top: 88%;left: 88%;"></i></div>');
 								}
 							}
 						});
@@ -804,14 +932,15 @@ $('.hover-box1').each(function(){
 			var bid = $(".current").attr("id");
 			var bundle = $(".current").text();
 			var sessionid = $(this).attr("id");
-			
+			var CN = $(this).data("count");
+			//alert("s"+subid);
 			firebase.database().ref("Category/Deep Dive/SubCategory/"+subid+"/Bundle/"+bid).on("value", function(snapshot) {
 						snapshot.forEach(function(childSnapshot) {
 											childData = childSnapshot.val(); 
 									if(childSnapshot.key == "Session"){
-										
 											$.map(childData, function(value, index) {
 													if(index == sessionid){
+										window.localStorage.setItem("Slen",Object.keys(childData).length);
 														window.localStorage.setItem("session",JSON.stringify(value));
 												console.log(value);
 													}
@@ -825,6 +954,7 @@ $('.hover-box1').each(function(){
 										window.localStorage.setItem("bundle",bundle);
 										window.localStorage.setItem("subcategory_id",subid);
 										window.localStorage.setItem("bid",bid);
+										window.localStorage.setItem("streak",CN);
 									window.localStorage.setItem("subcription_type","paid");
 								$.redirect("player.php",{cat: "Deep Dive"},"POST",null,null,true);
 						});

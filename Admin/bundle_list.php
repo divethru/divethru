@@ -198,7 +198,7 @@ foreach($category as $k => $v){
                                         <tr>
                                             <th>Bundle Name</th>
                                             <th>Bundle Description</th>
-                                            <th>Catgory</th>
+                                            <th>Category</th>
                                             <th>Image</th>
                                             <th>Action</th>
                                         </tr>

@@ -36,6 +36,7 @@ return $nodeGetContent;
 <link href="css/contact.css" rel="stylesheet" type="text/css">
 <link href="css/reg.css" rel="stylesheet" type="text/css">
 <link href="css/footercss.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="css/dashheader.css">
 <!-- <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <style type="text/css">
@@ -56,7 +57,34 @@ return $nodeGetContent;
   border-radius: 1.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
+/* Page Loader ================================= */
+.page-loader-wrapper {
+  z-index: 99999999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: #eee;
+  overflow: hidden;
+  text-align: center; }
+  .page-loader-wrapper p {
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #444; }
+  .page-loader-wrapper .loader {
+    position: relative;
+    top: calc(50% - 30px); }
+
+
 </style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 		<script>
 		  // Initialize Firebase
@@ -78,13 +106,46 @@ return $nodeGetContent;
   // };
   firebase.initializeApp(config);
 		</script>
+
 </head>
 
 <body>
-
+ <!-- Page Loader -->
+    <div class="page-loader-wrapper">
+        <!-- <div class="loader"> -->
+       <img src="img/loader.gif" style="margin-top: 10% !important;">
+     <!-- </div> -->
+    </div>
+    <!-- #END# Page Loader -->
 <!--HEADER-->
-	
-<?php include 'header.php'; ?>
+	<script>
+    $(document).ready(function(){
+
+    var user=window.localStorage.getItem('user');
+    if(user!=null)
+    {
+    //alert(user);
+      $( "#result" ).load( "dashbordHeader.php", function() {
+        //alert( "Load was performed." );
+
+        $(".page-loader-wrapper").fadeOut();
+      });
+        
+    }
+    else{
+        $( "#result" ).load( "header.php", function() {
+        //alert( "Load was performed1 ." );
+        $(".page-loader-wrapper").fadeOut();
+      });
+      
+    }
+  });
+//    $.get('script/SQL/testConnection.php', function(data) {
+//   alert(data)
+// }); 
+  </script>
+<?php //include 'header.php'; ?>
+<div id="result"></div>
 <!--SLIDER-->
 
 <?php 	 foreach ($cms as $value) { ?>
@@ -99,7 +160,7 @@ return $nodeGetContent;
 
 <?php include 'footer.php'; ?>
 <script type="text/javascript" src="js/cms.js"></script>
-<script src="js/jquery.js"></script>
+<!-- <script src="js/jquery.js"></script> -->
 <script src="js/bootstrap.bundle.min.js"></script>
 
 </body>

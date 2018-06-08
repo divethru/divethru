@@ -105,7 +105,7 @@
 	</div>	
 </div>
 <br><br>
-	<?php include'footer.php' ?>
+	<?php include'footer.php'; ?>
 	<!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
 	<!-- <script
   src="https://code.jquery.com/jquery-3.3.1.slim.js"
@@ -184,37 +184,72 @@
 
 		   $(".EditProfile").click(function(){
 		   	 $(".fa-spinner").show();
-		    var uid = $('#uid').val();
-		    //alert(uid);
-		    var booksRef = firebase.database().ref('Users').child(uid);
-		    
-		    var fname=$('#first_name').val();
-		    var lname=$('#last_name').val();
-		    var email=$('#email').val();
-		    var mob=$('#mobile_number').val();
-		    var dob=$('#birthdate').val();
-		     var cimg = $("#imgurl").val();
-		     if($("#imgurl").val()){
-		     	var cimg = $("#imgurl").val();
-		     }
-		     else{
-		     	var cimg = $(".profile-pic").attr("src");
-		     }
-		     var company = $("#company_name").val();
-		    //alert(fname);
-		    booksRef.update({ first_name: fname, last_name: lname, mobile_number: mob, birthdate: dob, profile_image: cimg,company_name:company }).then(function() {
-		
-		  swal({title: "Success", text: "Your Profile Update Successfully!!!", type: "success"},
-                                        function(){ 
-                                          $(".fa-spinner").hide();
-                                     });
-		    }).catch(function(error){
-		         alert('err' + error);
-		          });
-		    firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
+		   	 var selectedfile = document.querySelector('#profile_image').files[0];
+			 	var email = document.getElementById('email').value;
+			 	var allowedExtensions = /(\.jpg|\.jpeg|\.png)/;
+    			var extension=allowedExtensions.exec(selectedfile.name);
+			 	var filename=email+".jpg";
+			    //var filename = selectedfile.name;
+			    var storageRef = firebase.storage().ref("/Profile/" + filename);
+			    var metadata = {contentType: selectedfile.type};
+			    var uploadTask = storageRef.put(selectedfile, metadata);
 
-		   	window.localStorage.setItem('user',JSON.stringify(snapshot));
-		   });
+			    uploadTask.on('state_changed', function (snapshot) {
+
+			        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+			        console.log('Upload is ' + progress + '% done');
+			        switch (snapshot.state) {
+			            case firebase.storage.TaskState.PAUSED: // or 'paused'
+			                console.log('Upload is paused');
+			                break;
+			            case firebase.storage.TaskState.RUNNING: // or 'running'
+			                console.log('Upload is running');
+			                break;
+			        }
+
+			    },function(error){
+			        console.log(error);
+			    },function(){
+
+			         var downloadURL = uploadTask.snapshot.downloadURL;
+			       //  alert(downloadURL);
+			        document.getElementById('imgurl').value = downloadURL;
+			        
+			        $(".EditProfile").removeAttr("disabled");
+			         var uid = $('#uid').val();
+					    //alert(uid);
+					    var booksRef = firebase.database().ref('Users').child(uid);
+					    
+					    var fname=$('#first_name').val();
+					    var lname=$('#last_name').val();
+					    var email=$('#email').val();
+					    var mob=$('#mobile_number').val();
+					    var dob=$('#birthdate').val();
+					     var cimg = $("#imgurl").val();
+					     if($("#imgurl").val()){
+					     	var cimg = $("#imgurl").val();
+					     }
+					     else{
+					     	var cimg = $(".profile-pic").attr("src");
+					     }
+					     var company = $("#company_name").val();
+					    //alert(fname);
+					    booksRef.update({ first_name: fname, last_name: lname, mobile_number: mob, birthdate: dob, profile_image: cimg,company_name:company }).then(function() {
+					
+					  swal({title: "Success", text: "Your Profile Update Successfully!!!", type: "success"},
+			                                        function(){ 
+			                                          $(".fa-spinner").hide();
+			                                     });
+					    }).catch(function(error){
+					         alert('err' + error);
+					          });
+					    firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
+
+					   	window.localStorage.setItem('user',JSON.stringify(snapshot));
+					   });
+			
+			    });
+		   
 		   });
 		   //alert(uid;);
 		    
@@ -224,34 +259,85 @@
 	</script>
 	<script type="text/javascript">
 		//image upload code
-		   		 function uplaoduserimg() {
-   				 document.getElementsByClassName("EditProfile").disabled = true;
+		   function uplaoduserimg() {
+   				// document.getElementsByClassName("EditProfile").disabled = true;
 
-			$(".EditProfile").attr("disabled","disabled");
+				//$(".EditProfile").attr("disabled","disabled");
 
 			    
 			    
-			    var file_data = $('#profile_image').prop('files')[0]; 
-			    console.log(file_data);  
-			    var form_data = new FormData();                  
-			    form_data.append('userprofile', file_data);
-			 //   alert(form_data);                             
-			    $.ajax({
-			        url: 'Admin/action.php', // point to server-side PHP script 
-			        dataType: 'text',  // what to expect back from the PHP script, if anything
-			        cache: false,
-			        contentType: false,
-			        processData: false,
-			        data: form_data,                         
-			        type: 'post',
-			        success: function(data){
-			           // alert(data);
-			            console.log(data);
-			            $("#imgurl").val("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
-			            $(".EditProfile").removeAttr("disabled");
-			            console.log(data); // display response from the PHP script, if any
-			        }
-			     });
+			  //  var file_data = $('#profile_image').prop('files')[0]; 
+			    //console.log(file_data);  
+			 //    var form_data = new FormData();                  
+			 //    form_data.append('userprofile', file_data);
+			 // //   alert(form_data);                             
+			 //    $.ajax({
+			 //        url: 'Admin/action.php', // point to server-side PHP script 
+			 //        dataType: 'text',  // what to expect back from the PHP script, if anything
+			 //        cache: false,
+			 //        contentType: false,
+			 //        processData: false,
+			 //        data: form_data,                         
+			 //        type: 'post',
+			 //        success: function(data){
+			 //           // alert(data);
+			 //            console.log(data);
+			 //            $("#imgurl").val("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
+			 //            $(".EditProfile").removeAttr("disabled");
+			 //            console.log(data); // display response from the PHP script, if any
+			 //        }
+			 //     });
+			 	//var file= target.files[0];
+			 	//console.log(file_data);
+			 	//var Fname = document.getElementById('email').value;
+			 	//var allowedExtensions = /(\.jpg|\.jpeg|\.png)/;
+    	// 		var extension=allowedExtensions.exec(file_data.name);
+			 	// var img=Fname+extension[0];
+			 	// var storageRef=firebase.storage().ref("Profile/"+img);
+			 	// var task=storageRef.put(file_data);
+			 	// task.on('state_changed', function (snapshot) {
+
+			 	// 		function complete(){
+			 	// 			alert(task.snapshot.downloadURL);
+			 	// 			console.log(task.snapshot.downloadURL);
+			 	// 			$(".EditProfile").removeAttr("disabled");
+			 	// 		}
+			 	// 	});
+			 	// var selectedfile = document.querySelector('#profile_image').files[0];
+			 	// var email = document.getElementById('email').value;
+			 	// var allowedExtensions = /(\.jpg|\.jpeg|\.png)/;
+    	// 		var extension=allowedExtensions.exec(selectedfile.name);
+			 	// var filename=email+".jpg";
+			  //   //var filename = selectedfile.name;
+			  //   var storageRef = firebase.storage().ref("/Profile/" + filename);
+			  //   var metadata = {contentType: selectedfile.type};
+			  //   var uploadTask = storageRef.put(selectedfile, metadata);
+
+			  //   uploadTask.on('state_changed', function (snapshot) {
+
+			  //       var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+			  //       console.log('Upload is ' + progress + '% done');
+			  //       switch (snapshot.state) {
+			  //           case firebase.storage.TaskState.PAUSED: // or 'paused'
+			  //               console.log('Upload is paused');
+			  //               break;
+			  //           case firebase.storage.TaskState.RUNNING: // or 'running'
+			  //               console.log('Upload is running');
+			  //               break;
+			  //       }
+
+			  //   },function(error){
+			  //       console.log(error);
+			  //   },function(){
+
+			  //        var downloadURL = uploadTask.snapshot.downloadURL;
+			  //        alert(downloadURL);
+			  //       document.getElementById('imgurl').value = downloadURL;
+			  //       $(".EditProfile").removeAttr("disabled");
+			        
+			
+			  //   });
+
 			}
 		   //end image upload code
 

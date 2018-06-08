@@ -16,8 +16,13 @@ session_start();
     <link href="css/sweetalert.css" rel="stylesheet" />
      <link rel="shortcut icon" href="img/feb.ico" />
     <link rel="stylesheet" type="text/css" href="css/formvalid.css">
+
+    <!----------------- Start Added for when cdn failed to load ---------------->
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
     
-   <!-- <script type="text/javascript" src="js/loginvalidation.js"></script> -->
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+
+    <!-----------------  End Added for when cdn failed to load -------------->
  
     <title>Dive Thru</title>
 
@@ -88,7 +93,7 @@ button:focus{outline: none;}
 						<div class="card" style=" box-shadow: 0 0px 37px 0 rgba(0,2,0,0.1);" >
 						  <div class="card-body login-card">
 						    <h1 class="card-title" style="text-align: center; color: #34495e; padding: 5px 23px 35px 25px;">Log in</h1>
-						   	<form autocomplete="off">
+						   <!---<form autocomplete="off">---->
 						   		<p id="all"  style="text-align: center;" class="p1"></p>
 									  <div class="form-group-log" id ="login_div">
 									    <p id="p1"  class="p1"></p>
@@ -96,7 +101,7 @@ button:focus{outline: none;}
 										<p id="p2"  class="p1" style="text-align: left;"></p>
 									  </div>
 									  <div class="form-group-log" id ="login_div">
-									    <input type="password"  name="password" class="form-control-log" id="password"  name="password" placeholder="Password"><span toggle="#password" class="fa fa-fw fa-eye-slash field-icon toggle-password" style="margin-left: 86%; cursor: pointer;  position: relative;
+									    <input type="password"  name="password" class="form-control-log" id="password"  name="password" placeholder="Password" ><span toggle="#password" class="fa fa-fw fa-eye-slash field-icon toggle-password" style="margin-left: 86%; cursor: pointer;  position: relative;
     									bottom: 31px;"></span>
 									    <p id="p3" class="p1" style=" text-align: left;"></p>     
 									  </div>
@@ -121,7 +126,7 @@ button:focus{outline: none;}
 <br><br>
  <button type="button" class=" form-control btn1 fb-font" onclick="googlesave_user();" style="background-color:#dd4b39; cursor: pointer; border: none; color:#fff;  border-radius: 3px; letter-spacing: 3;line-height: 27px;"><i class="fa fa-google fa-lg" aria-hidden="true"></i>&nbsp;CONTINUE WITH GOOGLE</button>
  <br>
-									   								</form>
+									   					<!--			</form>--->
 						  </div>
 						 
 
@@ -138,6 +143,7 @@ button:focus{outline: none;}
     <script src="js/sweetalert.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+
     <script src="js/bootstrap.min.js" type="text/JavaScript"></script>
     <script type="text/javascript">
     	$(".toggle-password").click(function() {
@@ -145,13 +151,16 @@ button:focus{outline: none;}
 		  $(this).toggleClass("fa-eye fa-eye-slash");
 		  var input = $($(this).attr("toggle"));
 		  if (input.attr("type") == "password") {
+		  	//input.removeAttr("style");
 		    input.attr("type", "text");
 		  } else {
+		  	//input.attr("style","-webkit-text-security: disc !important;");
 		    input.attr("type", "password");
 		  }
 		});
 
-$("form").keypress(function(e) {
+
+$(document).keypress(function(e) {
 			if(e.which == 13) {
 			//	alert('You pressed enter!');
 			//$("#go").click();
@@ -226,6 +235,8 @@ if(mailformat.test(email)){
 function loginclick(){
 	loginValidation();
 }
+var existingEmail = null;
+var pendingCred = null;
 function fbsave_user(){
 	
 	//alert(55);
@@ -253,10 +264,27 @@ function fbsave_user(){
   		      var loginvia = "Facebook";
   //var membership_type = "free";
   			// ...
+  			//alert(user.uid);
   			var ref = firebase.database().ref('Users').child(user.uid);
           ref.once('value').then( function(dataSnapshot) {
               if(dataSnapshot.val() !== null){
+              	var data = dataSnapshot.val();
+          	window.localStorage.setItem('user',JSON.stringify(dataSnapshot));
+                if(!ref.visited)
+                {
+                  firebase.database().ref('Users').child(user.uid).child("visited").set(1);
+                }else{
 
+                  firebase.database().ref('Users').child(user.uid).child("visited").set(user.visted+1);
+                }
+var currentdate = new Date(); 
+                var datetime = currentdate.getFullYear() + "-"
+                    + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                    + ("0" + currentdate.getDate()).slice(-2)  + " "  
+                    + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                    + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                    + ("0"+currentdate.getSeconds()).slice(-2);
+                  firebase.database().ref('Users').child(user.uid).child("lastUpdated_on").set(datetime);
                 ref.update({"fbid":fbid});
                 swal({
 	                        title: "Login!",
@@ -270,18 +298,96 @@ function fbsave_user(){
 	                    }, function () {
 	                        window.setTimeout(function() {
 	                        
-	                          window.location.href = "welcome.php";
+	                         	if(data.visited == "" || data.visited == 0){
+
+				                window.location = "welcome.php";
+				                }else{
+				                  window.location = "dashboard.php";
+				                }
 	                        }, 1000);
 	                    });
               }else{
+             // 	alert(user.uid);
 			save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender);
               }
 
           });
 	// }
 }).catch(function(error){
-	console.log(error.message);
-	$("p#all").html(error.message);
+	console.log(error.code);
+
+	// Account exists with different credential. To recover both accounts
+    // have to be linked but the user must prove ownership of the original
+    // account.
+    if (error.code == 'auth/account-exists-with-different-credential') {
+      existingEmail = error.email;
+      pendingCred = error.credential;
+      // Lookup existing account’s provider ID.
+      return firebase.auth().fetchProvidersForEmail(error.email)
+        .then(function(providers) {
+           if (providers.indexOf(firebase.auth.EmailAuthProvider.PROVIDER_ID) != -1) {
+             // Password account already exists with the same email.
+             // Ask user to provide password associated with that account.
+           //  alert("1");
+             var password = window.prompt('Please provide the password for ' + existingEmail);
+             return firebase.auth().signInWithEmailAndPassword(existingEmail, password);    
+           } else if (providers.indexOf(firebase.auth.GoogleAuthProvider.PROVIDER_ID) != -1) {
+          // 	alert("2");
+             var googProvider = new firebase.auth.GoogleAuthProvider();
+             // Sign in user to Google with same account.
+             provider.setCustomParameters({'login_hint': existingEmail});
+             return firebase.auth().signInWithPopup(googProvider).then(function(result) {
+             	var user = result.user;
+             	var ref = firebase.database().ref('Users').child(user.uid);
+          	ref.once('value').then(function(dataSnapshot) {
+          	window.localStorage.setItem('user',JSON.stringify(dataSnapshot));
+                if(!ref.visited)
+                {
+                  firebase.database().ref('Users').child(user.uid).child("visited").set(1);
+                }else{
+
+                  firebase.database().ref('Users').child(user.uid).child("visited").set(user.visted+1);
+                }
+            });
+            var ref = firebase.database().ref('Users').child(user.uid);
+          ref.once('value').then( function(dataSnapshot) {
+          	var data = dataSnapshot.val();
+            swal({
+	                        title: "Login!",
+	                        text: "User Login Sucessfully.",
+	                        html:true,
+	                        type: "success",
+	                        showCancelButton: false,
+	                        confirmButtonColor: "#86CCEB",
+	                        confirmButtonText: "OK",
+	                        closeOnConfirm: false
+	                    }, function () {
+	                        window.setTimeout(function() {
+	                        
+	                         	if(data.visited == "" || data.visited == 0){
+
+				                window.location = "welcome.php";
+				                }else{
+				                  window.location = "dashboard.php";
+				                }
+	                        }, 1000);
+	                    });
+          });
+               return result.user;
+             });
+           } else {
+           	//alert("3");
+				$("p#all").html(error.message);
+             //...
+           }
+        })
+        .then(function(user) {
+          // Existing email/password or Google user signed in.
+          // Link Facebook OAuth credential to existing account.
+          return user.linkWithCredential(pendingCred);
+        });
+    }
+	
 });
 }
 
@@ -291,13 +397,12 @@ function save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender) {
 			//alert(uid);
 			//return;
 			var currentdate = new Date(); 
-			var datetime = 
-			    + currentdate.getDate() + "/"
-                + (currentdate.getMonth()+1)  + "/" 
-                + currentdate.getFullYear() + " "  
-                + currentdate.getHours() + ":"  
-                + currentdate.getMinutes() + ":" 
-                + currentdate.getSeconds();
+                var datetime = currentdate.getFullYear() + "-"
+                    + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                    + ("0" + currentdate.getDate()).slice(-2)  + " "  
+                    + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                    + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                    + ("0"+currentdate.getSeconds()).slice(-2);
 			 var PCstatus = 'Mobile';
 			
 			 var isMobile = {
@@ -357,7 +462,7 @@ function save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender) {
                             "halted":0.0,
                             "last_free_conversation_id":0,
                             "device_type":PCstatus,
-                            "activated_on":"",
+                            "activated_on":datetime,
                             "activation_code":"",
                             "device_token" : "",
                             "membership_type" : "Free",
@@ -369,21 +474,30 @@ function save_fbuser(uid,first_name,last_name,email,fbid,birthday,gender) {
 						updates['/Users/' + uid] = data;
         				firebase.database().ref().update(updates);
         				//alert('This User Created Sucessfully');
-	        				swal({
-	                        title: "Login!",
-	                        text: "User Login Sucessfully.",
-	                        html:true,
-	                        type: "success",
-	                        showCancelButton: false,
-	                        confirmButtonColor: "#86CCEB",
-	                        confirmButtonText: "OK",
-	                        closeOnConfirm: false
-	                    }, function () {
-	                        window.setTimeout(function() {
+	        	// 			var ref = firebase.database().ref('Users').child(user.uid);
+          // ref.once('value').then( function(dataSnapshot) {
+          // 	var data = dataSnapshot.val();
+          //   swal({
+	         //                title: "Login!",
+	         //                text: "User Login Sucessfully.",
+	         //                html:true,
+	         //                type: "success",
+	         //                showCancelButton: false,
+	         //                confirmButtonColor: "#86CCEB",
+	         //                confirmButtonText: "OK",
+	         //                closeOnConfirm: false
+	         //            }, function () {
+	         //                window.setTimeout(function() {
 	                        
-	                          window.location.href = "welcome.php";
-	                        }, 1000);
-	                    });
+	         //                 	if(data.visited == "" || data.visited == 0){
+
+				      //           window.location = "welcome.php";
+				      //           }else{
+				      //             window.location = "dashboard.php";
+				      //           }
+	         //                }, 1000);
+	         //            });
+          // });
                     
             	
 				

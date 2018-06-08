@@ -1,5 +1,6 @@
+<?php define("version",1);?>
 <!-- <script src="js/jquery-1.10.2.js"></script> -->
-
+<!-- <link rel="stylesheet" href="css/dashheader.css"> -->
 <nav class="navbar navbar-expand-lg  fixed-top  navbar-light bg-white header">
         <button class="navbar-toggler togle-pad" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03">
           <span class="navbar-toggler-icon"></span>
@@ -41,7 +42,8 @@
                 <a class="dropdown-item" href="mystreak.php">MY JOURNEY</a>
                 
                 <div class="dropdown-divider" style=""></div>
-                <a class="dropdown-item" href="http://34.215.40.163/editprofile.php">MY PROFILE</a>
+              <!-- http://34.215.40.163/editprofile.php -->
+                <a class="dropdown-item" href="#">MY PROFILE</a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">DIVE WITH FRIENDS</a>
                   <div class="dropdown-divider"></div>
@@ -57,14 +59,17 @@
           
         </div>
     </nav>
+    <script src="js/signout.js"></script>
     <script>
       $(document).ready(function(){
         var user = JSON.parse(window.localStorage.getItem('user'));
-        
+        if(user !=null){
+          
          // console.log(user.profile_image);
           if(user.profile_image !=''){
             $(".profile").attr("src",user.profile_image);
           }
+        }
         
 
       });

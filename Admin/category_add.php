@@ -186,7 +186,7 @@ var config = {
                                      <!--  <form id="my-awesome-dropzone" action="/upload" class="dropzone">  
                                             <div class="dropzone-previews"></div>
                                             <div class="fallback"> <!-- this is the fallback if JS isn't working -->
-                                                <input name="catimage" class="check-image-size form-control" id="catimage" type="file"  onchange="uplaodfile()" accept="image/*" />
+                                                <input name="catimage" class="check-image-size form-control" id="catimage" type="file" data-min-width="1920" data-min-height="1080" data-max-width="1920" data-max-height="1080"  onchange="uplaodfile()" accept="image/*" />
                                                 <input type="hidden" id="imgurl">
                                         <!--    </div> -->
 
@@ -290,7 +290,7 @@ $("input[type=file]").checkImageSize();
         rules: {
             'name': {
                 required: true,
-                minlength: 6,
+                minlength: 2,
                 maxlength: 50,
                  regex:  /^[A-Za-z0-9 _]*[A-Za-z0-9][A-Za-z0-9 _]*$/
             }, 

@@ -1,3 +1,11 @@
+<?php
+define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
+define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
+require 'vendor/autoload.php';
+use Firebase\Firebase;
+use Firebase\Auth\TokenGenerator;
+ ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -10,15 +18,45 @@
  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css">
+<link href="css/reg.css" rel="stylesheet" type="text/css">
 <link href="css/privacy-policiy.css" rel="stylesheet" type="text/css">
 <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="css/footercss.css" type="text/css" >
 <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+<script src="js/credential.js"></script>
+
+<script>
+    $(document).ready(function(){
+
+    var user=window.localStorage.getItem('user');
+    if(user!=null)
+    {
+    //alert(user);
+      $( "#result" ).load( "dashbordHeader.php", function() {
+        //alert( "Load was performed." );
+
+        $(".page-loader-wrapper").fadeOut();
+      });
+        
+    }
+    else{
+        $( "#result" ).load( "header.php", function() {
+        //alert( "Load was performed1 ." );
+        $(".page-loader-wrapper").fadeOut();
+      });
+      
+    }
+  });
+
+  </script>
 </head>
 
 <body style="margin-top: 150px;">
-	<?php include 'dashbordHeader.php'; ?>
+	<?php //include 'dashbordHeader.php'; ?>
+	  <div id="result"></div>
 <div class="container-fluid bg py-5">
     <div class="container text-center text-white">
 	     <!--<h2>Terms and Conditions</h2>-->
@@ -48,10 +86,10 @@
 	 </div>	
 </div>
 	<?php include 'footer.php'; ?>
-<script
+<!-- <script
   src="https://code.jquery.com/jquery-3.3.1.slim.js"
   integrity="sha256-fNXJFIlca05BIO2Y5zh1xrShK3ME+/lYZ0j+ChxX2DA="
-  crossorigin="anonymous"></script>
+  crossorigin="anonymous"></script> -->
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

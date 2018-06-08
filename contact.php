@@ -38,6 +38,7 @@ return $nodeGetContent;
 <link href="css/footercss.css" rel="stylesheet" type="text/css">
 <!-- <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+ <link rel="stylesheet" href="css/dashheader.css">
 <style type="text/css">
 	.btn2 {
   display: inline-block;
@@ -57,17 +58,19 @@ return $nodeGetContent;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 </style>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+<script src="js/credential.js"></script>
 		<script>
 		  // Initialize Firebase
-		  var config = {
-    apiKey: "AIzaSyDBWdYDtGJsilqNGOqYMNalE9s-IAGPnTw",
-    authDomain: "divethru-71c56.firebaseapp.com",
-    databaseURL: "https://divethru-71c56.firebaseio.com",
-    projectId: "divethru-71c56",
-    storageBucket: "divethru-71c56.appspot.com",
-    messagingSenderId: "53159239409"
-  };
+		//   var config = {
+  //   apiKey: "AIzaSyDBWdYDtGJsilqNGOqYMNalE9s-IAGPnTw",
+  //   authDomain: "divethru-71c56.firebaseapp.com",
+  //   databaseURL: "https://divethru-71c56.firebaseio.com",
+  //   projectId: "divethru-71c56",
+  //   storageBucket: "divethru-71c56.appspot.com",
+  //   messagingSenderId: "53159239409"
+  // };
   // var config = {
   //   apiKey: "AIzaSyBwDEs5JfwQNSRKCDMHE9TrVlWArbYG9NU",
   //   authDomain: "divethrutest.firebaseapp.com",
@@ -76,15 +79,40 @@ return $nodeGetContent;
   //   storageBucket: "divethrutest.appspot.com",
   //   messagingSenderId: "19401978174"
   // };
-  firebase.initializeApp(config);
+  //firebase.initializeApp(config);
 		</script>
+    <script>
+    $(document).ready(function(){
+
+    var user=window.localStorage.getItem('user');
+    if(user!=null)
+    {
+    //alert(user);
+      $( "#result" ).load( "dashbordHeader.php", function() {
+        //alert( "Load was performed." );
+
+        $(".page-loader-wrapper").fadeOut();
+      });
+        
+    }
+    else{
+        $( "#result" ).load( "header.php", function() {
+        //alert( "Load was performed1 ." );
+        $(".page-loader-wrapper").fadeOut();
+      });
+      
+    }
+  });
+
+  </script>
 </head>
 
 <body>
 
 <!--HEADER-->
 	
-<?php include 'header.php'; ?>
+<?php //include 'header.php'; ?>
+ <div id="result"></div>
 <!--SLIDER-->
 <?php 	foreach ($cms as $value) { ?>
 
@@ -98,7 +126,7 @@ return $nodeGetContent;
 
 <?php include 'footer.php'; ?>
 <script type="text/javascript" src="js/cms.js"></script>
-<script src="js/jquery.js"></script>
+<!-- <script src="js/jquery.js"></script> -->
 <script src="js/bootstrap.bundle.min.js"></script>
 
 </body>

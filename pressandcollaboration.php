@@ -1,3 +1,11 @@
+<?php
+define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
+define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
+require 'vendor/autoload.php';
+use Firebase\Firebase;
+use Firebase\Auth\TokenGenerator;
+ ?>
+
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -7,7 +15,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.min.css" type="text/css" >
 
-    <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css"> -->
      <link rel="shortcut icon" href="img/feb.ico" />
      <link href="css/pressandcollaboration.css" rel="stylesheet" type="text/css">
     <link href="css/footercss.css" rel="stylesheet" type="text/css">
@@ -18,6 +26,12 @@
     <title>Dive Thru</title>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 <link rel="stylesheet" type="text/css" href="css/homestyle.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+ <link rel="stylesheet" href="css/dashheader.css">
+ 
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+<script src="js/credential.js"></script>
 <style type="text/css">
 
 
@@ -38,11 +52,36 @@
 .slide p {font-size:14px !important;}}
    
 </style>
+<script>
+    $(document).ready(function(){
+
+    var user=window.localStorage.getItem('user');
+    if(user!=null)
+    {
+    //alert(user);
+      $( "#result" ).load( "dashbordHeader.php", function() {
+        //alert( "Load was performed." );
+
+        $(".page-loader-wrapper").fadeOut();
+      });
+        
+    }
+    else{
+        $( "#result" ).load( "header.php", function() {
+        //alert( "Load was performed1 ." );
+        $(".page-loader-wrapper").fadeOut();
+      });
+      
+    }
+  });
+
+  </script>
   </head>
   <body style="padding-top: 118px;">
   
 
-        <?php include'header.php'; ?>
+        <?php //include'header.php'; ?>
+          <div id="result"></div>
             <header class="masthead text-white text-center">
                   <div class="overlay">
                     <div style="background-image: url('img/kidsbanner.png'); height: 100%; padding: 0;  min-width: 100%; background-size: cover; background-repeat: no-repeat; background-position: center;"></div>
@@ -245,7 +284,7 @@ you with everything you need to Dive Thru what you go Thru.
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
  
     
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<!--     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="js/bootstrap.min.js" type="text/JavaScript"></script>
       

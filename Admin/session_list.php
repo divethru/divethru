@@ -59,7 +59,7 @@ foreach($category as $k => $v){
                     foreach ($c['Session'] as $ks => $vs) {
                         $c2[] = $k;
                             $session[] = $vs;
-                            echo $ks;
+                         //   echo $ks;
                 $cat[] = $s;
                 $bdn[] = 0;
                 $bnm[] = "No bundle";
@@ -234,10 +234,12 @@ die;*/
                                         <tr>
                                             <th>Session Name</th>
                                             <th>Session Description</th>
+                                          <!--   <th>Session Quote Description</th> -->
                                             <th>Session Category</th>
                                             <th>Session Bundle</th>
                                            <!-- <th>Subcription Type</th>-->    
                                             <th>Image</th>
+                                            <th>Quote Image</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -254,12 +256,18 @@ die;*/
                                                 echo "<td>";
                                                 echo !empty($u['session_description'])?$u['session_description']:'-';
                                                 echo "</td>";
+                                               /*  echo "<td>";
+                                                echo !empty($u['session_quote_description'])?$u['session_quote_description']:'-';
+                                                echo "</td>";*/
                                                 
                                               echo "<td>".$c2[$ky]."</td>";
-                                              echo "<td>".$bnm[$ky]."</td>";
+                                              echo "<td>".$bnm[$ky+1]."</td>";
                                                 echo "<td><img src='";
                                                 echo !empty($u['session_img'])?$u['session_img']:'#';
                                                 echo "' width='50' height='50' id='simg'></td>";
+                                                 echo "<td><img src='";
+                                                echo !empty($u['session_quote_img'])?$u['session_quote_img']:'#';
+                                                echo "' width='50' height='50' id='qimg'></td>";
                                             
                                                 ?>
                                                 

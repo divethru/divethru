@@ -103,6 +103,17 @@ img {vertical-align: middle;}
   position: absolute;
   top: 0;
 }
+.Indicators{
+  text-align: center; 
+  /*margin-top: -50px;*/
+  position: relative;
+  top: -50px;
+}
+.dt{
+  color: white;
+  font-size: 18px;
+  display: none;
+}
 /* The dots/bullets/indicators */
 .dot {
   cursor: pointer;
@@ -113,6 +124,7 @@ img {vertical-align: middle;}
   border-radius: 50%;
   display: inline-block;
   transition: background-color 0.6s ease;
+  content: none;
 }
 .active, .dot:hover {
   background-color: #ffff;
@@ -161,6 +173,7 @@ img {vertical-align: middle;}
   from {opacity: .6} 
   to {opacity: 1}
 }
+
 /* On smaller screens, decrease text size */
 @media screen and (max-width: 898px){
   .text {font-size: 19px; width: 100%;}
@@ -208,7 +221,7 @@ img {vertical-align: middle;}
     var user = JSON.parse(window.localStorage.getItem('user'));
       if(user.visited != 0){
 // /console.log(user);
-        window.location = "dashboard.php";
+        //window.location = "dashboard.php";
       }
       /*
        * Instance CirclePlayer inside jQuery doc ready
@@ -231,28 +244,32 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
 
       // This code creates a 2nd instance. Delete if not required.
 
-      var myOtherOne = new CirclePlayer("#jquery_jplayer_2",
+      /*var myOtherOne = new CirclePlayer("#jquery_jplayer_2",
       {
        // m4a:"http://www.jplayer.org/audio/m4a/Miaow-04-Lismore.m4a",
       //  oga:"http://www.jplayer.org/audio/ogg/Miaow-04-Lismore.ogg"
       }, {
         cssSelectorAncestor: "#cp_container_2"
-      });
+      });*/
+     // alert(5);
+     if(storedNames){
+
 for (i in storedNames)
 {
   var conversation = 1;
    for(j in storedNames[i]){
 
+      //alert(storedNames[i][j].meditation_audio[0]);
 //console.log(conversation);
     //if(conversation == window.localStorage.getItem('content')){
     if(conversation == 1){
-      $(".conv").html(storedNames[i][j].session_name);
+      //$(".conv").html(storedNames[i][j].session_name);
       console.log('M'+storedNames[i][j].meditation_audio[0]);
-      $('audio').attr('src',storedNames[i][j].meditation_audio[0])[0];
-      $('audio').attr('type','audio/mp3')[0];
+      $('audio').attr('src',"http://34.215.40.163/Admin/uploads/meditation/day01.mp3");
+      $('audio').attr('type','audio/mp3');
       var myOtherOne = new CirclePlayer("#jquery_jplayer_2",
         {
-          mp3:storedNames[i][j].meditation_audio[0],
+          mp3:"http://34.215.40.163/Admin/uploads/meditation/day01.mp3",
         //  oga:"http://www.jplayer.org/audio/ogg/Miaow-04-Lismore.ogg"
         }, {
         cssSelectorAncestor: "#cp_container_2"
@@ -261,6 +278,18 @@ for (i in storedNames)
   conversation++;
   }
 
+}
+}else{
+  $('audio').attr('src',"http://34.215.40.163/Admin/uploads/meditation/day01.mp3");
+      $('audio').attr('type','audio/mp3');
+  var myOtherOne = new CirclePlayer("#jquery_jplayer_2",
+        {
+          mp3:"http://34.215.40.163/Admin/uploads/meditation/day01.mp3",
+        //  oga:"http://www.jplayer.org/audio/ogg/Miaow-04-Lismore.ogg"
+        }, {
+        cssSelectorAncestor: "#cp_container_2"
+        });
+  
 }
     console.log(user.halted);
     
@@ -390,7 +419,7 @@ for (i in storedNames)
                 <div class="cp-circle-control"></div>
                 <ul class="cp-controls">
                   <li><a class="cp-play" tabindex="1">play</a></li>
-                  <li><a class="cp-pause" style="display:none;" tabindex="1">pause</a></li>
+                  <li><a class="cp-pause" style="display:none;margin-left: -4px;" tabindex="1">pause</a></li>
                 </ul>
               </div>
         </div>
@@ -420,14 +449,21 @@ for (i in storedNames)
     </span>
 </div>
 
-<div style="text-align: center; margin-top: -50px;">
-  <span class="dot" onclick="currentSlide(1)"></span> 
+<div class="Indicators" style="">
+  <span class="dot " onclick="currentSlide(1)"></span> 
   <span class="dot" onclick="currentSlide(2)"></span> 
   <span class="dot" onclick="currentSlide(3)"></span>
   <span class="dot" onclick="currentSlide(4)"></span> 
   <span class="dot" onclick="currentSlide(5)"></span> 
   <span class="dot" onclick="currentSlide(6)"></span>
   <span class="dot" onclick="currentSlide(7)"></span>
+  <!-- <span class="dot " onclick="currentSlide(1)"><span class="dt">&ordm;</span></span> 
+  <span class="dot" onclick="currentSlide(2)"><span class="dt">&ordm;</span></span> 
+  <span class="dot" onclick="currentSlide(3)"><span class="dt">&ordm;</span></span>
+  <span class="dot" onclick="currentSlide(4)"><span class="dt">&ordm;</span></span> 
+  <span class="dot" onclick="currentSlide(5)"><span class="dt">&ordm;</span></span> 
+  <span class="dot" onclick="currentSlide(6)"><span class="dt">&ordm;</span></span>
+  <span class="dot" onclick="currentSlide(7)"><span class="dt">&ordm;</span></span> -->
 </div>
 <script>
     $(document).ready(function () {
@@ -436,7 +472,10 @@ for (i in storedNames)
  //$("#jquery_jplayer_2").jPlayer("play", "10");
 //console.log('d'+$("#jquery_jplayer_2").data('jPlayer').status.currentTime);
 //console.log('d'+t);
-
+ // $(".dt").hide();
+if(window.screen.width  == 768){
+  $(".dt").css("display","inherit");
+}
 
     firebase.auth().onAuthStateChanged(function(user) {
   if (!user) {
@@ -502,10 +541,18 @@ function showSlides(n) {
   }
   for (i = 0; i < dots.length; i++) {
       dots[i].className = dots[i].className.replace(" active", "");
+      
   }
   slides[slideIndex-1].style.display = "block";  
   dots[slideIndex-1].className += " active";
 }
+$(".dot").each(function(index,value){
+    //var slides = document.getElementsByClassName("mySlides");
+    //alert();
+  if($(this).hasClass("active")){
+    //$(this).find("span.dt").html("&bull;");
+  }
+});
 
 </script>
 

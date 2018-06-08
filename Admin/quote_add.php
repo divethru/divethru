@@ -278,13 +278,12 @@ return $nodeGetContent;
             // var cimg = $("#imgurl").val();
             //  var subname = $("#subname").val();
             var currentdate = new Date(); 
-                var datetime = 
-                    + currentdate.getDate() + "-"
-                    + (currentdate.getMonth()+1)  + "-" 
-                    + currentdate.getFullYear() + "  "  
-                    + currentdate.getHours() + ":"  
-                    + currentdate.getMinutes() + ":" 
-                    + currentdate.getSeconds();
+             var datetime = +currentdate.getFullYear() + "-"
+                              + ("0" + (currentdate.getMonth()+1)).slice(-2)  + "-" 
+                              + ("0" + currentdate.getDate()).slice(-2)  + " "  
+                              + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
+                              + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
+                              + ("0"+currentdate.getSeconds()).slice(-2);
             var firebaseRef = firebase.database().ref();
 
             var catRef = firebaseRef.child("DailyQuotes");

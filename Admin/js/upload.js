@@ -1,3 +1,50 @@
+var _URL = window.URL || window.webkitURL;
+window.imagesize = false;
+
+function uplaodqimg() {
+    
+    document.getElementsByClassName("catadd").disabled = true;
+
+$(".sessionadd").attr("disabled","disabled");
+   
+    var img,file;
+    if ((file = $('#qimage').prop('files')[0])) {
+        img = new Image();
+        img.onload = function () {
+           if(this.width == 1920 && this.height == 1080){
+            window.imagesize = true;
+           }else{
+            window.imagesize = false;
+           }
+        };
+        img.src = _URL.createObjectURL(file);
+    }
+   // if(window.imagesize){
+    var file_data = $('#qimage').prop('files')[0];   
+    var form_data = new FormData();                  
+    form_data.append('quote', file_data);
+ //   alert(form_data);                             
+    $.ajax({
+        url: 'action.php', // point to server-side PHP script 
+        dataType: 'text',  // what to expect back from the PHP script, if anything
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: form_data,                         
+        type: 'post',
+        success: function(data){
+           // alert(data);
+            $("#qimgurl").val("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
+            $(".sessionadd").removeAttr("disabled");
+            console.log(data); // display response from the PHP script, if any
+        }
+     });
+ //}
+}
+
+
+
+
 
 function uplaodfile() {
 	//catagory Image Validation Start
@@ -38,12 +85,23 @@ $(".catadd").attr("disabled","disabled");
         
 $(".catadd").removeAttr("disabled");
     });*/
-    
-    
+    var img,file;
+    if ((file = $('#catimage').prop('files')[0])) {
+        img = new Image();
+        img.onload = function () {
+           if(this.width == 1920 && this.height == 1080){
+            window.imagesize = true;
+           }else{
+            window.imagesize = false;
+           }
+        };
+        img.src = _URL.createObjectURL(file);
+    }
+ //if(window.imagesize){                       
     var file_data = $('#catimage').prop('files')[0];   
     var form_data = new FormData();                  
     form_data.append('cat', file_data);
- //   alert(form_data);                             
+ //   alert(form_data);  
     $.ajax({
         url: 'action.php', // point to server-side PHP script 
         dataType: 'text',  // what to expect back from the PHP script, if anything
@@ -59,6 +117,7 @@ $(".catadd").removeAttr("disabled");
             console.log(data); // display response from the PHP script, if any
         }
      });
+  //  }
 }
 
 function uplaodsubimgfile() {
@@ -101,7 +160,20 @@ $(".subcatadd").attr("disabled","disabled");
         
 $(".subcatadd").removeAttr("disabled");
     });*/
-    
+    var img,file;
+    if ((file = $('#subcatimage').prop('files')[0])) {
+        img = new Image();
+        img.onload = function () {
+           if(this.width == 1920 && this.height == 1080){
+            window.imagesize = true;
+           }else{
+            window.imagesize = false;
+           }
+        };
+        img.src = _URL.createObjectURL(file);
+    }
+
+    //if(window.imagesize){
     var file_data = $('#subcatimage').prop('files')[0];   
     var form_data = new FormData();                  
     form_data.append('subcat', file_data);
@@ -120,6 +192,7 @@ $(".subcatadd").removeAttr("disabled");
             console.log(data); // display response from the PHP script, if any
         }
      });
+   // }
 }
 
 
@@ -162,7 +235,20 @@ $(".sessionadd").attr("disabled","disabled");
         
 $(".sessionadd").removeAttr("disabled");
     });*/
-	
+	var img,file;
+    if ((file = $('#sessionimage').prop('files')[0])) {
+        img = new Image();
+        img.onload = function () {
+           if(this.width == 1920 && this.height == 1080){
+            window.imagesize = true;
+           }else if(this.width != 1920 && this.height != 1080){
+            window.imagesize = false;
+           }
+        };
+        img.src = _URL.createObjectURL(file);
+    }
+
+//    if(window.imagesize){
     var file_data = $('#sessionimage').prop('files')[0];
     console.log(file_data);
     var form_data = new FormData();                  
@@ -182,6 +268,7 @@ $(".sessionadd").removeAttr("disabled");
             console.log(data); // display response from the PHP script, if any
         }
      });
+    //}
 }   
 
 function uplaodbimgfile() {
@@ -221,7 +308,21 @@ $(".bundleadd").attr("disabled","disabled");
         
 $(".bundleadd").removeAttr("disabled");
     });*/
-var file_data = $('#bundleimage').prop('files')[0];   
+    var img,file;
+    if ((file = $('#bundleimage').prop('files')[0])) {
+        img = new Image();
+        img.onload = function () {
+           if(this.width == 1920 && this.height == 1080){
+            window.imagesize = true;
+           }else{
+            window.imagesize = false;
+           }
+        };
+        img.src = _URL.createObjectURL(file);
+    }
+
+    if(window.imagesize){
+    var file_data = $('#bundleimage').prop('files')[0];   
 
     var form_data = new FormData();                  
     form_data.append('bundle', file_data);
@@ -240,7 +341,7 @@ var file_data = $('#bundleimage').prop('files')[0];
             console.log(data); // display response from the PHP script, if any
         }
      });
-    
+   } 
     
 }   
 
@@ -306,6 +407,16 @@ if($("#maudio").next().has('.time')){
 $(".time").remove();
     //var aud = new Audio();
    // audio = []; 
+}
+
+// code for removing more than entry
+if(audio.length >= 1){
+
+    audio.pop();
+        time.pop();
+   // audio.splice(-1,1);
+    console.log("pop");
+    console.log(audio);
 }
 $(".sessionadd").attr("disabled", "disabled");
     document.getElementsByClassName("sessionadd").disabled = true;
@@ -386,6 +497,15 @@ $(".time2").remove();
    // audio = []; 
 
 }
+//removing id entry more than 2
+if(audio.length >= 2){
+    audio.pop();
+    time.pop();
+   // audio.splice(-1,1);
+    console.log("pop");
+    console.log(audio);
+}
+console.log($("#mtime").val().length);
 $(".sessionadd").attr("disabled", "disabled");
     document.getElementsByClassName("sessionadd").disabled = true;
         $(".fa-spinner").show();
@@ -435,12 +555,22 @@ $("#maudio2").after("<span class='time2'>Time duration : <b>"+ti+" Minutes</b></
             }
             audio.push("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
             $("#murl").val(audio);
+
             if($("#audio3").length){
-                 $(".fa-spinner").hide();
-            $(".sessionadd").removeAttr("disabled");
+                // $(".fa-spinner").hide();
+         //   $(".sessionadd").removeAttr("disabled");
             $("#audio3").tagsinput("removeAll");
             $("#audio3").tagsinput("add",File.name);
             }
+                var murl2 = $("#murl").val();
+       var audioLEN = murl2.split(',');
+      // alert(audioLEN.length);
+
+    //  alert($("#catnm").val());
+        if(audioLEN.length == 2){
+              $(".fa-spinner").hide();
+             $(".sessionadd").removeAttr("disabled");
+         }
               //          $(".fa-spinner").hide();
             //$(".sessionadd").removeAttr("disabled");
             console.log(data); // display response from the PHP script, if any
@@ -461,6 +591,14 @@ if($("#maudio3").next().has('.time3')){
 $(".time3").remove();
    // var aud = new Audio();
    // audio = []; 
+}
+// removing if entry more than 3
+if(audio.length >= 3 ){
+    audio.pop();
+    time.pop();
+   // audio.splice(-1,1);
+    console.log("pop");
+    console.log(audio);
 }
 $(".sessionadd").attr("disabled", "disabled");
     document.getElementsByClassName("sessionadd").disabled = true;
@@ -509,15 +647,22 @@ $("#maudio3").after("<span class='time3'>Time duration : <b>"+ti+" Minutes</b></
                 console.log(result);
             });*/
             }
-            $(".fa-spinner").hide();
             audio.push("http://34.215.40.163/Admin/"+data.replace(/\n/g, ''));
-            $("#murl").val(audio);
+           var murl = $("#murl").val(audio);
             if($("#audio4").length){
                 
             $("#audio4").tagsinput("removeAll");
             $("#audio4").tagsinput("add",File.name);
             }
-            $(".sessionadd").removeAttr("disabled");
+           var murl2 = $("#murl").val();
+       var audioLEN = murl2.split(',');
+   //   alert(audioLEN.length);
+        if(audioLEN.length == 3 || ($("#catnm").val() == "10 Day Intro Program" && audioLEN.length == 2) ){
+              $(".fa-spinner").hide();
+             $(".sessionadd").removeAttr("disabled");
+         }
+     //       $(".fa-spinner").hide();
+     //      $(".sessionadd").removeAttr("disabled");
             console.log(data); // display response from the PHP script, if any
         }
      });

@@ -1,3 +1,11 @@
+<?php
+define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
+define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
+require 'vendor/autoload.php';
+use Firebase\Firebase;
+use Firebase\Auth\TokenGenerator;
+ ?>
+
 <!doctype html>
 <html>
 <head>
@@ -9,7 +17,36 @@
  <link rel="stylesheet" href="css/reg.css" type="text/css" >
   <link rel="stylesheet" href="css/footercss.css" type="text/css" >
 <link href="css/whytodive.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css"> -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="css/dashheader.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+<script src="js/credential.js"></script>
+<script>
+    $(document).ready(function(){
+
+    var user=window.localStorage.getItem('user');
+    if(user!=null)
+    {
+    //alert(user);
+      $( "#result" ).load( "dashbordHeader.php", function() {
+        //alert( "Load was performed." );
+
+        $(".page-loader-wrapper").fadeOut();
+      });
+        
+    }
+    else{
+        $( "#result" ).load( "header.php", function() {
+        //alert( "Load was performed1 ." );
+        $(".page-loader-wrapper").fadeOut();
+      });
+      
+    }
+  });
+
+  </script>
 </head>
 <style type="text/css">
 	
@@ -36,8 +73,8 @@ button:focus{outline: none;}
 
 <!--HEADER-->
 	
-<?php include 'header.php'; ?>
-
+<?php //include 'header.php'; ?>
+<div id="result"></div>
 <!--SLIDER-->
 	
 <div class="container-fluid slider-bg">
@@ -295,7 +332,7 @@ button:focus{outline: none;}
 
 
 
-<script src="js/jquery.js"></script>
+<!-- <script src="js/jquery.js"></script> -->
 <script src="js/bootstrap.bundle.min.js"></script>
 
 </body>

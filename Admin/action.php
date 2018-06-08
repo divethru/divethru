@@ -31,6 +31,11 @@ $target_dir = "uploads/profile_image/";
 //$target_file = $target_dir . strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["subcat"]["name"]))));
 $target_file = $target_dir . str_replace(array('(',')'),'',strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["userprofile"]["name"])))));
 
+}else if(!empty($_FILES["quote"]["name"])){
+$target_dir = "uploads/quote/";	
+//$target_file = $target_dir . strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["subcat"]["name"]))));
+$target_file = $target_dir . str_replace(array('(',')'),'',strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["quote"]["name"])))));
+
 }
 //echo $target_file;
 
@@ -46,6 +51,8 @@ $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 		$check = getimagesize($_FILES["bundle"]["tmp_name"]);
 	}else if(!empty($_FILES["session"]["name"]) ){
 		$check = getimagesize($_FILES["session"]["tmp_name"]);
+	}else if(!empty($_FILES["quote"]["name"]) ){
+		$check = getimagesize($_FILES["quote"]["tmp_name"]);
 	}else if(!empty($_FILES["meditation"]["name"]) ){
 		$check = $_FILES["meditation"]["size"];
 	}
@@ -76,6 +83,9 @@ if($_FILES["cat"]["size"] > 500000 ){
 		 echo "Sorry, your file is too large.";
     $uploadOk = 0;
 	}else if($_FILES["session"]["size"] > 500000 ){
+	 echo "Sorry, your file is too large.";
+    $uploadOk = 0;
+	}else if($_FILES["quote"]["size"] > 500000 ){
 	 echo "Sorry, your file is too large.";
     $uploadOk = 0;
 	}
@@ -119,6 +129,14 @@ if ($uploadOk == 0) {
 		if (move_uploaded_file($_FILES["session"]["tmp_name"], $target_file)) {
 			//echo $target_dir.strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["session"]["name"]))));
 			echo $target_dir.str_replace(array('(',')'),'',strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["session"]["name"])))));
+		} else {
+			echo "Sorry, there was an error uploading your file.";
+		}
+	}else if(!empty($_FILES["quote"]["name"]) ){
+		
+		if (move_uploaded_file($_FILES["quote"]["tmp_name"], $target_file)) {
+			//echo $target_dir.strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["session"]["name"]))));
+			echo $target_dir.str_replace(array('(',')'),'',strtolower(str_replace("-","",str_replace(" ","",basename( $_FILES["quote"]["name"])))));
 		} else {
 			echo "Sorry, there was an error uploading your file.";
 		}

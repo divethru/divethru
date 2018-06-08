@@ -19,7 +19,6 @@
     <script type="text/javascript" src="js/playerjs/mod.csstransforms.min.js"></script>
     <script type="text/javascript" src="js/playerjs/circle.player.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
-
 <script>
   // Initialize Firebase
   var config = {
@@ -82,7 +81,7 @@ body {font-family: roboto; margin:0}
 </style>
 <script type="text/javascript">
     $(document).ready(function(){
-      window.history.forward(1);
+/*      window.history.forward(1);*/
     var user = JSON.parse(window.localStorage.getItem('user'));
 
    console.log(user.sessionHalted);
@@ -91,6 +90,7 @@ body {font-family: roboto; margin:0}
     window.session_id="" ;
     window.cat_id = "";
     window.subcat_id = "";
+    window.status = "true";
     var data ;
       /*
        * Instance CirclePlayer inside jQuery doc ready
@@ -122,16 +122,19 @@ body {font-family: roboto; margin:0}
       });
 if(window.localStorage.getItem('cat') == 'Deep Dive' && !window.localStorage.getItem("Dname")){
   //$("#OnloadModalTitle").html(window.localStorage.getItem('prevcat')); 
+   // alert(1);
   $("#OnloadModalTitle").html(window.localStorage.getItem('cat'));
   $(".timeslot").show();
   var bundle = window.localStorage.getItem("bundle");
   $(".txtintro").html(bundle);    
   var s = JSON.parse(window.localStorage.getItem("session"));
+     window.localStorage.setItem("SESSIONDATA",JSON.stringify(s));
   console.log(s);
+  window.localStorage.setItem("session_img",s.session_img);
     $(".bg").css('background', 'url('+s.session_img+') ');
       $(".conv").html(s.session_name);
       console.log(s.meditation_audio[0]);
-     window.bundle_id = s.budle_id;
+     window.bundle_id = window.localStorage.getItem("bid");
      window.session_id = s.session_id;
      window.subcat_id = window.localStorage.getItem("subcategory_id");
         var ts = '';
@@ -160,6 +163,7 @@ if(window.localStorage.getItem('cat') == 'Deep Dive' && !window.localStorage.get
       });
   
 }else if(window.localStorage.getItem('cat') == 'Quick Dive' && !window.localStorage.getItem("Dname")){
+    //alert(2);
   //$("#OnloadModalTitle").html(window.localStorage.getItem('prevcat')); 
   $("#OnloadModalTitle").html(window.localStorage.getItem('cat'));
   var cat = window.localStorage.getItem("subcategory");
@@ -167,6 +171,8 @@ if(window.localStorage.getItem('cat') == 'Deep Dive' && !window.localStorage.get
   $(".timeslot").show();
   var s = JSON.parse(window.localStorage.getItem("session"));
   console.log(s);
+   window.localStorage.setItem("SESSIONDATA",JSON.stringify(s));
+    window.localStorage.setItem("session_img",s.session_img);
     $(".bg").css('background', 'url('+s.session_img+') ');
       $(".conv").html(s.session_name);
       console.log(s);
@@ -201,6 +207,7 @@ if(window.localStorage.getItem('cat') == 'Deep Dive' && !window.localStorage.get
       });
   
 }else if(window.localStorage.getItem('cat') == 'Open Dive' && !window.localStorage.getItem("Dname")){
+   // alert(3);
  // $("#OnloadModalTitle").html(window.localStorage.getItem('prevcat'));
  $("#OnloadModalTitle").html(window.localStorage.getItem('cat')); 
   $(".timeslot").show();
@@ -221,7 +228,7 @@ for(time in storedNames.meditation_audio_time){
 $(".timeslot").html(ts);
 
   if(window.localStorage.getItem("Snm")){
-            
+             // alert(4);
       //  for (i in storedNames)
       //  {
          // var conversation = 1;
@@ -233,11 +240,13 @@ $(".timeslot").html(ts);
                  window.bundle_id = window.localStorage.getItem("bid");
                  window.cat_id = window.localStorage.getItem("cid");
                    window.session_id = storedNames.session_id;
+                  window.localStorage.setItem("SESSIONDATA",JSON.stringify(storedNames));
               }
             //if(conversation == 1){
              $(".session").html(storedNames.session_name);
                $(".conv").html(storedNames.session_name);
                $(".sdesc").html(storedNames.session_description);
+                 window.localStorage.setItem("session_img",storedNames.session_img);
               $(".bg").css('background', 'url('+storedNames.session_img+') '); /*Dynamic image from database*/
               console.log(storedNames.meditation_audio[0]);
               //$('audio').attr('src',storedNames[i][j].meditation_audio[0])[0];
@@ -256,6 +265,7 @@ $(".timeslot").html(ts);
 
   }
 }else if(window.localStorage.getItem('cat') && !window.localStorage.getItem("Dname")){
+    //alert(5);
   $("#OnloadModalTitle").html(window.localStorage.getItem('cat')); 
   $(".timeslot").hide();
    $(".txtintro").html(window.localStorage.getItem('cat'));
@@ -279,6 +289,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
              $(".session").html(storedNames.session_name);
                $(".conv").html(storedNames.session_name);
                $(".sdesc").html(storedNames.session_description);
+                 window.localStorage.setItem("session_img",storedNames.session_img);
               $(".bg").css('background', 'url('+storedNames.session_img+') '); /*Dynamic image from database*/
               console.log(storedNames.meditation_audio[0]);
               //$('audio').attr('src',storedNames[i][j].meditation_audio[0])[0];
@@ -297,14 +308,22 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
         //}
 
   }else{
-  	     window.cat_id = window.localStorage.getItem("cid");
+      //alert(6);
+         window.cat_id = window.localStorage.getItem("cid");
     var storedNames = JSON.parse(window.localStorage.getItem("session"));
+    if(window.localStorage.getItem('content') >= 10){
+      var c = (window.localStorage.getItem('content')-1);
+     // alert(c);
+    }else{
+      var c = window.localStorage.getItem('content');
+    }
         for (i in storedNames)
         {
           var conversation = 1;
            for(j in storedNames[i]){
 
-            if(conversation == window.localStorage.getItem('content')){
+            if(conversation == c){
+               window.localStorage.setItem("SESSIONDATA",JSON.stringify(storedNames[i][j]));
         console.log(conversation+'=='+ window.localStorage.getItem('content')+'='+storedNames[i][j].session_name);
             //if(conversation == 1){
              //if(window.localStorage.getItem("cid")){
@@ -314,6 +333,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
 
               $(".conv").html(storedNames[i][j].session_name);
               $(".sdesc").html(storedNames[i][j].session_description);
+                window.localStorage.setItem("session_img",storedNames[i][j].session_img);
               $(".bg").css('background', 'url('+storedNames[i][j].session_img+') '); /*Dynamic image from database*/
               console.log(storedNames[i][j].meditation_audio[0]);
               //$('audio').attr('src',storedNames[i][j].meditation_audio[0])[0];
@@ -342,16 +362,37 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
         }
   }
 }else if(window.localStorage.getItem("Dname")){
+  
 $("#OnloadModalTitle").html(window.localStorage.getItem('cat2')); 
   //$(".timeslot").hide();
-   $(".txtintro").html(window.localStorage.getItem('cat2'));
-
+   $(".txtintro").html(window.localStorage.getItem('Dname'));
+if(window.localStorage.getItem("TYPE") == "Session"){
+   window.localStorage.setItem('bundle',"");
+  window.cat_id = window.localStorage.getItem("cid");
+  window.subcat_id = "";
+}else if(window.localStorage.getItem("TYPE") == "SubCategory"){
+   window.localStorage.setItem('bundle',"");
+     window.subcat_id = window.localStorage.getItem("subcategory_id");
+}else if(window.localStorage.getItem("TYPE") == "S&B"){
+  window.localStorage.setItem('bundle',window.localStorage.getItem("Dname"));
+       window.subcat_id = window.localStorage.getItem("subcategory_id");
+       window.bundle_id = window.localStorage.getItem("currentID");
+}
 var SS = JSON.parse(window.localStorage.getItem("session2"));
+              conversation = 1;
+              var chk_conv;
  for (i in SS){
            for(j in SS[i]){
-              conversation = 1;
-
-              if(conversation == window.localStorage.getItem('content')){
+              if(window.localStorage.getItem('content')==window.localStorage.getItem('Slen'))
+              {
+                  chk_conv=window.localStorage.getItem('content');
+              }
+              else{
+                chk_conv=parseInt(window.localStorage.getItem('content'))+1;
+              }
+                  
+              if(conversation == chk_conv){
+//alert(conversation+"=="+chk_conv+"="+SS[i][j].session_name);
                 window.session_id = SS[i][j].session_id;
               if(SS[i][j].meditation_audio_time.length > 2){
                 $(".timeslot").show();
@@ -368,11 +409,12 @@ var SS = JSON.parse(window.localStorage.getItem("session2"));
                     l++;
                   }
               }
-
+              window.session_id = SS[i][j].session_id;
               $(".timeslot").html(ts);
                   $(".session").html(SS[i][j].session_name);
                $(".conv").html(SS[i][j].session_name);
                $(".sdesc").html(SS[i][j].session_description);
+                 window.localStorage.setItem("session_img",SS[i][j].session_img);
               $(".bg").css('background', 'url('+SS[i][j].session_img+') '); /*Dynamic image from database*/
               console.log(SS[i][j].meditation_audio[0]);
               //$('audio').attr('src',storedNames[i][j].meditation_audio[0])[0];
@@ -385,21 +427,30 @@ var SS = JSON.parse(window.localStorage.getItem("session2"));
                 cssSelectorAncestor: "#cp_container_2"
                 });
               }
-
+              conversation++;
+             // alert(conversation++);
           }     
  }
 }else{
-	     window.cat_id = window.localStorage.getItem("cid");
+  //alert(8);
+       window.cat_id = window.localStorage.getItem("cid");
   $(".timeslot").hide();
-     $(".txtintro").html(window.localStorage.getItem('cat'));
-
+     //$(".txtintro").html(window.localStorage.getItem('cat'));
+     $(".txtintro").html("10 Day Intro Program");
+if(user.last_free_conversation_id == 10){
+      var c = (window.localStorage.getItem('content')-1);
+     // alert(c);
+    }else{
+      var c = window.localStorage.getItem('content');
+    }
 var storedNames = JSON.parse(window.localStorage.getItem("session"));
         for (i in storedNames)
         {
           var conversation = 1;
            for(j in storedNames[i]){
-
-            if(conversation == window.localStorage.getItem('content')){
+            if(conversation == c){
+              window.localStorage.setItem("SESSIONDATA",JSON.stringify(storedNames[i][j]));
+//alert(conversation+"=="+window.localStorage.getItem('content'));
         console.log(conversation+'=='+ window.localStorage.getItem('content')+'='+storedNames[i][j].session_name);
             //if(conversation == 1){
              //if(window.localStorage.getItem("cid")){
@@ -409,6 +460,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
 
               $(".conv").html(storedNames[i][j].session_name);
               $(".sdesc").html(storedNames[i][j].session_description);
+                window.localStorage.setItem("session_img",storedNames[i][j].session_img);
               $(".bg").css('background', 'url('+storedNames[i][j].session_img+') '); /*Dynamic image from database*/
               console.log(storedNames[i][j].meditation_audio[0]);
               //$('audio').attr('src',storedNames[i][j].meditation_audio[0])[0];
@@ -429,7 +481,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
   }
 
 
-
+// alert(window.session_id);
 
   // Category name on load modal
   /*if(window.localStorage.getItem('cat') || window.localStorage.getItem('cat') != ""){
@@ -443,34 +495,33 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
     alert("done");
    }*/
 
-
-    if((window.localStorage.getItem("cat") != "10 Day Intro Program" || $(".txtintro").html()  != "10 Day Intro Program") && (user.sessionHalted )){
-      $.map(user.sessionHalted, function(value, index) {
+ if(( $(".txtintro").html()  == "10 Day Intro Program") && (user.halted != 0.0 || user.halted != 0  || user.halted != '')){
+        $.map(user.sessionHalted, function(value, index) {
          var vid = document.getElementById("jp_audio_0");
                 console.log(index+"=="+window.session_id);
             if(index == window.session_id){
-            	//console.log(value);
-            	//alert(value.slot);
+              //console.log(value);
+              //alert(value.slot);
                 
                 if(value.halted != 0.0 || value.halted != 0){
-                	//alert($(".box1").data("index")+"=="+value.slot);
-                   if(value.slot != undefined){
-                		if($(".box1").data("index") == value.slot){
-                  		//	vid.currentTime = value.halted; //time is in minute to second (time*60)
-                		  $('#memberModal').modal("show");  
+                  //alert($(".box1").data("index")+"=="+value.slot);
+                   //if(value.slot != undefined){
+                    //if($(".box1").data("index") == value.slot){
+                      //  vid.currentTime = value.halted; //time is in minute to second (time*60)
+                      $('#memberModal').modal("show");  
 
-                		}
-                	}
+                   // }
+                  //}
 
                 }
                 $(".continue").click(function(){
                   //alert(5);
-                  if(value.slot != undefined){
-                		if($(".box1").data("index") == value.slot){
-                  			vid.currentTime = value.halted; //time is in minute to second (time*60)
-                			
-                		}
-                	}
+                  //if(value.slot != undefined){
+                    //if($(".box1").data("index") == value.slot){
+                        vid.currentTime = value.halted; //time is in minute to second (time*60)
+                      
+                    //}
+                  //}
                   $('#memberModal').modal("hide");
                 });
 
@@ -481,66 +532,188 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
                 });
               }
             });
+  }else{
+    var vid = document.getElementById("jp_audio_0");
+    vid.currentTime = 0; //time is in minute to second (time*60)
+  }
+  if( $(".txtintro").html()  != "10 Day Intro Program" && (user.sessionHalted )){
+      $.map(user.sessionHalted, function(value, index) {
+         var vid = document.getElementById("jp_audio_0");
+                console.log(index+"=="+window.session_id);
+            if(index == window.session_id){
+              //console.log(value);
+              //alert(value.slot);
+                
+                if(value.halted != 0.0 || value.halted != 0){
+                  //alert($(".box1").data("index")+"=="+value.slot);
+                   if(value.slot != undefined){
+                    if($(".box1").data("index") == value.slot && window.status == "true"){
+                      //  vid.currentTime = value.halted; //time is in minute to second (time*60)
+                      $('#memberModal').modal("show");  
+
+                    }
+                  }
+
+                }
+                $(".continue").click(function(){
+                  //alert(5);
+                  if(value.slot != undefined){
+                    if($(".box1").data("index") == value.slot ){
+                        vid.currentTime = value.halted; //time is in minute to second (time*60)
+                      
+                    }
+                  }
+                  $('#memberModal').modal("hide");
+                });
+
+                // Code for begin with initial 
+                $(".start").click(function(){
+                  vid.currentTime = 0; //time is in minute to second (time*60)
+                   hdata = {"halted":0.0,"slot":$(".box1").data("index")};
+                        firebase.database().ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata);
+                  $('#memberModal').modal("hide");
+                });
+              }
+            });
     }else{
          var vid = document.getElementById("jp_audio_0");
     vid.currentTime = 0; //time is in minute to second (time*60)
     }
 //alert($(".txtintro").html());
     /* Play auio on halted time Start*/
-    if((window.localStorage.getItem("cat") == "10 Day Intro Program" || $(".txtintro").html()  == "10 Day Intro Program") && (user.halted != 0.0 || user.halted != 0  || user.halted != '')){
-      $('#memberModal').modal("show");
-    var vid = document.getElementById("jp_audio_0");
-    // code for Continue from where you stop
-    $(".continue").click(function(){
-      //  alert(user.halted*60);
-      vid.currentTime = user.halted; //time is in minute to second (time*60)
-      $('#memberModal').modal("hide");
-    });
-
-    // Code for begin with initial 
-    $(".start").click(function(){
-      vid.currentTime = 0; //time is in minute to second (time*60)
-      $('#memberModal').modal("hide");
-    });
-  }else{
-    var vid = document.getElementById("jp_audio_0");
-    vid.currentTime = 0; //time is in minute to second (time*60)
-  }
+   
     /* Play audio on halted End*/
     
+
+ $("audio").bind('play',function(){
+               // $(".box").off('click');
+       });
     /* pause event Start*/
     
     $("audio").bind('pause',function(){
-  //    alert(window.bundle_id);
-  	var slot = '';
-
-      	$(".box").each(function(index){
-    			if($(this).hasClass("box1")){
-    				console.log("test"+$(this).attr('id'));
-    				slot = $(this).attr('id');
-    			}
-    	});
-  	
+    //  alert(window.bundle_id);
+     var slot = '';
+window.status = "false";
+        $(".box").each(function(index){
+          if($(this).hasClass("box1")){
+            console.log("test"+$(this).attr('id'));
+            slot = $(this).attr('id');
+          }
+      });
+    
 
       var vid = document.getElementById("jp_audio_0");
       const currentTime = vid.currentTime;
+    //  alert(vid.currentTime);
      // const min = currentTime/60;
       console.log("c"+currentTime+user.user_id);
       var db = firebase.database();
       if(window.localStorage.getItem("cat") == "10 Day Intro Program"){
         db.ref("Users/"+user.user_id+"/halted").set(currentTime); // Update lalted time on pause
       }else if(window.localStorage.getItem("cat") != "10 Day Intro Program"){
-      	if($(".timeslot").css('display') != 'none'){
+        if($(".timeslot").css('display') != 'none'){
           hdata = {"halted":currentTime,"slot":$(".box1").data("index")};
-  		}else{
+      }else{
           hdata = {"halted":currentTime};
-  		}
+      }
        db.ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata); // Update lalted time on pause
       }
+
+      $("body").on("click",".box",function(){
+            $(".box").removeClass('box1');
+  $(this).addClass('box1');
+ // var vid = document.getElementById("jp_audio_0");
+ // vid.pause();
+  // var user = JSON.parse(window.localStorage.getItem('user'));
+  // hdata = {"halted":0.0,"slot":$(".box1").data("index")};
+  //                       firebase.database().ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata);
+//alert(vid.currentTime);
+  //$('.cp-pause').css("display","none");
+  //$('.cp-play').css("display","inherit");
+      var vid = document.getElementById("jp_audio_0");
+      if(window.localStorage.getItem('cat') != '10 Day Intro Program'){
+      var s = JSON.parse(window.localStorage.getItem("session"));
+
+      for(t in s.meditation_audio_time){
+        if(s.meditation_audio_time[t] == $(this).attr('id')){
+
+          vid.src = s.meditation_audio[t];
+
+            vid.currentTime = 0;
+             window.status = "true";
+           if (vid.paused == false) {
+            vid.src = s.meditation_audio[t];
+          }
+
+        console.log(s.meditation_audio[t]);
+        }
+
+      }
+      //alert($(this).attr('id'));
+
+    }
+
+         if((window.localStorage.getItem("cat") != "10 Day Intro Program" || $(".txtintro").html()  != "10 Day Intro Program") && (user.sessionHalted ) ){
+        firebase.database().ref("Users/"+user.user_id+"/sessionHalted").on("value", function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+            // key
+            var key = childSnapshot.key;
+            // value, could be object
+            var childData = childSnapshot.val();
+//alert(key);
+            if(key == window.session_id){
+             // alert("open Dive");
+             // alert("halted"+childData.halted);
+            //  alert("slot"+childData.slot);
+              
+          if(childData.halted != 0.0 || childData.halted != 0){
+                          //alert($(".box1").data("index")+"=="+value.slot);
+                           if(childData.slot != undefined ){
+                           // alert("Inner" + window.status);
+                            if($(".box1").data("index") == childData.slot && window.status == "true"){
+                              //  vid.currentTime = value.halted; //time is in minute to second (time*60)
+                              $('#memberModal').modal("show");  
+
+                            }
+                          }
+
+                        }
+                        $(".continue").click(function(){
+                          //alert(5);
+                          if(childData.slot != undefined ){
+                            if($(".box1").data("index") == childData.slot){
+                                vid.currentTime = childData.halted; //time is in minute to second (time*60)
+                              
+                            }
+                            else{
+                              //vid.currentTime = 0 ;
+                            }
+                          }
+                          $('#memberModal').modal("hide");
+                        });
+
+                        // Code for begin with initial 
+                        $(".start").click(function(){
+                          vid.currentTime = 0; //time is in minute to second (time*60)
+                          $('#memberModal').modal("hide");
+                        });
+              
+            }
+          });
+        });
+            }else{
+                 var vid = document.getElementById("jp_audio_0");
+            vid.currentTime = 0; //time is in minute to second (time*60)
+            }
+
+    });
+
+
+
     }); 
     /*Pause Event end*/
     
-    
+      
     /* Audio ended event Start*/
     
     $("audio").bind('ended',function(){
@@ -563,6 +736,15 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
     $("audio").bind('timeupdate',function(){
 
       var vid = document.getElementById("jp_audio_0");
+      if (vid.paused == false) {
+      	$(".box").off("click");
+        //vid.pause();
+        //alert('music paused LINE NO:262 player.php');
+      } else {
+      	$(".box").on("click");
+       // vid.play();
+       // alert('music playing LINE NO:265 player.php');
+      }
      const currentTime = Math.floor(vid.currentTime);
             const duration = Math.floor(vid.duration);
       //var min = currentTime/60;
@@ -614,8 +796,8 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
                 </div>
                 <div class="cp-circle-control"></div>
                 <ul class="cp-controls">
-                  <li><a class="cp-play"  tabindex="1">play</a></li>
-                  <li><a class="cp-pause" style="margin-left: -4px;" style="display:none;" tabindex="1">pause</a></li>
+                  <li><a class="cp-play"  tabindex="1" style="display:none;">play</a></li>
+                  <li><a class="cp-pause" style="margin-left: -4px;display:none;" tabindex="1">pause</a></li>
                 </ul>
               </div>
         </div>
@@ -624,8 +806,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
            <!--  <h6 class="conv1">Tap anywhere to play</h6>---->
            </div>
     </div>
-
-     
+ 
        <!--Endplayer modal Start --> 
   <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -729,21 +910,46 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
     <script type="text/javascript" src="js/dashboard.js"></script>
     <script type="text/javascript" src="js/jquery.redirect.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
-
+<script src="js/afterplay.js"></script>
+<script src="js/color-thief.js"></script>
 <script>
    function play(){
-          var vid = document.getElementById("jp_audio_0");
-      if (vid.paused == false) {
-        vid.pause();
-        console.log('music paused LINE NO:262 player.php');
-      } else {
-        vid.play();
-        console.log('music playing LINE NO:265 player.php');
-      }
       
     }
-
     $(document).ready(function () {
+      $(".bgicon").click(function(){
+          var vid = document.getElementById("jp_audio_0");
+      		vid.pause();
+      });
+
+
+		window.h = [];
+		window.h2 = [];
+	firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
+			snapshot.forEach(function(childSnapshot) {
+				// key
+				var key = childSnapshot.key;
+				// value, could be object
+				var childData = childSnapshot.val();
+
+					if(key == "streak"){
+						$.map(childData, function(value, index) {
+							$.map(value, function(value2, index2) {
+								$.map(value2, function(value3, index3) {
+									window.h.push(index3);
+									window.h2.push(index3);
+									console.log(index3);	
+								});
+							});
+						});
+					}
+
+			});
+			window.localStorage.setItem("SessionHistory2",JSON.stringify(window.h));
+			window.localStorage.setItem("SessionHistory3",JSON.stringify(window.h2));
+		});
+			  
+
 
     //  $('#exampleModalCenter').on('shown', function(){
     //alert("I want this to appear after the modal has opened!");
@@ -764,6 +970,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
           
            if(t == "10 Day Intro Program"){
            var user = JSON.parse(window.localStorage.getItem('user'));
+
           var db = firebase.database();
               db.ref("Users/"+user.user_id+"/halted").set(vid.currentTime); // Update lalted time on pause
             //  alert(vid.currentTime);
@@ -776,7 +983,7 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
 
          $.redirect(referrer,{"bundle":id},"POST",null,null,true);
          }else{
-         	
+          
          window.setTimeout(function() {
                             
                       history.go(-1);
@@ -792,15 +999,27 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
             $(".box").removeClass('box1');
   $(this).addClass('box1');
   var vid = document.getElementById("jp_audio_0");
+  vid.pause();
+  // var user = JSON.parse(window.localStorage.getItem('user'));
+  // hdata = {"halted":0.0,"slot":$(".box1").data("index")};
+  //                       firebase.database().ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata);
+//alert(vid.currentTime);
+  $('.cp-pause').css("display","none");
+  $('.cp-play').css("display","inherit");
+
       if(window.localStorage.getItem('cat') != '10 Day Intro Program'){
       var s = JSON.parse(window.localStorage.getItem("session"));
       for(t in s.meditation_audio_time){
         if(s.meditation_audio_time[t] == $(this).attr('id')){
 
           vid.src = s.meditation_audio[t];
+
+            vid.currentTime = 0;
+             window.status = "true";
            if (vid.paused == false) {
             vid.src = s.meditation_audio[t];
           }
+//alert(vid.currentTime);
         console.log(s.meditation_audio[t]);
         }
 
@@ -808,6 +1027,60 @@ var storedNames = JSON.parse(window.localStorage.getItem("session"));
       //alert($(this).attr('id'));
 
     }
+
+         if((window.localStorage.getItem("cat") != "10 Day Intro Program" || $(".txtintro").html()  != "10 Day Intro Program") && (user.sessionHalted ) ){
+        firebase.database().ref("Users/"+user.user_id+"/sessionHalted").on("value", function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+            // key
+            var key = childSnapshot.key;
+            // value, could be object
+            var childData = childSnapshot.val();
+//alert(key);
+            if(key == window.session_id){
+             // alert("open Dive");
+             // alert("halted"+childData.halted);
+            //  alert("slot"+childData.slot);
+              
+          if(childData.halted != 0.0 || childData.halted != 0){
+                          //alert($(".box1").data("index")+"=="+value.slot);
+                           if(childData.slot != undefined ){
+                           // alert("Inner" + window.status);
+                            if($(".box1").data("index") == childData.slot && window.status == "true"){
+                              //  vid.currentTime = value.halted; //time is in minute to second (time*60)
+                              $('#memberModal').modal("show");  
+
+                            }
+                          }
+
+                        }
+                        $(".continue").click(function(){
+                          //alert(5);
+                          if(childData.slot != undefined ){
+                            if($(".box1").data("index") == childData.slot){
+                                vid.currentTime = childData.halted; //time is in minute to second (time*60)
+                              
+                            }
+                            else{
+                              //vid.currentTime = 0 ;
+                            }
+                          }
+                          $('#memberModal').modal("hide");
+                        });
+
+                        // Code for begin with initial 
+                        $(".start").click(function(){
+                          vid.currentTime = 0; //time is in minute to second (time*60)
+                          $('#memberModal').modal("hide");
+                        });
+              
+            }
+          });
+        });
+            }else{
+                 var vid = document.getElementById("jp_audio_0");
+            vid.currentTime = 0; //time is in minute to second (time*60)
+            }
+
     });
 
  
@@ -863,12 +1136,35 @@ function showSlides(n) {
 }*/
     $(document).ready(function () {
 
-    	// $(".box").each(function(index){
-    	// 		if($(this).hasClass("box1")){
-    	// 			alert($(this).attr('id'));
-    	// 		}
-    	// });
-    	
+
+      var img = window.localStorage.getItem('session_img');
+      // than create an image elm, the sizes are needed. 360x360 on this case
+      var image = new Image(360, 360);
+
+
+      image.onload = function(){
+          // act only after image load
+          console.log(image);
+
+          // than colorThief and get the color value 
+          var colorThief = new ColorThief();          
+          var color = colorThief.getColor(image);
+          console.log(color);
+       // $(".part1").css('background-color', 'rgb('+color+') ');
+       // $(".part2 > i").css('color', 'rgb('+color+') ');
+       window.localStorage.setItem("colorcode",color);
+        //alert(color);
+      };
+      image.crossOrigin = "Anonymous";
+      image.src = img;
+
+
+      // $(".box").each(function(index){
+      //    if($(this).hasClass("box1")){
+      //      alert($(this).attr('id'));
+      //    }
+      // });
+      
 
              console.log(window.subcat_id);
              console.log(window.cat_id);
@@ -880,7 +1176,7 @@ function showSlides(n) {
             window.C_session_id = ""; 
             console.log(user.currentStreak);
 
-
+//alert(window.bundle_id);
 
 $("#message-text").keyup(function(){
   
@@ -992,8 +1288,15 @@ $("#message-text").keyup(function(){
              }  
              else{  
 
-                    
+              /*if(user.last_free_conversation_id == 10){
+
+              db.ref("Users/"+user.user_id+"/completed_conversation").set(user.completed_conversation);
+              }else{
+                
               db.ref("Users/"+user.user_id+"/completed_conversation").set(user.completed_conversation + 1);
+              }*/
+              db.ref("Users/"+user.user_id+"/completed_conversation").set(user.completed_conversation + 1);
+                    
             if(user.membership_type != 'Free'){
               if(((user.last_free_conversation_id)!=10 && !window.localStorage.getItem('cat')) || ((user.last_free_conversation_id)!=10 && window.localStorage.getItem('cat') == '10 Day Intro Program')){
         
@@ -1013,33 +1316,52 @@ $("#message-text").keyup(function(){
      }
      var slot = '';
 
-      	$(".box").each(function(index){
-    			if($(this).hasClass("box1")){
-    				console.log("test"+$(this).attr('id'));
-    				slot = $(this).attr('id');
-    			}
-    	});
+            slot = $(".box1").attr('id');
+        $(".box").each(function(index){
+          if($(this).hasClass("box1")){
+            console.log("test"+$(this).attr('id'));
+          }
+      });
       db.ref("Users/"+user.user_id+"/halted").set(0.0); // Update lalted time on pause
       if(window.localStorage.getItem("cat")!="10 Day Intro Program" ){ 
          if($(".timeslot").css('display') != 'none'){
           hdata = {"halted":0.0,"slot":slot};
-  		}else{
+      }else{
           hdata = {"halted":0.0};
-  		}
+      }
         db.ref("Users/"+user.user_id+"/sessionHalted").child(window.session_id).set(hdata); // Update lalted time on pause 
       }
             db.ref("Users/"+user.user_id+"/total_time_divethru").set(user.total_time_divethru + min);
-          if(window.localStorage.getItem("bid") != ''){
-
-			window.bundle_id = window.localStorage.getItem("bid");
+         // alert("BEFORE"+window.bundle_id);
+          if(window.localStorage.getItem("bid") != '' && window.localStorage.getItem("bid")){
+//alert("BID"+window.localStorage.getItem("bid"));
+      window.bundle_id = window.localStorage.getItem("bid");
           }
         var cat = window.cat_id;
         var subcat = window.subcat_id;
         var b = window.bundle_id;
         var s = window.session_id;
-         var ctnm = localStorage.getItem('cat');
+        if(!window.localStorage.getItem("cat")){
+       //  var ctnm = localStorage.getItem('cat2');
+         var ctnm = "10 Day";
+         var CTNM = $(".txtintro").html();
+         //var CTNM = "10 Day Intro Program";
+        }else{
+          
+         var CTNM = localStorage.getItem('cat');
+        }
          var subscrb_type = localStorage.getItem('subcription_type');
-
+      var CN = '';
+       //  if(window.localStorage.getItem("streak")){
+         //   CN = window.localStorage.getItem("streak");
+         //}else{
+          if(window.localStorage.getItem("Slen") == window.localStorage.getItem('content')){
+            CN = parseInt(window.localStorage.getItem("content"));
+          }else{
+            CN = parseInt(window.localStorage.getItem("content")) + 1;
+          }
+          
+         //}
 
         // alert(subscrb_type);
         /* check for streak variable there or not */
@@ -1047,20 +1369,28 @@ $("#message-text").keyup(function(){
 
       //if(!user.currentStreak && subscrb_type=="Paid"){
       if(!user.currentStreak ){
-//alert(ctnm);
 
 
-          if((window.bundle_id != "" && window.subcat_id == "") || (window.bundle_id != "" && window.subcat_id != "")){
-                  var data2={Bundle:{[b]:{Session:{[s]:{session:s}}}}};
+
+          if((window.bundle_id != "" && window.subcat_id == "")){
+           // alert("AFTER"+window.bundle_id);
+                  var data2={Bundle:{[b]:{Session:{[s]:{session:s}},streak:CN}}};
                 }else if(window.subcat_id != "" && window.bundle_id == ""){
-                  var data2={SubCategory:{[subcat]:{Session:{[s]:{session:s}}}}};
+                  var data2={SubCategory:{[subcat]:{Session:{[s]:{session:s}},streak:CN}}};
                 }else if(window.subcat_id != "" && window.bundle_id != ""){
-                  var data2={SubCategory:{[subcat]:{Bundle:{[b]:{Session:{[s]:{session:s}}}}}}};
+                  var data2={SubCategory:{[subcat]:{Bundle:{[b]:{Session:{[s]:{session:s}},streak:CN}}}}};
                 }else if(window.subcat_id == "" && window.bundle_id == ""){
-                  var data2={Session:{[s]:{session:s}}};
+                  var data2={Session:{[s]:{session:s}},streak:CN};
                 }
             //if(subscrb_type=="Paid"){
-                    db.ref("Users/"+user.user_id+"/currentStreak/"+ctnm).set(data2);
+            //	if(ctnm == "10 Day"){
+              //      db.ref("Users/"+user.user_id+"/currentStreak/10 Day Intro Program").set(data2);
+
+            	//}else{
+
+                    db.ref("Users/"+user.user_id+"/currentStreak/"+CTNM).set(data2);
+            	//}
+            	
             // }
      // }else if(user.currentStreak && subscrb_type=="Paid"){
       }else if(user.currentStreak ){
@@ -1069,7 +1399,7 @@ $("#message-text").keyup(function(){
 
 
          $.map(user.currentStreak, function(value, index) {
-            if(ctnm == index){
+            if(CTNM == index){
                 $.map(value, function(value2, index2) {
                   if(index2 == "SubCategory" ){
                     $.map(value2, function(value3, index3) {
@@ -1081,9 +1411,10 @@ $("#message-text").keyup(function(){
                              // alert(index4);
                                      var data2={session:s};
                                       db.ref("Users/"+user.user_id+"/currentStreak/"+index+"/SubCategory/"+index3+"/Bundle/"+index5+"/Session/").child(s).update(data2);
+                                      db.ref("Users/"+user.user_id+"/currentStreak/"+index+"/SubCategory/"+index3+"/Bundle/"+index5).update({"streak":CN});
                                      
                                   }else if(index5 != window.bundle_id){
-                                      var data2={[b]:{Session:{[s]:{session:s}}}}
+                                      var data2={[b]:{Session:{[s]:{session:s}},streak:CN}}
                                        db.ref("Users/"+user.user_id+"/currentStreak/"+index+"/SubCategory/"+index3).child("Bundle").set(data2);
                                   }
                                 });
@@ -1091,7 +1422,10 @@ $("#message-text").keyup(function(){
                                 $.map(value4, function(value5, index5) {
                                   if(index5 != window.session_id){
                                       var data2={session:s};
+                                      //alert(index);
                                       db.ref("Users/"+user.user_id+"/currentStreak/"+index+"/SubCategory/"+index3+"/Session/").child(s).update(data2);
+
+                                      db.ref("Users/"+user.user_id+"/currentStreak/"+index+"/SubCategory/"+index3).update({"streak":CN});
                                   }
                                 });
 
@@ -1099,13 +1433,12 @@ $("#message-text").keyup(function(){
                          });
                       }else if(index3 != window.subcat_id){
                             if(window.subcat_id != "" && window.bundle_id == ""){
-                              var data2={[subcat]:{Session:{[s]:{session:s}}}};
+                              var data2={[subcat]:{Session:{[s]:{session:s}},streak:CN}};
                             }else if(window.subcat_id != "" && window.bundle_id != ""){
-                              var data2={[subcat]:{Bundle:{[b]:{Session:{[s]:{session:s}}}}}};
+                              var data2={[subcat]:{Bundle:{[b]:{Session:{[s]:{session:s}},streak:CN}}}};
                             }
 
                             db.ref("Users/"+user.user_id+"/currentStreak/"+index).child("SubCategory").set(data2);
-
                       }
                     });
                   }else if(index2 == "Bundle"){
@@ -1116,10 +1449,11 @@ $("#message-text").keyup(function(){
                                   if(index4 != window.session_id){
                                       var data2={session:s};
                                       db.ref("Users/"+user.user_id+"/currentStreak/"+index+"/Bundle/"+index3+"/Session/").child(s).update(data2);
+                                       db.ref("Users/"+user.user_id+"/currentStreak/"+index+"/SubCategory/"+index3).update({"streak":CN});
                                   }
                                });
                           }else if(index3 != window.bundle_id){
-                            var data2={[b]:{Session:{[s]:{session:s}}}};
+                            var data2={[b]:{Session:{[s]:{session:s}},streak:CN}};
                              db.ref("Users/"+user.user_id+"/currentStreak/"+index).child("Bundle").set(data2);
                           }
                     });
@@ -1127,26 +1461,33 @@ $("#message-text").keyup(function(){
                     $.map(value2, function(value3, index3) {
                         if(index3 != window.session_id){
                                var data2={session:s};
+                               //alert(index);
                             db.ref("Users/"+user.user_id+"/currentStreak/"+index+"/Session/").child(s).update(data2);
+                             db.ref("Users/"+user.user_id+"/currentStreak/"+index).update({"streak":CN});
                         }
                     });
                   }
                 });
-            }else if(ctnm != index){
+            }else if(CTNM != index){
 
                 if(window.bundle_id != "" && window.subcat_id == ""){
-                  var data2={Bundle:{[b]:{Session:{[s]:{session:s}}}}};
+                  var data2={Bundle:{[b]:{Session:{[s]:{session:s}},streak:CN}}};
                 }else if(window.subcat_id != "" && window.bundle_id == ""){
-                  var data2={SubCategory:{[subcat]:{Session:{[s]:{session:s}}}}};
+                  var data2={SubCategory:{[subcat]:{Session:{[s]:{session:s}},streak:CN}}};
                 }else if(window.subcat_id != "" && window.bundle_id != ""){
-                  var data2={SubCategory:{[subcat]:{Bundle:{[b]:{Session:{[s]:{session:s}}}}}}};
+                  var data2={SubCategory:{[subcat]:{Bundle:{[b]:{Session:{[s]:{session:s}},streak:CN}}}}};
                 }else if(window.subcat_id == "" && window.bundle_id == ""){
-                  var data2={Session:{[s]:{session:s}}};
+                  var data2={Session:{[s]:{session:s}},streak:CN};
                 }
-
+//alert(index);
                    db.ref("Users/"+user.user_id).child("currentStreak").child(index).remove();
-                   db.ref("Users/"+user.user_id).child("currentStreak").child(ctnm).set(data2);
+                  // if(ctnm == "10 Day"){
 
+                 //  db.ref("Users/"+user.user_id).child("currentStreak").child("10 Day Intro /Program").set(data2);
+                 //  }else{
+
+                   db.ref("Users/"+user.user_id).child("currentStreak").child(CTNM).set(data2);
+                   //}
             }
           });
 
@@ -1173,6 +1514,7 @@ $("#message-text").keyup(function(){
                       var total_time_taken =  min;
               var total_visit =  1;
       $.map(user.streak, function(value, index) {
+
           /* check for same bundle if it is then update */
       //  if(index == window.bundle_id || index == window.subcat_id || index == window.cat_id){
          
@@ -1193,10 +1535,11 @@ $("#message-text").keyup(function(){
 
                  if(window.bundle_id != '' && window.subcat_id == ""){
                 var data = {total_visited:total_visit,total_taken_time:total_time_taken};
-                  //alert(b);
+                //  alert(b);
                    db.ref("Users/"+user.user_id+"/streak").child(b).child("Session").child(s).set(data);
                    return false;
                 }else if(window.subcat_id != "" && window.bundle_id == ""){
+                 // alert(s);
                 var data = {total_visited:total_visit,total_taken_time:total_time_taken};
                  //var data = {Session:{[s]:{total_visited:1,total_taken_time:min}}};
                    db.ref("Users/"+user.user_id+"/streak").child(subcat).child("Session").child(s).set(data);
@@ -1294,6 +1637,11 @@ $("#message-text").keyup(function(){
             var catname = "10 Day";
               
             }
+            if(window.localStorage.getItem('cat') == "10 Day Intro Program"){
+            var catname = "10 Day";
+
+            }
+           // alert(catname);
             var bundlename = window.localStorage.getItem('bundle');
              var sessionname =  $(".conv").html();
             //alert(s.session_name);
@@ -1315,15 +1663,32 @@ $("#message-text").keyup(function(){
             
 
         $("#message-text").val("As I read what I wrote, I connected with...");
-       window.bundle_id1= window.localStorage.getItem("bid")
-        if(window.localStorage.getItem("cat") == "Deep Dive" || window.localStorage.getItem("cat") == "Open Dive"){
+       window.bundle_id1= window.localStorage.getItem("bid");
+
+
+
+       if((!window.localStorage.getItem("cat") || window.localStorage.getItem("cat") == "10 Day Intro Program") && (user.last_free_conversation_id == 3 || user.last_free_conversation_id == 7 || user.last_free_conversation_id == 9) && user.membership_type == "Free"){
+         // window.location = "subscription.php"
+          var Sessiondata = JSON.parse(window.localStorage.getItem("SESSIONDATA"));
+          //console.log(Sessiondata);
+         //  $.redirect("playafter.php",{"nm":Sessiondata.session_name,"qimg":Sessiondata.session_quote_img,"qdesc":Sessiondata.session_quote_description},"POST",null,null,true);
+           $.redirect("summary.php",{"nm":Sessiondata.session_name,"qimg":Sessiondata.session_quote_img,"qdesc":Sessiondata.session_quote_description},"POST",null,null,true);
+
+       }else if(window.localStorage.getItem("cat") == "Deep Dive" || window.localStorage.getItem("cat") == "Open Dive"){
                     var referrer =  document.referrer;
+                    window.localStorage.setItem("referrer",referrer);
           //alert(window.bundle_id1);
-          $.redirect(referrer,{"bundle":window.bundle_id1},"POST",null,null,true);
+        //  $.redirect(referrer,{"bundle":window.bundle_id1},"POST",null,null,true);
+            var Sessiondata = JSON.parse(window.localStorage.getItem("SESSIONDATA"));
+           $.redirect("summary.php",{"nm":Sessiondata.session_name,"qimg":Sessiondata.session_quote_img,"qdesc":Sessiondata.session_quote_description},"POST",null,null,true);
          }
          else{
                     //var referrer 
-            window.location =  document.referrer;
+          //  window.location =  document.referrer;
+            var Sessiondata = JSON.parse(window.localStorage.getItem("SESSIONDATA"));
+          //console.log(Sessiondata);
+           //$.redirect("playafter.php",{"nm":Sessiondata.session_name,"qimg":Sessiondata.session_quote_img,"qdesc":Sessiondata.session_quote_description},"POST",null,null,true);
+           $.redirect("summary.php",{"nm":Sessiondata.session_name,"qimg":Sessiondata.session_quote_img,"qdesc":Sessiondata.session_quote_description},"POST",null,null,true);
             //window.location = "dashboard.php";
          }
         

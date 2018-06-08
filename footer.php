@@ -8,7 +8,7 @@
                       <h6>COMMUNITY</h6>
                       <hr class="footer-hr">
                       <ul>
-                         <li><a href="#">Blog</a></li>
+                         <li><a href="http://divethru.com/blog/" target="_blank">Blog</a></li>
                          <li><a href="https://www.facebook.com/DiveThru-2375273575879029/?ref=br_rs">Facebook Group</a></li>
                       </ul>
                  </div>
@@ -17,11 +17,11 @@
                      <h6>DIVE THRU</h6>
                      <hr class="footer-hr">
                      <ul>
-                         <li><a href="http://34.215.40.163/registration.php">Join</a></li>
-                         <li><a href="http://34.215.40.163/WhyDiveThru.php">Why Dive Thru</a></li>
+                         <li><a href="registration.php">Join</a></li>
+                         <li><a href="WhyDiveThru.php">Why Dive Thru</a></li>
                          <li><a href="javascript:void(0)" data-toggle="modal" data-target="#divecorporateModal">Dive Thru For Corporate</a></li>
-                         <li><a href="http://34.215.40.163/DiveThruKids.php">Dive Thru For Youth</a></li>
-                         <li><a href="http://34.215.40.163/gift.php">Gift</a></li>
+                         <li><a href="DiveThruKids.php">Dive Thru For Youth</a></li>
+                         <li><a href="gift.php">Gift</a></li>
                       </ul>
                 </div>
                 
@@ -29,8 +29,8 @@
                      <h6>ABOUT</h6>
                      <hr class="footer-hr">
                      <ul>
-                         <li><a href="http://34.215.40.163/about.php">About Dive Thru</a></li>
-                         <li><a href="http://34.215.40.163/pressandcollaboration.php">Press</a></li>
+                         <li><a href="about.php">About Dive Thru</a></li>
+                         <li><a href="pressandcollaboration.php">Press</a></li>
                       </ul>
                 </div>
                 
@@ -38,10 +38,10 @@
                      <h6>HELP</h6>
                      <hr class="footer-hr">
                      <ul>
-                         <li><a href="http://34.215.40.163/support.php">Support</a></li>
-                         <li><a href="http://34.215.40.163/contact.php">Contact Us</a></li>
-                         <li><a href="http://34.215.40.163/termsandconditions.php">Terms & Conditions</a></li>
-                         <li><a href="http://34.215.40.163/privacypolicy.php">Privacy</a></li>
+                         <li><a href="support.php">Support</a></li>
+                         <li><a href="contact.php">Contact Us</a></li>
+                         <li><a href="termsandconditions.php">Terms & Conditions</a></li>
+                         <li><a href="privacypolicy.php">Privacy</a></li>
                       </ul>
                 </div>
           
