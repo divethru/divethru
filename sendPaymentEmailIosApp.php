@@ -9,9 +9,6 @@ use Firebase\Firebase;
 use Firebase\Auth\TokenGenerator;
 
  require_once("credential.php");
-//define('API_ACCESS_KEY','AAAADGCJnvE:APA91bHzupr0hCJe-Gt4L8GsjK4IJkzKke3__QFLGQlgxms1LhquhYdmbdBMdEGzd6S-2xuUwmYSUlBHF2po1fOKxJrRgpUSSwbkdaNL1Vzs6K2YojwWE99ydRMXp6s6gNwndmzeagay');
-//define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
-//define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
 
 
 $mail_data = json_decode(file_get_contents('php://input'), true);
