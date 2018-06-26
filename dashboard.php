@@ -1,6 +1,7 @@
 <?php
 session_start();
 //session_destroy();
+require_once("credential.php");
 require 'payment.php';
 //require 'vendor/autoload.php';
 
@@ -59,15 +60,19 @@ use PayPal\Api\ShippingInfo;
 <link rel="stylesheet" href="css/footercss.css" type="text/css" >
 <link rel="stylesheet" href="css/sweetalert.css" type="text/css" >
 <script src="js/sweetalert.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script>
+<!-- <script src="https://www.gstatic.com/firebasejs/4.10.0/firebase.js"></script> -->
+<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase.js"></script>
+
+  <script type="text/javascript" src="js/credential.js"></script>
 <script type="text/javascript" src="js/jquery.redirect.js"></script>
 <script>
   if(localStorage.getItem('cat')){
   localStorage.removeItem('cat');
     
   }
+
   // Initialize Firebase
-  var config = {
+  /*var config = {
     apiKey: "AIzaSyDBWdYDtGJsilqNGOqYMNalE9s-IAGPnTw",
     authDomain: "divethru-71c56.firebaseapp.com",
     databaseURL: "https://divethru-71c56.firebaseio.com",
@@ -75,7 +80,7 @@ use PayPal\Api\ShippingInfo;
     storageBucket: "divethru-71c56.appspot.com",
     messagingSenderId: "53159239409"
   };
-  firebase.initializeApp(config);
+  firebase.initializeApp(config);*/
 </script>
 
 
@@ -329,7 +334,7 @@ use PayPal\Api\ShippingInfo;
     transform: translateX(-50%) translateY(-50%);}
 
 /* Page Loader ================================= */
-.page-loader-wrapper {
+.page-loader-wrapper ,  .page-loader-wrapper2{
   z-index: 99999999;
   position: fixed;
   top: 0;
@@ -341,14 +346,104 @@ use PayPal\Api\ShippingInfo;
   background: #eee;
   overflow: hidden;
   text-align: center; }
-  .page-loader-wrapper p {
+  .page-loader-wrapper p , .page-loader-wrapper2 p{
     font-size: 13px;
     margin-top: 10px;
     font-weight: bold;
     color: #444; }
-  .page-loader-wrapper .loader {
+  .page-loader-wrapper .loader ,  .page-loader-wrapper2 .loader{
     position: relative;
     top: calc(50% - 30px); }
+
+.stepwizard-step p {
+    margin-top: 0px;
+    color:#666;
+}
+.stepwizard-row {
+    display: table-row;
+}
+.stepwizard {
+    display: table;
+    width: 100%;
+    position: relative;
+}
+.stepwizard-step > button[disabled] {
+    /*opacity: 1 !important;
+    filter: alpha(opacity=100) !important;*/
+}
+.stepwizard > .btn.disabled, .stepwizard > .btn[disabled], .stepwizard > fieldset[disabled] > .btn {
+    opacity:1 !important;
+    color:#bbb;
+}
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content:" ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-index: 0;
+}
+.stepwizard-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+ .stepwizard-step > .btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+stepwizard-step p {
+    margin-top: 0px;
+    color:#666;
+}
+.stepwizard-row {
+    display: table-row;
+}
+.stepwizard {
+    display: table;
+    width: 100%;
+    position: relative;
+}
+.stepwizard-step > button[disabled] {
+    /*opacity: 1 !important;
+    filter: alpha(opacity=100) !important;*/
+}
+.stepwizard > .btn.disabled, .stepwizard > .btn[disabled], .stepwizard > fieldset[disabled] .btn {
+    opacity:1 !important;
+    color:#bbb;
+}
+.stepwizard-row:before {
+    top: 14px;
+    bottom: 0;
+    position: absolute;
+    content:" ";
+    width: 100%;
+    height: 1px;
+    background-color: #ccc;
+    z-index: 0;
+}
+.stepwizard-step {
+    display: table-cell;
+    text-align: center;
+    position: relative;
+}
+.stepwizard-step > .btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+} 
+
 </style>
 </head>
 <body style="margin-top: 100px;">
@@ -358,10 +453,18 @@ use PayPal\Api\ShippingInfo;
        <img src="img/transaction_loader.gif" style="margin-top: 10% !important;">
      <!-- </div> -->
     </div>
+
+     <div class="page-loader-wrapper2">
+        <!-- <div class="loader"> -->
+       <img src="img/loader.gif" style="margin-top: 10% !important;">
+     <!-- </div> -->
+    </div>
     <!-- #END# Page Loader -->
 <?php 
-define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
-define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
+//define('FIREBASE_URL','https://divethrutest.firebaseio.com/');
+//define('FIREBASE_SECRET','gxp2ItQwCsropnMYSEtsqPxEKeJam2G5LTxoaMoE'); 
+//define('FIREBASE_URL','https://divethru-71c56.firebaseio.com/');
+//define('FIREBASE_SECRET','k7AS9py1rGygBlLjQAvtfSroYaFCwpe0KzdrDAjQ');
 //require 'vendor/autoload.php';
 use Firebase\Firebase;
 use Firebase\Auth\TokenGenerator;
@@ -449,7 +552,140 @@ return $nodeGetContent;
   </div>
 </div>
 </div>
-<div class="cat container-fluid">    
+<!---------------------- Modal open after tag filter when click on cat box------------------------------>
+
+
+<div class="modal fade" id="description" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content TAGSCR">
+    <div class="modal-header text-center" style="margin:auto;">
+      <h4 id="sessionTitle">Modal Header</h4>
+    </div>
+      <div class="modal-body text-center">
+        <h1 class="modal-title Modalcat" id="sbTitle" style="color: #34495e;font-size: 28px;">Title</h1>
+        <br>
+       <p style="color: #727272;">Description</p>
+
+          <button type="button" class="btn1  mt-2 mx-1 divethru" id="divethru" style="background-color: #7DD3D5 !important; outline: none !important; letter-spacing: 3; color:#FFF;  border-color:  #7DD3D5 !important; text-decoration: none;width:70%;">DIVE THRU</button>
+      <br>
+      <div class="freeuser">
+      <button type="button" class="btn1  mt-2 mx-1 all" style="color:#FFF; background-color: #7DD3D5 !important; outline: none !important; border-color:  #7DD3D5 !important;width:70%;   cursor: pointer;">Unlock the entire divethru library</button>
+      
+        <div class="or" style="margin-top: 8px;font-weight: bold;"> OR</div>
+        
+      <button type="button" class="btn1  mt-2 mx-1 single" style="color:#FFF; background-color: #7DD3D5 !important; outline: none !important; border-color:  #7DD3D5 !important;width:70%;   cursor: pointer;" data-amount="2.79" data-cycle="0" data-plan="L">Get only this</button>
+     </div>
+      </div>
+     
+      
+    
+  </div>
+</div>
+</div>
+<!---------------------------------------------------------------------------------->
+<!-- 
+    <div class="modal fade " tabindex="-1" id="tagselection"  role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header" style="text-align:center;">
+          <h5 class="modal-title" id="tagModalLabel">Select from option below to</h5>
+        </div>
+        <div class="modal-body">
+        
+        <div class="stepwizard" style="display:none;">
+          <div class="stepwizard-row setup-panel">
+            <div class="stepwizard-step col-xs-3"> 
+              <a href="#step-1" type="button" class="btn btn-success btn-circle">1</a>
+              <p><small>Shipper</small></p>
+            </div>
+            <div class="stepwizard-step col-xs-3"> 
+              <a href="#step-2" type="button" class="btn btn-default btn-circle disabled" disabled="disabled">2</a>
+              <p><small>Destination</small></p>
+            </div>
+            <div class="stepwizard-step col-xs-3"> 
+              <a href="#step-3" type="button" class="btn btn-default btn-circle disabled" disabled="disabled">3</a>
+              <p><small>Schedule</small></p>
+            </div>
+            <div class="stepwizard-step col-xs-3"> 
+              <a href="#step-4" type="button" class="btn btn-default btn-circle disabled" disabled="disabled">4</a>
+              <p><small>Cargo</small></p>
+            </div>
+          </div>
+        </div>
+        
+        <form role="form">
+          <div class="panel panel-primary setup-content" id="step-1">
+            <div class="panel-heading">
+               <h3 class="panel-title">Shipper</h3>
+            </div>
+            <div class="panel-body">
+            <div class="content">
+              
+              </div>
+              <button class="btn btn-primary nextBtn pull-right" type="button">Next</button>
+            </div>
+          </div>
+          
+          <div class="panel panel-primary setup-content" id="step-2">
+            <div class="panel-heading">
+               <h3 class="panel-title">Destination</h3>
+            </div>
+            <div class="panel-body">
+            <div class="content">
+
+             </div>
+              <button class="btn btn-primary nextBtn pull-right" type="button">Next</button>
+            </div>
+          </div>
+          
+          <div class="panel panel-primary setup-content" id="step-3">
+            <div class="panel-heading">
+               <h3 class="panel-title">Schedule</h3>
+            </div>
+            <div class="panel-body">
+            <div class="content">
+              
+             </div>
+              <button class="btn btn-primary nextBtn pull-right" type="button">Next</button>
+            </div>
+          </div>
+          
+          <div class="panel panel-primary setup-content" id="step-4">
+            <div class="panel-heading">
+               <h3 class="panel-title">Cargo</h3>
+            </div>
+            <div class="panel-body">
+            <div class="content">
+              
+             </div>
+              <button class="btn btn-success pull-right finish" type="button">Finish!</button>
+            </div>
+          </div>
+        </form>
+
+        </div>
+          
+      </div>
+      </div>
+    </div> -->
+
+<!---------------------- / Modal open after tag filter when click on cat box ------------------------>
+
+
+<div class="cat container-fluid">  
+
+<div class="plib" style='height:100%;width:80%;text-align:center;background-color:transparent;padding:10%;margin:auto;border:1px solid rgba(0, 0, 0, 0.125);padding-bottom:1%;'> 
+  <div class='cardtitles lib' style='width:500px;margin:auto;'>
+    Create My Personalized DiveThru Journey
+  </div>
+  <div style="margin-top:5%;">
+    <a href="javascript:void(0);" class="bottomCardButton lib" style="color: #FFF; text-decoration: none;">CLICK HERE</a> 
+    </br> 
+    </br> 
+    <a href="javascript:void(0);" class="btn1  mt-2 mx-1 skip cardtitles" style="color:#874aa1; text-decoration: none;letter-spacing: 3px;font-weight:700;">SKIP NOW</a>
+
+  </div>
+</div>  
 <!-- <div class="container text-center cardContainers">
     <div class="row Margins text-center">
      <div class="col-md-4 col-xs-6 boxStyle" style="background-color:#aaa;">
@@ -637,6 +873,8 @@ return $nodeGetContent;
 <script src="js/dashboardheader.js?version=<?php echo constant("version");?>"></script>
 <script type="text/javascript"> 
 $(document).ready(function(){
+
+
 window.h3 = [];
   firebase.database().ref("Users/"+user.user_id).on("value", function(snapshot) {
       snapshot.forEach(function(childSnapshot) {

@@ -36,10 +36,13 @@
 	</script>
 	<!-- Firebase Start -->
 		
-<script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script>
+<!-- <script src="https://www.gstatic.com/firebasejs/4.9.1/firebase.js"></script> -->
+<script src="https://www.gstatic.com/firebasejs/5.1.0/firebase.js"></script>
+
+<script type="text/javascript" src="js/credential.js"></script>
 <script>
   // Initialize Firebase
-  var config = {
+ /* var config = {
     apiKey: "AIzaSyDBWdYDtGJsilqNGOqYMNalE9s-IAGPnTw",
     authDomain: "divethru-71c56.firebaseapp.com",
     databaseURL: "https://divethru-71c56.firebaseio.com",
@@ -47,7 +50,7 @@
     storageBucket: "divethru-71c56.appspot.com",
     messagingSenderId: "53159239409"
   };
-  firebase.initializeApp(config);
+  firebase.initializeApp(config);*/
 </script>
 
     <script type="text/javascript" src="register_user.js"></script>
@@ -181,12 +184,12 @@
 									
 									<!-- <a href="fblogin.php">-->
 									<button type="button" class=" btn1  fb-font" style="background-color: #3b5998; border: none;  border-radius: 3px; letter-spacing: 3; color: #fff; outline: none; line-height: 27px; cursor: pointer;" onclick="fbsave_user();"><i class="fa fa-facebook-official fa-lg" style="color:white"></i>&nbsp;CONTINUE WITH FACEBOOK</button><!---</a>-->
-<br><br>
- <button type="button" class=" form-control btn1 fb-font" onclick="googlesave_user();" style="background-color:#dd4b39; cursor: pointer; border: none; color:#fff;  border-radius: 3px; letter-spacing: 3;line-height: 27px;"><i class="fa fa-google fa-lg" aria-hidden="true"></i>&nbsp;CONTINUE WITH GOOGLE</button>
- <br>
+                  <br><br>
+                   <button type="button" class=" form-control btn1 fb-font" onclick="googlesave_user();" style="background-color:#dd4b39; cursor: pointer; border: none; color:#fff;  border-radius: 3px; letter-spacing: 3;line-height: 27px;"><i class="fa fa-google fa-lg" aria-hidden="true"></i>&nbsp;CONTINUE WITH GOOGLE</button>
+                   <br>
         							
 								</form>
-                                <p style="text-align: center;">By signing up, you agree to Dive thru<br> <a href="http://34.215.40.163/termsandconditions.php" style="color:#5191d6;">  Terms & Conditions</a> And <a href="http://34.215.40.163/privacypolicy.php" style="color:#5191d6;">Privacy Policy</a></p>
+                                <p style="text-align: center;">By signing up, you agree to Dive thru<br> <a href="termsandconditions.php" style="color:#5191d6;">  Terms & Conditions</a> And <a href="privacypolicy.php" style="color:#5191d6;">Privacy Policy</a></p>
 						  </div>
 
 						</div>
@@ -206,11 +209,91 @@
     <script type="text/javascript">
     $(function () {
 
+
+                window.ACCKEY = []
+        window.CODES = []
+        firebase.database().ref("AccessCodes").orderByKey().on("value", function(snapshot) {
+                    snapshot.forEach(function(childSnapshot) {
+                        // key
+                        var key = childSnapshot.key;
+                        window.ACCKEY.push(key);
+                        // value, could be object
+                        var childData = childSnapshot.val();
+                        window.CODES[key] = childData;
+                    });
+                });
+
+    $("body").on('change','#access_code',function(){
+          var code = $(this).val();
+                
+                  console.log(window.CODES);
+
+
+                    if(code != "" && $.inArray(code, window.ACCKEY) != -1){
+                        
+                        for(i in window.CODES){
+                            if(code == i){
+                                
+                                var date1 = new Date(window.CODES[i].createdOn);
+                             //   alert(window.CODES[i].createdOn);
+                                var date2 = new Date();
+                                window.nopeopleused = window.CODES[i].enddate;
+                                window.nopeopleusing = window.CODES[i].maxpeopleallowed;
+                                window.validity = window.CODES[i].validity;
+                            }
+                        }
+
+                var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+                var diffDays = Math.round(timeDiff / (1000 * 3600 * 24)); 
+           
+                        if($.inArray(code, window.ACCKEY) != -1){
+                            
+                            if(parseInt(window.nopeopleused) >= parseInt(window.nopeopleusing) || (date1 != date2)){
+                                $("#access_code").val("");
+                                $("#access_code").focus();
+            
+                                    swal({
+                                        title: "Code Expired!",
+                                        text: "This code is not valid now.",
+                                        html:true,
+                                        type: "warning",
+                                        showCancelButton: false,
+                                        confirmButtonColor: "#86CCEB",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    });
+                                
+                            }else if(parseInt(window.nopeopleused) < parseInt(window.nopeopleusing)){
+                                window.nopeopleused = window.nopeopleused + 1; 
+                                firebase.database().ref("/AccessCodes/"+code).update({nopeopleused:window.nopeopleused});
+                            }         
+                        }
+                    }else if(code != "" && $.inArray(code, window.ACCKEY) == -1){
+
+                                 $("#access_code").focus();
+                                
+                                swal({
+                                        title: "Invalid Code!",
+                                        text: "Please enter valid code.",
+                                        html:true,
+                                        type: "error",
+                                        showCancelButton: false,
+                                        confirmButtonColor: "#86CCEB",
+                                        confirmButtonText: "OK",
+                                        closeOnConfirm: false
+                                    });
+                    }
+      
+        });
+
+
+
+
       $( ".gen" ).change(function() {
         $('#gender').html("");
       });
 
-$(".fa-spinner").hide();
+        $(".fa-spinner").hide();
         $('#password').passwordStrength();
 
         $(".password-progress").hide(); // initail hide password indicator 
@@ -362,10 +445,6 @@ $("form").keypress(function(e) {
         password_strength.style.color = color;
     }
 
-    
-    
-</script>
-<script type="text/javascript">
 	function formValidation() {
 // Make quick references to our fields.
 var Fname = document.getElementById('first_name').value;

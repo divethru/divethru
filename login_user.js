@@ -8,6 +8,23 @@
     }
 
 
+firebase.database().ref("Category").orderByChild("category_id").limitToLast(3).on("value", function(snapshot) {
+                 var session = [];
+        snapshot.forEach(function(childSnapshot) {
+              // key
+              var key = childSnapshot.key;
+              //alert(key);
+              // value, could be object
+              var childData = childSnapshot.val();
+
+              var ht = '<div class="row Margins"><p class="MainMenu"><span class="i">'+childSnapshot.key+'</span>&nbsp;&nbsp;<a href="#" class="learnMorestyle"><i>LEARN MORE</i></a></p></div><br><div class="container text-center cardContainers"><div class="row Margins text-center">';
+              if(childSnapshot.key == '10 Day Intro Program' || childData.session_subcription_type == "Free"){
+                session.push(childData.Session);
+              }
+              
+              window.localStorage.setItem('session',JSON.stringify(session));
+        });
+ });
 firebase.auth().onAuthStateChanged(function(user) {
   //alert(user);
            if (user) {
@@ -16,7 +33,9 @@ firebase.auth().onAuthStateChanged(function(user) {
            //   var password=document.getElementById('password').value;
              //     alert("Login Successfully");
              //window.location.href = "http://34.215.40.163/welcome.php";
-             var ref = firebase.database().ref('Users').child(user.uid);
+             var uid = firebase.auth().currentUser.uid;
+
+             var ref = firebase.database().ref('Users').child(uid);
                ref.once('value').then( function(dataSnapshot) {
                           var data = dataSnapshot.val();
                         console.log(data.activated_on);
@@ -27,7 +46,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
                     //alert("a"+diffDays);
                     // Usage gap in days
-                     firebase.database().ref('Users').child(user.uid).child("UsageGap").set(diffDays);   
+                     firebase.database().ref('Users').child(uid).child("UsageGap").set(diffDays);   
 
                     if(data.activated_on != ''){
                           var lout = '<a class="nav-link" id="lg" class="lg" style="rgba(0,0,0,.5) !important" href="#" onclick="sign_out();">LOG OUT<span class="sr-only">(current)</span></a>';
@@ -79,9 +98,9 @@ function login_user() {
       {
         $(".fa-spinner").hide();
          
-            
-            var ref = firebase.database().ref('Users').child(user.uid);
-      console.log(user.uid);
+             var uid = firebase.auth().currentUser.uid;
+            var ref = firebase.database().ref('Users').child(uid);
+      console.log(uid);
       var lout = '<a class="nav-link" id="lg" style="padding-right: 1.5rem; padding-left: 1.5rem;" href="#" onclick="sg_out();">LOG OUT<span class="sr-only">(current)</span></a>';
             ref.once('value').then( function(dataSnapshot) {
               var currentdate = new Date(); 
@@ -91,16 +110,19 @@ function login_user() {
                     + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
                     + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
                     + ("0"+currentdate.getSeconds()).slice(-2);
-                  firebase.database().ref('Users').child(user.uid).child("lastUpdated_on").set(datetime);
+                  firebase.database().ref('Users').child(uid).child("lastUpdated_on").set(datetime);
               var data = dataSnapshot.val();
         window.localStorage.setItem('user',JSON.stringify(dataSnapshot));
                                       console.log(data.streak);  
-        if(data.streak){
+        if(data.streak || data.streak != ""){
                                 $.map(data.streak, function(value, index) {
                                       history.push(index);
                          
                                 });
                         }
+
+
+       
 
                console.log(JSON.stringify(history));
 window.localStorage.setItem("SessionHistory",JSON.stringify(history));         
@@ -122,74 +144,15 @@ window.localStorage.setItem("SessionHistory",JSON.stringify(history));
 
               if(!user.visited)
                 {
-                  firebase.database().ref('Users').child(user.uid).child("visited").set(1);
+                  firebase.database().ref('Users').child(uid).child("visited").set(1);
                 }else{
 
-                  firebase.database().ref('Users').child(user.uid).child("visited").set(user.visted+1);
+                  firebase.database().ref('Users').child(uid).child("visited").set(user.visted+1);
                 }
 
             });
 
 
-              firebase.database().ref("Category").orderByChild("category_id").limitToLast(3).on("value", function(snapshot) {
-                       var c = [];
-                       var session = [];
-        var ht ='';
-            snapshot.forEach(function(childSnapshot) {
-              // key
-              var key = childSnapshot.key;
-              // value, could be object
-              var childData = childSnapshot.val();
-              
-              var i = 1; 
-              //console.log(snapshot.numChildren());
-              //console.log(childSnapshot.getPriority());
-                      console.log(childSnapshot.key);
-              c.push(childSnapshot.key);
-              var ht = '<div class="row Margins"><p class="MainMenu"><span class="i">'+childSnapshot.key+'</span>&nbsp;&nbsp;<a href="#" class="learnMorestyle"><i>LEARN MORE</i></a></p></div><br><div class="container text-center cardContainers"><div class="row Margins text-center">';
-              if(childSnapshot.key == 'Open Dive'){
-                session.push(childData.Session);
-                $.map(childData.Session, function(value, index) {
-                   // console.log(value.subcategory_id);
-                  //console.log(value.session_name);
-                  
-                  if(i==window.localStorage.getItem('content')){
-                    $(".bg").css('background', 'url('+value.session_img+') '); /*Dynamic image from database*/
-
-                    $(".conv").html(value.session_name);
-                  }
-                  if(i>3){
-                  ht +='<div class="col-md-4 col-xs-6 boxStyle hiddens" style=" background-image: url('+value.session_img+');"><p class="Center">'+value.session_name+'</p></div>';
-
-                  }else{
-                    
-                  ht +='<div class="col-md-4 col-xs-6 boxStyle" style=" background-image: url('+value.session_img+');"><p class="Center">'+value.session_name+'</p></div>';
-                  }
-                i++;
-                });
-              }
-              if(childSnapshot.key == 'Open Dive'){
-              ht +='<div class="col-md-12 center-block"><button type="submit" class="btn btn-primary exploreMore " style=" border-color: #7dd3d5;  margin-top: 10%; outline: none; text-align: center;  color:#FFF; background-color: #7dd3d5;">E X P L O R E &nbsp; M O R E</button></div></div></div>';
-              }
-                      //$(".cardtexts").html(childData.qoute_description);
-              // Do what you want with these key/values here*/
-            //  console.log(ht);
-          
-                $(".exploreMore").click(function(){
-                  //  alert(555);
-                    $(".hiddens").show();
-                    $(".exploreMore").hide();
-                  }); 
-           //   $(".cat").append(ht);
-              window.localStorage.setItem('session',JSON.stringify(session));
-            });
-            $(".i").each(function(index,value){
-      //console.log(c[index]);
-              $(this).html(c[index]);
-                //alert($(this).html(c[index] ));
-              });
-              // $('.loader').fadeOut();
-        });
 
       }
     },function(error) {
@@ -234,7 +197,7 @@ function googlesave_user(){
   // The signed-in user info.
   console.log(result);
   		 	  var user = result.user;
-  			  var uid = user.uid;
+  			  var uid = firebase.auth().currentUser.uid;
  			  var detail = result.additionalUserInfo.profile;
  		  	  var first_name = detail.given_name;
            	  var last_name = detail.family_name;
@@ -245,7 +208,7 @@ function googlesave_user(){
   		     var loginvia = "Google";
   //var membership_type = "free";
   			// ...
-         var ref = firebase.database().ref('Users').child(user.uid);
+         var ref = firebase.database().ref('Users').child(uid);
           ref.once('value').then( function(dataSnapshot) {
 
 
@@ -256,10 +219,10 @@ function googlesave_user(){
         window.localStorage.setItem('user',JSON.stringify(dataSnapshot));
                 if(!ref.visited)
                 {
-                  firebase.database().ref('Users').child(user.uid).child("visited").set(1);
+                  firebase.database().ref('Users').child(uid).child("visited").set(1);
                 }else{
 
-                  firebase.database().ref('Users').child(user.uid).child("visited").set(user.visted+1);
+                  firebase.database().ref('Users').child(uid).child("visited").set(user.visted+1);
                 }
 var currentdate = new Date(); 
                 var datetime = currentdate.getFullYear() + "-"
@@ -268,7 +231,7 @@ var currentdate = new Date();
                     + ("0"+ currentdate.getHours()).slice(-2)  + ":"  
                     + ("0"+ currentdate.getMinutes()).slice(-2) + ":" 
                     + ("0"+currentdate.getSeconds()).slice(-2);
-                  firebase.database().ref('Users').child(user.uid).child("lastUpdated_on").set(datetime);
+                  firebase.database().ref('Users').child(uid).child("lastUpdated_on").set(datetime);
                 swal({
                           title: "Login!",
                           text: "User Login Sucessfully.",
