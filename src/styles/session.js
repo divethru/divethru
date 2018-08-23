@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet } from 'react-native';
+import { Platform, Dimensions, StyleSheet } from 'react-native';
 import { colors } from './theme';
 
 const width = Dimensions.get('window').width;
@@ -7,47 +7,186 @@ const height = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
-    paddingTop: 25,
-    paddingBottom: 25,
-    backgroundColor: colors.white,
+    alignItems: 'center',
+    backgroundColor: 'transparent',
   },
-  // listView: {
-  //   flexDirection: 'row',
-  //   flexWrap: 'wrap',
-  //   flex: 1,
-  //   marginHorizontal: 1,
-  //   justifyContent: 'center',
-  //   // marginLeft: width / 10,
-  // },
-  // gridItem: {
-  //   width: width > 400 ? 170 : 130,
-  //   height: width > 400 ? 170 : 130,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  // },
-  listView: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  backImage: {
     flex: 1,
-    marginLeft: 15,
-    marginRight: 15,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'transparent',
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    marginTop: 30,
+    marginLeft: 20,
+    marginRight: 20,
+    justifyContent: 'space-between',
+  },
+  iconLeftContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+  },
+  icon: {
+    height: 20,
+    width: 20,
+    margin: 10,
+  },
+  centerContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  currentBackground: {
+    width,
+    height,
+    top: 0,
+    resizeMode: 'cover',
+    position: 'absolute',
+  },
+  playerContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  FlatlistContainer: {
+    width,
+    backgroundColor: 'transparent',
+  },
+  FlatlistContainerin: {
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  sliderContainer: {
+    marginTop: 42,
+    marginBottom: 47,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 136,
+    width: 136,
+    backgroundColor: 'transparent',
+  },
+  topText: {
+    fontSize: 16,
+    color: colors.white,
+    fontFamily: 'Roboto',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  timeContainer: {
+    width: '70%',
+    height: '15%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    marginTop: 10,
+  },
+  timeInnerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  text: {
+    fontSize: 22,
+    color: colors.white,
+    fontFamily: 'Roboto',
+    textAlign: 'center',
   },
   gridItem: {
-    width: (width - 30) / 2,
-    height: (width - 50) / 2, // (height - 30) / 4,
+    width,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   gridItemImage: {
     width: '100%',
     height: '100%',
+    resizeMode: 'stretch',
+    backgroundColor: 'transparent',
   },
-  gridItemText: {
-    textAlign: 'center',
-    position: 'absolute',
-    fontSize: 16,
+  btnContainer: {
+    height: Platform.OS === 'ios' ? 40 : 45,
+    margin: 10,
+    marginVertical: 50,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+  textOfButton: {
+    fontSize: 14,
     color: colors.white,
-    marginLeft: '10%',
-    marginTop: '20%',
+    marginHorizontal: 24,
+    margin: 10,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'Roboto',
+  },
+});
+
+export const timeButtonStyles = StyleSheet.create({
+  text: {
+    fontSize: 14,
+    color: colors.white,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'Roboto',
+  },
+  container: {
+    // flex: 1,
+    height: Platform.OS === 'ios' ? 40 : 45,
+    margin: 10,
+    marginTop: 0,
+    backgroundColor: colors.transparent,
+    justifyContent: 'center',
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+});
+
+export const timeButtonClickStyles = StyleSheet.create({
+  text: {
+    fontSize: 14,
+    color: colors.white,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'Roboto',
+  },
+  container: {
+    flex: 1,
+    height: Platform.OS === 'ios' ? 40 : 45,
+    margin: 10,
+    marginTop: 0,
+    backgroundColor: '#00000040',
+    justifyContent: 'center',
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: colors.white,
+  },
+});
+
+export const buttonStyles = StyleSheet.create({
+  text: {
+    fontSize: 14,
+    color: colors.white,
+    fontWeight: 'bold',
+    fontFamily: 'Roboto',
+  },
+  container: {
+    marginTop: 5,
+    marginBottom: 35,
+    height: Platform.OS === 'ios' ? 40 : 45,
+    backgroundColor: '#00000040',
+    justifyContent: 'center',
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: colors.white,
   },
 });
 

@@ -35,9 +35,13 @@ class InfoPopup extends Component {
                 source={IC_CLOSE}
               />
             </TouchableOpacity>
+
             <Text style={styles.headingtext}>{this.props.title.toUpperCase()}</Text>
+
             <Text style={styles.text}>{this.props.description}</Text>
+
             <View style={styles.seperator} />
+
             <Button
               accent
               text="G O T  I T"

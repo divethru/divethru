@@ -989,13 +989,6 @@ babel-plugin-transform-class-properties@^6.18.0, babel-plugin-transform-class-pr
     babel-runtime "^6.22.0"
     babel-template "^6.24.1"
 
-babel-plugin-transform-define@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-transform-define/-/babel-plugin-transform-define-1.3.0.tgz#94c5f9459c810c738cc7c50cbd44a31829d6f319"
-  dependencies:
-    lodash "4.17.4"
-    traverse "0.6.6"
-
 babel-plugin-transform-es2015-arrow-functions@^6.5.0, babel-plugin-transform-es2015-arrow-functions@^6.8.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-es2015-arrow-functions/-/babel-plugin-transform-es2015-arrow-functions-6.22.0.tgz#452692cb711d5f79dc7f85e440ce41b9f244d221"
@@ -1362,6 +1355,10 @@ babylon@^6.17.0, babylon@^6.18.0:
 balanced-match@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
+
+base-64@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-0.1.0.tgz#780a99c84e7d600260361511c4877613bf24f6bb"
 
 base64-js@0.0.8:
   version "0.0.8"
@@ -2668,6 +2665,17 @@ glob-parent@^2.0.0:
   dependencies:
     is-glob "^2.0.0"
 
+glob@7.0.6:
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/glob/-/glob-7.0.6.tgz#211bafaf49e525b8cd93260d14ab136152b3f57a"
+  dependencies:
+    fs.realpath "^1.0.0"
+    inflight "^1.0.4"
+    inherits "2"
+    minimatch "^3.0.2"
+    once "^1.3.0"
+    path-is-absolute "^1.0.0"
+
 glob@^7.0.0, glob@^7.0.3, glob@^7.0.5, glob@^7.1.1, glob@^7.1.2:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/glob/-/glob-7.1.2.tgz#c19c9df9a028702d678612384a6552404c636d15"
@@ -2890,6 +2898,10 @@ hoist-non-react-statics@^1.0.5:
 hoist-non-react-statics@^2.2.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.3.1.tgz#343db84c6018c650778898240135a1420ee22ce0"
+
+hoist-non-react-statics@^2.3.1:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.0.tgz#d2ca2dfc19c5a91c5a6615ce8e564ef0347e2a40"
 
 home-or-tmp@^2.0.0:
   version "2.0.0"
@@ -3818,6 +3830,10 @@ lodash.cond@^4.3.0:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/lodash.cond/-/lodash.cond-4.5.2.tgz#f471a1da486be60f6ab955d17115523dd1d255d5"
 
+lodash.debounce@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+
 lodash.escape@^3.0.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/lodash.escape/-/lodash.escape-3.2.0.tgz#995ee0dc18c1b48cc92effae71a10aab5b487698"
@@ -3901,13 +3917,13 @@ lodash.times@^4.3.2:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/lodash.times/-/lodash.times-4.3.2.tgz#3e1f2565c431754d54ab57f2ed1741939285ca1d"
 
-lodash@4.17.4, lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.16.6, lodash@^4.17.4, lodash@^4.3.0, lodash@^4.6.1:
-  version "4.17.4"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
-
 lodash@^3.5.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
+
+lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.16.6, lodash@^4.17.4, lodash@^4.3.0, lodash@^4.6.1:
+  version "4.17.4"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 
 lodash@^4.10.1, lodash@^4.11.1, lodash@^4.17.5, lodash@^4.2.0:
   version "4.17.5"
@@ -4748,6 +4764,13 @@ prop-types@^15.5.10, prop-types@^15.5.8, prop-types@^15.6.0:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
+prop-types@^15.5.6, prop-types@^15.5.9:
+  version "15.6.2"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.2.tgz#05d5ca77b4453e985d60fc7ff8c859094a497102"
+  dependencies:
+    loose-envify "^1.3.1"
+    object-assign "^4.1.1"
+
 protobufjs@^5.0.0:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/protobufjs/-/protobufjs-5.0.2.tgz#59748d7dcf03d2db22c13da9feb024e16ab80c91"
@@ -4775,6 +4798,10 @@ punycode@^1.4.1:
 punycode@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.0.tgz#5f863edc89b96db09074bad7947bf09056ca4e7d"
+
+qs@^5.2.0:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-5.2.1.tgz#801fee030e0b9450d6385adc48a4cc55b44aedfc"
 
 qs@~6.4.0:
   version "6.4.0"
@@ -4829,6 +4856,23 @@ react-devtools-core@3.1.0:
     shell-quote "^1.6.1"
     ws "^2.0.3"
 
+react-native-af-video-player@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-af-video-player/-/react-native-af-video-player-0.2.1.tgz#35ae17a10b9cba8465fc6a856207de773d2df723"
+  dependencies:
+    react-native-keep-awake "^2.0.6"
+    react-native-linear-gradient "^2.3.0"
+    react-native-orientation "^3.1.0"
+    react-native-slider "https://github.com/abbasfreestyle/react-native-slider.git"
+    react-native-vector-icons "^4.4.2"
+    react-native-video "^2.0.0"
+
+react-native-button@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/react-native-button/-/react-native-button-2.3.0.tgz#7d0a90095d415b0edf98a904556a7c4439646568"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-calendar-events@^1.4.3:
   version "1.4.3"
   resolved "https://registry.yarnpkg.com/react-native-calendar-events/-/react-native-calendar-events-1.4.3.tgz#29804e8b44d6946e69ab5a20902d9449ed315c47"
@@ -4847,6 +4891,10 @@ react-native-circular-slider@^1.0.1:
     d3-interpolate "^1.1.2"
     lodash.range "^3.2.0"
     react-native-svg ">=4.3.3"
+
+react-native-contacts@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-contacts/-/react-native-contacts-2.2.2.tgz#8bfec0a82bce3c24847ed69419ebc0ba8d7defee"
 
 react-native-datepicker@^1.6.0:
   version "1.6.0"
@@ -4914,21 +4962,48 @@ react-native-fcm@^14.0.1:
   version "14.0.1"
   resolved "https://registry.yarnpkg.com/react-native-fcm/-/react-native-fcm-14.0.1.tgz#833e6a38a1b2fd1a9b7b69be35e007f7361fe474"
 
+react-native-fetch-blob@^0.10.8:
+  version "0.10.8"
+  resolved "https://registry.yarnpkg.com/react-native-fetch-blob/-/react-native-fetch-blob-0.10.8.tgz#4fc256abae0cb5f10e7c41f28c11b3ff330d72a9"
+  dependencies:
+    base-64 "0.1.0"
+    glob "7.0.6"
+
+react-native-google-places-autocomplete@^1.3.9:
+  version "1.3.9"
+  resolved "https://registry.yarnpkg.com/react-native-google-places-autocomplete/-/react-native-google-places-autocomplete-1.3.9.tgz#34c2e8b51df40ecb55ef3ccf57caba4c89ff9b56"
+  dependencies:
+    lodash.debounce "^4.0.8"
+    prop-types "^15.5.10"
+    qs "^5.2.0"
+
 react-native-google-signin@^0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/react-native-google-signin/-/react-native-google-signin-0.12.0.tgz#fc549593adbc92ed2a5a683a957f157650ece961"
 
-react-native-iap@^0.2.17:
-  version "0.2.17"
-  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-0.2.17.tgz#70290aede5a534aaa8589e91e5b80ba9b9b27ee8"
+react-native-iap@^0.3.10:
+  version "0.3.24"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-0.3.24.tgz#571050744ad01ea054694236bfc465120f860238"
   dependencies:
-    chalk "^2.3.0"
     dooboolab-welcome "^1.0.5"
-    shelljs "^0.7.8"
+
+"react-native-iap@github:dooboolab/react-native-iap":
+  version "1.2.1"
+  resolved "https://codeload.github.com/dooboolab/react-native-iap/tar.gz/e7a0959870521f792951dd3cbf97b6d5741622fb"
+  dependencies:
+    dooboolab-welcome "^1.0.5"
+
+react-native-image-picker@^0.26.10:
+  version "0.26.10"
+  resolved "https://registry.yarnpkg.com/react-native-image-picker/-/react-native-image-picker-0.26.10.tgz#0bb9ab928984948c67aee0b9e64216bee007a9fc"
 
 react-native-iphone-x-helper@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.0.2.tgz#7dbca530930f7c1ce8633cc8fd13ba94102992e1"
+
+react-native-keep-awake@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-keep-awake/-/react-native-keep-awake-2.0.6.tgz#d8eaffe0a6377cc197469d9f06c7f317225403db"
 
 react-native-keyboard-aware-scroll-view@0.4.2:
   version "0.4.2"
@@ -4944,9 +5019,49 @@ react-native-keyboard-aware-scroll-view@^0.4.3:
     prop-types "^15.6.0"
     react-native-iphone-x-helper "^1.0.1"
 
+react-native-linear-gradient@^2.3.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.4.0.tgz#51d8ea12bb72a59bede9edc87b694b16b64cf435"
+  dependencies:
+    prop-types "^15.5.10"
+
+react-native-material-buttons@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-material-buttons/-/react-native-material-buttons-0.5.0.tgz#ab2b3e3fc3f500ca713f51e9d75978aff602152a"
+  dependencies:
+    prop-types "^15.5.9"
+    react-native-material-ripple "^0.7.0"
+
 react-native-material-design-styles@^0.2.6:
   version "0.2.7"
   resolved "https://registry.yarnpkg.com/react-native-material-design-styles/-/react-native-material-design-styles-0.2.7.tgz#428560ef4d0659db1163c9f9b5476d886ed22d57"
+
+react-native-material-dropdown@^0.11.1:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/react-native-material-dropdown/-/react-native-material-dropdown-0.11.1.tgz#c0fe434a8e617941ef910ba44d2f07c8f37584fe"
+  dependencies:
+    prop-types "^15.5.9"
+    react-native-material-buttons "^0.5.0"
+    react-native-material-ripple "^0.8.0"
+    react-native-material-textfield "^0.12.0"
+
+react-native-material-ripple@^0.7.0:
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/react-native-material-ripple/-/react-native-material-ripple-0.7.5.tgz#e2af5110680532f14aea3c3a438247be2ffef659"
+  dependencies:
+    prop-types "^15.5.10"
+
+react-native-material-ripple@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/react-native-material-ripple/-/react-native-material-ripple-0.8.0.tgz#b8c24e6fdea2af2a21e8468b1f40b35483019e2f"
+  dependencies:
+    prop-types "^15.5.10"
+
+react-native-material-textfield@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/react-native-material-textfield/-/react-native-material-textfield-0.12.0.tgz#3fba19d76ab89f67052c81e082152fc243d82a3f"
+  dependencies:
+    prop-types "^15.5.9"
 
 react-native-material-ui@^1.19.0:
   version "1.19.0"
@@ -4956,6 +5071,10 @@ react-native-material-ui@^1.19.0:
     lodash.merge "^4.0.0"
     prop-types "^15.5.10"
     react-native-material-design-styles "^0.2.6"
+
+react-native-orientation@^3.1.0:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-orientation/-/react-native-orientation-3.1.3.tgz#d45803841fe94b6cce9acbe904fd5ca191a3711e"
 
 react-native-pagination@^1.2.8:
   version "1.2.8"
@@ -4969,6 +5088,22 @@ react-native-progress@^3.4.0:
   dependencies:
     prop-types "^15.5.8"
 
+react-native-rate@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-rate/-/react-native-rate-1.0.9.tgz#2f11cff30f7ec7cd443d843a4af96d8d5266f6b5"
+  dependencies:
+    react-native-iap "github:dooboolab/react-native-iap"
+
+react-native-restart@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-restart/-/react-native-restart-0.0.6.tgz#77770d078683947b2c1f2adb876f179269d8443a"
+
+react-native-safe-area-view@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.7.0.tgz#38f5ab9368d6ef9e5d18ab64212938af3ec39421"
+  dependencies:
+    hoist-non-react-statics "^2.3.1"
+
 react-native-scrollable-tab-view@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/react-native-scrollable-tab-view/-/react-native-scrollable-tab-view-0.8.0.tgz#5cb1fcfce07bf530a3c81ab51fc5071144edac5c"
@@ -4977,13 +5112,49 @@ react-native-scrollable-tab-view@^0.8.0:
     prop-types "^15.6.0"
     react-timer-mixin "^0.13.3"
 
+react-native-select-multiple@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-select-multiple/-/react-native-select-multiple-1.2.0.tgz#1f4662c085fc2b76101986d0a45b09e5343359e5"
+  dependencies:
+    prop-types "^15.6.0"
+
+react-native-share@^1.0.27:
+  version "1.0.27"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-1.0.27.tgz#1861afe0d1256bde95d19520ca5d5c3cd348ffad"
+
 react-native-simple-radio-button@^2.7.1:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/react-native-simple-radio-button/-/react-native-simple-radio-button-2.7.1.tgz#4a4a5cae903b6bc680c5e4bd5931948aa7608da0"
 
+"react-native-slider@git+https://github.com/abbasfreestyle/react-native-slider.git":
+  version "0.11.0"
+  resolved "git+https://github.com/abbasfreestyle/react-native-slider.git#c53b4965c5e4c3ec258479417898dece367e603e"
+  dependencies:
+    prop-types "^15.5.6"
+
+react-native-sms-android@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/react-native-sms-android/-/react-native-sms-android-0.4.1.tgz#e87bd98e1cd93485bab270bb489f2180960c24a6"
+
+react-native-sms@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-sms/-/react-native-sms-1.6.0.tgz#2156ab4c76549ac6a9d72686fa00b65b708e7ed1"
+
 "react-native-sound@git+https://github.com/zmxv/react-native-sound.git#fix_android_network_sound":
   version "0.10.2"
   resolved "git+https://github.com/zmxv/react-native-sound.git#ba1b2440a423ded5b4f14516fd1f583e058d523b"
+
+react-native-star-rating@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-star-rating/-/react-native-star-rating-1.0.9.tgz#b25ea19d4494cd1c7b14e931f99e92ddce3ef70d"
+  dependencies:
+    prop-types "^15.5.10"
+    react-native-button "^2.3.0"
+    react-native-vector-icons "^4.5.0"
+
+react-native-store-review@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-store-review/-/react-native-store-review-0.1.5.tgz#9df69786a137580748e368641698d2104519e4cf"
 
 react-native-svg-uri@^1.2.3:
   version "1.2.3"
@@ -5021,6 +5192,14 @@ react-native-vector-icons@^4.3.0, react-native-vector-icons@^4.5.0:
     prop-types "^15.5.10"
     yargs "^8.0.2"
 
+react-native-vector-icons@^4.4.2:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-4.6.0.tgz#e4014311ffa6de397d914ffc31b7097a874cc8d5"
+  dependencies:
+    lodash "^4.0.0"
+    prop-types "^15.5.10"
+    yargs "^8.0.2"
+
 react-native-vector-icons@~4.4.2:
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/react-native-vector-icons/-/react-native-vector-icons-4.4.3.tgz#9e847b8c432a17e5e0ffd60ccf09f3112a18b9df"
@@ -5029,7 +5208,7 @@ react-native-vector-icons@~4.4.2:
     prop-types "^15.5.10"
     yargs "^8.0.2"
 
-react-native-video-player@^0.9.0:
+react-native-video-player@0.9.0:
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/react-native-video-player/-/react-native-video-player-0.9.0.tgz#c83359515a7e6329b6dec28e2da02a101a282bee"
 
@@ -5103,16 +5282,16 @@ react-native@0.54.0:
     xmldoc "^0.4.0"
     yargs "^9.0.0"
 
-react-navigation@^1.0.0-beta.27:
-  version "1.0.0-beta.27"
-  resolved "https://registry.yarnpkg.com/react-navigation/-/react-navigation-1.0.0-beta.27.tgz#e6263b01975cd790e32b3711c2eb6cead96c102c"
+react-navigation@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/react-navigation/-/react-navigation-1.3.0.tgz#c3f7ef669c649851c4564e165ed71e20acdf4408"
   dependencies:
-    babel-plugin-transform-define "^1.3.0"
     clamp "^1.0.1"
     hoist-non-react-statics "^2.2.0"
     path-to-regexp "^1.7.0"
     prop-types "^15.5.10"
     react-native-drawer-layout-polyfill "^1.3.2"
+    react-native-safe-area-view "^0.7.0"
     react-native-tab-view "^0.0.74"
 
 react-proxy@^1.1.7:
@@ -5575,7 +5754,7 @@ shell-quote@1.6.1, shell-quote@^1.6.1:
     array-reduce "~0.0.0"
     jsonify "~0.0.0"
 
-shelljs@^0.7.5, shelljs@^0.7.8:
+shelljs@^0.7.5:
   version "0.7.8"
   resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.7.8.tgz#decbcf874b0d1e5fb72e14b164a9683048e9acb3"
   dependencies:
@@ -5912,10 +6091,6 @@ tr46@^1.0.0:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-1.0.1.tgz#a8b13fd6bfd2489519674ccde55ba3693b706d09"
   dependencies:
     punycode "^2.1.0"
-
-traverse@0.6.6:
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.6.6.tgz#cbdf560fd7b9af632502fed40f918c157ea97137"
 
 trim-right@^1.0.1:
   version "1.0.1"

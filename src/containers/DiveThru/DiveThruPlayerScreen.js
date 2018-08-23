@@ -6,6 +6,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Moment from 'moment';
 import Svg, { Path, Circle, G } from 'react-native-svg';
 import { Button } from 'react-native-material-ui';
+import { createIconSetFromFontello } from 'react-native-vector-icons';// font
+import { CircularProgress } from 'react-native-circular-progress';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DropdownAlert from 'react-native-dropdownalert';
 import styles, { playerStyles, buttonStyles, timeButtonStyles, timeButtonClickStyles, popupbuttonStyles } from '../../styles/player';
@@ -13,8 +15,10 @@ import firebaseApp from '../../components/constant';
 import IC_WHITE_CLOSE from '../../assets/images/ic_white_close.png';
 import IC_WHITE_INFO from '../../assets/images/ic_info.png';
 import IC_WHITE_REMINDER from '../../assets/images/ic_white_reminder.png';
-import Dashboard from '../../assets/images/Dashboard_bg.png';
 import { colors } from '../../styles/theme';
+import fontelloConfig from './../../assets/fonts/config.json'; // font
+
+const CustomIcon = createIconSetFromFontello(fontelloConfig); // font
 
 const AudioStatePlay = 'play';
 const AudioStatePause = 'pause';
@@ -28,6 +32,7 @@ class DiveThruPlayerScreen extends Component {
 
   constructor(props) {
     super(props);
+    console.log(`index->${this.props.navigation.state.params.audioIndex}`);
     this.state = {
       loading: true,
       fill: 10,
@@ -36,6 +41,7 @@ class DiveThruPlayerScreen extends Component {
       isPlaying: false,
       isLoaded: true,
       isTimeDisable: false,
+      isPlayerDisable: true,
       progress: 0,
       modalVisible: false,
       // angle: this.props.angle,
@@ -45,6 +51,7 @@ class DiveThruPlayerScreen extends Component {
       // meditation_audio_time: [],
       playermodalvisible: false,
       chatBox: 'As I read what I wrote, I connected with...',
+      index: this.props.navigation.state.params ? this.props.navigation.state.params.audioIndex : 0,
     };
     this.duration = 0;
     this.audioState = '';
@@ -53,11 +60,17 @@ class DiveThruPlayerScreen extends Component {
   componentWillMount() {
     StatusBar.setHidden(true);
     const { params } = this.props.navigation.state;
+    // console.log('DiveThruPlayerScreen666 rowdata: ' + JSON.stringify(params.rowdata));
     const sessionData = params ? params.rowdata : undefined;
     const bundleName = params ? params.bundleName : undefined;
+    const budle = params ? params.budle : undefined;
     const bundleID = params ? params.bundleId : undefined;
+    const sessionId = params ? params.sessionId : undefined;
     const category = params ? params.category : undefined;
     const catId = params ? params.catId : undefined;
+    const sessionType = params ? params.sessionType : undefined;
+    const subcategoryId = params ? params.subcategoryId : undefined;
+    const membershipType = params ? params.membershipType : undefined;
     // let audioTime = [];
     // let audios = [];
     // if (sessionData.meditation_audio_time) {
@@ -71,10 +84,10 @@ class DiveThruPlayerScreen extends Component {
     //     audios = sessionData.meditation_audio;
     //   }
     // }
-
     this.setState({
       category_Id: catId,
       title: bundleName,
+      budle,
       bundleID,
       category,
       meditation_audio: sessionData.meditation_audio,
@@ -83,13 +96,25 @@ class DiveThruPlayerScreen extends Component {
       sessionName: sessionData.session_name,
       session_id: sessionData.session_id,
       sessionImg: sessionData.session_img,
-      halted: 0,
+      session_quote_description: sessionData.session_quote_description,
+      session_quote_img: sessionData.session_quote_img,
+      sessionType,
+      subcategoryId,
+      sessionId,
+      sessionData,
+      membershipType,
     });
+    // this.state.sessionType = sessionType;
+    // this.state.budle = budle;
 
     this._panResponder = PanResponder.create({
+       // eslint-disable-next-line no-unused-vars
       onStartShouldSetPanResponder: (e, gs) => true,
+       // eslint-disable-next-line no-unused-vars
       onStartShouldSetPanResponderCapture: (e, gs) => true,
+       // eslint-disable-next-line no-unused-vars
       onMoveShouldSetPanResponder: (e, gs) => true,
+       // eslint-disable-next-line no-unused-vars
       onMoveShouldSetPanResponderCapture: (e, gs) => true,
       onPanResponderMove: (e, gs) => {
         const xOrigin = this.props.xCenter - (this.props.dialRadius + this.props.btnRadius);
@@ -101,7 +126,45 @@ class DiveThruPlayerScreen extends Component {
     });
   }
 
+  componentDidMount() {
+    let haltedSessionId = '';
+    let halted = '';
+    let haltedSlot = '';
+    AsyncStorage.getItem('user_id').then((value) => {
+      if (value != null) {
+        const ref = firebaseApp.database().ref('Users').child(value).child('sessionHalted');
+        ref.once('value').then((dataSnapshot) => {
+          const sessionHalted = dataSnapshot.val();
+          // console.log('HALTED SESSION D PLAYER-->' + JSON.stringify(sessionHalted))
+          if (sessionHalted !== undefined && sessionHalted !== null && sessionHalted !== '') {
+            Object.keys(sessionHalted).forEach((key) => {
+              const data = sessionHalted[key];
+              // console.log('data-->' + data.halted);
+              // console.log('key' + key);
+              if (key === this.state.session_id) {
+                haltedSessionId = key;
+                halted = data.halted;
+                haltedSlot = data.slot;
+                this.setState({
+                  haltedSessionId,
+                  halted,
+                  haltedSlot,
+                });
+              }
+            });
+          }
+
+          if (this.state.category === 'Deep Dive') {
+            console.log(`${this.state.index}->didmount---timeButtonClicked->${this.state.meditation_audio}`);
+            this.timeButtonClicked(this.state.index);
+          }
+        });
+      }
+    });
+  }
+
   componentWillUnmount() {
+    this.stop();
     StatusBar.setHidden(false);
   }
 
@@ -127,9 +190,86 @@ class DiveThruPlayerScreen extends Component {
     this.props.navigation.goBack();
   }
 
-  polarToCartesian(angle) {
+  onClose(data) {
+    if (data.type === 'success') {
+      this.props.navigation.goBack();
+    }
+  }
+
+  getCategoryWiseCurrentStreak() {
+    const category = this.state.category;
+    // const category = 'Deep Dive';
+    const bundleId = this.state.bundleID;
+    // const bundleId = '-LBZJN47IWOZfkM14HSK';
+    const subcategoryId = this.state.subcategoryId;
+    // const subcategoryId = '-L8Cj9NoDisM_ej0g1Ln';
+    const sessionId = this.state.session_id;
+    // const sessionId = '-L8pVvP8iDIoX1Cy-5to';
+    let Streak = '';
+
+    AsyncStorage.getItem('user_id').then((value) => {
+      if (value !== null) {
+        if (this.state.sessionType === 'Session') {
+          const refcat = firebaseApp.database().ref(`/Category/${category}/Session`);
+          refcat.once('value').then((dataSnapshot) => {
+            if (dataSnapshot.exists()) {
+              const arrSessionId = [];
+              dataSnapshot.forEach((child) => {
+                arrSessionId.push(child.key);
+              });
+              Streak = arrSessionId.indexOf(sessionId) + 1;
+              this.setState({ Streak });
+              this.updateCurrentStreakData();
+            }
+          });
+        } else if (this.state.sessionType === 'Bundle') {
+          const refcat = firebaseApp.database().ref(`/Category/${category}/Bundle/${bundleId}/Session/`);
+          refcat.once('value').then((dataSnapshot) => {
+            if (dataSnapshot.exists()) {
+              const arrSessionId = [];
+              dataSnapshot.forEach((child) => {
+                arrSessionId.push(child.key);
+              });
+              Streak = arrSessionId.indexOf(sessionId) + 1;
+              this.setState({ Streak });
+              this.updateCurrentStreakData();
+            }
+          });
+        } else if (this.state.sessionType === 'SubCategoryBundle') {
+          const refcat = firebaseApp.database().ref(`/Category/${category}/SubCategory/${subcategoryId}/Bundle/${bundleId}/Session/`);
+          refcat.once('value').then((dataSnapshot) => {
+            if (dataSnapshot.exists()) {
+              const arrSessionId = [];
+              dataSnapshot.forEach((child) => {
+                arrSessionId.push(child.key);
+              });
+              Streak = arrSessionId.indexOf(sessionId) + 1;
+              this.setState({ Streak });
+              this.updateCurrentStreakData();
+            }
+          });
+        } else if (this.state.sessionType === 'SubCategorySession') {
+          const refcat = firebaseApp.database().ref(`/Category/${category}/SubCategory/${subcategoryId}/Session`);
+          refcat.once('value').then((dataSnapshot) => {
+            if (dataSnapshot.exists()) {
+              const arrSessionId = [];
+              dataSnapshot.forEach((child) => {
+                arrSessionId.push(child.key);
+              });
+              Streak = arrSessionId.indexOf(sessionId) + 1;
+              this.setState({ Streak });
+              this.updateCurrentStreakData();
+            }
+          });
+        }
+      }
+    });
+  }
+
+  polarToCartesian = (angle) => {
     const r = this.props.dialRadius;
     const hC = this.props.dialRadius + this.props.btnRadius;
+    // eslint-disable-next-line no-mixed-operators
     const a = (angle - 90) * Math.PI / 180.0;
 
     const x = hC + (r * Math.cos(a));
@@ -144,16 +284,10 @@ class DiveThruPlayerScreen extends Component {
       return y > hC ? 0 : 180;
     } else if (y === 0) {
       return x > hC ? 90 : 270;
-    } else {
-      return (Math.round((Math.atan((y - hC) / (x - hC))) * 180 / Math.PI) +
+    }
+    // eslint-disable-next-line no-mixed-operators
+    return (Math.round((Math.atan((y - hC) / (x - hC))) * 180 / Math.PI) +
         (x > hC ? 90 : 270));
-    }
-  }
-
-  onClose(data) {
-    if (data.type === 'success') {
-      this.props.navigation.goBack();
-    }
   }
 
   closeModal() {
@@ -162,18 +296,20 @@ class DiveThruPlayerScreen extends Component {
 
   play() {
     this.setState({ isTimeDisable: true });
-    if (this.session && !this.state.isPlaying) {
-      this.session.getCurrentTime((seconds) => {
-        this.session.setCurrentTime(seconds);
-        this.duration = this.session.getDuration();
-        this.session.play((success) => {
-          if (success) {
-            this.stop();
-          }
+    if (this.session !== undefined && this.session !== null) {
+      if (this.session && !this.state.isPlaying) {
+        this.session.getCurrentTime((seconds) => {
+          this.session.setCurrentTime(seconds);
+          this.duration = this.session.getDuration();
+          this.session.play((success) => {
+            if (success) {
+              this.stop();
+            }
+          });
+          this.audioState = AudioStatePlay;
+          this.playProgress();
         });
-        this.audioState = AudioStatePlay;
-        this.playProgress();
-      });
+      }
     }
   }
 
@@ -182,15 +318,22 @@ class DiveThruPlayerScreen extends Component {
     if (!this.session) return;
     this.session.pause();
     this.clearTimer();
-    this.session.getCurrentTime((seconds) => {
-      // AsyncStorage.getItem('user_id').then((value) => {
-      //   if (value != null) {
-      //     const ref = firebaseApp.database().ref('Users').child(value);
-      //     ref.update({ halted: seconds });
-      //     this.setState({ halted: seconds });
-      //   }
-      // }).done();
-    });
+    if (this.session && this.state.isPlaying) {
+      this.session.getCurrentTime((seconds) => {
+        AsyncStorage.getItem('user_id').then((value) => {
+          if (value != null) {
+            const sessionId = this.state.session_id;
+            const ref = firebaseApp.database().ref('Users').child(value).child(`sessionHalted/${sessionId}`);
+            const userHalted = {
+              halted: seconds,
+              slot: this.state.slot,
+            };
+            ref.update(userHalted);
+            this.setState({ halted: seconds });
+          }
+        }).done();
+      });
+    }
   }
 
   stop() {
@@ -205,16 +348,20 @@ class DiveThruPlayerScreen extends Component {
   }
 
   playProgress() {
-    this.timer = setInterval(() => {
-      this.session.getCurrentTime((seconds) => {
-        if (this.duration >= seconds && this.audioState === AudioStatePlay) {
-          const seek = seconds * (360 / this.session.getDuration());
-          this.setState({ progress: seek });
-        } else if (this.audioState === AudioStateStop) {
-          this.setState({ progress: 0 });
+    if (this.session !== undefined && this.session !== null) {
+      this.timer = setInterval(() => {
+        if (this.session) {
+          this.session.getCurrentTime((seconds) => {
+            if (this.duration >= seconds && this.audioState === AudioStatePlay) {
+              const seek = seconds * (360 / this.session.getDuration());
+              this.setState({ progress: seek });
+            } else if (this.audioState === AudioStateStop) {
+              this.setState({ progress: 0 });
+            }
+          });
         }
-      });
-    }, 1000);
+      }, 1000);
+    }
   }
 
   clearTimer() {
@@ -225,32 +372,37 @@ class DiveThruPlayerScreen extends Component {
   }
 
   sliderValueChange(value) {
-    this.setState({ progress: value, isPlaying: true });
-    const seek = value * (this.session.getDuration() / 360);
-    this.session.setCurrentTime(seek);
-    this.audioState = AudioStatePlay;
-    this.play();
+    if (this.session !== undefined && this.session !== null) {
+      this.setState({ progress: value, isPlaying: true });
+      if (this.session.getDuration() !== undefined || this.session.getDuration() !== null) {
+        const seek = value * (this.session.getDuration() / 360);
+        this.session.setCurrentTime(seek);
+      }
+      this.audioState = AudioStatePlay;
+      this.play();
+    }
   }
 
   changePlayState() {
     if (this.state.isPlaying) {
       this.setState({ isPlaying: false });
       this.pause();
-    } else {
-      if (this.session) {
+    } else if (this.session) {
+      if (this.session !== undefined && this.session !== null) {
         if (this.session.isLoaded() === true) {
           if (this.state.isResume === true) {
-            this.setState({ modalVisible: true, isResume: false });
-          } else {
-            if (this.state.halted > 0.0) {
-              this.session.setCurrentTime(this.state.halted);
-              const seek = this.state.halted * (360 / this.session.getDuration());
-              this.setState({ progress: seek, isPlaying: true });
-              this.play();
-            } else {
-              this.setState({ isPlaying: true });
-              this.play();
+            if (this.state.session_id === this.state.haltedSessionId
+              && this.state.slot === this.state.haltedSlot) {
+              this.setState({ modalVisible: true, isResume: false });
             }
+          } else if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
+            this.session.setCurrentTime(this.state.halted);
+            const seek = this.state.halted * (360 / this.session.getDuration());
+            this.setState({ progress: seek, isPlaying: true });
+            this.play();
+          } else {
+            this.setState({ isPlaying: true });
+            this.play();
           }
         }
       }
@@ -263,33 +415,236 @@ class DiveThruPlayerScreen extends Component {
   }
 
   lastSession = () => {
-    this.session.setCurrentTime(this.state.halted);
-    const seek = this.state.halted * (360 / this.session.getDuration());
-    this.setState({ modalVisible: false, progress: seek, halted: 0.0, isPlaying: true });
-    this.play();
+    // console.log('lastsession-->' + this.state.halted);
+    if (this.session !== undefined && this.session !== null) {
+      this.session.setCurrentTime(this.state.halted);
+      const seek = this.state.halted * (360 / this.session.getDuration());
+      // console.log('seek-->' + seek);
+      this.setState({ modalVisible: false, progress: seek, halted: 0.0, isPlaying: true });
+      this.play();
+    }
   }
 
-  // updateCurrentStreakData() {
-  //   const category = this.state.category;
-  //   const bundleId = this.state.bundleID;
-  //   const sessionId = this.state.session_id;
+  updateCurrentStreakData() {
+    const category = this.state.category;
+    // const category = 'Deep Dive';
+    const bundleId = this.state.bundleID;
+    // const bundleId = '-L8ns8Mw6vmSjrzPITKt';
+    const sessionId = this.state.session_id;
+    // const sessionId = '-L8pcM8Y2z-_N9nDx9SW';
+    const subcategoryId = this.state.subcategoryId;
 
-  //   AsyncStorage.getItem('user_id').then((value) => {
-  //     if (value != null) {
-  //       const userStreak = {
-  //         session: sessionId,
-  //       };
-  //       const refRemove = firebaseApp.database().ref('Users').child(value).child('currentStreak');
-  //       refRemove.remove();
-  //       const ref = firebaseApp.database().ref('Users').child(value).child('currentStreak/' + category + '/Bundle/' + bundleId + '/Session/' + sessionId);
-  //       ref.set(userStreak);
-  //     }
-  //   });
-  // }
+    AsyncStorage.getItem('user_id').then((value) => {
+      if (value !== null) {
+        // console.log('sessionType-->' + this.state.sessionType);
+        const userStreak = {
+          session: sessionId,
+        };
+        const Streak = {
+          streak: this.state.Streak,
+        };
+        if (this.state.sessionType === 'Session') {
+          const ref = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/Session`);
+          ref.once('value').then((dataSnapshot) => {
+            if (dataSnapshot.exists()) {
+              let finalSessions = {};
+              dataSnapshot.forEach((child) => {
+                const LastSessions = child.val();
+                const key = child.key;
+                const val1 = {
+                  session: sessionId,
+                };
+                finalSessions = {
+                  [key]: LastSessions,
+                  [sessionId]: val1,
+                };
+              });
+              const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}`);
+              ref2.update(Streak);
+
+              const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/Session`);
+              ref1.update(finalSessions);
+            } else {
+              const refRemove = firebaseApp.database().ref('Users').child(value).child('currentStreak');
+              refRemove.remove();
+
+              const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}`);
+              ref2.update(Streak);
+
+              const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/Session/${sessionId}`);
+              ref1.update(userStreak);
+            }
+          });
+        } else if (this.state.sessionType === 'Bundle') {
+          // alert('Bundle--->')
+          const ref = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/Bundle`);
+          ref.once('value').then((dataSnapshot) => {
+            if (dataSnapshot.exists()) {
+              let finalSessions = {};
+              dataSnapshot.forEach((child) => {
+                if (child.key === bundleId) {
+                  if (child.exists) {
+                    let LastSessions = {};
+                    child.forEach((data) => {
+                      LastSessions = data.val();
+                      Object.keys(LastSessions).forEach((key) => {
+                        let val = [];
+                        val = LastSessions[key];
+                        const val1 = {
+                          session: sessionId,
+                        };
+                        finalSessions = {
+                          [key]: val,
+                          [sessionId]: val1,
+                        };
+                      });
+                      const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/Bundle/${bundleId}`);
+                      ref2.update(Streak);
+
+                      const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/Bundle/${bundleId}/Session/`);
+                      ref1.update(finalSessions);
+                    });
+                  }
+                } else {
+                  const refRemove = firebaseApp.database().ref('Users').child(value).child('currentStreak');
+                  refRemove.remove();
+
+                  const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/Bundle/${bundleId}`);
+                  ref2.update(Streak);
+
+                  const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/Bundle/${bundleId}/Session/${sessionId}`);
+                  ref1.update(userStreak);
+                }
+              });
+            } else {
+              const refRemove = firebaseApp.database().ref('Users').child(value).child('currentStreak');
+              refRemove.remove();
+
+              const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/Bundle/${bundleId}`);
+              ref2.update(Streak);
+
+              const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/Bundle/${bundleId}/Session/${sessionId}`);
+              ref1.update(userStreak);
+            }
+          });
+        } else if (this.state.sessionType === 'SubCategoryBundle') {
+          // alert('SubCategoryBundle--->')
+          const ref = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}/Bundle`);
+          ref.once('value').then((dataSnapshot) => {
+            if (dataSnapshot.exists()) {
+              let finalSessions = {};
+              dataSnapshot.forEach((child) => {
+                if (child.key === bundleId) {
+                  if (child.exists) {
+                    let LastSessions = {};
+                    child.forEach((data) => {
+                      LastSessions = data.val();
+                      Object.keys(LastSessions).forEach((key) => {
+                        let val = [];
+                        val = LastSessions[key];
+                        const val1 = {
+                          session: sessionId,
+                        };
+                        finalSessions = {
+                          [key]: val,
+                          [sessionId]: val1,
+                        };
+                      });
+                      const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}/Bundle/${bundleId}`);
+                      ref2.update(Streak);
+
+                      const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}/Bundle/${bundleId}/Session`);
+                      ref1.update(finalSessions);
+                    });
+                  }
+                } else {
+                  const refRemove = firebaseApp.database().ref('Users').child(value).child('currentStreak');
+                  refRemove.remove();
+
+                  const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}/Bundle/${bundleId}`);
+                  ref2.update(Streak);
+
+                  const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}/Bundle/${bundleId}/Session/${sessionId}`);
+                  ref1.update(userStreak);
+                }
+              });
+            } else {
+              const refRemove = firebaseApp.database().ref('Users').child(value).child('currentStreak');
+              refRemove.remove();
+
+              const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}/Bundle/${bundleId}`);
+              ref2.update(Streak);
+
+              const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}/Bundle/${bundleId}/Session/${sessionId}`);
+              ref1.update(userStreak);
+            }
+          });
+        } else if (this.state.sessionType === 'SubCategorySession') {
+          // alert('SubCategorySession--->')
+          const ref = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory`);
+          ref.once('value').then((dataSnapshot) => {
+            if (dataSnapshot.exists()) {
+              let finalSessions = {};
+              dataSnapshot.forEach((child) => {
+                if (child.key === subcategoryId) {
+                  if (child.exists) {
+                    let LastSessions = {};
+                    child.forEach((data) => {
+                      LastSessions = data.val();
+                      Object.keys(LastSessions).forEach((key) => {
+                        let val = [];
+                        val = LastSessions[key];
+                        const val1 = {
+                          session: sessionId,
+                        };
+                        finalSessions = {
+                          [key]: val,
+                          [sessionId]: val1,
+                        };
+                      });
+
+                      // alert('IF')
+                      // alert('IF DATA-->' + JSON.stringify(finalSessions))
+                      const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}`);
+                      ref2.update(Streak);
+
+                      const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}/Session/`);
+                      ref1.update(finalSessions);
+                      // alert('IF DATA UPDATEd-->')
+                    });
+                  }
+                } else {
+                  const refRemove = firebaseApp.database().ref('Users').child(value).child('currentStreak');
+                  refRemove.remove();
+
+                  const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}`);
+                  ref2.update(Streak);
+
+                  const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}/Session/${sessionId}`);
+                  ref1.update(userStreak);
+                }
+              });
+            } else {
+              // alert('ELSE IF')
+              const refRemove = firebaseApp.database().ref('Users').child(value).child('currentStreak');
+              refRemove.remove();
+
+              const ref2 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}`);
+              ref2.update(Streak);
+
+              const ref1 = firebaseApp.database().ref('Users').child(value).child(`currentStreak/${category}/SubCategory/${subcategoryId}/Session/${sessionId}`);
+              ref1.update(userStreak);
+            }
+          });
+        }
+        // this.getDataFromCategory();
+      }
+    });
+  }
 
   saveJournal = () => {
     const CurrentDate = Moment().format('YYYY-MM-DD HH:mm:ss');
-    const category = this.state.category;
+    const category = this.state.category === '10 Day Intro Program' ? '10 Day' : this.state.category;
     const re = /^[a-zA-Z0-9]{1}/;
     if (this.state.chatBox === 'As I read what I wrote, I connected with...' || this.state.chatBox === '' || re.test(this.state.chatBox) === false) {
       this.showErrorAlertView('Please write your journal');
@@ -299,14 +654,14 @@ class DiveThruPlayerScreen extends Component {
           journal_text: this.state.chatBox,
           date: CurrentDate,
           category_name: category,
-          bundle_name: this.state.sessionName,
-          session_name: this.state.title,
+          session_name: this.state.sessionName,
+          bundle_name: this.state.budle === undefined ? '' : this.state.budle,
         };
         const ref = firebaseApp.database().ref('Journal').child(value);
         ref.push(JournalData);
         this.updateUserDataForPaidCategory();
       });
-      this.setState({ playermodalvisible: false });
+      // this.setState({ playermodalvisible: false });
     }
   }
 
@@ -323,26 +678,40 @@ class DiveThruPlayerScreen extends Component {
         const totalCount = totalConversation + 1;
         const totalTime = dataSnapshot.val().total_time_divethru + meditationAudioTime;
         ref.update({ completed_conversation: totalCount, total_time_divethru: totalTime });
-        this.props.navigation.goBack();
+        // this.props.navigation.state.params.returnData();
+        this.props.navigation.navigate('FinishedConversation', {
+          quote_image: this.state.session_quote_img,
+          quote_desc: this.state.session_quote_description,
+          showsubscribe: false,
+          onplayer: false,
+        });
       }
     });
   }
 
   updateUserDataForPaidCategory() {
-   // this.updateCurrentStreakData();
+    this.getCategoryWiseCurrentStreak();
+    // this.updateCurrentStreakData();
     let bundleId = '';
+    // console.log(`cat->${this.state.category_Id}`);
+    // console.log(`bundle->${this.state.bundleID}`);
+    // console.log(`subcat->${this.state.subcategoryId}`);
     if (this.state.category_Id !== undefined) {
       bundleId = this.state.category_Id;
-    } else {
+    } else if (this.state.bundleID !== undefined) {
       bundleId = this.state.bundleID;
+    } else {
+      bundleId = this.state.subcategoryId;
     }
-    
     const sessionId = this.state.session_id;
 
     AsyncStorage.getItem('user_id').then((value) => {
+      this.setState({ playermodalvisible: false });
       if (value != null) {
-        const ref = firebaseApp.database().ref('Users').child(value).child('streak/' + bundleId + '/Session/' + sessionId);
-        const meditationAudioTime = parseInt(this.state.meditation_audio_time[this.state.index], 10);
+        const ref = firebaseApp.database().ref('Users').child(value).child(`streak/${bundleId}/Session/${sessionId}`);
+        const meditationAudioTime = parseInt(
+          this.state.meditation_audio_time[this.state.index], 10,
+        );
         ref.once('value').then((dataSnapshot) => {
           if (dataSnapshot.exists()) {
             const totalVisited = dataSnapshot.val().total_visited;
@@ -355,19 +724,37 @@ class DiveThruPlayerScreen extends Component {
             this.updateTotalConversationInDB(value);
           }
         });
+        const refRemove = firebaseApp.database().ref('Users').child(value).child(`sessionHalted/${sessionId}`);
+        refRemove.remove();
+        // const ref1 = firebaseApp.database().ref('Users').child(value).child('sessionHalted/'
+        // + sessionId);
+        // const userHalted = {
+        //   halted: 0.0,
+        //   slot: this.state.slot,
+        // };
+        // ref1.update(userHalted);
       }
     }).done();
   }
 
   timeButtonClicked(index) {
-    this.setState({ isLoaded: false, isTimeDisable: true });
+    console.log(`${index}...timeButtonClicked: ${JSON.stringify(this.state.meditation_audio)}`);
+    this.setState({ isLoaded: false, isTimeDisable: true, slot: index, isPlayerDisable: true });
     this.session = new Sound(this.state.meditation_audio[index], null, (e) => {
       if (e) {
         console.log('error loading track:', e);
-      } else {
-        this.session.setCategory('Playback');
-        this.setState({ isLoaded: true, isTimeDisable: false });
+      } else if (this.session !== null || this.session !== undefined) {
+        // this.session.setCategory('Playback');
+        Sound.setCategory('Playback');
+        if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
+          this.setState({ isLoaded: true, isResume: true, isTimeDisable: false, isPlayerDisable: false });
+        } else {
+          this.setState({ isLoaded: true, isTimeDisable: false, isPlayerDisable: false });
+        }
       }
+        // this.session.setCategory('Playback');
+        // this.setState({ isLoaded: true, isTimeDisable: false });
+      // }
     });
   }
 
@@ -377,6 +764,63 @@ class DiveThruPlayerScreen extends Component {
     const dR = this.props.dialRadius;
     const startCoord = this.polarToCartesian(0);
     const endCoord = this.polarToCartesian(this.state.progress);
+    let lock = null;
+    if (this.state.membershipType !== undefined && this.state.category === 'Quick Dive') {
+      if (this.state.sessionData.isSessionAvailable === true && this.state.membershipType === 'Paid') {
+        lock = (
+          this.state.isPlaying
+          ?
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute' }} />
+          :
+            (
+              <CustomIcon
+                onPress={() => { this.changePlayState(); }}
+                name="ok" size={26} color="#bf1313"
+                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute' }}
+              />
+            )
+        );
+      } else if (this.state.membershipType === 'Free' && this.state.sessionData.sessionSubscription === true
+        && this.state.sessionData.isSessionAvailable === true) {
+        lock = (
+          this.state.isPlaying
+          ?
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute' }} />
+          :
+            (
+              <CustomIcon
+                onPress={() => { this.changePlayState(); }}
+                name="ok" size={26} color="#bf1313"
+                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute' }}
+              />
+            )
+          );
+      } else if (this.state.membershipType === 'Free' && this.state.sessionData.isSessionAvailable === true) {
+        lock = (
+          this.state.isPlaying
+          ?
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute' }} />
+          :
+            (
+              <CustomIcon
+                onPress={() => { this.changePlayState(); }}
+                name="ok" size={26} color="#bf1313"
+                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute' }}
+              />
+            )
+        );
+      } else {
+        lock = (
+          <Icon
+            onPress={() => { this.changePlayState(); }}
+            name={this.state.isPlaying ? 'pause' : 'play-arrow'}
+            size={50}
+            style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute', alignItems: 'center' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+          />
+        );
+      }
+    }
+
     return (<Svg
       width={150}
       height={150}
@@ -399,13 +843,24 @@ class DiveThruPlayerScreen extends Component {
         strokeWidth={0}
         fill={colors.white}
       />
-      { Platform.OS === 'ios'
-          ? (
-            <View style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: 70, height: 70, backgroundColor: colors.transparent }} >
-              <Icon onPress={() => { this.changePlayState(); }} name={this.state.isPlaying ? 'pause' : 'play-arrow'} size={50} style={{ color: colors.grey700, position: 'absolute' }} />
-            </View>
-          )
-        : null }
+      {Platform.OS === 'ios'
+        ? (
+          <View style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: 70, height: 70, backgroundColor: colors.transparent }} >
+            {
+              this.state.category === 'Quick Dive'
+              ?
+                lock
+              :
+                <Icon
+                  onPress={() => { this.changePlayState(); }}
+                  name={this.state.isPlaying ? 'pause' : 'play-arrow'}
+                  size={50}
+                  style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute', alignItems: 'center' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+                />
+            }
+          </View>
+        )
+        : null}
       <Path
         stroke={colors.white}
         opacity="0.5"
@@ -426,6 +881,62 @@ class DiveThruPlayerScreen extends Component {
   }
 
   render() {
+    let lock = null;
+    if (this.state.membershipType !== undefined && this.state.category === 'Quick Dive') {
+      if (this.state.sessionData.isSessionAvailable === true && this.state.membershipType === 'Paid') {
+        lock = (
+          this.state.isPlaying
+          ?
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }} />
+          :
+            (
+              <CustomIcon
+                onPress={() => { this.changePlayState(); }}
+                name="ok" size={26} color="#bf1313"
+                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+              />
+            )
+        );
+      } else if (this.state.membershipType === 'Free' && this.state.sessionData.sessionSubscription === true
+        && this.state.sessionData.isSessionAvailable === true) {
+        lock = (
+          this.state.isPlaying
+          ?
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }} />
+          :
+            (
+              <CustomIcon
+                onPress={() => { this.changePlayState(); }}
+                name="ok" size={26} color="#bf1313"
+                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+              />
+            )
+          );
+      } else if (this.state.membershipType === 'Free' && this.state.sessionData.isSessionAvailable === true) {
+        lock = (
+          this.state.isPlaying
+          ?
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }} />
+          :
+            (
+              <CustomIcon
+                onPress={() => { this.changePlayState(); }}
+                name="ok" size={26} color="#bf1313"
+                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+              />
+            )
+        );
+      } else {
+        lock = (
+          <Icon
+            onPress={() => { this.changePlayState(); }}
+            name={this.state.isPlaying ? 'pause' : 'play-arrow'}
+            size={50}
+            style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+          />
+        );
+      }
+    }
     const { animationType, supportedOrientation } = this.props;
     return (
       <View style={styles.container}>
@@ -434,6 +945,7 @@ class DiveThruPlayerScreen extends Component {
           // backgroundColor={colors.red700}
           source={{ uri: this.state.sessionImg }}
           style={styles.backImage}
+          resizeMethod="resize"
         >
           <View style={styles.iconContainer}>
             <View style={styles.iconLeftContainer}>
@@ -465,125 +977,166 @@ class DiveThruPlayerScreen extends Component {
             </View>
           </View>
           <View style={styles.centerContainer}>
-            { Platform.OS === 'ios'
-            ? (
-              <View style={styles.playerContainer}>
-                <Text style={styles.text}>
-                  {this.state.sessionName}
-                </Text>
-                <View style={styles.sliderContainer}>
-                  {this.renderPlayer()}
+            {Platform.OS === 'ios'
+              ? (
+                <View style={styles.playerContainer}>
+                  <Text style={styles.text}>
+                    {this.state.sessionName}
+                  </Text>
+                  {(this.state.meditation_audio !== undefined) ?
+                    <View pointerEvents={this.state.isPlayerDisable === false ? undefined : 'none'} style={styles.sliderContainer}>
+                      {this.renderPlayer()}
+                    </View>
+                  : null
+                  }
+                  <View style={styles.timeContainer}>
+                    <View style={styles.timeInnerContainer}>
+                      {(this.state.meditation_audio !== undefined) ?
+                        this.state.meditation_audio.map((data, index) => {
+                          return (
+                          this.state.meditation_audio_time[index] !== undefined
+                          ?
+                            <Button
+                              primary
+                              title=""
+                              text={`${this.state.meditation_audio_time[index]}${'\n'}min`}
+                              upperCase={false}
+                              disabled={this.state.isTimeDisable}
+                              onPress={() => {
+                                this.timeButtonClicked(index, this.setState({ index }));
+                              }}
+                              style={
+                                this.state.index === index
+                                  ? timeButtonClickStyles
+                                  : timeButtonStyles
+                              }
+                            />
+                          : null
+                          );
+                        })
+                      : null
+                      }
+                      {/* <Button
+                  primary
+                  title=""
+                  text={this.state.meditation_audio_time[0]}
+                  upperCase={false}
+                  onPress={() => { this.timeButtonClicked(1, this.setState({ Title: '3 min' })); }}
+                  style={this.state.Title === '3 min' ? timeButtonClickStyles : timeButtonStyles}
+                  // style={timeButtonStyles}
+                />
+                <Button
+                  primary
+                  title=""
+                  text={this.state.meditation_audio_time[1]}
+                  upperCase={false}
+                  onPress={() => { this.timeButtonClicked(2, this.setState({ Title: '5 min' })); }}
+                  style={this.state.Title === '5 min' ? timeButtonClickStyles : timeButtonStyles}
+                  // style={timeButtonStyles}
+                />
+                <Button
+                  primary
+                  title=""
+                  text={this.state.meditation_audio_time[2]}
+                  upperCase={false}
+                  onPress={() => { this.timeButtonClicked(3, this.setState({ Title: '10 min' })); }}
+                  style={this.state.Title === '10 min' ? timeButtonClickStyles : timeButtonStyles}
+                  // style={timeButtonStyles}
+                /> */}
+                    </View>
+                  </View>
+
+                  {this.state.isLoaded
+                    ? null
+                    : (<Text style={[styles.topText, { marginTop: 10 }]}>
+                      ( L O A D I N G . . . )
+                      </Text>)
+                  }
                 </View>
-                <View style={styles.timeContainer}>
-                  <View style={styles.timeInnerContainer}>
-                    { this.state.meditation_audio_time.map((data, index) => {
-                      return (
-                        <Button
-                          primary
-                          title=""
-                          text={data + `${'\n'}min`}
-                          upperCase={false}
-                          disabled={this.state.isTimeDisable}
-                          onPress={() => { this.timeButtonClicked(index, this.setState({ index })); }}
-                          style={this.state.index === index ? timeButtonClickStyles : timeButtonStyles}
-                        />
-                      );
-                    })
+              )
+              : (
+                <View style={styles.playerContainer}>
+                  <Text style={styles.text}>
+                    {this.state.sessionName}
+                  </Text>
+                  <View pointerEvents={this.state.isPlayerDisable === false ? undefined : 'none'} style={styles.sliderContainer}>
+                    {this.renderPlayer()}
+                    {
+                      this.state.category === 'Quick Dive'
+                    ?
+                      lock
+                    :
+                      <Icon
+                        onPress={() => { this.changePlayState(); }}
+                        name={this.state.isPlaying ? 'pause' : 'play-arrow'}
+                        size={50}
+                        style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute', alignItems: 'center' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+                      />
                     }
-                    {/* <Button
-                      primary
-                      title=""
-                      text={this.state.meditation_audio_time[0]}
-                      upperCase={false}
-                      onPress={() => { this.timeButtonClicked(1, this.setState({ Title: '3 min' })); }}
-                      style={this.state.Title === '3 min' ? timeButtonClickStyles : timeButtonStyles}
-                      // style={timeButtonStyles}
-                    />
-                    <Button
-                      primary
-                      title=""
-                      text={this.state.meditation_audio_time[1]}
-                      upperCase={false}
-                      onPress={() => { this.timeButtonClicked(2, this.setState({ Title: '5 min' })); }}
-                      style={this.state.Title === '5 min' ? timeButtonClickStyles : timeButtonStyles}
-                      // style={timeButtonStyles}
-                    />
-                    <Button
-                      primary
-                      title=""
-                      text={this.state.meditation_audio_time[2]}
-                      upperCase={false}
-                      onPress={() => { this.timeButtonClicked(3, this.setState({ Title: '10 min' })); }}
-                      style={this.state.Title === '10 min' ? timeButtonClickStyles : timeButtonStyles}
-                      // style={timeButtonStyles}
+                    { /* <Icon onPress={() => { this.changePlayState(); }}
+                    name={this.state.isPlaying ? 'pause' : 'play-arrow'} size={50}
+                    style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }}
                     /> */}
                   </View>
-                </View>
-              </View>
-            )
-            : (
-              <View style={styles.playerContainer}>
-                <Text style={styles.text}>
-                  {this.state.sessionName}
-                </Text>
-                <View style={styles.sliderContainer}>
-                  {this.renderPlayer()}
-                  <Icon onPress={() => { this.changePlayState(); }} name={this.state.isPlaying ? 'pause' : 'play-arrow'} size={50} style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }} />
-                </View>
-                <View style={styles.timeContainer}>
-                  <View style={styles.timeInnerContainer}>
-                    { this.state.meditation_audio_time.map((data, index) => {
-                      return (
-                        <Button
-                          primary
-                          title=""
-                          // text={data + ' min'}
-                          text={data + `${'\n'}min`}
-                          upperCase={false}
-                          disabled={this.state.isTimeDisable}
-                          onPress={() => { this.timeButtonClicked(index, this.setState({ index })); }}
-                          style={this.state.index === index ? timeButtonClickStyles : timeButtonStyles}
-                        />
-                      );
-                    })
-                    }
-                    {/* <Button
-                      primary
-                      title=""
-                      text="5" // {this.state.meditation_audio_time[0]}
-                      upperCase={false}
-                      onPress={() => { this.timeButtonClicked(1, this.setState({ Title: '3 min' })); }}
-                      style={this.state.Title === '3 min' ? timeButtonClickStyles : timeButtonStyles}
-                      // style={timeButtonStyles}
-                    />
-                    <Button
-                      primary
-                      title=""
-                      text="6" 
-                      upperCase={false}
-                      onPress={() => { this.timeButtonClicked(2, this.setState({ Title: '5 min' })); }}
-                      style={this.state.Title === '5 min' ? timeButtonClickStyles : timeButtonStyles}
-                      // style={timeButtonStyles}
-                    />
-                    <Button
-                      primary
-                      title=""
-                      text="7"
-                      upperCase={false}
-                      onPress={() => { this.timeButtonClicked(3, this.setState({ Title: '10 min' })); }}
-                      style={this.state.Title === '10 min' ? timeButtonClickStyles : timeButtonStyles}
-                      // style={timeButtonStyles}
-                    /> */}
+                  <View style={styles.timeContainer}>
+                    <View style={styles.timeInnerContainer}>
+                      {this.state.meditation_audio.map((data, index) => {
+                        return (
+                          <Button
+                            primary
+                            title=""
+                            // text={data + ' min'}
+                            text={`${this.state.meditation_audio_time[index]}${'\n'}min`}
+                            upperCase={false}
+                            disabled={this.state.isTimeDisable}
+                            onPress={() => {
+                              this.timeButtonClicked(index, this.setState({ index }));
+                            }}
+                            style={this.state.index === index
+                              ? timeButtonClickStyles
+                              : timeButtonStyles}
+                          />
+                        );
+                      })
+                      }
+                      { /* <Button
+                primary
+                title=""
+                text="5" // {this.state.meditation_audio_time[0]}
+                upperCase={false}
+                onPress={() => { this.timeButtonClicked(1, this.setState({ Title: '3 min' })); }}
+                style={this.state.Title === '3 min' ? timeButtonClickStyles : timeButtonStyles}
+                // style={timeButtonStyles}
+              />
+              <Button
+                primary
+                title=""
+                text="6"
+                upperCase={false}
+                onPress={() => { this.timeButtonClicked(2, this.setState({ Title: '5 min' })); }}
+                style={this.state.Title === '5 min' ? timeButtonClickStyles : timeButtonStyles}
+                // style={timeButtonStyles}
+              />
+              <Button
+                primary
+                title=""
+                text="7"
+                upperCase={false}
+                onPress={() => { this.timeButtonClicked(3, this.setState({ Title: '10 min' })); }}
+                style={this.state.Title === '10 min' ? timeButtonClickStyles : timeButtonStyles}
+                // style={timeButtonStyles}
+              /> */}
+                    </View>
                   </View>
+
+                  {this.state.isLoaded
+                    ? null
+                    : (<Text style={[styles.topText, { marginTop: 10 }]}>
+                      ( L O A D I N G . . . )
+                      </Text>)
+                  }
                 </View>
-              </View>
-            )
-            }
-            { this.state.isLoaded
-              ? null
-              : (<Text style={[styles.topText, { marginTop: 10 }]}>
-                ( L O A D I N G . . . )
-                </Text>)
+              )
             }
           </View>
         </ImageBackground>
@@ -623,29 +1176,57 @@ class DiveThruPlayerScreen extends Component {
           onRequestClose={() => { this.closeModal(); }}
           supportedOrientations={supportedOrientation}
         >
-          <KeyboardAwareScrollView style={{ backgroundColor: 'rgba(0, 0, 0, 0.5)', height: '100%' }}>
-            <View style={styles.innerContainer}>
-              <Text style={styles.headingtext}>Write your Journal</Text>
-              <TextInput
-                multiline
-                maxLength={200}
-                placeholder="As I read what I wrote, I connected with..."
-                numberOfLines={3}
-                onChangeText={(e) => { this.setState({ chatBox: e }); }}
-                value={this.state.chatBox}
-                style={styles.textinput}
-                underlineColorAndroid="transparent"
+          <View style={styles.popupcontainer}>
+            <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
+              <View style={styles.innerContainer}>
+                <Text style={styles.headingtext}>Write your Journal</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    multiline
+                    maxLength={500}
+                    placeholder="As I read what I wrote, I connected with..."
+                    numberOfLines={3}
+                    onChangeText={(e) => { this.setState({ chatBox: e }); }}
+                    value={this.state.chatBox}
+                    style={styles.textinput}
+                    underlineColorAndroid="transparent"
+                    autoFocus
+                  />
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                  <Button
+                    accent
+                    text="A D D  I N  M Y  J O U R N A L"
+                    onPress={() => { this.saveJournal(); }}
+                    upperCase={false}
+                    style={popupbuttonStyles}
+                  />
+                  <View style={{ marginTop: 20, marginLeft: 10, marginRight: 10, marginBottom: 10, justifyContent: 'center', alignItems: 'center', height: Platform.OS === 'iosl' ? 50 : 55 }}>
+                    <CircularProgress
+                      size={26}
+                      width={3}
+                      rotation={0}
+                      fill={((this.state.chatBox.length) * 100) / 500}
+                      tintColor="#7dd3d5"
+                      backgroundColor="#8a8a8a6e"
+                    >
+                      {() => (
+                        <Text style={{ fontSize: 10, color: '#7dd3d5' }}>
+                          {/* { Math.round(500 - ((500 * fill) / 100)) } */
+                              (500 - this.state.chatBox.length) <= 20 ? 500 - this.state.chatBox.length : ''
+                            }
+                        </Text>
+                        )}
+                    </CircularProgress>
+                  </View>
+                </View>
+              </View>
+              <DropdownAlert
+                updateStatusBar={false} ref={(ref) => { this.dropdown = ref; }}
+                onClose={data => this.onClose(data)}
               />
-              <Button
-                accent
-                text="Add in My Journal"
-                onPress={() => { this.saveJournal(); }}
-                upperCase={false}
-                style={popupbuttonStyles}
-              />
-              <DropdownAlert updateStatusBar={false} ref={(ref) => { this.dropdown = ref; }} onClose={data => this.onClose(data)} />
-            </View>
-          </KeyboardAwareScrollView>
+            </KeyboardAwareScrollView>
+          </View>
         </Modal>
       </View>
     );
@@ -653,15 +1234,15 @@ class DiveThruPlayerScreen extends Component {
 }
 
 DiveThruPlayerScreen.defaultProps = {
-  meterColor: colors.red100,
-  textColor: colors.blue100,
-  onTouchUp: undefined,
-  playState: 'play-arrow',
+  // meterColor: colors.red100,
+  // textColor: colors.blue100,
+  // onTouchUp: undefined,
+  // playState: 'play-arrow',
   btnRadius: 15,
   dialRadius: 60,
-  dialWidth: 5,
-  textSize: 10,
-  value: 0,
+  // dialWidth: 5,
+  // textSize: 10,
+  // value: 0,
   angle: 0,
   xCenter: Dimensions.get('window').width / 2,
   yCenter: Dimensions.get('window').height / 2,
@@ -671,22 +1252,22 @@ DiveThruPlayerScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   dialRadius: PropTypes.number,
   btnRadius: PropTypes.number,
-  dialWidth: PropTypes.number,
+  // dialWidth: PropTypes.number,
   xCenter: PropTypes.number,
   yCenter: PropTypes.number,
-  onValueChange: PropTypes.func,
-  onTouchUp: PropTypes.func,
+  // onValueChange: PropTypes.func,
+  // onTouchUp: PropTypes.func,
   // width: PropTypes.number,
-  textSize: PropTypes.number,
+  // textSize: PropTypes.number,
   // height: PropTypes.number,
-  value: PropTypes.number,
+  // value: PropTypes.number,
   // angle: PropTypes.number,
-  meterColor: PropTypes.string,
-  textColor: PropTypes.string,
-  playState: PropTypes.string,
+  // meterColor: PropTypes.string,
+  // textColor: PropTypes.string,
+  // playState: PropTypes.string,
   animationType: PropTypes.string,
   supportedOrientation: PropTypes.array,
-  transparent: PropTypes.bool,
+  // transparent: PropTypes.bool,
 };
 
 export default DiveThruPlayerScreen;

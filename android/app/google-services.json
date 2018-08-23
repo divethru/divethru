@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "53159239409",
-    "firebase_url": "https://divethru-71c56.firebaseio.com",
-    "project_id": "divethru-71c56",
-    "storage_bucket": "divethru-71c56.appspot.com"
+    "project_number": "5071479695",
+    "firebase_url": "https://divethru-14f14.firebaseio.com",
+    "project_id": "divethru-14f14",
+    "storage_bucket": "divethru-14f14.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:53159239409:android:7580ff0c18478ad8",
+        "mobilesdk_app_id": "1:5071479695:android:3f95d8468c4b63ff",
         "android_client_info": {
-          "package_name": "com.divethru"
+          "package_name": "com.divethru.divethru"
         }
       },
       "oauth_client": [
         {
-          "client_id": "53159239409-et6fpsl3co9i1ib8rg36i4t7s0pp8vdk.apps.googleusercontent.com",
+          "client_id": "5071479695-3umfm1194ntqh0216o4fc6trdnlgf9hn.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAdrUTUFCEJwa7Tb1Rb-e53JR2xv66-6aI"
+          "current_key": "AIzaSyCWiA44OVZyGzP-TEmJiR7_BIBkAbsuXsE"
         }
       ],
       "services": {

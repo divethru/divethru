@@ -53,6 +53,75 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 18,
   },
+  closeIcon: {
+    height: 20,
+    width: 20,
+    alignSelf: 'flex-end',
+    marginRight: 20,
+    marginTop: 40,
+  },
+  hideView: {
+    display: 'none',
+  },
+  containermodal: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: '90%',
+  },
+  innerContainer: {
+    borderRadius: 8,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 15,
+    height: '90%',
+  },
+  content: {
+    height: '100%',
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 26,
+    color: 'white',
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 22,
+    marginTop: '4%',
+    color: 'white',
+    textAlign: 'center',
+  },
+  tchblebtn: {
+    marginTop: '6%',
+    backgroundColor: 'white',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    height: 300,
+    width: 300 - 30,
+  },
+  boxTitle1: {
+    color: 'black',
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  boxTitle2: {
+    color: 'black',
+    fontSize: 22,
+    textAlign: 'center',
+  },
+  button: {
+    backgroundColor: '#7dd3d5',
+    justifyContent: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    color: 'rgba(0, 0, 0, 0.5)',
+  },
+  btnTxt: {
+    fontSize: 18,
+    color: 'rgba(0, 0, 0, 0.5)',
+  },
 });
 
 export const buttonStyles = StyleSheet.create({
@@ -64,7 +133,7 @@ export const buttonStyles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 5,
     marginBottom: 35,
     height: Platform.OS === 'ios' ? 40 : 45,
     backgroundColor: '#7dd3d5',

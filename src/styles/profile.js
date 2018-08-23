@@ -1,10 +1,11 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
 import { colors } from './theme';
+
+const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
     backgroundColor: colors.white,
   },
   text: {
@@ -42,6 +43,9 @@ const styles = StyleSheet.create({
     borderBottomColor: 'grey',
     borderBottomWidth: 0.3,
   },
+  submenu: {
+    flex: 1,
+  },
   subViewText: {
     fontSize: 14,
     color: 'grey',
@@ -55,13 +59,23 @@ const styles = StyleSheet.create({
     tintColor: 'grey',
     resizeMode: 'stretch',
   },
-  // rightButtons: {
-  //   position: 'absolute',
-  //   top: 26,
-  //   right: 26,
-  //   height: '80%',
-  //   width: '3.98%',
-  // },
+  hideView: {
+    display: 'none',
+  },
+  seperator: {
+    justifyContent: 'center',
+    backgroundColor: colors.grey200,
+    height: 1,
+  },
+  boldSeperator: {
+    justifyContent: 'center',
+    backgroundColor: colors.grey300,
+    height: 1,
+  },
+  arrowImg: {
+    height: 10,
+    width: 25,
+  },
   BottomViewStyle: {
     padding: 16,
     alignItems: 'center',
@@ -86,17 +100,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   upperBackgroundText: {
-    fontSize: 20,
-    color: '#34495e',
+    fontSize: 30,
+    textAlign: 'center',
+    paddingBottom: 5,
   },
   randerView: {
-    padding: '4%',
+    margin: 10,
     width: '100%',
     flexDirection: 'row',
   },
   rightView: {
     width: '75%',
     marginRight: '10%',
+    justifyContent: 'center',
+    flex: 1,
   },
   leftView: {
     width: '25%',
@@ -105,9 +122,13 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: 'grey',
-    // textAlign: 'justify',
-    fontSize: 16,
-    // flexWrap: 'wrap',
+    fontSize: 17,
+  },
+  horizontalView: {
+    borderBottomColor: 'black',
+    borderBottomWidth: 1,
+    width: '70%',
+    margin: 5,
   },
   betweenView: {
     flexDirection: 'row',
@@ -171,6 +192,75 @@ const styles = StyleSheet.create({
     width: 90,
     alignSelf: 'center',
   },
+  popcontainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
+  backImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popinnerContainer: {
+    borderRadius: 8,
+    backgroundColor: 'transparent',
+    paddingLeft: 20,
+    paddingRight: 20,
+    height: '100%',
+    width: '100%',
+  },
+  iconContainer: {
+    backgroundColor: 'transparent',
+    marginTop: 20,
+  },
+  topText: {
+    fontSize: 18,
+    color: 'white',
+    fontFamily: 'Roboto',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  hedertxt: {
+    fontSize: 12,
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontStyle: 'italic',
+  },
+  centerContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    marginLeft: 20,
+  },
+  headingtext: {
+    fontSize: 18,
+    color: colors.black,
+    letterSpacing: 2,
+    paddingRight: 9,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  bottomContainer: {
+    bottom: 0,
+    justifyContent: 'center',
+    width: '100%',
+    marginBottom: 20,
+  },
+  closebtn: {
+    height: 20,
+    width: 20,
+    alignSelf: 'flex-end',
+    marginTop: height > 750 ? 40 : 20,
+  },
+  image: {
+    height: 20,
+    width: 20,
+  },
 });
 
 export const buttonStyles = StyleSheet.create({
@@ -185,6 +275,22 @@ export const buttonStyles = StyleSheet.create({
     height: Platform.OS === 'ios' ? 40 : 45,
     backgroundColor: '#7dd3d5',
     justifyContent: 'center',
+  },
+});
+
+export const nextButtonStyles = StyleSheet.create({
+  text: {
+    fontSize: 20,
+    color: 'white',
+  },
+  container: {
+    height: 40,
+    backgroundColor: colors.transparent,
+    alignSelf: 'center',
+    width: '70%',
+    borderRadius: 50,
+    borderColor: 'white',
+    borderWidth: 1,
   },
 });
 

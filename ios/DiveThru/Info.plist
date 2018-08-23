@@ -25,7 +25,7 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb176915049742280</string>
+				<string>fb182201742534607</string>
 			</array>
 		</dict>
 		<dict>
@@ -33,16 +33,18 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.53159239409-9nevpupur18e4ur2k0n80smhq9698p0i</string>
+				<string>com.googleusercontent.apps.5071479695-r7nemrqv9msoh45ebdc0vrif39ghoivl</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>3.2</string>
+	<string>3.7</string>
 	<key>FacebookAppID</key>
-	<string>176915049742280</string>
+	<string>182201742534607</string>
 	<key>FacebookDisplayName</key>
-	<string>Dive Thru</string>
+	<string>TestDiveThru</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -59,8 +61,12 @@
 	</dict>
 	<key>NSCalendarsUsageDescription</key>
 	<string>This app requires access to the calendar</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>DiveThru will access camera for your profile picture</string>
+	<key>NSContactsUsageDescription</key>
+	<string>DiveThru uses your contact to invitation.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>DiveThru will access gallery for your profile picture</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>MaterialIcons.ttf</string>
@@ -82,6 +88,7 @@
 		<string>Zocial.ttf</string>
 		<string>Feather.ttf</string>
 		<string>MaterialCommunityIcons.ttf</string>
+		<string>fontello.ttf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

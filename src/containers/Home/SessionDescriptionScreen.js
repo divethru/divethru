@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StatusBar, TouchableOpacity, Image, ImageBackground, ScrollView } from 'react-native';
-import { Button } from 'react-native-material-ui';
-import styles, { buttonStyles } from '../../styles/sessionDescription';
+import {
+  View,
+  Text,
+  StatusBar,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+  ScrollView,
+} from 'react-native';
+import styles from '../../styles/sessionDescription';
 import IC_WHITE_CLOSE from '../../assets/images/ic_close.png';
 import sessionDescBg from '../../assets/images/SessionDescBg.png';
 
@@ -24,11 +31,11 @@ class SessionDescriptionScreen extends Component {
     const { params } = this.props.navigation.state;
     const sessionData = params ? params.sessionData : undefined;
 
+    // eslint-disable-next-line react/no-did-mount-set-state
     this.setState({
       title: sessionData.title,
       sessionDesc: sessionData.sessionDesc,
       sessionName: sessionData.sessionName,
-      // sessionCategory: sessionData.sessionCategory,
     });
   }
 
@@ -49,10 +56,11 @@ class SessionDescriptionScreen extends Component {
           <View style={styles.container}>
             <TouchableOpacity onPress={() => { this.props.navigation.goBack(); }}>
               <Image
-                style={{ height: 20, width: 20, alignSelf: 'flex-end', marginRight: 20, marginTop: 40 }}
+                style={styles.closeIcon}
                 source={IC_WHITE_CLOSE}
               />
             </TouchableOpacity>
+
             <View style={styles.introContainer}>
               <ImageBackground
                 source={sessionDescBg}
@@ -62,16 +70,19 @@ class SessionDescriptionScreen extends Component {
               </ImageBackground>
             </View>
           </View>
+
           <View style={styles.descContainer}>
             <Text style={styles.subText}>{this.state.title}</Text>
+
             <Text style={styles.descText}>{this.state.sessionDesc}</Text>
-            <Button
+
+            {/* <Button
               primary
               title=""
               text="D I V E  T H R U"
               onPress={() => { this.props.navigation.goBack(); }}
               style={buttonStyles}
-            />
+            /> */}
           </View>
         </ScrollView>
       </View>

@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    // padding: 10,
     backgroundColor: colors.white,
   },
   innercontainer: {
@@ -60,7 +59,6 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 14,
     height: Platform.OS === 'ios' ? 40 : 45,
-    // marginLeft: 20,
     fontFamily: 'Roboto',
   },
   seperator: {

@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    backgroundColor: 'transparent', // colors.red100,
+    backgroundColor: 'transparent',
   },
   iconContainer: {
     flexDirection: 'row',
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   text: {
-    fontSize: 25,
+    fontSize: 22,
     color: colors.white,
     fontFamily: 'Roboto',
   },
@@ -54,10 +54,34 @@ const styles = StyleSheet.create({
   },
   playerContainer: {
     width: '100%',
-    height: '90%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
+  },
+  playerSvg: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 35,
+    marginBottom: 40,
+    backgroundColor: colors.transparent,
+  },
+  iosViewContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: 70,
+    height: 70,
+    backgroundColor: colors.transparent,
+  },
+  iosViewIcon: {
+    color: colors.grey700,
+    position: 'absolute',
+  },
+  iosViewIconEnable: {
+    color: '#cccccc',
+    position: 'absolute',
   },
   timeContainer: {
     width: '70%',
@@ -126,20 +150,27 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     marginLeft: '1.66%',
   },
-  // popupcontainer: {
-  //   flex: 1,
-  //   justifyContent: 'center',
-  //   padding: 20,
-  //   backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  // },
-  innerContainer: {
-    marginTop: 200,
-    marginLeft: 40,
+  popupcontainer: {
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    height: 200,
-    width: '80%',
-    borderRadius: 8,
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+  },
+  inputContainer: {
+    borderColor: '#7dd3d5',
+    borderWidth: 2,
+    // borderStyle: 'dashed',
+    borderRadius: 5,
+    height: 150,
+  },
+  innerContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    padding: 10,
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   closebtn: {
     height: 20,
@@ -153,20 +184,22 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   headingtext: {
-    paddingTop: 15,
     fontSize: 18,
     color: colors.black,
     letterSpacing: 2,
-    paddingRight: 9,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginLeft: 35,
+    marginRight: 35,
+    marginBottom: 30,
   },
   textinput: {
-    width: '90%',
-    marginTop: 10,
-    height: '43%',
-    borderBottomColor: colors.grey400,
-    borderBottomWidth: 1,
+    fontSize: 18,
+    marginLeft: 10,
+    marginRight: 10,
+    fontFamily: 'Roboto',
+    color: colors.grey400,
+    textAlignVertical: 'top',
   },
 });
 
@@ -198,7 +231,6 @@ export const buttonStyles = StyleSheet.create({
   text: {
     fontSize: 16,
     color: colors.white,
-    // fontWeight: 'bold',
     fontFamily: 'Roboto',
   },
   container: {
@@ -221,7 +253,7 @@ export const timeButtonStyles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   container: {
-    flex: 1,
+    // flex: 1,
     height: Platform.OS === 'ios' ? 40 : 45,
     margin: 10,
     marginTop: 0,
@@ -242,7 +274,7 @@ export const timeButtonClickStyles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   container: {
-    flex: 1,
+    // flex: 1,
     height: Platform.OS === 'ios' ? 40 : 45,
     margin: 10,
     marginTop: 0,
@@ -261,13 +293,13 @@ export const popupbuttonStyles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   container: {
-    position: 'absolute',
-    bottom: 0,
     height: Platform.OS === 'ios' ? 50 : 55,
     backgroundColor: '#7dd3d5',
     justifyContent: 'center',
-    width: '100%',
-    borderRadius: 8,
+    marginTop: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
   },
 });
 

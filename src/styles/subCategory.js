@@ -4,7 +4,6 @@ import { colors } from './theme';
 const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
-
   SubCategoryList: {
     backgroundColor: colors.white,
     paddingHorizontal: '5%',

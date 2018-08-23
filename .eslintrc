@@ -4,7 +4,9 @@
   "rules": {
     "react/forbid-prop-types": [0],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "linebreak-style": 0,
+    "arrow-body-style": 0
     // "react/no-did-mount-set-state": ["<enabled>", "<mode>"]
   },
   "globals": {

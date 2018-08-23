@@ -1,7 +1,3 @@
-/**
- * Created by dungtran on 8/20/17.
- */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { View, TextInput, StyleSheet, Dimensions, Text, Animated } from 'react-native';
@@ -332,14 +328,14 @@ export default class PasswordStrengthChecker extends Component {
           style={
           [styles.passwordStrengthBar,
             strengthBarStyle,
-            { backgroundColor: barColor, width: this.animatedBarWidth }
+            { backgroundColor: barColor, width: this.animatedBarWidth },
           ]}
         >
           <Animated.View
             style={
             [styles.innerPasswordStrengthBar,
               innerStrengthBarStyle,
-              { ...strengthLevelBarStyle, width: this.animatedInnerBarWidth }
+              { ...strengthLevelBarStyle, width: this.animatedInnerBarWidth },
             ]}
           />
         </Animated.View>
@@ -357,11 +353,11 @@ export default class PasswordStrengthChecker extends Component {
   }
 
   render() {
-    const isSet = (this.props.send) ? this.renderPasswordStrength() : null;
+    // const isSet = (this.props.send) ? this.renderPasswordStrength() : null;
     return (
       <View style={styles.wrapper}>
         {this.renderPasswordInput()}
-        {isSet}
+        {/* {isSet} */}
       </View>
     );
   }

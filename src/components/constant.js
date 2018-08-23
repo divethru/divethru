@@ -1,11 +1,12 @@
 import * as firebase from 'firebase';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDBWdYDtGJsilqNGOqYMNalE9s-IAGPnTw',
-  authDomain: 'divethru-71c56.firebaseapp.com',
-  databaseURL: 'https://divethru-71c56.firebaseio.com',
-  projectId: 'divethru-71c56',
-  storageBucket: 'divethru-71c56.appspot.com',
+  apiKey: 'AIzaSyCWvbxLdisdjLDH6sxziQKtOOnEyaEJJ7s',
+  authDomain: 'divethru-14f14.firebaseapp.com',
+  databaseURL: 'https://divethru-14f14.firebaseio.com',
+  projectId: 'divethru-14f14',
+  storageBucket: 'divethru-14f14.appspot.com',
+  messagingSenderId: '5071479695',
 };
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);

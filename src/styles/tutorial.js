@@ -3,6 +3,7 @@ import { colors } from './theme';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
   container1: {
     flex: 1,
@@ -23,6 +24,7 @@ const styles = StyleSheet.create({
   container5: {
     flex: 1,
     backgroundColor: '#66348b',
+    justifyContent: 'center',
   },
   container6: {
     flex: 1,
@@ -36,10 +38,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
+  // innerContainer: {
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   flex: 1,
+  // },
   innerContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
     flex: 1,
+    flexDirection: 'column',
+    padding: 10,
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   pagerContainer: {
     position: 'absolute',
@@ -69,6 +79,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.transparent,
     fontFamily: 'Roboto',
     marginTop: '20%',
+    marginBottom: '10%',
+  },
+  hide: {
+    display: 'none',
+  },
+  closeButton: {
+    height: 20, width: 20, alignSelf: 'flex-end', marginRight: 20, marginTop: height > 750 ? 40 : 20,
+  },
+  dotStyle: {
+    backgroundColor: '#ffffff', marginBottom: 80, opacity: 0.5,
+  },
+  selectedDotStyle: {
+    backgroundColor: colors.white, marginBottom: 80,
   },
   button: {
     fontSize: 20,
@@ -89,8 +112,6 @@ const styles = StyleSheet.create({
   },
   VLogoContainer: {
     backgroundColor: colors.transparent,
-    // margin: 20,
-    // flex: 1,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -126,26 +147,6 @@ const styles = StyleSheet.create({
     left: (width - 150) / 2,
     height: '25%',
     backgroundColor: colors.transparent,
-  /* bring your own prefixes */
-  // transform: 'translate(-50%, -50%)',
-    // flexDirection:'row',
-    // alignItems:'center',
-    // justifyContent:'center',
-    // // flex: 1,
-    // position: 'absolute',
-    // // justifyContent: 'center',
-    // backgroundColor: colors.red100,
-    // // flexDirection: 'row',
-    // // alignItems: 'center',
-    // width: '50%',
-    // height: '25%',
-    // // marginTop: '30%',
-    // // top: 0,
-    // // bottom: 0,
-    // // left: 0,
-    // // right: 0,
-    // textAlign: 'center',
-    // alignSelf: 'center',
   },
   playerContainer: {
     width: '100%',
@@ -236,6 +237,47 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 10,
   },
+  textinput: {
+    fontSize: 18,
+    marginLeft: 10,
+    marginRight: 10,
+    fontFamily: 'Roboto',
+    color: colors.grey400,
+    textAlignVertical: 'top',
+  },
+  popupcontainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+  },
+  popupinnerContainer: {
+    marginTop: 200,
+    marginLeft: 40,
+    alignItems: 'center',
+    backgroundColor: 'white',
+    height: 200,
+    width: '80%',
+    borderRadius: 8,
+  },
+  headingtext: {
+    fontSize: 18,
+    color: colors.black,
+    letterSpacing: 2,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginLeft: 35,
+    marginRight: 35,
+    marginBottom: 30,
+  },
+  inputContainer: {
+    borderColor: '#7dd3d5',
+    borderWidth: 2,
+    // borderStyle: 'dashed',
+    borderRadius: 5,
+    height: 150,
+  },
 });
 
 export const buttonStyles = StyleSheet.create({
@@ -264,11 +306,27 @@ export const reminderButtonStyles = StyleSheet.create({
     textAlign: 'center',
   },
   container: {
-    // flex: 1,
     height: Platform.OS === 'ios' ? 45 : 45,
     backgroundColor: '#7dd3d5',
     justifyContent: 'center',
     width: '50%',
+  },
+});
+
+export const popupbuttonStyles = StyleSheet.create({
+  text: {
+    fontSize: 16,
+    color: colors.white,
+    fontFamily: 'Roboto',
+  },
+  container: {
+    height: Platform.OS === 'ios' ? 50 : 55,
+    backgroundColor: '#7dd3d5',
+    justifyContent: 'center',
+    marginTop: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
   },
 });
 

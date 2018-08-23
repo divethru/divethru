@@ -2,8 +2,15 @@ import { Platform, StyleSheet, Dimensions } from 'react-native';
 import { colors } from './theme';
 
 const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
+  checkboxContainer: {
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+    width: '100%',
+    padding: 5,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -21,6 +28,11 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  skipnowText: {
+    color: 'white',
+    fontFamily: 'Roboto',
+    fontSize: 12,
   },
   dayText: {
     color: colors.white,
@@ -46,7 +58,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     backgroundColor: colors.white,
-    // height: 32,
     marginTop: 30,
     borderRadius: 18,
   },
@@ -75,6 +86,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 2,
   },
+  personalizedContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: colors.white,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0,
+    shadowRadius: 2,
+    elevation: 1,
+    borderColor: colors.grey200,
+    borderWidth: 1,
+    borderRadius: 2,
+    height: Dimensions.get('window').height - (Dimensions.get('window').height * 0.3),
+  },
+  hideView: {
+    display: 'none',
+  },
   quotesTitleText: {
     color: '#3c4b65',
     textAlign: 'center',
@@ -83,13 +111,43 @@ const styles = StyleSheet.create({
     marginTop: 15,
     backgroundColor: colors.transparent,
   },
+  personalizedTitleText: {
+    color: 'white',
+    textAlign: 'center',
+    fontFamily: 'Roboto',
+    fontSize: 25,
+    marginTop: 15,
+    backgroundColor: colors.transparent,
+  },
   seperator: {
     justifyContent: 'center',
     backgroundColor: colors.grey100,
     height: 1,
     width: '70%',
-    marginTop: 15,
+    marginTop: 5,
     marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  upperSeperator: {
+    marginTop: 15,
+    marginBottom: 15,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  bottomSeperator: {
+    marginTop: 15,
+    marginBottom: 15,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  seperatorPersonalized: {
+    justifyContent: 'center',
+    backgroundColor: colors.grey100,
+    height: 1,
+    width: '70%',
+    marginTop: 10,
+    marginBottom: 5,
     marginLeft: 10,
     marginRight: 10,
   },
@@ -110,6 +168,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
     fontSize: 14,
     backgroundColor: colors.transparent,
+    // fontWeight: 'bold',
   },
   categoryInnerContainer: {
     backgroundColor: colors.transparent,
@@ -138,7 +197,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.transparent,
   },
   listView: {
-    backgroundColor: colors.transparent, // '#F5FCFF',
+    backgroundColor: colors.transparent,
   },
   listViewContainer: {
     height: 110,
@@ -179,21 +238,188 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     height: 150,
   },
+  FlatCustomListViewStyle: {
+    backgroundColor: 'white',
+  },
   FlatListImage: {
     height: 130,
     width: 130,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  FlatListText: {
+  FlatListTitle: {
     color: colors.white,
-    fontSize: width > 400 ? 16 : 14,
-    position: 'absolute',
+    fontSize: width > 400 ? 18 : 16,
     textAlign: 'center',
-    marginLeft: '10%',
-    marginTop: '10%',
     fontFamily: 'Roboto',
     fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  FlatListText: {
+    color: colors.white,
+    fontSize: width > 400 ? 16 : 13,
+    textAlign: 'center',
+    fontFamily: 'Roboto',
+    padding: 10,
+  },
+  FlatCustomListImage: {
+    height: (Dimensions.get('window').width - (Dimensions.get('window').width * 0.1)) / 3,
+    width: (Dimensions.get('window').width - (Dimensions.get('window').width * 0.1)) / 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  FlatListCustomTitle: {
+    color: colors.white,
+    fontSize: 13,
+    textAlign: 'center',
+    fontFamily: 'Roboto',
+    // fontWeight: 'bold',
+  },
+  FlatListCustomText: {
+    color: colors.white,
+    fontSize: 11,
+    textAlign: 'center',
+    fontFamily: 'Roboto',
+    marginTop: 5,
+    // opacity: 0.68,
+    fontWeight: 'bold',
+  },
+  content:
+  {
+    height: '100%',
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  containermodal: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: '20%',
+  },
+  innerContainer: {
+    borderRadius: 8,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 18,
+    height: '20%',
+  },
+  btnTxt: {
+    fontSize: 18,
+    color: 'rgba(0, 0, 0, 0.5)',
+  },
+  btnTxtPersonalized: {
+    fontSize: 15,
+    color: 'white',
+  },
+  boxTitle1: {
+    color: 'black',
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  title:
+  {
+    fontSize: 18,
+    color: 'black',
+    textAlign: 'center',
+  },
+  tchblebtn: {
+    marginTop: 20,
+  },
+  button: {
+    borderRadius: 8,
+    backgroundColor: '#7dd3d5',
+    justifyContent: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    color: '#a25ad6',
+  },
+  buttonPersonalized: {
+    borderRadius: 5,
+    backgroundColor: '#7dd3d5',
+    paddingVertical: 8,
+    paddingHorizontal: 40,
+    color: '#a25ad6',
+  },
+  popcontainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    position: 'relative',
+  },
+  backImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    backgroundColor: 'transparent',
+    marginTop: 50,
+  },
+  topText: {
+    fontSize: 18,
+    color: 'white',
+    fontFamily: 'Roboto',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  hedertxt: {
+    fontSize: 12,
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontStyle: 'italic',
+  },
+  centerContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    marginLeft: 20,
+  },
+  bottomContainer: {
+    bottom: 0,
+    justifyContent: 'center',
+    width: '100%',
+    marginBottom: 50,
+  },
+  popinnerContainer: {
+    borderRadius: 8,
+    backgroundColor: 'transparent',
+    paddingLeft: 20,
+    paddingRight: 20,
+    height: '100%',
+    width: '100%',
+  },
+  headingtext: {
+    fontSize: 18,
+    color: colors.black,
+    letterSpacing: 2,
+    paddingRight: 9,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  chk: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#ecf0f1',
+  },
+  closebtn: {
+    height: 20,
+    width: 20,
+    alignSelf: 'flex-end',
+    marginTop: height > 750 ? 40 : 20,
+  },
+  image: {
+    height: 20,
+    width: 20,
   },
 });
 
@@ -209,6 +435,22 @@ export const learnMoreButtonStyles = StyleSheet.create({
   container: {
     height: 20,
     backgroundColor: colors.transparent,
+  },
+});
+
+export const nextButtonStyles = StyleSheet.create({
+  text: {
+    fontSize: 20,
+    color: 'white',
+  },
+  container: {
+    height: 40,
+    backgroundColor: colors.transparent,
+    alignSelf: 'center',
+    width: '70%',
+    borderRadius: 50,
+    borderColor: 'white',
+    borderWidth: 1,
   },
 });
 

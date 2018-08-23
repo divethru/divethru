@@ -21,9 +21,9 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto',
   },
   datePickerBox: {
-    // marginLeft: -20,
-    // backgroundColor: colors.red100,
-    width: '100%',
+    width: '95%',
+    marginLeft: 10,
+    marginRight: 10,
   },
   datepicker: {
     marginLeft: 10,
@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
   },
   radioButtonMale: {
     width: 50,
-    // marginRight: 10,
   },
   ORContainer: {
     flex: 1,

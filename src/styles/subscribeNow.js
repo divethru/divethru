@@ -36,18 +36,15 @@ const styles = StyleSheet.create({
     width: 20,
   },
   closebtn: {
-    height: 20,
-    width: 20,
+    height: 40,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
     alignSelf: 'flex-end',
-    marginRight: 20,
-    marginTop: 20,
+    backgroundColor: 'transparent',
+    marginRight: 10,
+    marginTop: 10,
   },
-  // closebtn: {
-  //   height: 20,
-  //   width: 20,
-  //   marginLeft: 280,
-  //   marginTop: 20,
-  // },
   headingtext: {
     fontSize: 16,
     fontWeight: '400',
@@ -74,7 +71,7 @@ const styles = StyleSheet.create({
   },
   imagebox: {
     height: 155,
-    width: (width - 20) / 3, // 115,
+    width: (width - 20) / 3,
     borderRadius: 5,
     borderColor: '#a25ad6',
     borderWidth: 2,
@@ -102,7 +99,7 @@ const styles = StyleSheet.create({
   imagetxt2: {
     position: 'absolute',
     marginTop: 65,
-    fontSize: 25,
+    fontSize: 18,
     color: '#fff',
     fontWeight: '600',
     alignSelf: 'center',
@@ -110,7 +107,7 @@ const styles = StyleSheet.create({
   imagetxt3: {
     position: 'absolute',
     marginTop: 125,
-    fontSize: 11,
+    fontSize: 10,
     color: '#fff',
     fontWeight: '300',
     alignSelf: 'center',
@@ -121,6 +118,53 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     color: colors.grey500,
     fontSize: 15,
+  },
+  content: {
+    height: '100%',
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  containermodal: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    height: '20%',
+  },
+  innerContainer: {
+    borderRadius: 8,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    padding: 18,
+    height: '20%',
+  },
+  btnTxt: {
+    fontSize: 18,
+    color: 'rgba(0, 0, 0, 0.5)',
+  },
+  boxTitle1: {
+    color: 'black',
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  title:
+  {
+    fontSize: 18,
+    color: 'black',
+    textAlign: 'center',
+  },
+  tchblebtn: {
+    marginTop: '4%',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  button: {
+    borderRadius: 8,
+    backgroundColor: '#7dd3d5',
+    justifyContent: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    color: '#a25ad6',
   },
 });
 

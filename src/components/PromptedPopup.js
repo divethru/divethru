@@ -34,13 +34,19 @@ class PromptedPopup extends Component {
           <View style={styles.prInnerContainer}>
             <Text style={styles.prTitle}>{this.props.title}</Text>
             <Text style={styles.prDesc}>{this.props.description}</Text>
-            <Button
-              primary
-              text="Continue with free program"
-              onPress={() => { this.props.onTouchUpFree(); }}
-              upperCase={false}
-              style={FreeButtonStyles}
-            />
+            {
+              this.props.categoryname !== '10 day Intro program' && this.props.lastAudio === 2
+              ?
+                <View />
+              :
+                <Button
+                  primary
+                  text="Continue with free program"
+                  onPress={() => { this.props.onTouchUpFree(); }}
+                  upperCase={false}
+                  style={FreeButtonStyles}
+                />
+            }
             <Button
               primary
               text="Purchase for a subscription"
@@ -63,6 +69,8 @@ PromptedPopup.propTypes = {
   transparent: PropTypes.bool,
   onTouchUpFree: PropTypes.func,
   onTouchUpSubscription: PropTypes.func,
+  categoryname: PropTypes.string.isRequired,
+  lastAudio: PropTypes.number,
 };
 
 PromptedPopup.defaultProps = {
@@ -71,6 +79,7 @@ PromptedPopup.defaultProps = {
   transparent: true,
   onTouchUpFree: undefined,
   onTouchUpSubscription: undefined,
+  lastAudio: undefined,
 };
 
 export default PromptedPopup;

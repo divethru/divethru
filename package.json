@@ -16,29 +16,43 @@
     "radio-button-react-native": "^1.1.6",
     "react": "^16.3.0-alpha.1",
     "react-native": "0.54.0",
+    "react-native-af-video-player": "^0.2.1",
     "react-native-calendar-events": "^1.4.3",
     "react-native-circular-progress": "^0.1.2",
     "react-native-circular-slider": "^1.0.1",
+    "react-native-contacts": "^2.2.2",
     "react-native-datepicker": "^1.6.0",
     "react-native-dropdownalert": "^3.1.2",
     "react-native-elements": "^0.19.0",
     "react-native-fbsdk": "^0.7.0",
     "react-native-fcm": "^14.0.1",
+    "react-native-fetch-blob": "^0.10.8",
+    "react-native-google-places-autocomplete": "^1.3.9",
     "react-native-google-signin": "^0.12.0",
-    "react-native-iap": "^0.2.17",
+    "react-native-iap": "^0.3.10",
+    "react-native-image-picker": "^0.26.10",
     "react-native-keyboard-aware-scroll-view": "^0.4.3",
+    "react-native-material-dropdown": "^0.11.1",
     "react-native-material-ui": "^1.19.0",
     "react-native-pagination": "^1.2.8",
     "react-native-progress": "^3.4.0",
+    "react-native-rate": "^1.0.9",
+    "react-native-restart": "^0.0.6",
     "react-native-scrollable-tab-view": "^0.8.0",
+    "react-native-select-multiple": "^1.2.0",
+    "react-native-share": "^1.0.27",
     "react-native-simple-radio-button": "^2.7.1",
+    "react-native-sms": "^1.6.0",
+    "react-native-sms-android": "^0.4.1",
     "react-native-sound": "git+https://github.com/zmxv/react-native-sound.git#fix_android_network_sound",
+    "react-native-star-rating": "^1.0.9",
+    "react-native-store-review": "^0.1.5",
     "react-native-svg": "^6.2.1",
     "react-native-svg-uri": "^1.2.3",
     "react-native-vector-icons": "^4.5.0",
     "react-native-video": "^2.0.0",
-    "react-native-video-player": "^0.9.0",
-    "react-navigation": "^1.0.0-beta.27",
+    "react-native-video-player": "0.9.0",
+    "react-navigation": "1.3.0",
     "rn-viewpager": "^1.2.9",
     "zxcvbn": "^4.4.2"
   },
@@ -56,5 +70,10 @@
   },
   "jest": {
     "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": [
+        "./src/assets/fonts"
+    ]
   }
 }
