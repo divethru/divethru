@@ -50,10 +50,10 @@
 		341BE4CC2124332C00AF01AB /* libRCTOrientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 341BE4CB2124331200AF01AB /* libRCTOrientation.a */; };
 		341BE4D3212434D000AF01AB /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 341BE4D22124345700AF01AB /* libKCKeepAwake.a */; };
 		342C65E320C91322000249AF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 342C65E220C91321000249AF /* GoogleService-Info.plist */; };
+		344E0E6C21302D3700BD9444 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 344E0E6B21302D3700BD9444 /* assets */; };
+		344E0E6E21302D4300BD9444 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 344E0E6D21302D4300BD9444 /* main.jsbundle */; };
 		3469A75A20F471AD00C57FD1 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3469A75420F4719C00C57FD1 /* libRNImagePicker.a */; };
 		3475F01720E6587900E442DB /* libRCTFBSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 992129002019FECC00BE0B41 /* libRCTFBSDK.a */; };
-		3489C3C6212EDD7100742A86 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 3489C3C5212EDD7100742A86 /* assets */; };
-		3489C3C8212EDD7D00742A86 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 3489C3C7212EDD7C00742A86 /* main.jsbundle */; };
 		34E7BBEA20C547D400795A10 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34E7BBE920C547D400795A10 /* StoreKit.framework */; };
 		34F50C8220C6969200661E41 /* libRNIap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34F50C7D20C6966700661E41 /* libRNIap.a */; };
 		3577F28BA9F84AEB8858E334 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 132BB19B35E34A4E91F0F843 /* Entypo.ttf */; };
@@ -602,9 +602,9 @@
 		341BE4C62124331200AF01AB /* RCTOrientation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTOrientation.xcodeproj; path = "../node_modules/react-native-orientation/iOS/RCTOrientation.xcodeproj"; sourceTree = "<group>"; };
 		341BE4CD2124345700AF01AB /* KCKeepAwake.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = KCKeepAwake.xcodeproj; path = "../node_modules/react-native-keep-awake/ios/KCKeepAwake.xcodeproj"; sourceTree = "<group>"; };
 		342C65E220C91321000249AF /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "DiveThru/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		344E0E6B21302D3700BD9444 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
+		344E0E6D21302D4300BD9444 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		3469A71F20F4719C00C57FD1 /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
-		3489C3C5212EDD7100742A86 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
-		3489C3C7212EDD7C00742A86 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		34E7BBE920C547D400795A10 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		34F50C4920C6966700661E41 /* RNIap.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNIap.xcodeproj; path = "../node_modules/react-native-iap/ios/RNIap.xcodeproj"; sourceTree = "<group>"; };
 		419F08DC44FB49B2B0F653B1 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -866,8 +866,8 @@
 		13B07FAE1A68108700A75B9A /* DiveThru */ = {
 			isa = PBXGroup;
 			children = (
-				3489C3C7212EDD7C00742A86 /* main.jsbundle */,
-				3489C3C5212EDD7100742A86 /* assets */,
+				344E0E6D21302D4300BD9444 /* main.jsbundle */,
+				344E0E6B21302D3700BD9444 /* assets */,
 				342C65E220C91321000249AF /* GoogleService-Info.plist */,
 				99EDFF3E20592DCE00BB4B36 /* GoogleSdk */,
 				99F3E5D9204EBAA600DD4840 /* DiveThru.entitlements */,
@@ -2020,10 +2020,10 @@
 				995D382B201B3863005F51A4 /* FontAwesome.ttf in Resources */,
 				ECE87D6D16484DE39CD9FC69 /* Entypo.ttf in Resources */,
 				1F6394FBDA3F429DA9E1CD66 /* EvilIcons.ttf in Resources */,
-				3489C3C8212EDD7D00742A86 /* main.jsbundle in Resources */,
+				344E0E6E21302D4300BD9444 /* main.jsbundle in Resources */,
 				18D7EEBD46724EF39646C87D /* FontAwesome.ttf in Resources */,
 				A9848CC8519F43D3872B751C /* Foundation.ttf in Resources */,
-				3489C3C6212EDD7100742A86 /* assets in Resources */,
+				344E0E6C21302D3700BD9444 /* assets in Resources */,
 				F6F0E8CB14FB4966999E1A67 /* Ionicons.ttf in Resources */,
 				827F2C45BD234EC19360961A /* MaterialIcons.ttf in Resources */,
 				EE7EA5AF8F904F3FB935256D /* Octicons.ttf in Resources */,

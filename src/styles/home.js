@@ -431,9 +431,11 @@ export const learnMoreButtonStyles = StyleSheet.create({
     fontStyle: 'italic',
     textAlign: 'center',
     marginBottom: 0,
+    width: '100%',
   },
   container: {
     height: 20,
+    width: '100%',
     backgroundColor: colors.transparent,
   },
 });

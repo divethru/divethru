@@ -4,7 +4,7 @@ import { View, Image, ImageBackground, Text, TouchableOpacity, AsyncStorage, Pla
 import Moment from 'moment';
 import DropdownAlert from 'react-native-dropdownalert';
 import VideoPlayer from 'react-native-video-player';
-import Orientation from 'react-native-orientation';
+// import Orientation from 'react-native-orientation';
 import Video from 'react-native-af-video-player';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { CircularProgress } from 'react-native-circular-progress';
@@ -174,8 +174,8 @@ export default class Tutorial extends Component {
 
     AsyncStorage.getItem('user_id').then((value) => {
       if (value != null) {
-        firebaseApp.database().ref('Users').child(value);
-        ref.once('value').then((dataSnapshot) => {
+        const ref1 = firebaseApp.database().ref('Users').child(value);
+        ref1.once('value').then((dataSnapshot) => {
           const convo = dataSnapshot.val();
           const lastConversation = convo.last_free_conversation_id;
           this.setState({ lastConversation });

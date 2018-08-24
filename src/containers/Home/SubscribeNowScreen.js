@@ -595,7 +595,7 @@ class SubscribeNowScreen extends Component {
 
           <Text style={styles.text}>
             By signing up you get access to the entire Dive Thru. The library features 100s of
-            converstaions with new once coming every month.
+            converstaions with new ones coming every month.
           </Text>
 
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>

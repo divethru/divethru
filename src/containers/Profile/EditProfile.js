@@ -7,7 +7,7 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 // import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Moment from 'moment';
-import { View, TextInput, Text, Image, ScrollView, TouchableOpacity, AsyncStorage, Platform, Picker } from 'react-native';
+import { View, TextInput, Text, Image, ScrollView, TouchableOpacity, AsyncStorage, Platform, Picker, Modal } from 'react-native';
 import DropdownAlert from 'react-native-dropdownalert';
 import Spinner from '../../components/Spinner';
 import firebaseApp from '../../components/constant';
@@ -83,6 +83,9 @@ class EditProfile extends Component {
       city: 'Select city',
       state: 'Select state',
       country: 'Select country',
+      cityModalVisible: false,
+      stateModalVisible: false,
+      countryModalVisible: false,
       GenderData: [{
         value: 'Gender',
       }, {
@@ -155,6 +158,7 @@ class EditProfile extends Component {
 
         const stateCode = (snapshot.val().State ? snapshot.val().State : '');
         if (stateCode !== '') {
+          this.setState({ loader: true });
           fetch(`http://geodata.solutions/api/api.php?type=getStates&countryId=${countryCode}`, {
             method: 'GET',
             headers: {
@@ -185,6 +189,7 @@ class EditProfile extends Component {
               })
               .then(response => response.json())
               .then((responseJson2) => {
+                this.setState({ loader: false });
                 const CityData = this.state.CityData;
                 const arrayOfCity = Object.keys(responseJson2.result).length;
                 if (arrayOfCity > 0) {
@@ -285,8 +290,8 @@ class EditProfile extends Component {
         const sourceurl = response.uri;
         const sourceName = response.fileName;
 
-        console.log('ImagePicker sourceurl: ' + sourceurl);
-        console.log('ImagePicker sourceName: ' + sourceName);
+        console.log(`ImagePicker sourceurl: ${sourceurl}`);
+        console.log(`ImagePicker sourceName: ${sourceName}`);
         this.setState({
           Imagestatus: 'local',
           profileImage: source,
@@ -567,53 +572,76 @@ class EditProfile extends Component {
   }
 
   dropdownChangeCountry = (e, index) => {
-    this.setState({ loader: true });
+    this.setState({
+      loader: true,
+      countryModalVisible: false,
+      StateData: [{ id: 'Select state', value: 'Select state' }],
+      CityData: [{ id: 'Select city', value: 'Select city' }],
+    });
     // if (this.state.state !== 'Select state') {
-      this.setState({
-        StateData: [{ id: 'Select state', value: 'Select state' }],
-      });
+    // this.setState({
+    //   StateData: [{ id: 'Select state', value: 'Select state' }],
+    //   CityData: [{ id: 'Select city', value: 'Select city' }],
+    // });
     // }
     // if (this.state.city !== 'Select city') {
-      this.setState({
-        CityData: [{ id: 'Select city', value: 'Select city' }],
-      });
+    // this.setState({
+    //   CityData: [{ id: 'Select city', value: 'Select city' }],
+    // });
     // }
-    fetch(`http://geodata.solutions/api/api.php?type=getStates&countryId=${this.state.CountryData[index].id}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(response => response.json())
-    .then((responseJson) => {
-      const StateData = this.state.StateData;
-      Object.keys(responseJson.result).forEach((key) => {
-        StateData.push({ id: key, value: responseJson.result[key] });
+    if (e !== 'Select country') {
+      fetch(`http://geodata.solutions/api/api.php?type=getStates&countryId=${this.state.CountryData[index].id}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then((responseJson) => {
+        const StateData = this.state.StateData;
+        Object.keys(responseJson.result).forEach((key) => {
+          StateData.push({ id: key, value: responseJson.result[key] });
+        });
+        this.setState({
+          StateData,
+          loader: false,
+          tempCountryIndex: undefined,
+          tempCountryValue: undefined,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      this.setState({ StateData, loader: false });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    this.setState({
-      state: 'Select state',
-      stateCode: 'Select state',
-      city: 'Select city',
-      cityCode: 'Select city',
-      country: e,
-      countryCode: this.state.CountryData[index].id,
-    });
+      this.setState({
+        state: 'Select state',
+        stateCode: 'Select state',
+        city: 'Select city',
+        cityCode: 'Select city',
+        country: e,
+        countryCode: this.state.CountryData[index].id,
+      });
+    } else {
+      this.setState({
+        country: e,
+        loader: false,
+        state: 'Select state',
+        stateCode: 'Select state',
+        city: 'Select city',
+        cityCode: 'Select city',
+      });
+    }
   }
 
   dropdownChangeState = (e, index) => {
-    this.setState({ loader: true });
+    this.setState({ loader: true, stateModalVisible: false });
     // if (this.state.city !== 'Select city') {
-      this.setState({
-        CityData: [{ id: 'Select city', value: 'Select city' }],
-      });
+    this.setState({
+      CityData: [{ id: 'Select city', value: 'Select city' }],
+    });
     // }
-    fetch(`http://geodata.solutions/api/api.php?type=getCities&countryId=${this.state.countryCode}&stateId="${this.state.StateData[index].id}"`, {
+    if (e !== 'Select state') {
+      fetch(`http://geodata.solutions/api/api.php?type=getCities&countryId=${this.state.countryCode}&stateId="${this.state.StateData[index].id}"`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -636,6 +664,8 @@ class EditProfile extends Component {
       this.setState({
         CityData,
         loader: false,
+        tempStateValue: undefined,
+        tempStateIndex: undefined,
       });
       // alert(JSON.stringify(CityData));
       this.setState({
@@ -649,10 +679,21 @@ class EditProfile extends Component {
       // alert(error);
       console.log(error);
     });
+    } else {
+      this.setState({
+      state: e,
+      loader: false,
+      city: 'Select city',
+      cityCode: 'Select city',
+    });
+    }
   }
 
   dropdownChangeCity = (e, index) => {
     this.setState({
+      cityModalVisible: false,
+      tempCityIndex: undefined,
+      tempCityValue: undefined,
       city: e,
       cityCode: this.state.CityData[index].id,
     });
@@ -665,7 +706,6 @@ class EditProfile extends Component {
         <ScrollView style={styles.container}>
           <View style={{ alignItems: 'center' }}>
             <View>
-              {console.log(this.state.Imagestatus + 'this.state.profileImage: ' + this.state.profileImage)}
               {this.state.Imagestatus === 'local'
                 ?
                   <Image
@@ -821,46 +861,21 @@ class EditProfile extends Component {
             {Platform.OS === 'ios'
             ?
             (<View>
-              <View style={styles.genderContainer}>
-                <View style={[styles.dropdownView, { marginLeft: 18 }]}>
-                  <Dropdown
-                    itemTextStyle={styles.genderSubContainer}
-                    label=""
-                    value={this.state.country}
-                    data={this.state.CountryData}
-                    onChangeText={(e, index) => { this.dropdownChangeCountry(e, index); }}
-                  />
-                </View>
-              </View>
+              <TouchableOpacity style={[styles.textBox, { backgroundColor: 'white', borderBottomWidth: 0.3, borderBottomColor: 'grey' }]} onPress={() => { this.setState({ countryModalVisible: true }); }}>
+                <Text>{this.state.country}</Text>
+              </TouchableOpacity>
 
               <Text style={styles.helperText}>{this.state.selectCountryError}</Text>
 
-              <View style={styles.genderContainer}>
-                <View style={[styles.dropdownView, { marginLeft: 18 }]}>
-                  <Dropdown
-                    itemTextStyle={styles.genderSubContainer}
-                    label=""
-                    value={this.state.state}
-                    // dropdownOffset={{ top: 150, left: 0 }}
-                    data={this.state.StateData}
-                    onChangeText={(e, index) => { this.dropdownChangeState(e, index); }}
-                  />
-                </View>
-              </View>
+              <TouchableOpacity style={[styles.textBox, { backgroundColor: 'white', borderBottomWidth: 0.3, borderBottomColor: 'grey' }]} onPress={() => { this.setState({ stateModalVisible: true }); }}>
+                <Text>{this.state.state}</Text>
+              </TouchableOpacity>
 
               <Text style={styles.helperText}>{this.state.selectStateError}</Text>
 
-              <View style={styles.genderContainer}>
-                <View style={[styles.dropdownView, { marginLeft: 18 }]}>
-                  <Dropdown
-                    itemTextStyle={styles.genderSubContainer}
-                    label=""
-                    value={this.state.city}
-                    data={this.state.CityData}
-                    onChangeText={(e, index) => { this.dropdownChangeCity(e, index); }}
-                  />
-                </View>
-              </View>
+              <TouchableOpacity style={[styles.textBox, { backgroundColor: 'white', borderBottomWidth: 0.3, borderBottomColor: 'grey' }]} onPress={() => { this.setState({ cityModalVisible: true }); }}>
+                <Text>{this.state.city}</Text>
+              </TouchableOpacity>
 
               <Text style={styles.helperText}>{this.state.selectCityError}</Text>
             </View>)
@@ -909,6 +924,151 @@ class EditProfile extends Component {
               </View>
             </View>)
             }
+
+            <Modal // country modal start
+              animationType="fade"
+              transparent
+              // style={{ backgroundColor: 'red' }}
+              visible={this.state.countryModalVisible}
+              onRequestClose={() => {
+                alert('Modal has been closed.');
+              }}
+            >
+              <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <View style={{ bottom: 0, width: '100%', height: 240, position: 'absolute', backgroundColor: 'white' }}>
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TouchableOpacity style={{ paddingTop: 8, paddingHorizontal: 18 }} onPress={() => { this.setState({ tempCountryIndex: undefined, countryModalVisible: false }); }}>
+                      <Text>Cancle</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ paddingTop: 8, paddingHorizontal: 18, fontSize: 16 }}
+                      onPress={() => {
+                        if (this.state.tempCountryIndex !== undefined) {
+                          this.dropdownChangeCountry(this.state.tempCountryValue, this.state.tempCountryIndex);
+                        }
+                        this.setState({ countryModalVisible: false });
+                      }}
+                    >
+                      <Text style={{ color: '#7dd3d5', fontSize: 16 }}>Confirm</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Picker
+                      selectedValue={this.state.tempCountryIndex === undefined ? this.state.country : this.state.tempCountryValue}
+                      style={{ flex: 1 }}
+                      onValueChange={(itemValue, itemIndex) => {
+                        this.setState({
+                          tempCountryValue: itemValue,
+                          tempCountryIndex: itemIndex,
+                        });
+                      }}
+                    >
+                      {
+                    this.state.CountryData.map(item => (
+                      <Picker.Item label={item.value} value={item.value} key={item.key} />),
+                    )
+                    }
+                    </Picker>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+
+            <Modal  // state modal start
+              animationType="fade"
+              transparent
+              visible={this.state.stateModalVisible}
+              onRequestClose={() => {
+                alert('Modal has been closed.');
+              }}
+            >
+              <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <View style={{ bottom: 0, width: '100%', height: 240, position: 'absolute', backgroundColor: 'white' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <TouchableOpacity style={{ paddingTop: 8, paddingHorizontal: 18 }} onPress={() => { this.setState({ tempStateIndex: undefined, stateModalVisible: false }); }}>
+                    <Text>Cancle</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{ paddingTop: 8, paddingHorizontal: 18, fontSize: 16 }}
+                    onPress={() => {
+                      if (this.state.tempStateIndex !== undefined) {
+                        this.dropdownChangeState(this.state.tempStateValue, this.state.tempStateIndex);
+                      }
+                      this.setState({ stateModalVisible: false });
+                    }}
+                  >
+                    <Text style={{ color: '#7dd3d5', fontSize: 16 }}>Confirm</Text>
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <Picker
+                    selectedValue={this.state.tempStateIndex === undefined ? this.state.state : this.state.tempStateValue}
+                    style={{ flex: 1 }}
+                    onValueChange={(itemValue, itemIndex) => {
+                      this.setState({
+                        tempStateValue: itemValue,
+                        tempStateIndex: itemIndex,
+                      });
+                    }}
+                  >
+                    {
+                  this.state.StateData.map(item => (
+                    <Picker.Item label={item.value} value={item.value} key={item.key} />),
+                  )
+                  }
+                  </Picker>
+                </View>
+              </View>
+              </View>
+            </Modal>
+
+            <Modal // city modal
+              animationType="fade"
+              transparent
+              visible={this.state.cityModalVisible}
+              onRequestClose={() => {
+                alert('Modal has been closed.');
+              }}
+            >
+              <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <View style={{ bottom: 0, width: '100%', height: 240, position: 'absolute', backgroundColor: 'white' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                  <TouchableOpacity style={{ paddingTop: 8, paddingHorizontal: 18 }} onPress={() => { this.setState({ tempCityIndex: undefined, cityModalVisible: false }); }}>
+                    <Text>Cancle</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={{ paddingTop: 8, paddingHorizontal: 18, fontSize: 16 }}
+                    onPress={() => {
+                      if (this.state.tempCityIndex !== undefined) {
+                        this.dropdownChangeCity(this.state.tempCityValue, this.state.tempCityIndex);
+                      }
+                      this.setState({ cityModalVisible: false });
+                    }}
+                  >
+                    <Text style={{ color: '#7dd3d5', fontSize: 16 }}>Confirm</Text>
+                  </TouchableOpacity>
+                </View>
+                <View>
+                  <Picker
+                    selectedValue={this.state.tempCityIndex === undefined ? this.state.city : this.state.tempCityValue}
+                    style={{ flex: 1 }}
+                    onValueChange={(itemValue, itemIndex) => {
+                      this.setState({
+                        tempCityValue: itemValue,
+                        tempCityIndex: itemIndex,
+                      });
+                    }}
+                  >
+                    {
+                  this.state.CityData.map(item => (
+                    <Picker.Item label={item.value} value={item.value} key={item.key} />),
+                  )
+                  }
+                  </Picker>
+                </View>
+              </View>
+              </View>
+            </Modal>
 
             <TouchableOpacity
               style={styles.textContainer}

@@ -13,7 +13,7 @@ import FCM, {
   WillPresentNotificationResult,
   NotificationType,
 } from 'react-native-fcm';
-import Orientation from 'react-native-orientation';
+// import Orientation from 'react-native-orientation';
 import { GoogleSignin } from 'react-native-google-signin';
 import { Button } from 'react-native-material-ui';
 import * as RNIap from 'react-native-iap';
@@ -145,7 +145,7 @@ class HomeScreen extends Component {
   }
 
   componentWillMount() {
-    Orientation.lockToPortrait();
+    // Orientation.lockToPortrait();
     this.checkTagIsSelected();
     this.review();
     this.props.navigation.addListener('willFocus', () => {

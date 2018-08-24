@@ -142,10 +142,13 @@ export const learnMoreButtonStyles = StyleSheet.create({
     color: '#9f5dbc',
     fontFamily: 'Roboto',
     fontStyle: 'italic',
+    width: '100%',
+    textAlign: 'center',
   },
   container: {
     marginTop: 10,
     height: 20,
+    width: '100%',
     backgroundColor: colors.transparent,
   },
 });
