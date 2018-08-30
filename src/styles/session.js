@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
   },
   backImage: {
     flex: 1,
-    width: '100%',
+    width,
     height: '100%',
     backgroundColor: 'transparent',
   },
@@ -25,11 +25,24 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginLeft: 20,
     marginRight: 20,
-    justifyContent: 'space-between',
   },
   iconLeftContainer: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
+  },
+  topText: {
+    backgroundColor: 'transparent',
+    fontSize: 16,
+    color: colors.white,
+    fontFamily: 'Roboto',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+  },
+  iconRightContainer: {
+    alignSelf: 'flex-end',
   },
   icon: {
     height: 20,
@@ -69,13 +82,6 @@ const styles = StyleSheet.create({
     height: 136,
     width: 136,
     backgroundColor: 'transparent',
-  },
-  topText: {
-    fontSize: 16,
-    color: colors.white,
-    fontFamily: 'Roboto',
-    textAlign: 'center',
-    marginTop: 10,
   },
   timeContainer: {
     width: '70%',

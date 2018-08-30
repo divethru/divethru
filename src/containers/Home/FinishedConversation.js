@@ -16,6 +16,7 @@ import styles from '../../styles/finishedConv';
 import backgroundImages from '../../assets/images/SessionPlayerBG.png';
 import Home from '../../assets/images/home.png';
 import IcShare from '../../assets/images/Icshare.png';
+import Loader from '../../components/Loader';
 
 class FinishedConversation extends Component {
   static navigationOptions = () => ({
@@ -32,6 +33,7 @@ class FinishedConversation extends Component {
       quote_desc: '',
       showsubscribe: '',
       onplayer: '',
+      loader: true,
     };
   }
 
@@ -41,30 +43,50 @@ class FinishedConversation extends Component {
     const quoteDesc = params.quote_desc ? params.quote_desc : '';
     const showsubscribe = params.showsubscribe ? params.showsubscribe : '';
     const onplayer = params.onplayer ? params.onplayer : '';
-    this.setState({
-      quoteImage,
-      quoteDesc,
-      showsubscribe,
-      onplayer,
-    });
-    this.downloadFile(quoteImage);
-  }
 
-  componentDidMount = async () => {
-    try {
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
-    } catch (err) {
-      console.log(`FinishedConversation Error: ${err}`);
-    }
     AsyncStorage.getItem('user_id').then((value) => {
-      firebaseApp.database().ref(`/Users/${value}`).once('value').then((snapshot) => {
+      firebaseApp.database().ref(`/Users/${value}`).once('value', (snapshot) => {
         this.setState({
+          quoteImage,
+          quoteDesc,
+          showsubscribe,
+          onplayer,
           total_time: (snapshot.val().total_time_divethru),
           completed_convo: (snapshot.val().completed_conversation),
         });
         this.convertMinsToHrsMins(snapshot.val().total_time_divethru);
+      }, (error) => {
+        console.log(`CategoryScreen componentDidMount error: ${error}`);
       });
     });
+  }
+
+  componentDidMount = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          // title: 'Cool Photo App Camera Permission',
+          // message: 'Cool Photo App needs access to
+          // your camera so you can take awesome pictures.',
+        },
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('Permission You can use the camera');
+        // const { params } = this.props.navigation.state;
+        // const quoteImage = params.quote_image ? params.quote_image : '';
+        // this.downloadFile(quoteImage);
+      } else {
+        console.log('Permission Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+
+    const { params } = this.props.navigation.state;
+    const quoteImage = params.quote_image ? params.quote_image : '';
+    this.downloadFile(quoteImage);
   }
 
   convertMinsToHrsMins(min) {
@@ -103,6 +125,7 @@ class FinishedConversation extends Component {
           this.setState({
             base64Image,
             disabled: false,
+            loader: false,
           });
         }
       });
@@ -151,6 +174,13 @@ class FinishedConversation extends Component {
 
     return (
       <View style={{ flex: 1 }}>
+        {
+          this.state.loader === false
+          ?
+          null
+          :
+          <Loader />
+        }
         <View style={{ height: '30%' }}>
           <ImageBackground
             source={backgroundImages}

@@ -192,7 +192,7 @@ class InviteScreen extends Component {
     if (checkedItem.length < 1) {
       Alert.alert(
         'Alert',
-        'Select atleast one contact.',
+        'Select at least one contact.',
         [
           { text: 'OK', onPress: () => console.log('OK Pressed') },
         ],

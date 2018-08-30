@@ -5,7 +5,7 @@ import Moment from 'moment';
 import DropdownAlert from 'react-native-dropdownalert';
 import VideoPlayer from 'react-native-video-player';
 // import Orientation from 'react-native-orientation';
-import Video from 'react-native-af-video-player';
+// import Video from 'react-native-af-video-player';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { CircularProgress } from 'react-native-circular-progress';
 import { Button } from 'react-native-material-ui';
@@ -13,11 +13,14 @@ import Svg, { Path, Circle, G } from 'react-native-svg';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { IndicatorViewPager, PagerDotIndicator } from 'rn-viewpager';
 import Sound from 'react-native-sound';
+import RNFetchBlob from 'react-native-fetch-blob';
 import firebaseApp from '../../components/constant';
 import walkThroughBg from '../../assets/images/TransperantBG.png';
 import styles, { buttonStyles, reminderButtonStyles, popupbuttonStyles } from '../../styles/tutorial';
 import { colors } from '../../styles/theme';
 import IC_WHITE_CLOSE from '../../assets/images/ic_white_close.png';
+import INTRO_IMAGE from '../../assets/images/intro_image.jpg';
+import INTRO_IMAGE_PLAY from '../../assets/images/intro_image_play.png';
 
 const AudioStatePlay = 'play';
 const AudioStatePause = 'pause';
@@ -40,7 +43,7 @@ export default class Tutorial extends Component {
       isLoaded: false,
       progress: 0,
       playermodalvisible: false,
-      chatBox: 'As I read what I wrote, I connected with...',
+      chatBox: 'As I read what I wrote, I was connected with...',
       lastConversation: 0,
       fullScreen: false,
       isPlayerDisable: true,
@@ -105,7 +108,9 @@ export default class Tutorial extends Component {
       }
     }
     if (e.position !== 4) {
-      this.player.pause();
+      if (this.player !== undefined && this.player !== null) {
+        this.player.pause();
+      }
     }
   }
 
@@ -157,18 +162,72 @@ export default class Tutorial extends Component {
         });
         this.setState({ session: sessionData, sessionTime, sessionId });
         // console.log('meditation_audio: ' + this.state.session[0].meditation_audio);
-        this.session = new Sound(this.state.session[0].meditation_audio, null, (e) => {
-          if (e) {
-            console.log('meditation_audio: IFFF');
-            console.log('error loading track:', e);
-          } else if (this.session !== null || this.session !== undefined) {
-            console.log('meditation_audio: ELSE IFFF');
-            Sound.setCategory('Playback');
+        // this.session = new Sound(this.state.session[0].meditation_audio, null, (e) => {
+        //   if (e) {
+        //     // alert('failed to load the sound: ' + e);
+        //     console.log('error loading track:', e);
+        //   } else if (this.session !== null || this.session !== undefined) {
+        //     console.log('meditation_audio: ELSE IFFF');
+        //     Sound.setCategory('Playback');
+        //     this.setState({ isLoaded: true, isPlayerDisable: false });
+        //   } else {
+        //     console.log('meditation_audio: ELSE');
+        //   }
+        // });
+
+        console.log('Downloaded: start download');
+        RNFetchBlob
+          .config({
+            path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+            appendExt: 'mp3',
+          })
+          .fetch('GET', this.state.session[0].meditation_audio, {
+            'Cache-Control': 'no-store',
+          })
+          .progress({ interval: 0.000000001 }, (received, total) => {
+            // console.log('Downloaded progress: ' + received + '   ' + total);
+          })
+          .then((res) => {
+            console.log('Downloaded res: ' + JSON.stringify(res));
+
+            console.log("response info from download", res.respInfo.status, this.state.session[0].meditation_audio);
             this.setState({ isLoaded: true, isPlayerDisable: false });
-          } else {
-            console.log('meditation_audio: ELSE');
-          }
-        });
+            if (res.respInfo.status === 200) {
+              // eslint-disable-next-line react/no-did-mount-set-state
+              this.setState({ isLoaded: false, isPlayerDisable: true });
+              console.log('Downloaded start PLAYING');
+              this.session = new Sound(res.data, null, (e) => {
+                if (e) {
+                  // alert('failed to load the sound: ' + e);
+                  console.log('error loading track:', e);
+                } else if (this.session !== null || this.session !== undefined) {
+                  console.log('meditation_audio: ELSE IFFF');
+                  Sound.setCategory('Playback');
+                  this.setState({ isLoaded: true, isPlayerDisable: false });
+                } else {
+                  console.log('meditation_audio: ELSE');
+                }
+              });
+            } else {
+                // this is mean its not a 200 response from server, do not link the file to the cache
+              RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+            }
+          })
+          .catch((e) => {
+            console.log('Downloaded error: ' + e.toString());
+            this.setState({ isLoaded: true });
+            RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+
+            try {
+              if (e.toString().contains('Failed to connect')) {
+                alert('Error: The Internet connection appears to be offline.');
+              } else {
+                alert(e);
+              }
+            } catch (err) {
+              alert(e);
+            }
+          });
       }
     });
 
@@ -200,6 +259,11 @@ export default class Tutorial extends Component {
     }
   }
 
+  videoFinished() {
+    this.setState({ fullScreen: false });
+    // Orientation.lockToPortrait();
+    this.viewPager.setPage(5);
+  }
   pause() {
     this.audioState = AudioStatePause;
     if (!this.session) return;
@@ -337,7 +401,7 @@ export default class Tutorial extends Component {
 
   sliderValueChange(value) {
     this.setState({ progress: value, isPlaying: true });
-    if (this.session.getDuration !== null || this.session.getDuration !== undefined) {
+    if (this.session && (this.session.getDuration !== null || this.session.getDuration !== undefined)) {
       const seek = value * (this.session.getDuration() / 360);
       this.session.setCurrentTime(seek);
     }
@@ -417,7 +481,7 @@ export default class Tutorial extends Component {
     const CurrentDate = Moment().format('YYYY-MM-DD HH:mm:ss');
     const category = '10 Day';
     const re = /^[a-zA-Z0-9]{1}/;
-    if (this.state.chatBox === 'As I read what I wrote, I connected with...' || this.state.chatBox === '' || re.test(this.state.chatBox) === false) {
+    if (this.state.chatBox === 'As I read what I wrote, I was connected with...' || this.state.chatBox === '' || re.test(this.state.chatBox) === false) {
       this.showErrorAlertView('Please write your journal');
     } else {
       AsyncStorage.getItem('user_id').then((value) => {
@@ -615,46 +679,54 @@ export default class Tutorial extends Component {
             </View>
           </View>
 
-          <View style={styles.container5}>
-            <TouchableOpacity onPress={() => { this.updatePage(5); }} style={styles.container5}>
-              <ImageBackground
-                source={walkThroughBg}
-                style={styles.videoBackImage}
-              >
-                <Text style={this.state.fullScreen === false ? styles.videoText : styles.hide}>
-                    Here&apos;s everything you{'\n'}
-                    need to know:
-                </Text>
-                <View style={this.state.fullScreen === false ? { margin: 10 } : null}>
-                  <View style={{ flex: 1 }}>
-                    <Video
-                      url={{ uri: 'https://s3-us-west-2.amazonaws.com/divethruweb2/video/Get%2BTo%2BKnow%2BDiveThru.mp4' }}
-                      ref={(r) => { this.player = r; }}
-                      onFullScreen={status => this.onFullScreen(status)}
-                      rotateToFullScreen={Platform.OS === 'ios'}
-                      lockPortraitOnFsExit
-                    />
-                    {/* <VideoPlayer
-                      endWithThumbnail
-                      video={{ uri: 'https://s3-us-west-2.amazonaws.com/divethruweb2/video/Get%2BTo%2BKnow%2BDiveThru.mp4' }}
-                      videoWidth={320}
-                      videoHeight={Platform.OS === 'ios' ? 213.33 : 180}
-                      ref={(r) => { this.player = r; }}
-                    /> */}
-                  </View>
+          {this.state.fullScreen === true
+            ?
+              <View style={{ flex: 1 }}>
+                <TouchableOpacity onPress={() => { this.videoFinished(); }} style={styles.videoPlayerClose}>
+                  <Image source={IC_WHITE_CLOSE} style={{ width: 20, height: 20, resizeMode: 'stretch' }} />
+                  {/* <Image style={styles.closeButton} source={IC_WHITE_CLOSE} /> */}
+                </TouchableOpacity>
+                <VideoPlayer
+                  endWithThumbnail
+                  style={{ width: '100%', height: '100%' }}
+                  video={{ uri: 'https://s3-us-west-2.amazonaws.com/divethruweb2/video/Get%2BTo%2BKnow%2BDiveThru.mp4' }}
+                  onEnd={() => this.videoFinished()}
+                  disableFullscreen
+                  // resizeMode="stretch"
+                  autoplay
+                  ref={(r) => { this.player = r; }}
+                />
+              </View>
+            :
+              <View style={styles.container5}>
+                <TouchableOpacity onPress={() => { this.updatePage(5); }} style={styles.container5}>
+                  <ImageBackground
+                    source={walkThroughBg}
+                    style={styles.videoBackImage}
+                  >
+                    <Text style={this.state.fullScreen === false ? styles.videoText : styles.hide}>
+                      Here&apos;s everything you{'\n'}
+                      need to know:
+                    </Text>
+                    <ImageBackground source={INTRO_IMAGE} style={styles.thumbilVideoPlayer}>
+                      {/* <Image source={INTRO_IMAGE} style={{ height: '100%', width: '100%', resizeMode: 'stretch' }} /> */}
+                      <TouchableOpacity onPress={() => this.setState({ fullScreen: true })}>
+                        <Image source={INTRO_IMAGE_PLAY} style={{ height: 80, width: 80, resizeMode: 'stretch' }} />
+                      </TouchableOpacity>
+                    </ImageBackground>
+                  </ImageBackground>
+                </TouchableOpacity>
+                <View style={this.state.fullScreen === false ? styles.bottomContainer : styles.hide}>
+                  <Button
+                    primary
+                    title=""
+                    text="T A P  A N Y W H E R E  T O  C O N T I N U E"
+                    onPress={() => { this.updatePage(5); }}
+                    style={buttonStyles}
+                  />
                 </View>
-              </ImageBackground>
-            </TouchableOpacity>
-            <View style={this.state.fullScreen === false ? styles.bottomContainer : styles.hide}>
-              <Button
-                primary
-                title=""
-                text="T A P  A N Y W H E R E  T O  C O N T I N U E"
-                onPress={() => { this.updatePage(5); }}
-                style={buttonStyles}
-              />
-            </View>
-          </View>
+              </View>
+          }
 
           <View style={styles.container6}>
             <ImageBackground
@@ -672,7 +744,7 @@ export default class Tutorial extends Component {
                   }}
                 >
                   <View>
-                    <View style={{ marginTop: '40%' }}>
+                    <View style={{ marginTop: '30%' }}>
                       <Text style={styles.playerContainerText}>
                         Let&apos;s dive in.
                       </Text>
@@ -683,7 +755,7 @@ export default class Tutorial extends Component {
 
                       { this.state.isLoaded
                           ? null
-                          : (<Text style={[styles.loadingext, { marginTop: '80%' }]}>
+                          : (<Text style={[styles.loadingext, { marginTop: '78%' }]}>
                             ( L O A D I N G . . . )
                             </Text>)
                         }
@@ -757,17 +829,13 @@ export default class Tutorial extends Component {
               />
             </ImageBackground>
           </View>
-
         </IndicatorViewPager>
 
         <TouchableOpacity
           onPress={() => { this.redirectToDashboardView(); }}
           style={this.state.fullScreen === false ? '' : styles.hide}
         >
-          <Image
-            style={styles.closeButton}
-            source={IC_WHITE_CLOSE}
-          />
+          <Image style={styles.closeButton} source={IC_WHITE_CLOSE} />
         </TouchableOpacity>
 
         <Modal
@@ -786,7 +854,7 @@ export default class Tutorial extends Component {
                   <TextInput
                     multiline
                     maxLength={500}
-                    placeholder="As I read what I wrote, I connected with..."
+                    placeholder="As I read what I wrote, I was connected with..."
                     numberOfLines={5}
                     onChangeText={(e) => { this.setState({ chatBox: e }); }}
                     value={this.state.chatBox}
@@ -796,15 +864,32 @@ export default class Tutorial extends Component {
                   />
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '90%',
+                  }}
+                >
                   <Button
                     accent
-                    text="A D D  I N  M Y  J O U R N A L"
+                    text="ADD IN MY JOURNAL"
                     onPress={() => { this.saveJournal(); }}
                     upperCase={false}
                     style={popupbuttonStyles}
                   />
-                  <View style={{ marginTop: 20, marginLeft: 10, marginRight: 10, marginBottom: 10, justifyContent: 'center', alignItems: 'center', height: Platform.OS === 'iosl' ? 50 : 55 }}>
+                  <View
+                    style={{
+                      marginTop: 20,
+                      marginLeft: 10,
+                      marginRight: 10,
+                      marginBottom: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: Platform.OS === 'ios' ? 50 : 55,
+                    }}
+                  >
                     <CircularProgress
                       size={20}
                       width={3}

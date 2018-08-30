@@ -85,6 +85,13 @@ const styles = StyleSheet.create({
     marginRight: 18,
     marginTop: Platform.OS === 'ios' ? -18 : -14,
   },
+  editProfileImage: {
+    height: 36,
+    width: 36,
+    bottom: 20,
+    right: 20,
+    position: 'absolute',
+  },
 });
 
 export default styles;

@@ -38,6 +38,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.white,
   },
+  videoPlayerClose: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    right: 4,
+    top: 4,
+    position: 'absolute',
+    backgroundColor: '#0000004f',
+    zIndex: 100,
+    width: 40,
+    height: 40,
+  },
+  thumbilVideoPlayer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+    height: 213.33,
+    width: Dimensions.get('window').width - 20,
+    // zIndex: 90009,
+  },
   // innerContainer: {
   //   justifyContent: 'center',
   //   alignItems: 'center',
@@ -78,7 +97,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: colors.transparent,
     fontFamily: 'Roboto',
-    marginTop: '20%',
+    // marginTop: '20%',
     marginBottom: '10%',
   },
   hide: {
@@ -126,6 +145,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   IntroVideoView: {
     justifyContent: 'center',
@@ -150,7 +171,7 @@ const styles = StyleSheet.create({
   },
   playerContainer: {
     width: '100%',
-    height: '90%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
@@ -277,6 +298,7 @@ const styles = StyleSheet.create({
     // borderStyle: 'dashed',
     borderRadius: 5,
     height: 150,
+    width: '90%',
   },
 });
 
@@ -318,6 +340,7 @@ export const popupbuttonStyles = StyleSheet.create({
     fontSize: 16,
     color: colors.white,
     fontFamily: 'Roboto',
+    letterSpacing: 2,
   },
   container: {
     height: Platform.OS === 'ios' ? 50 : 55,

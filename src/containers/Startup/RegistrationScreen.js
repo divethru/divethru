@@ -782,7 +782,7 @@ class RegistrationScreen extends Component {
                 primary
                 title=""
                 text="G E T  S T A R T E D"
-                onPress={this.submit}
+                onPress={() => { this.submit(); }}
                 style={buttonStyles}
               />
 

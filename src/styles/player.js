@@ -1,5 +1,7 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
 import { colors } from './theme';
+
+const height = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
   container: {
@@ -25,11 +27,31 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginLeft: 20,
     marginRight: 20,
-    justifyContent: 'space-between',
   },
   iconLeftContainer: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
+  },
+  centerText: {
+    backgroundColor: 'transparent',
+    fontSize: 16,
+    color: colors.white,
+    fontFamily: 'Roboto',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    flex: 1,
+  },
+  topText: {
+    fontSize: 16,
+    color: colors.white,
+    fontFamily: 'Roboto',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  iconRightContainer: {
+    alignSelf: 'flex-end',
   },
   icon: {
     height: 20,
@@ -41,13 +63,6 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontFamily: 'Roboto',
   },
-  topText: {
-    fontSize: 16,
-    color: colors.white,
-    fontFamily: 'Roboto',
-    textAlign: 'center',
-    marginTop: 10,
-  },
   centerContainer: {
     flex: 1,
     backgroundColor: 'transparent',
@@ -58,6 +73,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
+    marginTop: 10,
   },
   playerSvg: {
     alignItems: 'center',
@@ -136,6 +152,7 @@ const styles = StyleSheet.create({
     width: '8.5%',
     height: 6,
     backgroundColor: colors.white,
+    marginTop: Platform.OS === 'ios' && height === 812 ? 40 : 0,
   },
   progressBarUnFill: {
     width: '8.5%',
@@ -143,12 +160,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     opacity: 0.5,
     marginLeft: '1.66%',
+    marginTop: Platform.OS === 'ios' && height === 812 ? 40 : 0,
   },
   progrssBarFill: {
     width: '8.5%',
     height: 6,
     backgroundColor: colors.white,
     marginLeft: '1.66%',
+    marginTop: Platform.OS === 'ios' && height === 812 ? 40 : 0,
   },
   popupcontainer: {
     flex: 1,
@@ -163,6 +182,7 @@ const styles = StyleSheet.create({
     // borderStyle: 'dashed',
     borderRadius: 5,
     height: 150,
+    width: '90%',
   },
   innerContainer: {
     flex: 1,

@@ -28,7 +28,7 @@ class EditProfile extends Component {
       headerLeft: (
         <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.goBack()}>
           <Image
-            style={{ height: 20, width: 20, margin: 10 }}
+            style={{ height: 20, width: 20, marginLeft: 10, marginRight: 10, marginBottom: 10, marginTop: 20 }}
             source={IC_BACK}
           />
         </TouchableOpacity>
@@ -350,22 +350,6 @@ class EditProfile extends Component {
     this.setState({ gender1: gender });
   }
 
-  // validateCity(cityName) {
-  //   if (!cityName) {
-  //     this.setState({
-  //       inputCityNameColor: colors.red600,
-  //       inputCityNameError: 'A city is required',
-  //     });
-  //   } else {
-  //     this.setState({
-  //       cityName,
-  //       inputCityNameColor: palette.accentColor,
-  //       inputCityNameError: '',
-  //     });
-  //   }
-  //   this.setState({ cityName });
-  // }
-
   validateLocation(location) {
     if (!location) {
       this.setState({
@@ -443,28 +427,6 @@ class EditProfile extends Component {
       });
   })
 
-  // uploadImageToStorage = (file1) => {
-  //   const storage = firebaseApp.storage();
-  //   return new Promise((resolve, reject) => {
-  //     const fileUpload = storage.bucket().file('ABC');
-  //     const blobStream = fileUpload.createWriteStream({
-  //       metadata: {
-  //         contentType: 'image/jpg',
-  //       },
-  //     });
-
-  //     blobStream.on('error', error => reject(error));
-
-  //     blobStream.on('finish', () => {
-  //       fileUpload.getMetadata()
-  //         .then(metadata => resolve(metadata))
-  //         .catch(error => reject(error));
-  //     });
-
-  //     blobStream.end(file.buffer);
-  //   });
-  // }
-
   updateUser= () => {
     if (this.state.dateOfBirth !== '' &&
     this.state.firstName !== '' &&
@@ -518,7 +480,9 @@ class EditProfile extends Component {
                     btnload: false,
                     loading: false,
                   });
-                  this.props.navigation.goBack();
+                  this.dropdown.alertWithType('success', '', 'You have successfully updated your profile.');
+
+                  // this.props.navigation.goBack();
                 });
               });
             });
@@ -549,7 +513,9 @@ class EditProfile extends Component {
                 btnload: false,
                 loading: false,
               });
-              this.props.navigation.goBack();
+              this.dropdown.alertWithType('success', '', 'You have successfully updated your profile.');
+
+              // this.props.navigation.goBack();
             });
           });
         });
@@ -578,17 +544,7 @@ class EditProfile extends Component {
       StateData: [{ id: 'Select state', value: 'Select state' }],
       CityData: [{ id: 'Select city', value: 'Select city' }],
     });
-    // if (this.state.state !== 'Select state') {
-    // this.setState({
-    //   StateData: [{ id: 'Select state', value: 'Select state' }],
-    //   CityData: [{ id: 'Select city', value: 'Select city' }],
-    // });
-    // }
-    // if (this.state.city !== 'Select city') {
-    // this.setState({
-    //   CityData: [{ id: 'Select city', value: 'Select city' }],
-    // });
-    // }
+
     if (e !== 'Select country') {
       fetch(`http://geodata.solutions/api/api.php?type=getStates&countryId=${this.state.CountryData[index].id}`, {
         method: 'GET',
@@ -642,12 +598,12 @@ class EditProfile extends Component {
     // }
     if (e !== 'Select state') {
       fetch(`http://geodata.solutions/api/api.php?type=getCities&countryId=${this.state.countryCode}&stateId="${this.state.StateData[index].id}"`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
     .then(response => response.json())
     .then((responseJson) => {
       // alert(JSON.stringify(responseJson.result));
@@ -681,11 +637,11 @@ class EditProfile extends Component {
     });
     } else {
       this.setState({
-      state: e,
-      loader: false,
-      city: 'Select city',
-      cityCode: 'Select city',
-    });
+        state: e,
+        loader: false,
+        city: 'Select city',
+        cityCode: 'Select city',
+      });
     }
   }
 
@@ -720,13 +676,7 @@ class EditProfile extends Component {
               }
 
               <TouchableOpacity
-                style={{
-                  height: 36,
-                  width: 36,
-                  bottom: 20,
-                  right: 20,
-                  position: 'absolute',
-                }}
+                style={styles.editProfileImage}
                 onPress={() => { this.onclick(); }}
               >
                 <Image
@@ -984,41 +934,41 @@ class EditProfile extends Component {
             >
               <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                 <View style={{ bottom: 0, width: '100%', height: 240, position: 'absolute', backgroundColor: 'white' }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <TouchableOpacity style={{ paddingTop: 8, paddingHorizontal: 18 }} onPress={() => { this.setState({ tempStateIndex: undefined, stateModalVisible: false }); }}>
-                    <Text>Cancle</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{ paddingTop: 8, paddingHorizontal: 18, fontSize: 16 }}
-                    onPress={() => {
-                      if (this.state.tempStateIndex !== undefined) {
-                        this.dropdownChangeState(this.state.tempStateValue, this.state.tempStateIndex);
-                      }
-                      this.setState({ stateModalVisible: false });
-                    }}
-                  >
-                    <Text style={{ color: '#7dd3d5', fontSize: 16 }}>Confirm</Text>
-                  </TouchableOpacity>
-                </View>
-                <View>
-                  <Picker
-                    selectedValue={this.state.tempStateIndex === undefined ? this.state.state : this.state.tempStateValue}
-                    style={{ flex: 1 }}
-                    onValueChange={(itemValue, itemIndex) => {
-                      this.setState({
-                        tempStateValue: itemValue,
-                        tempStateIndex: itemIndex,
-                      });
-                    }}
-                  >
-                    {
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TouchableOpacity style={{ paddingTop: 8, paddingHorizontal: 18 }} onPress={() => { this.setState({ tempStateIndex: undefined, stateModalVisible: false }); }}>
+                      <Text>Cancle</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ paddingTop: 8, paddingHorizontal: 18, fontSize: 16 }}
+                      onPress={() => {
+                        if (this.state.tempStateIndex !== undefined) {
+                          this.dropdownChangeState(this.state.tempStateValue, this.state.tempStateIndex);
+                        }
+                        this.setState({ stateModalVisible: false });
+                      }}
+                    >
+                      <Text style={{ color: '#7dd3d5', fontSize: 16 }}>Confirm</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    <Picker
+                      selectedValue={this.state.tempStateIndex === undefined ? this.state.state : this.state.tempStateValue}
+                      style={{ flex: 1 }}
+                      onValueChange={(itemValue, itemIndex) => {
+                        this.setState({
+                          tempStateValue: itemValue,
+                          tempStateIndex: itemIndex,
+                        });
+                      }}
+                    >
+                      {
                   this.state.StateData.map(item => (
                     <Picker.Item label={item.value} value={item.value} key={item.key} />),
                   )
                   }
-                  </Picker>
+                    </Picker>
+                  </View>
                 </View>
-              </View>
               </View>
             </Modal>
 
@@ -1032,41 +982,41 @@ class EditProfile extends Component {
             >
               <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                 <View style={{ bottom: 0, width: '100%', height: 240, position: 'absolute', backgroundColor: 'white' }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <TouchableOpacity style={{ paddingTop: 8, paddingHorizontal: 18 }} onPress={() => { this.setState({ tempCityIndex: undefined, cityModalVisible: false }); }}>
-                    <Text>Cancle</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={{ paddingTop: 8, paddingHorizontal: 18, fontSize: 16 }}
-                    onPress={() => {
-                      if (this.state.tempCityIndex !== undefined) {
-                        this.dropdownChangeCity(this.state.tempCityValue, this.state.tempCityIndex);
+                  <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <TouchableOpacity style={{ paddingTop: 8, paddingHorizontal: 18 }} onPress={() => { this.setState({ tempCityIndex: undefined, cityModalVisible: false }); }}>
+                      <Text>Cancle</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ paddingTop: 8, paddingHorizontal: 18, fontSize: 16 }}
+                      onPress={() => {
+                        if (this.state.tempCityIndex !== undefined) {
+                          this.dropdownChangeCity(this.state.tempCityValue, this.state.tempCityIndex);
+                        }
+                        this.setState({ cityModalVisible: false });
+                      }}
+                    >
+                      <Text style={{ color: '#7dd3d5', fontSize: 16 }}>Confirm</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    <Picker
+                      selectedValue={this.state.tempCityIndex === undefined ? this.state.city : this.state.tempCityValue}
+                      style={{ flex: 1 }}
+                      onValueChange={(itemValue, itemIndex) => {
+                        this.setState({
+                          tempCityValue: itemValue,
+                          tempCityIndex: itemIndex,
+                        });
+                      }}
+                    >
+                      {
+                        this.state.CityData.map(item => (
+                          <Picker.Item label={item.value} value={item.value} key={item.key} />),
+                        )
                       }
-                      this.setState({ cityModalVisible: false });
-                    }}
-                  >
-                    <Text style={{ color: '#7dd3d5', fontSize: 16 }}>Confirm</Text>
-                  </TouchableOpacity>
+                    </Picker>
+                  </View>
                 </View>
-                <View>
-                  <Picker
-                    selectedValue={this.state.tempCityIndex === undefined ? this.state.city : this.state.tempCityValue}
-                    style={{ flex: 1 }}
-                    onValueChange={(itemValue, itemIndex) => {
-                      this.setState({
-                        tempCityValue: itemValue,
-                        tempCityIndex: itemIndex,
-                      });
-                    }}
-                  >
-                    {
-                  this.state.CityData.map(item => (
-                    <Picker.Item label={item.value} value={item.value} key={item.key} />),
-                  )
-                  }
-                  </Picker>
-                </View>
-              </View>
               </View>
             </Modal>
 
@@ -1077,12 +1027,12 @@ class EditProfile extends Component {
               <Text style={styles.text}>S U B M I T</Text>
             </TouchableOpacity>
 
-            <DropdownAlert
-              updateStatusBar={false}
-              ref={(ref) => { this.dropdown = ref; }}
-              onClose={data => this.onClose(data)}
-            />
           </KeyboardAwareScrollView>
+          <DropdownAlert
+            updateStatusBar={false}
+            ref={(ref) => { this.dropdown = ref; }}
+            onClose={data => this.onClose(data)}
+          />
         </ScrollView>
       </Spinner>
     );

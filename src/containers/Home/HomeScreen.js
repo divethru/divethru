@@ -1480,7 +1480,7 @@ class HomeScreen extends Component {
     if (this.state.matched === undefined && page > 0) {
       Alert.alert(
         'Alert',
-        'Select atleast one tag',
+        'Select at least one tag',
         [
           { text: 'OK', onPress: () => console.log('OK Pressed') },
         ],
@@ -1523,7 +1523,7 @@ class HomeScreen extends Component {
     if (matchedStrings === '') {
       Alert.alert(
         'Alert',
-        'Select Atleast One Tag.',
+        'Select at least one tag',
         [
           { text: 'OK', onPress: () => console.log('OK Pressed') },
         ],

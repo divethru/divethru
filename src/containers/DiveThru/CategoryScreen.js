@@ -47,7 +47,6 @@ class CategoryScreen extends Component {
       refreshing: false,
       qrefreshing: false,
       processofGoUnlimited: false,
-      // individualBundlePurchase: false,
       isCategoryFree: false,
       isAccesstoOpenDive: false,
       isAccesstoDeepDive: false,
@@ -66,6 +65,7 @@ class CategoryScreen extends Component {
       console.log(`CategoryScreen componentWillMount error: ${err}`);
     }
 
+    this.setState({ loading: true });
     const ref = firebaseApp.database().ref('InAppProducts');
     const vals2 = [];
     ref.once('value', (data) => {
@@ -76,8 +76,8 @@ class CategoryScreen extends Component {
           session_id: values.session_id,
           bundle_id: values.bundle_id,
         });
-        this.setState({ sessionProducts: vals2 });
       });
+      this.setState({ sessionProducts: vals2 });
       this.fetchUserLastConversationData();
     }, (error) => {
       console.log(`CategoryScreen componentDidMount error: ${error}`);
@@ -116,22 +116,6 @@ class CategoryScreen extends Component {
       });
     });
 
-    // const ref = firebaseApp.database().ref('InAppProducts');
-    // vals2 = [];
-    // ref.once('value', (data) => {
-    //   data.forEach((userSnapshot) => {
-    //     const values = userSnapshot.val();
-    //     vals2.push({
-    //       product_id: values.product_id,
-    //       session_id: values.session_id,
-    //       bundle_id: values.bundle_id,
-    //     });
-    //     this.setState({ sessionProducts: vals2 });
-    //   });
-    //   console.log('state-->' + JSON.stringify(this.state.sessionProducts));
-    // }, (error) => {
-    //   console.log(`CategoryScreen componentDidMount error: ${error}`);
-    // });
 
     AsyncStorage.getItem('redirectToPlayer').then((value) => {
       if (value !== null) {
@@ -179,6 +163,7 @@ class CategoryScreen extends Component {
   }
 
   getSessionData = async (item, subCategoryname) => {
+    // console.log('DiveThruScreen===> CategoryScreen getSessionData');
     this.setState({ item });
 
     if (item.session !== null) {
@@ -204,60 +189,12 @@ class CategoryScreen extends Component {
         isSessionFree: false,
         isAccesstoQuickDive: this.state.isAccesstoQuickDive,
       });
-      // if (item.bundleSubscription === false) {
-      //   if (item.playStoreProduct !== undefined) {
-      //     if (this.state.showPlayer === true) {
-      //       this.setState({ showPlayer: false });
-      //       if (this.session.isPaid === true || this.state.membershipType === 'Paid') {
-      //         purchasedBundle = true;
-      //         this.setState({ modalVisible: false });
-      //       }
-      //       this.props.screenProps.navigation.navigate('BundleDescription', { sessionData, subCategoryname, subcategoryId, name, item: this.props.item, bundleId: item.bundle_id, bundleDesc: item.bundle_description, bundleImage: item.bundle_img, purchasedBundle, returnData: this.fetchUserLastConversationData.bind(this), sessionType: 'SubCategoryBundle', isCategoryFree: this.state.isCategoryFree, isBundleFree: false, AccesstoCommon: this.state.AccesstoCommon, isAccesstoDeepDive: this.state.isAccesstoDeepDive, playStoreProduct: item.playStoreProduct, categoryName: this.state.CategoryName });
-      //     } else {
-      //       const products = await this.getItems(item.playStoreProduct, item);
-      //       const sku = products.productId;
-      //       const currency = products.currency;
-      //       const price = products.price;
-      //       const productTitle = products.title;
-      //       this.setState({
-      //         sessionName: item.bundle_name,
-      //         sku,
-      //         currency,
-      //         price,
-      //         sessionImage: item.bundle_img,
-      //       });
-      //       if (this.state.membershipType === 'Paid') {
-      //         this.setState({ modalVisible: false });
-      //         this.props.screenProps.navigation.navigate('BundleDescription', { sessionData, subCategoryname, subcategoryId, name, item: this.props.item, bundleId: item.bundle_id, bundleDesc: item.bundle_description, bundleImage: item.bundle_img, purchasedBundle, returnData: this.fetchUserLastConversationData.bind(this), sessionType: 'SubCategoryBundle', isCategoryFree: this.state.isCategoryFree, isBundleFree: false, AccesstoCommon: this.state.AccesstoCommon, isAccesstoDeepDive: this.state.isAccesstoDeepDive, playStoreProduct: item.playStoreProduct, categoryName: this.state.CategoryName });
-      //       } else if (this.state.isCategoryFree === true || item.isBundleFree === true || this.state.AccesstoCommon === 'all' || this.state.isAccesstoDeepDive === true) {
-      //         this.setState({ modalVisible: false });
-      //         this.props.screenProps.navigation.navigate('BundleDescription', { sessionData, subCategoryname, subcategoryId, name, item: this.props.item, bundleId: item.bundle_id, bundleDesc: item.bundle_description, bundleImage: item.bundle_img, purchasedBundle, returnData: this.fetchUserLastConversationData.bind(this), sessionType: 'SubCategoryBundle', isCategoryFree: this.state.isCategoryFree, isBundleFree: true, AccesstoCommon: this.state.AccesstoCommon, isAccesstoDeepDive: this.state.isAccesstoDeepDive, playStoreProduct: item.playStoreProduct, categoryName: this.state.CategoryName });
-      //       } else {
-      //         this.setState({ modalVisible: true });
-      //       }
-      //       this.setState({
-      //         sessionId: item.bundle_id,
-      //         sessionType: 'bundle',
-      //         productTitle,
-      //       });
-      //     }
-      //   } else if (this.state.showPlayer === true) {
-      //     if (this.session.isPaid === true) {
-      //       purchasedBundle = true;
-      //     }
-      //     this.props.screenProps.navigation.navigate('BundleDescription', { sessionData, subcategoryId, name, subCategoryname, item: this.props.item, bundleId: item.bundle_id, bundleDesc: item.bundle_description, bundleImage: item.bundle_img, purchasedBundle, returnData: this.fetchUserLastConversationData.bind(this), sessionType: 'SubCategoryBundle', isCategoryFree: this.state.isCategoryFree, isBundleFree: false, AccesstoCommon: this.state.AccesstoCommon, isAccesstoDeepDive: this.state.isAccesstoDeepDive, playStoreProduct: item.playStoreProduct, categoryName: this.state.CategoryName });
-      //   }
-      // } else {
-      //   if (item.bundleSubscription === true) {
-      //     purchasedBundle = true;
-      //   }
-      //   this.props.screenProps.navigation.navigate('BundleDescription', { sessionData, subcategoryId, name, subCategoryname, item: this.props.item, bundleId: item.bundle_id, bundleDesc: item.bundle_description, bundleImage: item.bundle_img, purchasedBundle, returnData: this.fetchUserLastConversationData.bind(this), sessionType: 'SubCategoryBundle', isCategoryFree: this.state.isCategoryFree, isBundleFree: false, AccesstoCommon: this.state.AccesstoCommon, isAccesstoDeepDive: this.state.isAccesstoDeepDive, playStoreProduct: item.playStoreProduct, categoryName: this.state.CategoryName });
-      // }
     }
   }
 
   // eslint-disable-next-line no-unused-vars
   getItems = async (product, item) => {
+    // console.log('DiveThruScreen===> CategoryScreen getItems');
     const itemSkuSubs = [];
     itemSkuSubs.push(product);
     try {
@@ -274,6 +211,7 @@ class CategoryScreen extends Component {
   }
 
   getSession = (id, name) => {
+    // console.log('DiveThruScreen===> CategoryScreen getSession');
     let sessionData = [];
     if (this.state.categoryName === this.state.categoryAllData.cat_name) {
       if (this.state.categoryAllData.bundle) {
@@ -321,6 +259,7 @@ class CategoryScreen extends Component {
     if (this.state.Arrcategory !== undefined) {
       isCategoryFree = this.state.Arrcategory.includes(categoryName);
     }
+    // console.log('DiveThruScreen===> CategoryScreen callServer111');
     this.setState({
       isCategoryFree,
       categoryAllData,
@@ -328,7 +267,6 @@ class CategoryScreen extends Component {
     });
     if (categoryAllData.session) {
       const categoryData = categoryAllData.session;
-      // this.setState({ categoryData });
       const categoryFinalData = [];
       categoryData.forEach((child, i) => {
         categoryFinalData.push({
@@ -354,26 +292,40 @@ class CategoryScreen extends Component {
         tabscreen: 'Category',
       });
     } else if (categoryAllData.SubCategory) {
-      categoryAllData.SubCategory.forEach((element) => {
-        if (element.session) {
-          const categoryData = categoryAllData.SubCategory;
-          // console.log('categoryData->' + JSON.stringify(categoryData));
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(categoryData),
-            tabscreen: 'subCategorySession',
-          });
-        } else {
-          const categoryData = categoryAllData.SubCategory;
-          this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(categoryData),
-            tabscreen: 'subCategory',
-          });
-        }
-      });
+      if (categoryAllData.SubCategory[0].session) {
+        this.setState({
+          dataSource: this.state.dataSource.cloneWithRows(categoryAllData.SubCategory),
+          tabscreen: 'subCategorySession',
+        });
+      } else {
+        this.setState({
+          dataSource: this.state.dataSource.cloneWithRows(categoryAllData.SubCategory),
+          tabscreen: 'subCategory',
+        });
+      }
+      // categoryAllData.SubCategory.forEach((element) => {
+      //   // console.log('DiveThruScreen===> CategoryScreen callServer000: ' + element.session);
+      //   if (element.session) {
+      //     console.log('DiveThruScreen===> CategoryScreen callServer000: IFFF');
+      //     // console.log('DiveThruScreen===> CategoryScreen callServer444');
+      //     this.setState({
+      //       dataSource: this.state.dataSource.cloneWithRows(categoryAllData.SubCategory),
+      //       tabscreen: 'subCategorySession',
+      //     });
+      //   } else {
+      //     console.log('DiveThruScreen===> CategoryScreen callServer000: ELSE');
+      //     // console.log('DiveThruScreen===> CategoryScreen callServer555');
+      //     this.setState({
+      //       dataSource: this.state.dataSource.cloneWithRows(categoryAllData.SubCategory),
+      //       tabscreen: 'subCategory',
+      //     });
+      //   }
+      // });
     }
   }
 
   sessionSubscriptionData = () => {
+    // console.log('DiveThruScreen===> CategoryScreen sessionSubscriptionData');
     const vals = [];
     AsyncStorage.getItem('user_id').then((value) => {
       const ref = firebaseApp.database().ref('Users').child(`${value}/IndividualSubscription/session`);
@@ -389,6 +341,7 @@ class CategoryScreen extends Component {
   }
 
   consumePurchase = async () => {
+    // console.log('DiveThruScreen===> CategoryScreen consumePurchase');
     try {
       const datas = await RNIap.getAvailablePurchases();
       for (let i = 0; i < datas.length; i++) { // eslint-disable-line no-plusplus
@@ -405,14 +358,11 @@ class CategoryScreen extends Component {
   }
 
   fetchUserLastConversationData() {
-    this.setState({ loading: true });
+    // console.log('DiveThruScreen===> CategoryScreen fetchUserLastConversationData');
     const userData = AsyncStorage.getItem('user_id').then((value) => {
       if (value != null) {
-        // const ref = firebaseApp.database().ref('Users').child(value);
-        // ref.once('value').then((dataSnapshot) => {
         const ref = firebaseApp.database().ref('Users').child(`${value}`);
         ref.on('value', (dataSnapshot) => {
-          // console.log('DiveThruScreen===> CategoryScreen fetchUserLastConversationData');
           const convo = dataSnapshot.val();
           const lastConversation = convo.last_free_conversation_id;
           const halted = convo.halted;
@@ -421,7 +371,6 @@ class CategoryScreen extends Component {
           if (convo.streak !== '') {
             streakData = convo.streak;
             this.arrStreak = streakData;
-            // console.log('fetchUserLastConversationData arrStreak: ' + JSON.stringify(streakData));
             this.arrStreakHasData = true;
           }
           this.setState({
@@ -430,7 +379,6 @@ class CategoryScreen extends Component {
             membershipType: type,
           });
           this.fetchAccessCodeData();
-          // this.setState({ loading: false });
         });
       }
     }).catch(() => { });
@@ -438,96 +386,82 @@ class CategoryScreen extends Component {
   }
 
   fetchAccessCodeData() {
+    // console.log('DiveThruScreen===> CategoryScreen fetchAccessCodeData');
     AsyncStorage.getItem('user_id').then((value) => {
       if (value != null) {
         const ref = firebaseApp.database().ref('Users').child(value);
-        ref.once('value').then((dataSnapshot) => {
+        ref.once('value').then((dataSnapshot1) => {
           let Arrsession = [];
           let ArrBundle = [];
           let Arrcategory = [];
-          if (dataSnapshot.exists()) {
-            const AccessCode = dataSnapshot.val().access_code;
+          if (dataSnapshot1.exists()) {
+            const AccessCode = dataSnapshot1.val().access_code;
             if (AccessCode !== '') {
-              // const refaccess = firebaseApp.database().ref('AccessCodes').child(AccessCode);
-              // refaccess.once('value').then((dataSnapshot) => {
               const refaccess = firebaseApp.database().ref('AccessCodes').child(AccessCode);
               refaccess.on('value', (dataSnapshot) => {
-                // console.log('DiveThruScreen===> CategoryScreen fetchAccessCodeData');
                 if (dataSnapshot.exists()) {
                   const Accessto = dataSnapshot.val().accessto;
                   const enddate = dataSnapshot.val().enddate;
                   const validity = dataSnapshot.val().validity;
                   const CurrentDate = Moment().format('YYYY-MM-DD HH:mm:ss');
-                  // console.log('Accessto->' + Accessto);
-                  // console.log('enddate->' + enddate);
-                  // console.log('CurrentDate->' + CurrentDate);
-                  // console.log('validity->' + validity);
                   if (validity === 'unlimited') {
                     if (Accessto !== 'all') {
                       if (Accessto === 'Open Dive') {
                         this.setState({ isAccesstoOpenDive: true });
                       } else if (Accessto === 'Deep Dive') {
-                        this.setState({
-                          isAccesstoDeepDive: true,
-                        });
+                        this.setState({ isAccesstoDeepDive: true });
                       } else if (Accessto === 'Quick Dive') {
                         this.setState({ isAccesstoQuickDive: true });
                       } else if (Accessto === 'custom') {
-                        this.setState({ AccesstoCommon: Accessto });
+                        // this.setState({ AccesstoCommon: Accessto });
                         const Sessions = dataSnapshot.val().session;
                         const Bundles = dataSnapshot.val().bundle;
                         const Categories = dataSnapshot.val().category;
                         if (Sessions) {
                           Arrsession = Sessions.split(',');
-                          this.setState({ Arrsession });
-                        }
-                        if (Bundles) {
+                          this.setState({ Arrsession, AccesstoCommon: Accessto });
+                        } else if (Bundles) {
                           ArrBundle = Bundles.split(',');
-                          this.setState({ ArrBundle });
-                        }
-                        if (Categories) {
+                          this.setState({ ArrBundle, AccesstoCommon: Accessto });
+                        } else if (Categories) {
                           Arrcategory = Categories.split(',');
-                          this.setState({ Arrcategory });
+                          this.setState({ Arrcategory, AccesstoCommon: Accessto });
+                        } else {
+                          this.setState({ AccesstoCommon: Accessto });
                         }
                       }
                     } else if (Accessto === 'all') {
                       this.setState({ AccesstoCommon: Accessto });
                     }
                   } else if (CurrentDate < enddate) {
-                    console.log('else if');
                     if (Accessto !== 'all') {
                       if (Accessto === 'Open Dive') {
                         this.setState({ isAccesstoOpenDive: true });
                       } else if (Accessto === 'Deep Dive') {
-                        // console.log(`==>BUNDLE NAME==> Set isAccesstoDeepDive`);
-                        // this.state.dataSource.isAccesstoDeepDive = true;
-                        // const dataSource = this.state.dataSource;
-                        // dataSource.isAccesstoDeepDive: true;
                         this.setState({
                           isAccesstoDeepDive: true,
                         });
                       } else if (Accessto === 'Quick Dive') {
                         this.setState({ isAccesstoQuickDive: true });
                       } else if (Accessto === 'custom') {
-                        this.setState({ AccesstoCommon: Accessto });
+                        // this.setState({ AccesstoCommon: Accessto });
                         const Sessions = dataSnapshot.val().session;
                         const Bundles = dataSnapshot.val().bundle;
                         const Categories = dataSnapshot.val().category;
                         if (Sessions) {
                           Arrsession = Sessions.split(',');
-                          this.setState({ Arrsession });
-                        }
-                        if (Bundles) {
+                          this.setState({ Arrsession, AccesstoCommon: Accessto });
+                        } else if (Bundles) {
                           ArrBundle = Bundles.split(',');
-                          this.setState({ ArrBundle });
-                        }
-                        if (Categories) {
+                          this.setState({ ArrBundle, AccesstoCommon: Accessto });
+                        } else if (Categories) {
                           Arrcategory = Categories.split(',');
-                          this.setState({ Arrcategory });
+                          this.setState({ Arrcategory, AccesstoCommon: Accessto });
+                        } else {
+                          this.setState({ AccesstoCommon: Accessto });
                         }
                       }
                     } else if (Accessto === 'all') {
-                      console.log('all');
                       this.setState({ AccesstoCommon: Accessto });
                     }
                   } else {
@@ -554,15 +488,13 @@ class CategoryScreen extends Component {
   }
 
   fetchCategoryWiseData() {
+    // console.log('DiveThruScreen===> CategoryScreen fetchCategoryWiseData');
     const arrayCategory = [];
     const subscriptionIds = this.state.sessionSubscriptionIds;
     const bSubscriptionIds = this.state.bundleSubscriptionIds;
 
-    // const ref = firebaseApp.database().ref('Category');
-    // ref.once('value').then((dataSnapshot) => {
     const ref = firebaseApp.database().ref('Category');
     ref.on('value', (dataSnapshot) => {
-      // console.log('DiveThruScreen===> CategoryScreen fetchCategoryWiseData');
       if (dataSnapshot.exists()) {
         dataSnapshot.forEach((child) => {
           if (child.key !== '10 Day Intro Program') {
@@ -589,7 +521,8 @@ class CategoryScreen extends Component {
                         if (CategoryID === streakKey) {
                           streakVisitedSessionCount = Object.keys(streakValue.Session).length;
                           if (streakVisitedSessionCount > 0) {
-                            isSessionAvailable = Object.keys(streakValue.Session).includes(value.session_id);
+                            isSessionAvailable = Object.keys(streakValue.Session)
+                              .includes(value.session_id);
                           }
                         }
                       });
@@ -649,7 +582,8 @@ class CategoryScreen extends Component {
                             if (value.bundle_id === streakKey) {
                               streakVisitedSessionCount = Object.keys(streakValue.Session).length;
                               if (streakVisitedSessionCount > 0) {
-                                isSessionAvailable = Object.keys(streakValue.Session).includes(value1.session_id);
+                                isSessionAvailable = Object.keys(streakValue.Session)
+                                  .includes(value1.session_id);
                               }
                             }
                           });
@@ -725,9 +659,13 @@ class CategoryScreen extends Component {
                                 let streakValue = [];
                                 streakValue = this.arrStreak[streakKey];
                                 if (value1.bundle_id === streakKey) {
-                                  streakVisitedSessionCount = Object.keys(streakValue.Session).length;
+                                  streakVisitedSessionCount = Object.keys(
+                                    streakValue.Session,
+                                  ).length;
                                   if (streakVisitedSessionCount > 0) {
-                                    isSessionAvailable = Object.keys(streakValue.Session).includes(value2.session_id);
+                                    isSessionAvailable = Object.keys(streakValue.Session).includes(
+                                      value2.session_id,
+                                    );
                                   }
                                 }
                               });
@@ -795,7 +733,9 @@ class CategoryScreen extends Component {
                             if (value.subcategory_id === streakKey) {
                               streakVisitedSessionCount = Object.keys(streakValue.Session).length;
                               if (streakVisitedSessionCount > 0) {
-                                isSessionAvailable = Object.keys(streakValue.Session).includes(sessionData.session_id);
+                                isSessionAvailable = Object.keys(streakValue.Session).includes(
+                                  sessionData.session_id,
+                                );
                               }
                             }
                           });
@@ -805,10 +745,6 @@ class CategoryScreen extends Component {
                         isSessionFree = this.state.Arrsession.includes(sessionData.session_id);
                       }
 
-                      // console.log('DiveThruScreen===> CategoryScreen subscriptionIds: ' + JSON.stringify(subscriptionIds));
-                      // console.log('DiveThruScreen===> CategoryScreen session_id: ' + sessionData.session_id);
-                      // console.log('DiveThruScreen===> CategoryScreen isIncludes: ' + (!!subscriptionIds.includes(sessionData.session_id)));
-                      // console.log('DiveThruScreen===> CategoryScreen isIncludes11: ' + (subscriptionIds.includes(sessionData.session_id)));
                       arrayNewSession.push({
                         index,
                         session_name: sessionData.session_name,
@@ -827,7 +763,7 @@ class CategoryScreen extends Component {
                         session_quote_img: sessionData.session_quote_img,
                       });
                     });
-                    // console.log('arrayNewSession-->' + JSON.stringify(arrayNewSession));
+
                     arraySubCategoryAllData.push({
                       subcategory_id: value.subcategory_id,
                       subcategory_name: value.subcategory_name,
@@ -875,14 +811,13 @@ class CategoryScreen extends Component {
           allData: arrayCategory,
         });
 
-        // console.log('categorywise data: ====> ' + JSON.stringify(arrayCategory));
-        // this.setState({ loading: false });
         this.callServer(this.props.index);
       }
     });
   }
 
   freeBundleView = (rowdata) => {
+    // console.log('DiveThruScreen===> CategoryScreen freeBundleView');
     let sessionView = null;
     let seek = 0;
     if (rowdata.streakVisitedSessionCount === 0) {
@@ -909,6 +844,7 @@ class CategoryScreen extends Component {
   }
 
   sessionSubscriptionPlay(id, type) {
+    // console.log('DiveThruScreen===> CategoryScreen sessionSubscriptionPlay');
     if (type === 'bundle') {
       const arrObj = this.state.sessionProducts;
       for (let i = 0; i < arrObj.length; i++) { // eslint-disable-line no-plusplus
@@ -937,7 +873,7 @@ class CategoryScreen extends Component {
   }
 
   paidBundleView = (item) => {
-    // console.log(`render===>paidBundleView-> `+ item.bundle_name);
+    console.log('DiveThruScreen===> CategoryScreen paidBundleView');
     let sessionView = null;
     let seek = 0;
     if (item.streakVisitedSessionCount === 0) {
@@ -964,36 +900,8 @@ class CategoryScreen extends Component {
   }
 
   goToDiveThruPlayer = async (item, subCategoryData) => {
-    console.log('item-goto->' + JSON.stringify(item));
+    console.log('DiveThruScreen===> CategoryScreen goToDiveThruPlayer');
     AsyncStorage.removeItem('redirectToPlayer');
-    // const bundleName = this.state.categoryAllData.cat_name;
-    // const subcategoryId = item.subcategory_id;
-    // const bundleName = subCategoryData.subcategory_name;
-    // const bundleDesc = subCategoryData.subcategory_description;
-    // const catId = this.state.categoryAllData.cat_Id;
-    // const subCategoryname = this.state.categoryName;
-    // const purchasedBundle = false;
-    // const sessionData = subCategoryData.session;
-    // const sessionData = {
-    //   session_name: item.session_name,
-    //   session_img: item.session_img,
-    //   session_id: item.session_id,
-    //   session_description: item.session_description,
-    //   meditation_audio: item.meditation_audio,
-    //   meditation_audio_time: item.meditation_audio_time,
-    //   last_conversation_id: this.state.last_conversation_id,
-    //   halted: this.state.halted,
-    //   session_quote_description: item.session_quote_description,
-    //   session_quote_img: item.session_quote_img,
-    // };
-
-    // let purchasedBundle = '';
-    // if (this.state.individualBundlePurchase === true) {
-    //   purchasedBundle = true;
-    // } else {
-    //   purchasedBundle = false;
-    // }
-
     this.props.screenProps.navigation.navigate('BundleDescription', {
       selectedIndexOfCategory: item.index,
       sessionData: item,
@@ -1016,28 +924,6 @@ class CategoryScreen extends Component {
       isSessionFree: item.isSessionFree,
       isAccesstoQuickDive: this.state.isAccesstoQuickDive,
     });
-
-    // if (this.state.isCategoryFree === true || item.isSessionFree === true || this.state.AccesstoCommon === 'all' || this.state.isAccesstoQuickDive === true) {
-    // this.props.screenProps.navigation.navigate('SubCategoryDescription', { selectedIndexOfCategory: item.index, rowdata, bundleName, subcategoryId, subCategoryData, catId, category: this.props.item, returnData: this.fetchUserLastConversationData.bind(this), sessionType: 'SubCategorySession' });
-    // } else if (this.state.membershipType === 'Paid' || item.sessionSubscription === true || this.state.sessionSubscriptionPayment === true && this.state.individual_sessionid === item.session_id) {
-    //  this.props.screenProps.navigation.navigate('SubCategoryDescription', { selectedIndexOfCategory: item.index, rowdata, bundleName, subcategoryId, subCategoryData, catId, category: this.props.item, returnData: this.fetchUserLastConversationData.bind(this), sessionType: 'SubCategorySession' });
-    // } else {
-    //   this.props.screenProps.navigation.navigate('SubCategoryDescription', { selectedIndexOfCategory: item.index, rowdata, bundleName, subcategoryId, subCategoryData, catId, category: this.props.item, returnData: this.fetchUserLastConversationData.bind(this), sessionType: 'SubCategorySession' });
-    //   // const products = await this.getItems(item.playStoreProduct, item);
-    //   // const sku = products.productId;
-    //   // const currency = products.currency;
-    //   // const price = products.price;
-    //   // this.setState({
-    //   //   sessionName: item.session_name,
-    //   //   sku,
-    //   //   currency,
-    //   //   price,
-    //   //   sessionImage: item.session_img,
-    //   //   modalVisible: true,
-    //   //   sessionId: item.session_id,
-    //   //   sessionType: 'session',
-    //   // });
-    // }
   }
 
   sendMailIos(transactionId, price, token, productTitle, email) {
@@ -1068,28 +954,19 @@ class CategoryScreen extends Component {
       }),
     })
       .then((response => response.json()))
-      .then((responseData) => {
+      .then(() => {
         this.setState({ isPaid: true });
       })
       .done();
   }
 
   renderItem({ item }, subCategoryname) {
-    console.log(`${item.bundle_name} ==>BUNDLE NAME==> ${this.state.isAccesstoDeepDive}`);
-    // console.log('render===>renderItem: ' + this.state.AccesstoCommon);
-    // console.log(`render===>isCategoryFree->  ${this.state.isCategoryFree}`);
-    // console.log(`render===>isBundleFree-> ${item.isBundleFree}`);
-    // console.log(`render===>AccesstoCommon-> ${this.state.AccesstoCommon}`);
-    // console.log(`render===>isAccesstoDeepDive->${this.state.isAccesstoDeepDive}`);
-    // console.log(`render===>bundleSubscription-> ` + item.bundleSubscription);
-
+    // console.log('DiveThruScreen===> CategoryScreen renderItem');
     let sessionView = null;
     if (this.state.membershipType === 'Free' && item.streakVisitedSessionCount === 0) {
-      // console.log('AAAAAAELSE1111: ' + this.state.AccesstoCommon);
       if (this.state.isCategoryFree === true || item.isBundleFree === true || this.state.AccesstoCommon === 'all' || this.state.isAccesstoDeepDive === true || item.bundleSubscription === true) {
         sessionView = this.paidBundleView(item);
       } else {
-        // console.log('AAAAAAELSE2222: ' + this.state.AccesstoCommon);
         sessionView = (
           <View style={{ bottom: '10%', marginTop: '80%' }}>
             <Text style={styles.freeText}>Try a free session</Text>
@@ -1098,11 +975,9 @@ class CategoryScreen extends Component {
         );
       }
     } else if (this.state.membershipType === 'Free' && item.streakVisitedSessionCount > 0) {
-      // console.log('AAAAAAELSE333: ' + this.state.AccesstoCommon);
       if (this.state.isCategoryFree === true || item.isBundleFree === true || this.state.AccesstoCommon === 'all' || this.state.isAccesstoDeepDive === true || item.bundleSubscription === true) {
         sessionView = this.paidBundleView(item);
       } else {
-        // console.log('AAAAAAELSE4444: ' + this.state.AccesstoCommon);
         sessionView = (
           <View style={{ bottom: '10%', marginTop: '80%' }}>
             <Text style={styles.freeText}>Try a free session</Text>
@@ -1111,12 +986,15 @@ class CategoryScreen extends Component {
         );
       }
     } else {
-      // console.log('AAAAAAELSE55555: ' + item.bundle_name);
       sessionView = this.paidBundleView(item);
     }
 
     return (
-      <TouchableOpacity onPress={() => { this.getSessionData(item, subCategoryname); }} activeOpacity={1}>
+      <TouchableOpacity
+        onPress={() => { this.getSessionData(item, subCategoryname); }}
+        activeOpacity={1}
+        key={item.bundle_name}
+      >
         <View>
           <ImageBackground
             source={{ uri: item.bundle_img }}
@@ -1131,6 +1009,7 @@ class CategoryScreen extends Component {
   }
 
   renderGridItem(rowdata) {
+    // console.log('DiveThruScreen===> CategoryScreen renderGridItem');
     let lock = null;
     if (rowdata.index !== undefined) {
       if (rowdata.index === 0 && rowdata.isSessionAvailable === false) {
@@ -1195,7 +1074,19 @@ class CategoryScreen extends Component {
       sessionView = this.freeBundleView(rowdata);
     }
     return (
-      <TouchableOpacity onPress={() => { this.onClickOfRowItem(rowdata.id, rowdata.name, rowdata.index, rowdata.type, rowdata.cat_subcription_type); }} style={styles.gridItem} activeOpacity={1}>
+      <TouchableOpacity
+        key={rowdata.index}
+        onPress={() => {
+          this.onClickOfRowItem(
+            rowdata.id,
+            rowdata.name,
+            rowdata.index,
+            rowdata.type,
+            rowdata.cat_subcription_type,
+          );
+        }}
+        style={styles.gridItem} activeOpacity={1}
+      >
         <View style={styles.gridItemImage}>
           <ImageBackground
             source={{ uri: rowdata.img }}
@@ -1211,43 +1102,16 @@ class CategoryScreen extends Component {
   }
 
   renderBundleItem({ item }, subCategoryData) {
-    this.setState({ item });
+    // console.log('DiveThruScreen===> CategoryScreen renderBundleItem');
+    // this.setState({ item });
     const lock = null;
-    // if (item.isSessionAvailable === true && this.state.membershipType === 'Paid') {
-    //   lock = (
-    //     <Image
-    //       source={IC_DONE}
-    //       style={{ width: 20, height: 20, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-    //     />
-    //   );
-    // } else if (this.state.membershipType === 'Free' && item.sessionSubscription === false && this.state.isCategoryFree === false && item.isSessionFree === false && this.state.AccesstoCommon === 'custom' && this.state.isAccesstoQuickDive === false) {
-    //   lock = (
-    //     <View>
-    //       <View style={{ backgroundColor: colors.black, opacity: 0.4, width: '100%', height: '100%' }} />
-    //       <Image
-    //         source={IC_LOCK}
-    //         style={{ width: 17, height: 17, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-    //       />
-    //     </View>
-    //   );
-    // } else if (this.state.membershipType === 'Free' && item.sessionSubscription === true && item.isSessionAvailable === true) {
-    //   lock = (
-    //     <Image
-    //       source={IC_DONE}
-    //       style={{ width: 20, height: 20, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-    //     />
-    //   );
-    // } else if (this.state.membershipType === 'Free' && item.isSessionAvailable === true) {
-    //   lock = (
-    //     <Image
-    //       source={IC_DONE}
-    //       style={{ width: 20, height: 20, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-    //     />
-    //   );
-    // }
 
     return (
-      <TouchableOpacity onPress={() => { this.goToDiveThruPlayer(item, subCategoryData); }} activeOpacity={1}>
+      <TouchableOpacity
+        onPress={() => { this.goToDiveThruPlayer(item, subCategoryData); }}
+        activeOpacity={1}
+        key={item.session_name}
+      >
         <View>
           <ImageBackground
             source={{ uri: item.session_img }}
@@ -1262,6 +1126,7 @@ class CategoryScreen extends Component {
   }
 
   render() {
+    // console.log('DiveThruScreen===> CategoryScreen render');
     let category = null;
     if (this.state.tabscreen === 'Category') {
       category = (<ListView
@@ -1307,14 +1172,7 @@ class CategoryScreen extends Component {
         keyExtractor={item => item}
         extraData={this.state}
         renderRow={(data) => {
-          console.log(`==>BUNDLE NAME==>LISTVIEW`);
           return (<View style={styles.MainList}>
-            {/* {(data.subcategory_name !== undefined)
-            ?
-              <Text style={styles.MainListText}>{data.subcategory_name.toUpperCase()}</Text>
-            :
-              null
-            } */}
             <Text style={styles.MainListText}>{data.subcategory_name.toUpperCase()}</Text>
             {
               (data.bundle.length > 0)
@@ -1341,42 +1199,6 @@ class CategoryScreen extends Component {
       <View style={styles.container}>
         <Spinner isLoading={this.state.loading}>
           {category}
-          {/* <Modal
-            animationType="none"
-            transparent
-            visible={this.state.modalVisible}
-            onRequestClose={() => { this.closeModal(); }}
-            supportedOrientations={['portrait', 'landscape']}
-          >
-            <View style={styles.containermodal}>
-              <View style={styles.innerContainer}>
-                <View style={styles.content}>
-                  <ImageBackground source={{ uri: this.state.sessionImage }} style={styles.content}>
-                    <Text style={styles.title}>{this.state.sessionName}</Text>
-                    <Text style={styles.subtitle}>One Subscription. Unlimited access.</Text>
-                    <View style={styles.tchblebtn}>
-                      <Text style={styles.boxTitle1}>L I F E  T I M E</Text>
-                      <Text style={styles.boxTitle2}>{this.state.currency} {this.state.price}</Text>
-                      <TouchableOpacity
-                        style={styles.button}
-                        onPress={
-                          () => { this.purchaseSession(this.state.sku, this.state.currency, this.state.price, this.state.sessionId, this.state.sessionType, this.state.productTitle); }}
-                      >
-                        <Text style={styles.btnTxt}>
-                          G O  U N L I M I T E D
-                        </Text>
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => { this.closeModal(); }} style={styles.button} >
-                        <Text style={styles.btnTxt}>
-                          C A N C E L
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </ImageBackground>
-                </View>
-              </View>
-            </View>
-          </Modal> */}
         </Spinner>
       </View>
     );
@@ -1385,8 +1207,8 @@ class CategoryScreen extends Component {
 
 CategoryScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
-  index: PropTypes.number,
-  item: PropTypes.string,
+  index: PropTypes.number.isRequired,
+  item: PropTypes.string.isRequired,
   screenProps: PropTypes.object.isRequired,
 };
 

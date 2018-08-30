@@ -125,15 +125,15 @@ class BundleDescriptionScreen extends Component {
   }
 
   getProduct = async (playStoreProduct) => {
-    console.log(`getProduct playStoreProduct: ${  playStoreProduct}`);
+    // console.log(`getProduct playStoreProduct: ${  playStoreProduct}`);
     if (playStoreProduct !== undefined) {
       const products = await this.getItems(playStoreProduct);
-      console.log(`products->${  products}`);
+      // console.log(`products->${  products}`);
       const sku = products.productId;
       const currency = products.currency;
       const price = products.price;
       const productTitle = products.title;
-      console.log(`getProduct sku: ${  sku}`);
+      // console.log(`getProduct sku: ${  sku}`);
       this.setState({
         sku,
         currency,
@@ -149,12 +149,12 @@ class BundleDescriptionScreen extends Component {
     try {
       console.log('in try');
       const products = await RNIap.getProducts(itemSkuSubs);
-      console.log(`products getitem${ JSON.stringify(products)}`);
+      // console.log(`products getitem${ JSON.stringify(products)}`);
       let obj;
       for (let i = 0; i < products.length; i++) { // eslint-disable-line no-plusplus
         obj = products[0];
       }
-      console.log(`obj-->${  obj}`);
+      console.log(`obj-->${obj}`);
       return obj;
     } catch (err) {
       console.log(`CategoryScreen getItems err: ${err}`);

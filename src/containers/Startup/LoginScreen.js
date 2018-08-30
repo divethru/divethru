@@ -503,7 +503,7 @@ class LoginScreen extends Component {
                 primary
                 title=""
                 text="L O G  I N"
-                onPress={this.loginButtonClicked}
+                onPress={() => { this.loginButtonClicked(); }}
                 style={loginButtonStyles}
               />
 

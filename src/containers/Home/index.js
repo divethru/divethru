@@ -135,7 +135,7 @@ const TabScreen = TabNavigator(components, {
     },
     upperCaseLabel: false,
     labelStyle: {
-      fontSize: 11,
+      fontSize: 10,
     },
     scrollEnabled: false,
     showIcon: true,

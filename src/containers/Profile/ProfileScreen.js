@@ -321,17 +321,17 @@ class ProfileScreen extends Component {
     console.log('onLogout =======>');
     AsyncStorage.removeItem('user_id');
     AsyncStorage.getItem('google_id').then((value) => {
+      console.log('onLogout google_id=======> ' + value);
       if (value !== null) {
-        GoogleSignin.signOut()
-          .then(() => {
-            console.log('onLogout google');
-            AsyncStorage.setItem('wasAlreadyLoggedIn', 'true');
-            AsyncStorage.removeItem('Logout');
-            AsyncStorage.removeItem('Reload');
-            AsyncStorage.removeItem('google_id');
-            AsyncStorage.removeItem('fb_id');
-            this.props.navigation.navigate('LoginScreen', { loginText: 'true' });
-          });
+        GoogleSignin.signOut().then(() => {
+          console.log('onLogout google');
+          AsyncStorage.setItem('wasAlreadyLoggedIn', 'true');
+          AsyncStorage.removeItem('Logout');
+          AsyncStorage.removeItem('Reload');
+          AsyncStorage.removeItem('google_id');
+          AsyncStorage.removeItem('fb_id');
+          this.props.navigation.navigate('LoginScreen', { loginText: 'true' });
+        });
       } else {
         console.log('onLogout Normal');
         AsyncStorage.setItem('wasAlreadyLoggedIn', 'true');
@@ -339,20 +339,6 @@ class ProfileScreen extends Component {
         AsyncStorage.removeItem('Reload');
         AsyncStorage.removeItem('google_id');
         AsyncStorage.removeItem('fb_id');
-        // this.props.navigation.popToTop();
-        // this.props.navigation.navigate('LoginScreen', { loginText: 'true' });
-
-
-        // const { navigate } = this.props.navigation
-        // const resetAction = NavigationActions.reset({
-        //   index: 0,
-        //   actions: [
-        //     NavigationActions.navigate({ routeName: 'LoginScreen' }),
-        //   ],
-        //   key: null,
-        // });
-        // this.props.navigation.dispatch(resetAction);
-
 
         Promise.all([
           this.props.navigation.dispatch(
@@ -425,7 +411,7 @@ class ProfileScreen extends Component {
     if (this.state.matched === undefined && page > 0) {
       Alert.alert(
         'Alert',
-        'Select atleast one tag',
+        'Select at least one tag',
         [
           { text: 'OK', onPress: () => console.log('OK Pressed') },
         ],
@@ -480,7 +466,7 @@ class ProfileScreen extends Component {
     if (matchedStrings === '') {
       Alert.alert(
         'Alert',
-        'Select atleast one tag.',
+        'Select at least one tag',
         [
           { text: 'OK', onPress: () => console.log('OK Pressed') },
         ],
@@ -548,7 +534,7 @@ class ProfileScreen extends Component {
           title={item}
           checked={this.check(item)}
           onPress={() => this.checkUncheck(item)}
-          containerStyle={{ borderWidth: 0, backgroundColor: 'transperent', width: '100%', padding: 5 }}
+          containerStyle={{ borderWidth: 0, backgroundColor: 'transperent', padding: 5 }}
           textStyle={{ color: 'white' }}
           checkedColor="white"
           uncheckedColor="white"
@@ -674,7 +660,7 @@ class ProfileScreen extends Component {
         </View>
 
 
-        <TouchableOpacity style={styles.subViewStyle} onPress={() => this.onLogout()}>
+        <TouchableOpacity style={styles.subViewStyle} onPress={() => { this.onLogout(); }}>
           <Text style={[styles.subViewText, { color: '#ef8282' }]}>Log out</Text>
 
           <Image
@@ -892,7 +878,7 @@ class ProfileScreen extends Component {
                       <Animated.Text
                         style={{
                           color: active ? '#1A1A1A' : '#535353',
-                          fontSize: 14,
+                          fontSize: 13,
                           marginTop: 12,
                         }}
                       >

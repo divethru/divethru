@@ -13,7 +13,7 @@ import {
   PanResponder,
   Dimensions,
   TextInput,
-  KeyboardAvoidingView,
+  PermissionsAndroid,
 } from 'react-native';
 import Sound from 'react-native-sound';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -23,6 +23,7 @@ import { CircularProgress } from 'react-native-circular-progress';
 import Svg, { Path, Circle, G } from 'react-native-svg';
 import { Button } from 'react-native-material-ui';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import RNFetchBlob from 'react-native-fetch-blob';
 import styles, { playerStyles, buttonStyles, popupbuttonStyles, timeButtonStyles, timeButtonClickStyles } from '../../styles/player';
 import firebaseApp from '../../components/constant';
 import IC_WHITE_CLOSE from '../../assets/images/ic_white_close.png';
@@ -53,7 +54,7 @@ class PlayerScreen extends Component {
       modalVisible: false,
       isPlayerDisable: true,
       playermodalvisible: false,
-      chatBox: 'As I read what I wrote, I connected with...',
+      chatBox: 'As I read what I wrote, I was connected with...',
     };
     this.duration = 0;
     this.audioState = '';
@@ -103,27 +104,105 @@ class PlayerScreen extends Component {
     });
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     if (Object.keys(this.state.sessionAudio).length > 1) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ isLoaded: true, isPlayerDisable: true });
     } else {
-      // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({ isLoaded: false, isPlayerDisable: true });
-      this.session = new Sound(this.state.sessionAudio[0], null, (e) => {
-        if (this.session !== null || this.session !== undefined) {
-          if (e) {
-            console.log('error loading track:', e);
+      // // eslint-disable-next-line react/no-did-mount-set-state
+      // this.setState({ isLoaded: false, isPlayerDisable: true });
+      // console.log('Sound start downloading');
+      // this.session = new Sound(this.state.sessionAudio[0], null, (e) => {
+      //   console.log('Sound DONE: ');
+      //   // if (this.session !== null || this.session !== undefined) {
+      //   if (e) {
+      //     console.log('Sound File: ' + this.state.sessionAudio[0]);
+      //     alert('failed to load the sound: ' + JSON.stringify(e));
+      //     console.log('Sound Error: ' + JSON.stringify(e));
+      //   } else if (this.session !== null || this.session !== undefined) {
+      //     console.log('Sound success: ');
+      //     Sound.setCategory('Playback');
+      //     if (this.state.halted > 0.0) {
+      //       this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
+      //     } else {
+      //       this.setState({ isLoaded: true, isPlayerDisable: false });
+      //     }
+      //   } else {
+      //     console.log('Sound ELSE: ');
+      //   }
+      //   // }
+      //   // }
+      // });
+
+      try {
+        await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+          },
+        );
+      } catch (err) {
+        console.warn(err);
+      }
+
+      console.log('Downloaded: start download');
+      RNFetchBlob
+        .config({
+          path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+          appendExt: 'mp3',
+        })
+        .fetch('GET', this.state.sessionAudio[0], {
+          'Cache-Control': 'no-store',
+        })
+        .progress({ interval: 0.000000001 }, (received, total) => {
+          // console.log('Downloaded progress: ' + received + '   ' + total);
+        })
+        .then((res) => {
+          console.log('Downloaded res: ' + JSON.stringify(res));
+
+          console.log("response info from download", res.respInfo.status, this.state.sessionAudio[0]);
+          this.setState({ isLoaded: true, isPlayerDisable: false });
+          if (res.respInfo.status === 200) {
+            // eslint-disable-next-line react/no-did-mount-set-state
+            this.setState({ isLoaded: false, isPlayerDisable: true });
+            console.log('Downloaded start PLAYING');
+            this.session = new Sound(res.data, null, (e) => {
+              console.log('Downloaded DONE: ');
+              if (e) {
+                console.log('Downloaded File: ' + res.data);
+                alert('Downloaded failed to load the sound: ' + JSON.stringify(e));
+                console.log('Downloaded Error: ' + JSON.stringify(e));
+              } else if (this.session !== null || this.session !== undefined) {
+                console.log('Downloaded success: FILE: ' + res.data);
+                Sound.setCategory('Playback');
+                if (this.state.halted > 0.0) {
+                  this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
+                } else {
+                  this.setState({ isLoaded: true, isPlayerDisable: false });
+                }
+              } else {
+                console.log('Downloaded ELSE: ');
+              }
+            });
           } else {
-            Sound.setCategory('Playback');
-            if (this.state.halted > 0.0) {
-              this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
-            } else {
-              this.setState({ isLoaded: true, isPlayerDisable: false });
-            }
+              // this is mean its not a 200 response from server, do not link the file to the cache
+            RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
           }
-        }
-      });
+        })
+        .catch((e) => {
+          console.log('Downloaded error: ' + e.toString());
+          this.setState({ isLoaded: true });
+          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+
+          try {
+            if (e.toString().contains('Failed to connect')) {
+              alert('Error: The Internet connection appears to be offline.');
+            } else {
+              alert(e);
+            }
+          } catch (err) {
+            alert(e);
+          }
+        });
     }
 
     let haltedSessionId = '';
@@ -215,21 +294,78 @@ class PlayerScreen extends Component {
   timeButtonClicked(index) {
     this.setState({ isLoaded: false, isTimeDisable: true, slot: index, isPlayerDisable: true });
 
-    this.session = new Sound(this.state.sessionAudio[index], null, (e) => {
-      if (e) {
-        console.log('error loading track:', e);
-      } else {
-        // eslint-disable-next-line no-lonely-if
-        if (this.session !== null || this.session !== undefined) {
-          Sound.setCategory('Playback');
-          if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
-            this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
-          } else {
-            this.setState({ isLoaded: true, isPlayerDisable: false });
-          }
+    // this.session = new Sound(this.state.sessionAudio[index], null, (e) => {
+    //   if (e) {
+    //     alert('failed to load the sound: ' + e);
+    //     console.log('error loading track:', e);
+    //   } else {
+    //     // eslint-disable-next-line no-lonely-if
+    //     if (this.session !== null || this.session !== undefined) {
+    //       Sound.setCategory('Playback');
+    //       if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
+    //         this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
+    //       } else {
+    //         this.setState({ isLoaded: true, isPlayerDisable: false });
+    //       }
+    //     }
+    //   }
+    // });
+
+    console.log('Downloaded: start download');
+    RNFetchBlob
+      .config({
+        path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+        appendExt: 'mp3',
+      })
+      .fetch('GET', this.state.sessionAudio[index], {
+        'Cache-Control': 'no-store',
+      })
+      .progress({ interval: 0.000000001 }, (received, total) => {
+        // console.log('Downloaded progress: ' + received + '   ' + total);
+      })
+      .then((res) => {
+        console.log('Downloaded res: ' + JSON.stringify(res));
+
+        console.log("response info from download", res.respInfo.status, this.state.sessionAudio[index]);
+        this.setState({ isLoaded: true, isPlayerDisable: false });
+        if (res.respInfo.status === 200) {
+          this.session = new Sound(res.data, null, (e) => {
+            if (e) {
+              alert('failed to load the sound: ' + e);
+              console.log('error loading track:', e);
+            } else {
+              // eslint-disable-next-line no-lonely-if
+              if (this.session !== null || this.session !== undefined) {
+                Sound.setCategory('Playback');
+                if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
+                  this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
+                } else {
+                  this.setState({ isLoaded: true, isPlayerDisable: false });
+                }
+              }
+            }
+          });
+        } else {
+            // this is mean its not a 200 response from server, do not link the file to the cache
+          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
         }
-      }
-    });
+      })
+      .catch((e) => {
+        console.log('Downloaded error: ' + e.toString());
+        this.setState({ isLoaded: true });
+        RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+
+        try {
+          if (e.toString().contains('Failed to connect')
+            || e.toString().contains('Unable to resolve host')) {
+            alert('Error: The Internet connection appears to be offline.');
+          } else {
+            alert(e);
+          }
+        } catch (err) {
+          alert(e);
+        }
+      });
   }
 
   polarToCartesian(angle) {
@@ -257,20 +393,18 @@ class PlayerScreen extends Component {
   play() {
     if (this.session !== undefined && this.session !== null) {
       if (this.session && !this.state.isPlaying) {
-        if (this.session && !this.state.isPlaying) {
-          this.session.getCurrentTime((seconds) => {
-            this.session.setCurrentTime(seconds);
-            this.duration = this.session.getDuration();
-            this.session.play((success) => {
-              if (success) {
-                this.stop();
-              }
-            });
-
-            this.audioState = AudioStatePlay;
-            this.playProgress();
+        this.session.getCurrentTime((seconds) => {
+          this.session.setCurrentTime(seconds);
+          this.duration = this.session.getDuration();
+          this.session.play((success) => {
+            if (success) {
+              this.stop();
+            }
           });
-        }
+
+          this.audioState = AudioStatePlay;
+          this.playProgress();
+        });
       }
     }
   }
@@ -489,7 +623,7 @@ class PlayerScreen extends Component {
       ? '10 Day'
       : this.state.categoryName;
     const re = /^[a-zA-Z0-9]{1}/;
-    if (this.state.chatBox === 'As I read what I wrote, I connected with...'
+    if (this.state.chatBox === 'As I read what I wrote, I was connected with...'
       || this.state.chatBox === ''
       || re.test(this.state.chatBox) === false) {
       this.showErrorAlertView('Please write your journal');
@@ -683,13 +817,21 @@ class PlayerScreen extends Component {
               </TouchableOpacity>
             </View>
 
-            <View>
-              <Text style={styles.topText}>
-                {this.state.title}
-              </Text>
-            </View>
+            {/* <View> */}
+            <Text style={styles.centerText}>
+              {this.state.title}
+            </Text>
+            {/* </View> */}
 
-            <View>
+            {/* <View>
+              <TouchableOpacity onPress={() => { this.onClickOfClose(); }}>
+                <Image
+                  style={styles.icon}
+                  source={IC_WHITE_CLOSE}
+                />
+              </TouchableOpacity>
+            </View> */}
+            <View style={styles.iconRightContainer}>
               <TouchableOpacity onPress={() => { this.onClickOfClose(); }}>
                 <Image
                   style={styles.icon}
@@ -852,7 +994,7 @@ class PlayerScreen extends Component {
                   <TextInput
                     multiline
                     maxLength={500}
-                    placeholder="As I read what I wrote, I connected with..."
+                    placeholder="As I read what I wrote, I was connected with..."
                     numberOfLines={5}
                     onChangeText={(e) => { this.setState({ chatBox: e }); }}
                     value={this.state.chatBox}
@@ -872,21 +1014,21 @@ class PlayerScreen extends Component {
                   />
                   <View style={{ marginTop: 20, marginLeft: 10, marginRight: 10, marginBottom: 10, justifyContent: 'center', alignItems: 'center', height: Platform.OS === 'iosl' ? 50 : 55 }}>
                     <CircularProgress
-                        size={26}
-                        width={3}
-                        rotation={0}
-                        fill={((this.state.chatBox.length) * 100) / 500}
-                        tintColor="#7dd3d5"
-                        backgroundColor="#8a8a8a6e"
-                      >
-                        {() => (
+                      size={26}
+                      width={3}
+                      rotation={0}
+                      fill={((this.state.chatBox.length) * 100) / 500}
+                      tintColor="#7dd3d5"
+                      backgroundColor="#8a8a8a6e"
+                    >
+                      {() => (
                         <Text style={{ fontSize: 10, color: '#7dd3d5' }}>
-                        {/* { Math.round(500 - ((500 * fill) / 100)) } */
-                          (500 - this.state.chatBox.length) <= 20 ? 500 - this.state.chatBox.length : ''
-                        }
-                      </Text>
-                      )}
-                      </CircularProgress>
+                          {/* { Math.round(500 - ((500 * fill) / 100)) } */
+                            (500 - this.state.chatBox.length) <= 20 ? 500 - this.state.chatBox.length : ''
+                          }
+                        </Text>
+                    )}
+                    </CircularProgress>
                   </View>
                 </View>
               </View>

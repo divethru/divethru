@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, Image, StatusBar, AsyncStorage, Platform } from 'react-native';
+import { View, ScrollView, Image, StatusBar, AsyncStorage, Platform } from 'react-native';
 import { PropTypes } from 'prop-types';
 import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
 import * as RNIap from 'react-native-iap';
@@ -14,10 +14,11 @@ class DiveThruScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     header: null,
     tabBarLabel: 'DiveThru',
-    tabBarIcon: ({ tintColor, focused }) => {
+    tabBarIcon: ({ tintColor }) => {
       AsyncStorage.getItem('selectedIndex').then((value) => {
         if (value !== null || value !== undefined) {
           if (value !== null) {
+            console.log('handleSelectedIndex: ' + value);
             navigation.state.params.handleSelectedIndex(value);
           }
         }
@@ -30,6 +31,7 @@ class DiveThruScreen extends Component {
     super(props);
     this.state = {
       loading: false,
+      tabs: [],
     };
   }
 
@@ -38,13 +40,13 @@ class DiveThruScreen extends Component {
     StatusBar.setHidden(false);
     this.props.navigation.setParams({ handleSelectedIndex: this.handleSelectedIndex.bind(this) });
     // this.fetchCategoryName();
-    const tabs = () => (
-      <Text tabLabel="Tab #1">My</Text>
-    );
-    this.setState({ tabs });
+    // const tabs = () => (
+    //   <Text tabLabel="Tab #1">My</Text>
+    // );
+    // this.setState({ tabs });
     this.getAllDataFromDb();
     this.props.navigation.addListener('willFocus', () => {
-      this.setState({ activeUser: '' });
+      // this.setState({ activeUser: '' });
       this.checkSubscription();
       // this.getAllDataFromDb();
     });
@@ -60,11 +62,12 @@ class DiveThruScreen extends Component {
   }
 
   getAllDataFromDb() {
+    this.setState({ loading: true, activeUser: '' });
     this.fetchCategoryName();
-    const tabs = () => (
-      <Text tabLabel="Tab #1">My</Text>
-    );
-    this.setState({ tabs });
+    // const tabs = () => (
+    //   <Text tabLabel="Tab #1">My</Text>
+    // );
+    // this.setState({ tabs });
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -81,7 +84,7 @@ class DiveThruScreen extends Component {
             const subscriptionId = user.transaction_id;
             const paymentType = user.payment_type;
             const subscription = user.subscription;
-            if (subscriptionId === datas[i].transactionId && datas[i].autoRenewing == true && subscription == 'active') {
+            if (subscriptionId === datas[i].transactionId && datas[i].autoRenewing === true && subscription === 'active') {
               this.setState({
                 subscriptionStatus: true,
                 subscriptionPackage: packageName.toLowerCase(),
@@ -95,8 +98,9 @@ class DiveThruScreen extends Component {
                 disabledClick: true,
                 activeUser: key,
               });
-            } else if (subscriptionId === datas[i].transactionId && datas[i].autoRenewing === true && subscription === 'false') {
-
+            // } else if (subscriptionId === datas[i].transactionId
+            // && datas[i].autoRenewing === true
+            //   && subscription === 'false') {
             } else if (subscriptionId === datas[i].transactionId && datas[i].autoRenewing === false && subscription === 'active') {
               if (this.state.activeUser === '') {
                 this.updateSubscriptionData(key);
@@ -141,12 +145,10 @@ class DiveThruScreen extends Component {
             subscriptionPackage: packageName.toLowerCase(),
             disabledClick: true,
           });
-        } else {
-          if (Platform.OS === 'ios' && user.payment_type === 'App Store') {
-            this.cancelledSubscriptionIos(subscription);
-          } else if (Platform.OS === 'android' && user.payment_type === 'Play Store') {
-            this.cancelledSubscription(subscription);
-          }
+        } else if (Platform.OS === 'ios' && user.payment_type === 'App Store') {
+          this.cancelledSubscriptionIos(subscription);
+        } else if (Platform.OS === 'android' && user.payment_type === 'Play Store') {
+          this.cancelledSubscription(subscription);
         }
       }, (error) => {
         console.log(`DiveThruScreen checkSubscription err: ${error}`);
@@ -231,6 +233,12 @@ class DiveThruScreen extends Component {
   handleSelectedIndex(setCurrentIndex) {
     const page = parseInt(setCurrentIndex, 10);
     this.tabView.goToPage(page);
+
+    AsyncStorage.getItem('selectedIndex').then((value) => {
+      if (value !== null || value !== undefined) {
+        AsyncStorage.removeItem('selectedIndex');
+      }
+    });
   }
 
   redirectToPage() {
@@ -267,7 +275,7 @@ class DiveThruScreen extends Component {
           labels.forEach((item, index) => {
             // console.log('DiveThruScreen===> fetchCategoryName foreach');
             tabs.push(
-              <ScrollView tabLabel={item.toUpperCase()}>
+              <ScrollView tabLabel={item.toUpperCase()} key={item}>
                 <CategoryScreen index={index} item={item} screenProps={this.props} key={item} />
               </ScrollView>,
             );
@@ -282,6 +290,7 @@ class DiveThruScreen extends Component {
   }
 
   render() {
+    console.log('DiveThruScreen===> render');
     return (
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>

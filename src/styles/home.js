@@ -429,7 +429,7 @@ export const learnMoreButtonStyles = StyleSheet.create({
     color: '#9f5dbc',
     fontFamily: 'Roboto',
     fontStyle: 'italic',
-    textAlign: 'center',
+    // textAlign: 'center',
     marginBottom: 0,
     width: '100%',
   },

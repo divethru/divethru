@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Roboto',
     fontSize: 18,
+    marginBottom: 10,
   },
   closeIcon: {
     height: 20,

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, Image, ImageBackground, TouchableOpacity, StatusBar, AsyncStorage, Modal, Platform, PanResponder, Dimensions, TextInput } from 'react-native';
+import { PermissionsAndroid, View, Text, Image, ImageBackground, TouchableOpacity, StatusBar, AsyncStorage, Modal, Platform, PanResponder, Dimensions, TextInput } from 'react-native';
 import Sound from 'react-native-sound';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Moment from 'moment';
@@ -10,6 +10,7 @@ import { createIconSetFromFontello } from 'react-native-vector-icons';// font
 import { CircularProgress } from 'react-native-circular-progress';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DropdownAlert from 'react-native-dropdownalert';
+import RNFetchBlob from 'react-native-fetch-blob';
 import styles, { playerStyles, buttonStyles, timeButtonStyles, timeButtonClickStyles, popupbuttonStyles } from '../../styles/player';
 import firebaseApp from '../../components/constant';
 import IC_WHITE_CLOSE from '../../assets/images/ic_white_close.png';
@@ -50,7 +51,7 @@ class DiveThruPlayerScreen extends Component {
       bgTimeThree: 'transparent',
       // meditation_audio_time: [],
       playermodalvisible: false,
-      chatBox: 'As I read what I wrote, I connected with...',
+      chatBox: 'As I read what I wrote, I was connected with...',
       index: this.props.navigation.state.params ? this.props.navigation.state.params.audioIndex : 0,
     };
     this.duration = 0;
@@ -71,19 +72,6 @@ class DiveThruPlayerScreen extends Component {
     const sessionType = params ? params.sessionType : undefined;
     const subcategoryId = params ? params.subcategoryId : undefined;
     const membershipType = params ? params.membershipType : undefined;
-    // let audioTime = [];
-    // let audios = [];
-    // if (sessionData.meditation_audio_time) {
-    //   audioTime = sessionData.meditation_audio_time;
-    // }
-
-    // if (sessionData.meditation_audio) {
-    //   if (bundleName === '10 Day Program') {
-    //     audios = sessionData.meditation_audio[0];
-    //   } else {
-    //     audios = sessionData.meditation_audio;
-    //   }
-    // }
     this.setState({
       category_Id: catId,
       title: bundleName,
@@ -646,7 +634,7 @@ class DiveThruPlayerScreen extends Component {
     const CurrentDate = Moment().format('YYYY-MM-DD HH:mm:ss');
     const category = this.state.category === '10 Day Intro Program' ? '10 Day' : this.state.category;
     const re = /^[a-zA-Z0-9]{1}/;
-    if (this.state.chatBox === 'As I read what I wrote, I connected with...' || this.state.chatBox === '' || re.test(this.state.chatBox) === false) {
+    if (this.state.chatBox === 'As I read what I wrote, I was connected with...' || this.state.chatBox === '' || re.test(this.state.chatBox) === false) {
       this.showErrorAlertView('Please write your journal');
     } else {
       AsyncStorage.getItem('user_id').then((value) => {
@@ -737,25 +725,86 @@ class DiveThruPlayerScreen extends Component {
     }).done();
   }
 
-  timeButtonClicked(index) {
+  timeButtonClicked = async (index) => {
     console.log(`${index}...timeButtonClicked: ${JSON.stringify(this.state.meditation_audio)}`);
     this.setState({ isLoaded: false, isTimeDisable: true, slot: index, isPlayerDisable: true });
-    this.session = new Sound(this.state.meditation_audio[index], null, (e) => {
-      if (e) {
-        console.log('error loading track:', e);
-      } else if (this.session !== null || this.session !== undefined) {
-        // this.session.setCategory('Playback');
-        Sound.setCategory('Playback');
-        if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
-          this.setState({ isLoaded: true, isResume: true, isTimeDisable: false, isPlayerDisable: false });
+    // this.session = new Sound(this.state.meditation_audio[index], null, (e) => {
+    //   if (e) {
+    //     // alert('failed to load the sound: ' + e);
+    //     console.log('error loading track:', e);
+    //   } else if (this.session !== null || this.session !== undefined) {
+    //     // this.session.setCategory('Playback');
+    //     Sound.setCategory('Playback');
+    //     if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
+    //       this.setState({ isLoaded: true, isResume: true, isTimeDisable: false, isPlayerDisable: false });
+    //     } else {
+    //       this.setState({ isLoaded: true, isTimeDisable: false, isPlayerDisable: false });
+    //     }
+    //   }
+    // });
+
+    try {
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+        },
+      );
+    } catch (err) {
+      console.warn(err);
+    }
+
+    console.log('Downloaded: start download');
+    RNFetchBlob
+      .config({
+        path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+        appendExt: 'mp3',
+      })
+      .fetch('GET', this.state.meditation_audio[index], {
+        'Cache-Control': 'no-store',
+      })
+      .progress({ interval: 0.000000001 }, (received, total) => {
+        // console.log('Downloaded progress: ' + received + '   ' + total);
+      })
+      .then((res) => {
+        console.log('Downloaded res: ' + JSON.stringify(res));
+
+        console.log("response info from download", res.respInfo.status, this.state.meditation_audio[index]);
+        this.setState({ isLoaded: true, isPlayerDisable: false });
+        if (res.respInfo.status === 200) {
+          this.session = new Sound(res.data, null, (e) => {
+            if (e) {
+              // alert('failed to load the sound: ' + e);
+              console.log('error loading track:', e);
+            } else if (this.session !== null || this.session !== undefined) {
+              // this.session.setCategory('Playback');
+              Sound.setCategory('Playback');
+              if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
+                this.setState({ isLoaded: true, isResume: true, isTimeDisable: false, isPlayerDisable: false });
+              } else {
+                this.setState({ isLoaded: true, isTimeDisable: false, isPlayerDisable: false });
+              }
+            }
+          });
         } else {
-          this.setState({ isLoaded: true, isTimeDisable: false, isPlayerDisable: false });
+            // this is mean its not a 200 response from server, do not link the file to the cache
+          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
         }
-      }
-        // this.session.setCategory('Playback');
-        // this.setState({ isLoaded: true, isTimeDisable: false });
-      // }
-    });
+      })
+      .catch((e) => {
+        console.log('Downloaded error: ' + e.toString());
+        this.setState({ isLoaded: true });
+        RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+
+        try {
+          if (e.toString().contains('Failed to connect')
+            || e.toString().contains('Unable to resolve host')) {
+            alert('Error: The Internet connection appears to be offline.');
+          } else {
+            alert(e);
+          }
+        } catch (err) {
+          alert(e);
+        }
+      });
   }
 
   renderPlayer() {
@@ -962,12 +1011,10 @@ class DiveThruPlayerScreen extends Component {
                 />
               </TouchableOpacity>
             </View>
-            <View>
-              <Text style={styles.topText}>
-                {this.state.title}
-              </Text>
-            </View>
-            <View>
+            <Text style={styles.centerText}>
+              {this.state.title}
+            </Text>
+            <View style={styles.iconRightContainer}>
               <TouchableOpacity onPress={() => { this.onClickOfClose(); }}>
                 <Image
                   style={styles.icon}
@@ -976,6 +1023,7 @@ class DiveThruPlayerScreen extends Component {
               </TouchableOpacity>
             </View>
           </View>
+
           <View style={styles.centerContainer}>
             {Platform.OS === 'ios'
               ? (
@@ -1016,33 +1064,6 @@ class DiveThruPlayerScreen extends Component {
                         })
                       : null
                       }
-                      {/* <Button
-                  primary
-                  title=""
-                  text={this.state.meditation_audio_time[0]}
-                  upperCase={false}
-                  onPress={() => { this.timeButtonClicked(1, this.setState({ Title: '3 min' })); }}
-                  style={this.state.Title === '3 min' ? timeButtonClickStyles : timeButtonStyles}
-                  // style={timeButtonStyles}
-                />
-                <Button
-                  primary
-                  title=""
-                  text={this.state.meditation_audio_time[1]}
-                  upperCase={false}
-                  onPress={() => { this.timeButtonClicked(2, this.setState({ Title: '5 min' })); }}
-                  style={this.state.Title === '5 min' ? timeButtonClickStyles : timeButtonStyles}
-                  // style={timeButtonStyles}
-                />
-                <Button
-                  primary
-                  title=""
-                  text={this.state.meditation_audio_time[2]}
-                  upperCase={false}
-                  onPress={() => { this.timeButtonClicked(3, this.setState({ Title: '10 min' })); }}
-                  style={this.state.Title === '10 min' ? timeButtonClickStyles : timeButtonStyles}
-                  // style={timeButtonStyles}
-                /> */}
                     </View>
                   </View>
 
@@ -1073,10 +1094,6 @@ class DiveThruPlayerScreen extends Component {
                         style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute', alignItems: 'center' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
                       />
                     }
-                    { /* <Icon onPress={() => { this.changePlayState(); }}
-                    name={this.state.isPlaying ? 'pause' : 'play-arrow'} size={50}
-                    style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }}
-                    /> */}
                   </View>
                   <View style={styles.timeContainer}>
                     <View style={styles.timeInnerContainer}>
@@ -1097,35 +1114,7 @@ class DiveThruPlayerScreen extends Component {
                               : timeButtonStyles}
                           />
                         );
-                      })
-                      }
-                      { /* <Button
-                primary
-                title=""
-                text="5" // {this.state.meditation_audio_time[0]}
-                upperCase={false}
-                onPress={() => { this.timeButtonClicked(1, this.setState({ Title: '3 min' })); }}
-                style={this.state.Title === '3 min' ? timeButtonClickStyles : timeButtonStyles}
-                // style={timeButtonStyles}
-              />
-              <Button
-                primary
-                title=""
-                text="6"
-                upperCase={false}
-                onPress={() => { this.timeButtonClicked(2, this.setState({ Title: '5 min' })); }}
-                style={this.state.Title === '5 min' ? timeButtonClickStyles : timeButtonStyles}
-                // style={timeButtonStyles}
-              />
-              <Button
-                primary
-                title=""
-                text="7"
-                upperCase={false}
-                onPress={() => { this.timeButtonClicked(3, this.setState({ Title: '10 min' })); }}
-                style={this.state.Title === '10 min' ? timeButtonClickStyles : timeButtonStyles}
-                // style={timeButtonStyles}
-              /> */}
+                      })}
                     </View>
                   </View>
 
@@ -1140,6 +1129,7 @@ class DiveThruPlayerScreen extends Component {
             }
           </View>
         </ImageBackground>
+
         <Modal
           animationType="none"
           transparent
@@ -1169,12 +1159,14 @@ class DiveThruPlayerScreen extends Component {
             </View>
           </View>
         </Modal>
+
         <Modal
           animationType={animationType}
           transparent
           visible={this.state.playermodalvisible}
           onRequestClose={() => { this.closeModal(); }}
           supportedOrientations={supportedOrientation}
+          backButtonClose={false}
         >
           <View style={styles.popupcontainer}>
             <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -1184,7 +1176,7 @@ class DiveThruPlayerScreen extends Component {
                   <TextInput
                     multiline
                     maxLength={500}
-                    placeholder="As I read what I wrote, I connected with..."
+                    placeholder="As I read what I wrote, I was connected with..."
                     numberOfLines={3}
                     onChangeText={(e) => { this.setState({ chatBox: e }); }}
                     value={this.state.chatBox}

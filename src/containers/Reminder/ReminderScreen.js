@@ -63,9 +63,16 @@ class ReminderScreen extends Component {
       this.setState({
         date,
         dateText: date,
+        time: undefined,
+        timeText: '00:00 AM',
       });
     }
-    this.setState({ date, dateText: date });
+    this.setState({
+      date,
+      dateText: date,
+      time: undefined,
+      timeText: '00:00 AM',
+    });
   }
 
   onTimeChange(time) {
@@ -78,6 +85,7 @@ class ReminderScreen extends Component {
       this.setState({
       });
     } else {
+      let timez;
       if (this.state.date === finaldate) {
         this.Clock = this.GetTime();
 
@@ -85,21 +93,21 @@ class ReminderScreen extends Component {
         if (len === 1) {
           const newtime = ['0', time.slice(0)].join('');
           console.log(`newtime->${newtime}`);
-          time = newtime;
+          timez = newtime;
         }
-        if (this.Clock >= time) {
+        if (Moment(time, 'h:mma').isBefore(Moment(this.Clock, 'h:mma')) || time === this.Clock) {
           console.log('in if');
           this.dropdown.alertWithType('error', '', 'Please select valid time!');
           return false;
         }
         this.setState({
-          time,
-          timeText: time,
+          time: timez,
+          timeText: timez,
         });
       }
       this.setState({
-        time,
-        timeText: time,
+        time: timez,
+        timeText: timez,
       });
     }
     this.setState({ time, timeText: time });
@@ -149,6 +157,13 @@ class ReminderScreen extends Component {
     })
     .then(() => {
       this.dropdown.alertWithType('success', '', `Your reminder is set. You will be notified at ${this.state.time} On ${this.state.date}`);
+      this.setState({
+        date: undefined,
+        time: undefined,
+        // timeText: '00:00 AM',
+        // dateText: '',
+        description: '',
+      });
       console.log('success');
     })
     .catch((error) => {
@@ -211,6 +226,13 @@ class ReminderScreen extends Component {
                 this.addEventInCalendar();
               } else {
                 this.dropdown.alertWithType('success', '', `Your reminder is set. You will be notified at ${this.state.time} On ${this.state.date}`);
+                this.setState({
+                  date: undefined,
+                  time: undefined,
+                  // timeText: '00:00 AM',
+                  // dateText: '',
+                  description: '',
+                });
               }
             })
             .catch(() => {
@@ -226,6 +248,12 @@ class ReminderScreen extends Component {
           'To set reminder please allow notification from Settings. By enabling notifications, you will receive notifications on your device for all the alerts.',
         );
       });
+    } else {
+      this.dropdown.alertWithType(
+        'error',
+        '',
+        'To set reminder please fill required fields.',
+      );
     }
   }
 
@@ -383,7 +411,7 @@ class ReminderScreen extends Component {
             <View style={styles.seperator} />
 
             <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.txt}>Put it on my calender</Text>
+              <Text style={styles.txt}>Put it on my calendar</Text>
 
               <Switch
                 onValueChange={value => this.ShowAlert(value)}
@@ -406,6 +434,7 @@ class ReminderScreen extends Component {
           <DropdownAlert
             updateStatusBar={false}
             ref={(ref) => { this.dropdown = ref; }}
+            messageNumOfLines={4}
           />
         </View>
       </Spinner>

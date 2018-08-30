@@ -445,13 +445,10 @@ class SessionScreen extends Component {
           resizeMethod="resize"
         >
           <View style={styles.iconContainer}>
-            <View style={styles.iconLeftContainer} />
-            <View>
-              <Text style={styles.topText}>
-                {this.state.bundleName}
-              </Text>
-            </View>
-            <View>
+            <Text style={styles.topText}>
+              {this.state.bundleName}
+            </Text>
+            <View style={styles.iconRightContainer}>
               <TouchableOpacity onPress={() => { this.onClickOfClose(); }}>
                 <Image
                   style={styles.icon}
@@ -460,6 +457,7 @@ class SessionScreen extends Component {
               </TouchableOpacity>
             </View>
           </View>
+
           <View style={styles.centerContainer}>
             <View style={styles.FlatlistContainer} key={item.session_id}>
               <View style={styles.FlatlistContainerin}>
