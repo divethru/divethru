@@ -568,8 +568,8 @@ class ProfileScreen extends Component {
   }
 
   inviteBuddy = async () => {
-    const fullname = await AsyncStorage.getItem('full_name');
-    const body = `${fullname} invites you to DiveThru.`;
+    // const fullname = await AsyncStorage.getItem('full_name');
+    const body = `${this.state.profileName} invites you to DiveThru.`;
     const shareOptions = {
       message: body,
       url: 'http://test.divethru.com/registration.php',

@@ -434,8 +434,8 @@ class SubCategoryScreen extends Component {
                   </View>
                 :
                   <View style={styles.sliderContainer}>
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 200 }}>
-                      <View style={{ height: 50, backgroundColor: colors.grey100, margin: 10, borderRadius: 5, borderColor: colors.grey400, borderWidth: 2, justifyContent: 'center' }}>
+                    <View style={styles.noAudioContainer}>
+                      <View style={styles.noAudio}>
                         <Text style={{ margin: 10 }}>No Audio available</Text>
                       </View>
                     </View>
@@ -560,7 +560,7 @@ class SubCategoryScreen extends Component {
                 </View>
                 <View style={styles.centerContainer}>
                   <View style={{ flex: 1 }}>
-                    <View style={{ height: 50, backgroundColor: colors.grey100, margin: 10, borderRadius: 5, borderColor: colors.grey400, borderWidth: 2, justifyContent: 'center' }}>
+                    <View style={styles.noAudio}>
                       <Text style={{ margin: 10 }}>No session available.</Text>
                     </View>
                   </View>

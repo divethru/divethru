@@ -52,9 +52,9 @@ const styles = StyleSheet.create({
   thumbilVideoPlayer: {
     justifyContent: 'center',
     alignItems: 'center',
-    margin: 10,
-    height: 213.33,
-    width: Dimensions.get('window').width - 20,
+    marginVertical: 28,
+    height: 190, // 213.33,
+    width: Dimensions.get('window').width - 58,
     // zIndex: 90009,
   },
   // innerContainer: {

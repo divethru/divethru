@@ -85,8 +85,8 @@ class ReminderScreen extends Component {
       this.setState({
       });
     } else {
-      let timez;
-      if (this.state.date === finaldate) {
+      let timez = time;
+      if (Moment(finaldate).isSame(this.state.date)) {
         this.Clock = this.GetTime();
 
         const len = time.slice(0, time.indexOf(':')).length;
@@ -396,7 +396,7 @@ class ReminderScreen extends Component {
                 ref={(input) => { this.descInput = input; }}
                 style={styles.input}
                 placeholder="Set your message here"
-                keyboardType="email-address"
+                // keyboardType="email-address"
                 autoCapitalize="none"
                 returnKeyType="next"
                 clearButtonMode="while-editing"

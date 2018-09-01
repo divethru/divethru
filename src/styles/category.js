@@ -198,6 +198,42 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
+  icDone: {
+    width: 20,
+    height: 20,
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    marginBottom: 5,
+    marginRight: 5,
+  },
+  icLockView: {
+    backgroundColor: colors.black,
+    opacity: 0.4,
+    width: '100%',
+    height: '100%',
+  },
+  icLock: {
+    width: 17,
+    height: 17,
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    marginBottom: 5,
+    marginRight: 5,
+  },
+  sessionView: {
+    bottom: '10%',
+    marginTop: '80%',
+  },
+  sessionName: {
+    width: '100%',
+    height: '100%',
+  },
+  progressView: {
+    bottom: '15%',
+    marginTop: '85%',
+  },
 });
 
 export default styles;

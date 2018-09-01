@@ -544,7 +544,7 @@ class SubscribeNowScreen extends Component {
             Get 100s of conversations by unlocking the complete Dive Thru library now.
           </Text>
 
-          <View style={{ paddingBottom: 25, paddingTop: 25 }}>
+          <View style={styles.listContainer}>
             {this.state.dataSource
               ? <ListView
                 horizontal
@@ -584,7 +584,7 @@ class SubscribeNowScreen extends Component {
             </Modal>
           </View>
 
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.icLock}>
             <Image
               style={styles.imageicon}
               source={IC_LOCK}
@@ -598,7 +598,7 @@ class SubscribeNowScreen extends Component {
             converstaions with new ones coming every month.
           </Text>
 
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.icLock}>
             <Image
               style={styles.imageicon}
               source={IC_HAND}
@@ -613,7 +613,7 @@ class SubscribeNowScreen extends Component {
             helps them.
           </Text>
 
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.icLock}>
             <Image
               style={styles.imageicon}
               source={IC_WEB}
@@ -626,7 +626,7 @@ class SubscribeNowScreen extends Component {
             Access Dive Thru on your phone, on your desktop and with or are.
           </Text>
 
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.icLock}>
             <Image
               style={styles.imageicon}
               source={IC_HEART}
@@ -639,7 +639,7 @@ class SubscribeNowScreen extends Component {
             Reconnect with your self and learn to feel at peace with who you are.
           </Text>
 
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.icLock}>
             <Image style={styles.imageicon} source={IC_LOTUS} />
           </View>
 
@@ -649,7 +649,7 @@ class SubscribeNowScreen extends Component {
             Get to know yourself better and move through life effortlessly.
           </Text>
 
-          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <View style={styles.icLock}>
             <Image
               style={styles.imageicon}
               source={IC_SMILE}
@@ -677,7 +677,7 @@ class SubscribeNowScreen extends Component {
           is confirmed.
           </Text>
 
-          <View style={{ paddingBottom: 25, paddingTop: 25 }}>
+          <View style={styles.listContainer}>
             <ListView
               horizontal
               dataSource={this.state.dataSource}

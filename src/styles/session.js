@@ -133,6 +133,33 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Roboto',
   },
+  noAudio: {
+    height: 50,
+    backgroundColor: colors.grey100,
+    margin: 10,
+    borderRadius: 5,
+    borderColor: colors.grey400,
+    borderWidth: 2,
+    justifyContent: 'center',
+  },
+  noAudioContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 200,
+  },
+  noSessionContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  icBack: {
+    height: 20,
+    width: 20,
+    margin: 10,
+  },
 });
 
 export const timeButtonStyles = StyleSheet.create({

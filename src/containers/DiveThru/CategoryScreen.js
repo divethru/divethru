@@ -873,7 +873,7 @@ class CategoryScreen extends Component {
   }
 
   paidBundleView = (item) => {
-    console.log('DiveThruScreen===> CategoryScreen paidBundleView');
+    // console.log('DiveThruScreen===> CategoryScreen paidBundleView');
     let sessionView = null;
     let seek = 0;
     if (item.streakVisitedSessionCount === 0) {
@@ -882,7 +882,7 @@ class CategoryScreen extends Component {
       seek = item.streakVisitedSessionCount / Object.keys(item.session).length;
     }
     sessionView = (
-      <View style={{ bottom: '15%', marginTop: '85%' }}>
+      <View style={styles.progressView}>
         <Text style={styles.freeText}>
           {item.streakVisitedSessionCount} of {Object.keys(item.session).length} Sessions
         </Text>
@@ -900,7 +900,7 @@ class CategoryScreen extends Component {
   }
 
   goToDiveThruPlayer = async (item, subCategoryData) => {
-    console.log('DiveThruScreen===> CategoryScreen goToDiveThruPlayer');
+    // console.log('DiveThruScreen===> CategoryScreen goToDiveThruPlayer');
     AsyncStorage.removeItem('redirectToPlayer');
     this.props.screenProps.navigation.navigate('BundleDescription', {
       selectedIndexOfCategory: item.index,
@@ -968,7 +968,7 @@ class CategoryScreen extends Component {
         sessionView = this.paidBundleView(item);
       } else {
         sessionView = (
-          <View style={{ bottom: '10%', marginTop: '80%' }}>
+          <View style={styles.sessionView}>
             <Text style={styles.freeText}>Try a free session</Text>
             <Text style={styles.sessionCountText}>{Object.keys(item.session).length} Sessions</Text>
           </View>
@@ -979,7 +979,7 @@ class CategoryScreen extends Component {
         sessionView = this.paidBundleView(item);
       } else {
         sessionView = (
-          <View style={{ bottom: '10%', marginTop: '80%' }}>
+          <View style={styles.sessionView}>
             <Text style={styles.freeText}>Try a free session</Text>
             <Text style={styles.sessionCountText}>{Object.keys(item.session).length} Sessions</Text>
           </View>
@@ -1018,43 +1018,31 @@ class CategoryScreen extends Component {
         lock = (
           <Image
             source={IC_DONE}
-            style={{ width: 20, height: 20, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
+            style={styles.icDone}
           />
         );
       } else if (rowdata.isSessionAvailable === true && this.state.membershipType === 'Paid') {
         lock = (
-          <Image
-            source={IC_DONE}
-            style={{ width: 20, height: 20, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-          />
+          <Image source={IC_DONE} style={styles.icDone} />
         );
       } else if (rowdata.isSessionAvailable === true && this.state.membershipType === 'Free') {
         if (this.state.isCategoryFree === false && this.state.AccesstoCommon === 'custom' && this.state.isAccesstoOpenDive === false) {
           lock = (
             <View>
-              <View style={{ backgroundColor: colors.black, opacity: 0.4, width: '100%', height: '100%' }} />
-              <Image
-                source={IC_LOCK}
-                style={{ width: 17, height: 17, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-              />
+              <View style={styles.icLockView} />
+              <Image source={IC_LOCK} style={styles.icLock} />
             </View>
           );
         } else {
           lock = (
-            <Image
-              source={IC_DONE}
-              style={{ width: 20, height: 20, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-            />
+            <Image source={IC_DONE} style={styles.icDone} />
           );
         }
       } else if (this.state.membershipType === 'Free' && this.state.isCategoryFree === false && this.state.AccesstoCommon === 'custom' && this.state.isAccesstoOpenDive === false) {
         lock = (
           <View>
-            <View style={{ backgroundColor: colors.black, opacity: 0.4, width: '100%', height: '100%' }} />
-            <Image
-              source={IC_LOCK}
-              style={{ width: 17, height: 17, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
-            />
+            <View style={styles.icLockView} />
+            <Image source={IC_LOCK} style={styles.icLock} />
           </View>
         );
       }
@@ -1090,7 +1078,7 @@ class CategoryScreen extends Component {
         <View style={styles.gridItemImage}>
           <ImageBackground
             source={{ uri: rowdata.img }}
-            style={{ width: '100%', height: '100%' }}
+            style={styles.sessionName}
           >
             <Text style={styles.gridItemText}>{rowdata.name}</Text>
             {sessionView}

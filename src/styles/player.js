@@ -221,6 +221,51 @@ const styles = StyleSheet.create({
     color: colors.grey400,
     textAlignVertical: 'top',
   },
+  playerIcon: {
+    color: colors.grey700,
+    position: 'absolute',
+  },
+  pauseIcon: {
+    color: colors.grey700,
+    position: 'absolute',
+    alignItems: 'center',
+  },
+  pauseDisableIcon: {
+    color: '#cccccc',
+    position: 'absolute',
+    alignItems: 'center',
+  },
+  playerSvgBack: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 35,
+    marginBottom: 40,
+    backgroundColor: colors.transparent,
+  },
+  playerView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
+    width: 70,
+    height: 70,
+    backgroundColor: colors.transparent,
+  },
+  addJournal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  circleView: {
+    marginTop: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: Platform.OS === 'ios' ? 50 : 55,
+  },
 });
 
 export const playerStyles = StyleSheet.create({

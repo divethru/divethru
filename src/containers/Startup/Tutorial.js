@@ -141,6 +141,70 @@ export default class Tutorial extends Component {
     });
   }
 
+  playAudio = (url, tryAgainCount) => {
+    console.log('Downloaded: start download: ' + tryAgainCount);
+    RNFetchBlob
+      .config({
+        path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+        appendExt: 'mp3',
+      })
+      .fetch('GET', url, {
+        'Cache-Control': 'no-store',
+      })
+      .progress({ interval: 0.000000001 }, (received, total) => {
+        // console.log('Downloaded progress: ' + received + '   ' + total);
+      })
+      .then((res) => {
+        console.log('Downloaded res: ' + JSON.stringify(res));
+
+        console.log("response info from download", res.respInfo.status, url);
+        this.setState({ isLoaded: true, isPlayerDisable: false });
+        if (res.respInfo.status === 200) {
+          // eslint-disable-next-line react/no-did-mount-set-state
+          this.setState({ isLoaded: false, isPlayerDisable: true });
+          console.log('Downloaded start PLAYING');
+          this.session = new Sound(res.data, Sound.DocumentDir, (e) => {
+            if (e) {
+              // alert('failed to load the sound: ' + e);
+              console.log('error loading track:', e);
+            } else if (this.session !== null || this.session !== undefined) {
+              console.log('meditation_audio: ELSE IFFF');
+              Sound.setCategory('Playback');
+              this.setState({ isLoaded: true, isPlayerDisable: false });
+            } else {
+              console.log('meditation_audio: ELSE');
+            }
+          });
+        } else {
+          // this is mean its not a 200 response from server, do not link the file to the cache
+          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+        }
+      })
+      .catch((e) => {
+        console.log('Downloaded error: ' + e.toString());
+
+        if (tryAgainCount < 2) {
+          setTimeout(() => {
+            tryAgainCount = tryAgainCount + 1;
+            this.playAudio(url, tryAgainCount);
+          }, 2000);
+        } else {
+          this.setState({ isLoaded: true });
+          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+
+          try {
+            if (e.toString().contains('Failed to connect') || e.toString().contains('Unable to resolve host')) {
+              alert('Error: The Internet connection appears to be offline.');
+            } else {
+              alert(e);
+            }
+          } catch (err) {
+            alert(e);
+          }
+        }
+      });
+  }
+
   fetch10DayProgramData() {
     const ref = firebaseApp.database().ref('Category').child('10 Day Intro Program').child('Session');
     ref.once('value').then((dataSnapshot) => {
@@ -175,59 +239,60 @@ export default class Tutorial extends Component {
         //   }
         // });
 
-        console.log('Downloaded: start download');
-        RNFetchBlob
-          .config({
-            path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
-            appendExt: 'mp3',
-          })
-          .fetch('GET', this.state.session[0].meditation_audio, {
-            'Cache-Control': 'no-store',
-          })
-          .progress({ interval: 0.000000001 }, (received, total) => {
-            // console.log('Downloaded progress: ' + received + '   ' + total);
-          })
-          .then((res) => {
-            console.log('Downloaded res: ' + JSON.stringify(res));
+        this.playAudio(this.state.session[0].meditation_audio, 0);
+        // console.log('Downloaded: start download');
+        // RNFetchBlob
+        //   .config({
+        //     path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+        //     appendExt: 'mp3',
+        //   })
+        //   .fetch('GET', this.state.session[0].meditation_audio, {
+        //     'Cache-Control': 'no-store',
+        //   })
+        //   .progress({ interval: 0.000000001 }, (received, total) => {
+        //     // console.log('Downloaded progress: ' + received + '   ' + total);
+        //   })
+        //   .then((res) => {
+        //     console.log('Downloaded res: ' + JSON.stringify(res));
 
-            console.log("response info from download", res.respInfo.status, this.state.session[0].meditation_audio);
-            this.setState({ isLoaded: true, isPlayerDisable: false });
-            if (res.respInfo.status === 200) {
-              // eslint-disable-next-line react/no-did-mount-set-state
-              this.setState({ isLoaded: false, isPlayerDisable: true });
-              console.log('Downloaded start PLAYING');
-              this.session = new Sound(res.data, null, (e) => {
-                if (e) {
-                  // alert('failed to load the sound: ' + e);
-                  console.log('error loading track:', e);
-                } else if (this.session !== null || this.session !== undefined) {
-                  console.log('meditation_audio: ELSE IFFF');
-                  Sound.setCategory('Playback');
-                  this.setState({ isLoaded: true, isPlayerDisable: false });
-                } else {
-                  console.log('meditation_audio: ELSE');
-                }
-              });
-            } else {
-                // this is mean its not a 200 response from server, do not link the file to the cache
-              RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
-            }
-          })
-          .catch((e) => {
-            console.log('Downloaded error: ' + e.toString());
-            this.setState({ isLoaded: true });
-            RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+        //     console.log("response info from download", res.respInfo.status, this.state.session[0].meditation_audio);
+        //     this.setState({ isLoaded: true, isPlayerDisable: false });
+        //     if (res.respInfo.status === 200) {
+        //       // eslint-disable-next-line react/no-did-mount-set-state
+        //       this.setState({ isLoaded: false, isPlayerDisable: true });
+        //       console.log('Downloaded start PLAYING');
+        //       this.session = new Sound(res.data, Sound.DocumentDir, (e) => {
+        //         if (e) {
+        //           // alert('failed to load the sound: ' + e);
+        //           console.log('error loading track:', e);
+        //         } else if (this.session !== null || this.session !== undefined) {
+        //           console.log('meditation_audio: ELSE IFFF');
+        //           Sound.setCategory('Playback');
+        //           this.setState({ isLoaded: true, isPlayerDisable: false });
+        //         } else {
+        //           console.log('meditation_audio: ELSE');
+        //         }
+        //       });
+        //     } else {
+        //         // this is mean its not a 200 response from server, do not link the file to the cache
+        //       RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+        //     }
+        //   })
+        //   .catch((e) => {
+        //     console.log('Downloaded error: ' + e.toString());
+        //     this.setState({ isLoaded: true });
+        //     RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
 
-            try {
-              if (e.toString().contains('Failed to connect')) {
-                alert('Error: The Internet connection appears to be offline.');
-              } else {
-                alert(e);
-              }
-            } catch (err) {
-              alert(e);
-            }
-          });
+        //     try {
+        //       if (e.toString().contains('Failed to connect')) {
+        //         alert('Error: The Internet connection appears to be offline.');
+        //       } else {
+        //         alert(e);
+        //       }
+        //     } catch (err) {
+        //       alert(e);
+        //     }
+        //   });
       }
     });
 
@@ -431,7 +496,7 @@ export default class Tutorial extends Component {
     if (this.state.isPlaying) {
       this.setState({ isPlaying: false });
       this.pause();
-    } else if (this.session !== null) {
+    } else if (this.session !== undefined && this.session !== null) {
       if (this.session.isLoaded() !== null || this.session.isLoaded() !== undefined) {
         if (this.session.isLoaded() === true) {
           if (this.state.halted > 0.0) {

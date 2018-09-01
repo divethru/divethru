@@ -166,6 +166,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: '#a25ad6',
   },
+  icLock: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  listContainer: {
+    paddingBottom: 25,
+    paddingTop: 25,
+  },
 });
 
 export default styles;

@@ -144,65 +144,66 @@ class PlayerScreen extends Component {
         console.warn(err);
       }
 
-      console.log('Downloaded: start download');
-      RNFetchBlob
-        .config({
-          path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
-          appendExt: 'mp3',
-        })
-        .fetch('GET', this.state.sessionAudio[0], {
-          'Cache-Control': 'no-store',
-        })
-        .progress({ interval: 0.000000001 }, (received, total) => {
-          // console.log('Downloaded progress: ' + received + '   ' + total);
-        })
-        .then((res) => {
-          console.log('Downloaded res: ' + JSON.stringify(res));
+      this.playAudio(this.state.sessionAudio[0], 0);
+      // console.log('Downloaded: start download');
+      // RNFetchBlob
+      //   .config({
+      //     path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+      //     appendExt: 'mp3',
+      //   })
+      //   .fetch('GET', this.state.sessionAudio[0], {
+      //     'Cache-Control': 'no-store',
+      //   })
+      //   .progress({ interval: 0.000000001 }, (received, total) => {
+      //     // console.log('Downloaded progress: ' + received + '   ' + total);
+      //   })
+      //   .then((res) => {
+      //     console.log('Downloaded res: ' + JSON.stringify(res));
 
-          console.log("response info from download", res.respInfo.status, this.state.sessionAudio[0]);
-          this.setState({ isLoaded: true, isPlayerDisable: false });
-          if (res.respInfo.status === 200) {
-            // eslint-disable-next-line react/no-did-mount-set-state
-            this.setState({ isLoaded: false, isPlayerDisable: true });
-            console.log('Downloaded start PLAYING');
-            this.session = new Sound(res.data, null, (e) => {
-              console.log('Downloaded DONE: ');
-              if (e) {
-                console.log('Downloaded File: ' + res.data);
-                alert('Downloaded failed to load the sound: ' + JSON.stringify(e));
-                console.log('Downloaded Error: ' + JSON.stringify(e));
-              } else if (this.session !== null || this.session !== undefined) {
-                console.log('Downloaded success: FILE: ' + res.data);
-                Sound.setCategory('Playback');
-                if (this.state.halted > 0.0) {
-                  this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
-                } else {
-                  this.setState({ isLoaded: true, isPlayerDisable: false });
-                }
-              } else {
-                console.log('Downloaded ELSE: ');
-              }
-            });
-          } else {
-              // this is mean its not a 200 response from server, do not link the file to the cache
-            RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
-          }
-        })
-        .catch((e) => {
-          console.log('Downloaded error: ' + e.toString());
-          this.setState({ isLoaded: true });
-          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+      //     console.log("response info from download", res.respInfo.status, this.state.sessionAudio[0]);
+      //     this.setState({ isLoaded: true, isPlayerDisable: false });
+      //     if (res.respInfo.status === 200) {
+      //       // eslint-disable-next-line react/no-did-mount-set-state
+      //       this.setState({ isLoaded: false, isPlayerDisable: true });
+      //       console.log('Downloaded start PLAYING');
+      //       this.session = new Sound(res.data, Sound.DocumentDir, (e) => {
+      //         console.log('Downloaded DONE: ');
+      //         if (e) {
+      //           console.log('Downloaded File: ' + res.data);
+      //           alert('Downloaded failed to load the sound: ' + JSON.stringify(e));
+      //           console.log('Downloaded Error: ' + JSON.stringify(e));
+      //         } else if (this.session !== null || this.session !== undefined) {
+      //           console.log('Downloaded success: FILE: ' + res.data);
+      //           Sound.setCategory('Playback');
+      //           if (this.state.halted > 0.0) {
+      //             this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
+      //           } else {
+      //             this.setState({ isLoaded: true, isPlayerDisable: false });
+      //           }
+      //         } else {
+      //           console.log('Downloaded ELSE: ');
+      //         }
+      //       });
+      //     } else {
+      //         // this is mean its not a 200 response from server, do not link the file to the cache
+      //       RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+      //     }
+      //   })
+      //   .catch((e) => {
+      //     console.log('Downloaded error: ' + e.toString());
+      //     this.setState({ isLoaded: true });
+      //     RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
 
-          try {
-            if (e.toString().contains('Failed to connect')) {
-              alert('Error: The Internet connection appears to be offline.');
-            } else {
-              alert(e);
-            }
-          } catch (err) {
-            alert(e);
-          }
-        });
+      //     try {
+      //       if (e.toString().contains('Failed to connect')) {
+      //         alert('Error: The Internet connection appears to be offline.');
+      //       } else {
+      //         alert(e);
+      //       }
+      //     } catch (err) {
+      //       alert(e);
+      //     }
+      //   });
     }
 
     let haltedSessionId = '';
@@ -233,6 +234,76 @@ class PlayerScreen extends Component {
         });
       }
     });
+  }
+
+  playAudio = (url, tryAgainCount) => {
+    console.log('Downloaded: start download: ' + tryAgainCount);
+    RNFetchBlob
+      .config({
+        path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+        appendExt: 'mp3',
+      })
+      .fetch('GET', url, {
+        'Cache-Control': 'no-store',
+      })
+      .progress({ interval: 0.000000001 }, (received, total) => {
+        // console.log('Downloaded progress: ' + received + '   ' + total);
+      })
+      .then((res) => {
+        console.log('Downloaded res: ' + JSON.stringify(res));
+
+        console.log("response info from download", res.respInfo.status, url);
+        this.setState({ isLoaded: true, isPlayerDisable: false });
+        if (res.respInfo.status === 200) {
+          // eslint-disable-next-line react/no-did-mount-set-state
+          this.setState({ isLoaded: false, isPlayerDisable: true });
+          console.log('Downloaded start PLAYING');
+          this.session = new Sound(res.data, Sound.DocumentDir, (e) => {
+            console.log('Downloaded DONE: ');
+            if (e) {
+              console.log('Downloaded File: ' + res.data);
+              alert('Downloaded failed to load the sound: ' + JSON.stringify(e));
+              console.log('Downloaded Error: ' + JSON.stringify(e));
+            } else if (this.session !== null || this.session !== undefined) {
+              console.log('Downloaded success: FILE: ' + res.data);
+              Sound.setCategory('Playback');
+              if (this.state.halted > 0.0) {
+                this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
+              } else {
+                this.setState({ isLoaded: true, isPlayerDisable: false });
+              }
+            } else {
+              console.log('Downloaded ELSE: ');
+            }
+          });
+        } else {
+            // this is mean its not a 200 response from server, do not link the file to the cache
+          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+        }
+      })
+      .catch((e) => {
+        console.log('Downloaded error: ' + e.toString());
+
+        if (tryAgainCount < 2) {
+          setTimeout(() => {
+            tryAgainCount = tryAgainCount + 1;
+            this.playAudio(url, tryAgainCount);
+          }, 2000);
+        } else {
+          this.setState({ isLoaded: true });
+          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+
+          try {
+            if (e.toString().contains('Failed to connect') || e.toString().contains('Unable to resolve host')) {
+              alert('Error: The Internet connection appears to be offline.');
+            } else {
+              alert(e);
+            }
+          } catch (err) {
+            alert(e);
+          }
+        }
+      });
   }
 
   componentWillUnmount() {
@@ -291,33 +362,14 @@ class PlayerScreen extends Component {
     });
   }
 
-  timeButtonClicked(index) {
-    this.setState({ isLoaded: false, isTimeDisable: true, slot: index, isPlayerDisable: true });
-
-    // this.session = new Sound(this.state.sessionAudio[index], null, (e) => {
-    //   if (e) {
-    //     alert('failed to load the sound: ' + e);
-    //     console.log('error loading track:', e);
-    //   } else {
-    //     // eslint-disable-next-line no-lonely-if
-    //     if (this.session !== null || this.session !== undefined) {
-    //       Sound.setCategory('Playback');
-    //       if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
-    //         this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
-    //       } else {
-    //         this.setState({ isLoaded: true, isPlayerDisable: false });
-    //       }
-    //     }
-    //   }
-    // });
-
-    console.log('Downloaded: start download');
+  playAudioTimeButton = (url, tryAgainCount) => {
+    console.log('Downloaded: start download: ' + tryAgainCount);
     RNFetchBlob
       .config({
         path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
         appendExt: 'mp3',
       })
-      .fetch('GET', this.state.sessionAudio[index], {
+      .fetch('GET', url, {
         'Cache-Control': 'no-store',
       })
       .progress({ interval: 0.000000001 }, (received, total) => {
@@ -326,10 +378,10 @@ class PlayerScreen extends Component {
       .then((res) => {
         console.log('Downloaded res: ' + JSON.stringify(res));
 
-        console.log("response info from download", res.respInfo.status, this.state.sessionAudio[index]);
+        console.log("response info from download", res.respInfo.status, url);
         this.setState({ isLoaded: true, isPlayerDisable: false });
         if (res.respInfo.status === 200) {
-          this.session = new Sound(res.data, null, (e) => {
+          this.session = new Sound(res.data, Sound.DocumentDir, (e) => {
             if (e) {
               alert('failed to load the sound: ' + e);
               console.log('error loading track:', e);
@@ -352,20 +404,105 @@ class PlayerScreen extends Component {
       })
       .catch((e) => {
         console.log('Downloaded error: ' + e.toString());
-        this.setState({ isLoaded: true });
-        RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
 
-        try {
-          if (e.toString().contains('Failed to connect')
-            || e.toString().contains('Unable to resolve host')) {
-            alert('Error: The Internet connection appears to be offline.');
-          } else {
+        if (tryAgainCount < 2) {
+          setTimeout(() => {
+            tryAgainCount = tryAgainCount + 1;
+            this.playAudio(url, tryAgainCount);
+          }, 2000);
+        } else {
+          this.setState({ isLoaded: true });
+          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+
+          try {
+            if (e.toString().contains('Failed to connect') || e.toString().contains('Unable to resolve host')) {
+              alert('Error: The Internet connection appears to be offline.');
+            } else {
+              alert(e);
+            }
+          } catch (err) {
             alert(e);
           }
-        } catch (err) {
-          alert(e);
         }
       });
+  }
+
+  timeButtonClicked(index) {
+    this.setState({ isLoaded: false, isTimeDisable: true, slot: index, isPlayerDisable: true });
+
+    // this.session = new Sound(this.state.sessionAudio[index], null, (e) => {
+    //   if (e) {
+    //     alert('failed to load the sound: ' + e);
+    //     console.log('error loading track:', e);
+    //   } else {
+    //     // eslint-disable-next-line no-lonely-if
+    //     if (this.session !== null || this.session !== undefined) {
+    //       Sound.setCategory('Playback');
+    //       if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
+    //         this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
+    //       } else {
+    //         this.setState({ isLoaded: true, isPlayerDisable: false });
+    //       }
+    //     }
+    //   }
+    // });
+
+    this.playAudioTimeButton(this.state.sessionAudio[index], 0);
+    // console.log('Downloaded: start download');
+    // RNFetchBlob
+    //   .config({
+    //     path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+    //     appendExt: 'mp3',
+    //   })
+    //   .fetch('GET', this.state.sessionAudio[index], {
+    //     'Cache-Control': 'no-store',
+    //   })
+    //   .progress({ interval: 0.000000001 }, (received, total) => {
+    //     // console.log('Downloaded progress: ' + received + '   ' + total);
+    //   })
+    //   .then((res) => {
+    //     console.log('Downloaded res: ' + JSON.stringify(res));
+
+    //     console.log("response info from download", res.respInfo.status, this.state.sessionAudio[index]);
+    //     this.setState({ isLoaded: true, isPlayerDisable: false });
+    //     if (res.respInfo.status === 200) {
+    //       this.session = new Sound(res.data, Sound.DocumentDir, (e) => {
+    //         if (e) {
+    //           alert('failed to load the sound: ' + e);
+    //           console.log('error loading track:', e);
+    //         } else {
+    //           // eslint-disable-next-line no-lonely-if
+    //           if (this.session !== null || this.session !== undefined) {
+    //             Sound.setCategory('Playback');
+    //             if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
+    //               this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
+    //             } else {
+    //               this.setState({ isLoaded: true, isPlayerDisable: false });
+    //             }
+    //           }
+    //         }
+    //       });
+    //     } else {
+    //         // this is mean its not a 200 response from server, do not link the file to the cache
+    //       RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.log('Downloaded error: ' + e.toString());
+    //     this.setState({ isLoaded: true });
+    //     RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+
+    //     try {
+    //       if (e.toString().contains('Failed to connect')
+    //         || e.toString().contains('Unable to resolve host')) {
+    //         alert('Error: The Internet connection appears to be offline.');
+    //       } else {
+    //         alert(e);
+    //       }
+    //     } catch (err) {
+    //       alert(e);
+    //     }
+    //   });
   }
 
   polarToCartesian(angle) {
@@ -1004,7 +1141,7 @@ class PlayerScreen extends Component {
                   />
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                <View style={styles.addJournal}>
                   <Button
                     accent
                     text="A D D  I N  M Y  J O U R N A L"
@@ -1012,7 +1149,7 @@ class PlayerScreen extends Component {
                     upperCase={false}
                     style={popupbuttonStyles}
                   />
-                  <View style={{ marginTop: 20, marginLeft: 10, marginRight: 10, marginBottom: 10, justifyContent: 'center', alignItems: 'center', height: Platform.OS === 'iosl' ? 50 : 55 }}>
+                  <View style={styles.circleView}>
                     <CircularProgress
                       size={26}
                       width={3}

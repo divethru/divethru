@@ -75,7 +75,7 @@ class sessionDescriptionScreen extends Component {
           <View style={styles.container}>
             <TouchableOpacity onPress={() => { this.props.navigation.goBack(); }}>
               <Image
-                style={{ height: 20, width: 20, alignSelf: 'flex-end', marginRight: 20, marginTop: 40 }}
+                style={styles.closeIcon}
                 source={IC_WHITE_CLOSE}
               />
             </TouchableOpacity>

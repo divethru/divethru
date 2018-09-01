@@ -725,6 +725,74 @@ class DiveThruPlayerScreen extends Component {
     }).done();
   }
 
+  playAudio = (url, tryAgainCount) => {
+    console.log('Downloaded: start download: ' + tryAgainCount);
+    RNFetchBlob
+      .config({
+        path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+        appendExt: 'mp3',
+      })
+      .fetch('GET', url, {
+        'Cache-Control': 'no-store',
+      })
+      .progress({ interval: 0.000000001 }, (received, total) => {
+        // console.log('Downloaded progress: ' + received + '   ' + total);
+      })
+      .then((res) => {
+        console.log('Downloaded res: ' + JSON.stringify(res));
+
+        console.log("response info from download", res.respInfo.status, url);
+        this.setState({ isLoaded: true, isPlayerDisable: false });
+        if (res.respInfo.status === 200) {
+          this.session = new Sound(res.data, Sound.DocumentDir, (e) => {
+            if (e) {
+              // alert('failed to load the sound: ' + e);
+              console.log('error loading track:', e);
+            } else if (this.session !== null || this.session !== undefined) {
+              // this.session.setCategory('Playback');
+              Sound.setCategory('Playback');
+              if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
+                this.setState({
+                  isLoaded: true,
+                  isResume: true,
+                  isTimeDisable: false,
+                  isPlayerDisable: false,
+                });
+              } else {
+                this.setState({ isLoaded: true, isTimeDisable: false, isPlayerDisable: false });
+              }
+            }
+          });
+        } else {
+            // this is mean its not a 200 response from server, do not link the file to the cache
+          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+        }
+      })
+      .catch((e) => {
+        console.log('Downloaded error: ' + e.toString());
+
+        if (tryAgainCount < 2) {
+          setTimeout(() => {
+            tryAgainCount = tryAgainCount + 1;
+            this.playAudio(url, tryAgainCount);
+          }, 2000);
+        } else {
+          this.setState({ isLoaded: true });
+          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+
+          try {
+            if (e.toString().contains('Failed to connect') || e.toString().contains('Unable to resolve host')) {
+              alert('Error: The Internet connection appears to be offline.');
+            } else {
+              alert(e);
+            }
+          } catch (err) {
+            alert(e);
+          }
+        }
+      });
+  }
+
   timeButtonClicked = async (index) => {
     console.log(`${index}...timeButtonClicked: ${JSON.stringify(this.state.meditation_audio)}`);
     this.setState({ isLoaded: false, isTimeDisable: true, slot: index, isPlayerDisable: true });
@@ -752,59 +820,66 @@ class DiveThruPlayerScreen extends Component {
       console.warn(err);
     }
 
-    console.log('Downloaded: start download');
-    RNFetchBlob
-      .config({
-        path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
-        appendExt: 'mp3',
-      })
-      .fetch('GET', this.state.meditation_audio[index], {
-        'Cache-Control': 'no-store',
-      })
-      .progress({ interval: 0.000000001 }, (received, total) => {
-        // console.log('Downloaded progress: ' + received + '   ' + total);
-      })
-      .then((res) => {
-        console.log('Downloaded res: ' + JSON.stringify(res));
+    this.playAudio(this.state.meditation_audio[index], 0);
 
-        console.log("response info from download", res.respInfo.status, this.state.meditation_audio[index]);
-        this.setState({ isLoaded: true, isPlayerDisable: false });
-        if (res.respInfo.status === 200) {
-          this.session = new Sound(res.data, null, (e) => {
-            if (e) {
-              // alert('failed to load the sound: ' + e);
-              console.log('error loading track:', e);
-            } else if (this.session !== null || this.session !== undefined) {
-              // this.session.setCategory('Playback');
-              Sound.setCategory('Playback');
-              if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
-                this.setState({ isLoaded: true, isResume: true, isTimeDisable: false, isPlayerDisable: false });
-              } else {
-                this.setState({ isLoaded: true, isTimeDisable: false, isPlayerDisable: false });
-              }
-            }
-          });
-        } else {
-            // this is mean its not a 200 response from server, do not link the file to the cache
-          RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
-        }
-      })
-      .catch((e) => {
-        console.log('Downloaded error: ' + e.toString());
-        this.setState({ isLoaded: true });
-        RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+    // console.log('Downloaded: start download');
+    // RNFetchBlob
+    //   .config({
+    //     path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
+    //     appendExt: 'mp3',
+    //   })
+    //   .fetch('GET', this.state.meditation_audio[index], {
+    //     'Cache-Control': 'no-store',
+    //   })
+    //   .progress({ interval: 0.000000001 }, (received, total) => {
+    //     // console.log('Downloaded progress: ' + received + '   ' + total);
+    //   })
+    //   .then((res) => {
+    //     console.log('Downloaded res: ' + JSON.stringify(res));
 
-        try {
-          if (e.toString().contains('Failed to connect')
-            || e.toString().contains('Unable to resolve host')) {
-            alert('Error: The Internet connection appears to be offline.');
-          } else {
-            alert(e);
-          }
-        } catch (err) {
-          alert(e);
-        }
-      });
+    //     console.log("response info from download", res.respInfo.status, this.state.meditation_audio[index]);
+    //     this.setState({ isLoaded: true, isPlayerDisable: false });
+    //     if (res.respInfo.status === 200) {
+    //       this.session = new Sound(res.data, Sound.DocumentDir, (e) => {
+    //         if (e) {
+    //           // alert('failed to load the sound: ' + e);
+    //           console.log('error loading track:', e);
+    //         } else if (this.session !== null || this.session !== undefined) {
+    //           // this.session.setCategory('Playback');
+    //           Sound.setCategory('Playback');
+    //           if (this.state.halted > 0.0 && this.state.slot === this.state.haltedSlot) {
+    //             this.setState({
+    //               isLoaded: true,
+    //               isResume: true,
+    //               isTimeDisable: false,
+    //               isPlayerDisable: false,
+    //             });
+    //           } else {
+    //             this.setState({ isLoaded: true, isTimeDisable: false, isPlayerDisable: false });
+    //           }
+    //         }
+    //       });
+    //     } else {
+    //         // this is mean its not a 200 response from server, do not link the file to the cache
+    //       RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+    //     }
+    //   })
+    //   .catch((e) => {
+    //     console.log('Downloaded error: ' + e.toString());
+    //     this.setState({ isLoaded: true });
+    //     RNFetchBlob.fs.unlink(`${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`);
+
+    //     try {
+    //       if (e.toString().contains('Failed to connect')
+    //         || e.toString().contains('Unable to resolve host')) {
+    //         alert('Error: The Internet connection appears to be offline.');
+    //       } else {
+    //         alert(e);
+    //       }
+    //     } catch (err) {
+    //       alert(e);
+    //     }
+    //   });
   }
 
   renderPlayer() {
@@ -819,13 +894,13 @@ class DiveThruPlayerScreen extends Component {
         lock = (
           this.state.isPlaying
           ?
-            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute' }} />
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={styles.playerIcon} />
           :
             (
               <CustomIcon
                 onPress={() => { this.changePlayState(); }}
                 name="ok" size={26} color="#bf1313"
-                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute' }}
+                style={this.state.isPlayerDisable === false ? styles.playerIcon : { color: '#cccccc', position: 'absolute' }}
               />
             )
         );
@@ -834,13 +909,13 @@ class DiveThruPlayerScreen extends Component {
         lock = (
           this.state.isPlaying
           ?
-            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute' }} />
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={styles.playerIcon} />
           :
             (
               <CustomIcon
                 onPress={() => { this.changePlayState(); }}
                 name="ok" size={26} color="#bf1313"
-                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute' }}
+                style={this.state.isPlayerDisable === false ? styles.playerIcon : { color: '#cccccc', position: 'absolute' }}
               />
             )
           );
@@ -848,13 +923,13 @@ class DiveThruPlayerScreen extends Component {
         lock = (
           this.state.isPlaying
           ?
-            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute' }} />
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={styles.playerIcon} />
           :
             (
               <CustomIcon
                 onPress={() => { this.changePlayState(); }}
                 name="ok" size={26} color="#bf1313"
-                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute' }}
+                style={this.state.isPlayerDisable === false ? styles.playerIcon : { color: '#cccccc', position: 'absolute' }}
               />
             )
         );
@@ -864,7 +939,10 @@ class DiveThruPlayerScreen extends Component {
             onPress={() => { this.changePlayState(); }}
             name={this.state.isPlaying ? 'pause' : 'play-arrow'}
             size={50}
-            style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute', alignItems: 'center' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+            style={this.state.isPlayerDisable === false
+              ? styles.pauseIcon
+              : styles.pauseDisableIcon
+            }
           />
         );
       }
@@ -873,7 +951,7 @@ class DiveThruPlayerScreen extends Component {
     return (<Svg
       width={150}
       height={150}
-      style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', marginTop: 35, marginBottom: 40, backgroundColor: colors.transparent }}
+      style={styles.playerSvgBack}
     >
       <Circle
         cx={width / 2}
@@ -894,7 +972,7 @@ class DiveThruPlayerScreen extends Component {
       />
       {Platform.OS === 'ios'
         ? (
-          <View style={{ alignItems: 'center', justifyContent: 'center', alignSelf: 'center', width: 70, height: 70, backgroundColor: colors.transparent }} >
+          <View style={styles.playerView} >
             {
               this.state.category === 'Quick Dive'
               ?
@@ -904,7 +982,10 @@ class DiveThruPlayerScreen extends Component {
                   onPress={() => { this.changePlayState(); }}
                   name={this.state.isPlaying ? 'pause' : 'play-arrow'}
                   size={50}
-                  style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute', alignItems: 'center' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+                  style={this.state.isPlayerDisable === false
+                    ? styles.pauseIcon
+                    : styles.pauseDisableIcon
+                  }
                 />
             }
           </View>
@@ -936,13 +1017,16 @@ class DiveThruPlayerScreen extends Component {
         lock = (
           this.state.isPlaying
           ?
-            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }} />
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={styles.pauseIcon} />
           :
             (
               <CustomIcon
                 onPress={() => { this.changePlayState(); }}
                 name="ok" size={26} color="#bf1313"
-                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+                style={this.state.isPlayerDisable === false
+                  ? styles.playerIcon
+                  : styles.pauseDisableIcon
+                }
               />
             )
         );
@@ -951,13 +1035,16 @@ class DiveThruPlayerScreen extends Component {
         lock = (
           this.state.isPlaying
           ?
-            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }} />
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={styles.pauseIcon} />
           :
             (
               <CustomIcon
                 onPress={() => { this.changePlayState(); }}
                 name="ok" size={26} color="#bf1313"
-                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+                style={this.state.isPlayerDisable === false
+                  ? styles.playerIcon
+                  : styles.pauseDisableIcon
+                }
               />
             )
           );
@@ -965,13 +1052,16 @@ class DiveThruPlayerScreen extends Component {
         lock = (
           this.state.isPlaying
           ?
-            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={{ color: colors.grey700, position: 'absolute', alignItems: 'center' }} />
+            <Icon onPress={() => { this.changePlayState(); }} name={'pause'} size={50} style={styles.pauseIcon} />
           :
             (
               <CustomIcon
                 onPress={() => { this.changePlayState(); }}
                 name="ok" size={26} color="#bf1313"
-                style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+                style={this.state.isPlayerDisable === false
+                  ? styles.playerIcon
+                  : styles.pauseDisableIcon
+                }
               />
             )
         );
@@ -981,7 +1071,10 @@ class DiveThruPlayerScreen extends Component {
             onPress={() => { this.changePlayState(); }}
             name={this.state.isPlaying ? 'pause' : 'play-arrow'}
             size={50}
-            style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+            style={this.state.isPlayerDisable === false
+              ? styles.playerIcon
+              : styles.pauseDisableIcon
+            }
           />
         );
       }
@@ -1091,7 +1184,10 @@ class DiveThruPlayerScreen extends Component {
                         onPress={() => { this.changePlayState(); }}
                         name={this.state.isPlaying ? 'pause' : 'play-arrow'}
                         size={50}
-                        style={this.state.isPlayerDisable === false ? { color: colors.grey700, position: 'absolute', alignItems: 'center' } : { color: '#cccccc', position: 'absolute', alignItems: 'center' }}
+                        style={this.state.isPlayerDisable === false
+                          ? styles.pauseIcon
+                          : styles.pauseDisableIcon
+                        }
                       />
                     }
                   </View>
@@ -1185,7 +1281,7 @@ class DiveThruPlayerScreen extends Component {
                     autoFocus
                   />
                 </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                <View style={styles.addJournal}>
                   <Button
                     accent
                     text="A D D  I N  M Y  J O U R N A L"
@@ -1193,7 +1289,7 @@ class DiveThruPlayerScreen extends Component {
                     upperCase={false}
                     style={popupbuttonStyles}
                   />
-                  <View style={{ marginTop: 20, marginLeft: 10, marginRight: 10, marginBottom: 10, justifyContent: 'center', alignItems: 'center', height: Platform.OS === 'iosl' ? 50 : 55 }}>
+                  <View style={styles.circleView}>
                     <CircularProgress
                       size={26}
                       width={3}
@@ -1204,9 +1300,9 @@ class DiveThruPlayerScreen extends Component {
                     >
                       {() => (
                         <Text style={{ fontSize: 10, color: '#7dd3d5' }}>
-                          {/* { Math.round(500 - ((500 * fill) / 100)) } */
-                              (500 - this.state.chatBox.length) <= 20 ? 500 - this.state.chatBox.length : ''
-                            }
+                          {
+                            (500 - this.state.chatBox.length) <= 20 ? 500 - this.state.chatBox.length : ''
+                          }
                         </Text>
                         )}
                     </CircularProgress>

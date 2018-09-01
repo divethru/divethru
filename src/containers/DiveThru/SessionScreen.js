@@ -8,7 +8,7 @@ import { Button } from 'react-native-material-ui';
 import * as RNIap from 'react-native-iap';
 import Moment from 'moment';
 import _ from 'lodash';
-import Spinner from '../../components/Spinner';
+// import Spinner from '../../components/Spinner';
 import firebaseApp from '../../components/constant';
 import styles, { timeButtonStyles, buttonStyles } from '../../styles/session';
 import { colors } from '../../styles/theme';
@@ -26,7 +26,7 @@ class SessionScreen extends Component {
       headerLeft: (
         <TouchableOpacity activeOpacity={0.5} onPress={() => navigation.state.params.handleBack()}>
           <Image
-            style={{ height: 20, width: 20, margin: 10 }}
+            style={styles.icBack}
             source={IC_BACK}
           />
         </TouchableOpacity>
@@ -473,8 +473,8 @@ class SessionScreen extends Component {
                   </View>
                 :
                   <View style={styles.sliderContainer}>
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: 200 }}>
-                      <View style={{ height: 50, backgroundColor: colors.grey100, margin: 10, borderRadius: 5, borderColor: colors.grey400, borderWidth: 2, justifyContent: 'center' }}>
+                    <View style={styles.noAudioContainer}>
+                      <View style={styles.noAudio}>
                         <Text style={{ margin: 10 }}>No Audio available</Text>
                       </View>
                     </View>
@@ -603,8 +603,8 @@ class SessionScreen extends Component {
                   </View>
                 </View>
                 <View style={styles.centerContainer}>
-                  <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                    <View style={{ height: 50, backgroundColor: colors.grey100, margin: 10, borderRadius: 5, borderColor: colors.grey400, borderWidth: 2, justifyContent: 'center' }}>
+                  <View style={styles.noSessionContainer}>
+                    <View style={styles.noAudio}>
                       <Text style={{ margin: 10 }}>No session available.</Text>
                     </View>
                   </View>

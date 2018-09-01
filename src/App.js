@@ -8,6 +8,7 @@ import LoginScreen from './containers/Startup/LoginScreen';
 import RegistrationScreen from './containers/Startup/RegistrationScreen';
 import ForgotPasswordScreen from './containers/Startup/ForgotPasswordScreen';
 import DiveThruPlayerScreen from './containers/DiveThru/DiveThruPlayerScreen';
+import AccessCodeScreen from './containers/Startup/AccessCodeScreen';
 import TabScreen from './containers/Home';
 import Tutorial from './containers/Startup/Tutorial';
 import firebaseApp from './components/constant';
@@ -239,11 +240,13 @@ export default class App extends Component {
     const StartupStack = StackNavigator({
       WalkThrough: { screen: WalkThroughScreen },
       LoginScreen: { screen: LoginScreen },
-      RegistrationScreen: { screen: RegistrationScreen, path: 'referby/:user' },
+      // RegistrationScreen: { screen: RegistrationScreen, path: 'referby/:user' },
+      RegistrationScreen: { screen: RegistrationScreen },
       ForgotPasswordScreen: { screen: ForgotPasswordScreen },
     });
 
     const AppNavigator = SwitchNavigator({
+      AccessCode: { screen: AccessCodeScreen },
       Tutorial: { screen: Tutorial },
       TabScreen: { screen: TabScreen },
       DiveThruPlayer: { screen: DiveThruPlayerScreen },
@@ -252,12 +255,12 @@ export default class App extends Component {
       headerMode: 'screen',
       initialRouteName: (this.state.id != null) ? 'TabScreen' : 'startup',
     });
-    const prefix = Platform.OS === 'android' ? 'divethru://referby/' : 'divethru://';
+    // const prefix = Platform.OS === 'android' ? 'divethru://referby/' : 'divethru://';
     return (
       <ThemeProvider uiTheme={uiTheme}>
         { this.state.id !== undefined
           ?
-            (<AppNavigator uriPrefix={prefix} />)
+            (<AppNavigator />)
           :
           null
         }

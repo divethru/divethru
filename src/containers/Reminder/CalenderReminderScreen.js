@@ -369,7 +369,7 @@ class CalenderReminderScreen extends Component {
                 ref={(input) => { this.descInput = input; }}
                 style={styles.input}
                 placeholder="Set your message here"
-                keyboardType="email-address"
+                // keyboardType="email-address"
                 autoCapitalize="none"
                 returnKeyType="next"
                 clearButtonMode="while-editing"
