@@ -120,8 +120,10 @@ class SessionScreen extends Component {
       newtype = 'session';
     }
     AsyncStorage.getItem('user_id').then((value) => {
+      // const ref = firebaseApp.database().ref().child(`Users/${value}/IndividualSubscription/${newtype}`);
+      // ref.on('value', ((dataSnapshot) => {
       const ref = firebaseApp.database().ref().child(`Users/${value}/IndividualSubscription/${newtype}`);
-      ref.on('value', ((dataSnapshot) => {
+      ref.once('value').then((dataSnapshot) => {
         if (dataSnapshot.exists()) {
           dataSnapshot.forEach((child) => {
             if (bundleId === child.val().id) {
@@ -129,7 +131,7 @@ class SessionScreen extends Component {
             }
           });
         }
-      }));
+      });
     });
   }
 
@@ -152,14 +154,14 @@ class SessionScreen extends Component {
     if (this.state.membershipType !== undefined) {
       if (this.state.membershipType === 'Free' && this.state.purchaseBundle === false) {
         if (rowdata.index === this.state.sessionData[0].index) {
-          this.props.navigation.navigate('DiveThruPlayer', { rowdata, bundleName, category: this.state.mainCategoryName, bundleId, returnData: this.fetchUserSubscriptionType.bind(this), sessionType: this.state.sessionType, subcategoryId: this.state.subcategoryId, budle: bundleName, audioIndex: this.state.index });
+          this.props.navigation.navigate('DiveThruPlayer', { rowdata, bundleName, category: this.state.mainCategoryName, bundleId, returnData: this.fetchUserSubscriptionType.bind(this), sessionType: this.state.sessionType, subcategoryId: this.state.subcategoryId, budle: bundleName, audioIndex: this.state.index, onBeginClick: false });
         } else if (this.state.isCategoryFree === true || this.state.isBundleFree === true || this.state.AccesstoCommon === 'all' || this.state.isAccesstoDeepDive === true) {
-          this.props.navigation.navigate('DiveThruPlayer', { rowdata, bundleName, category: this.state.mainCategoryName, bundleId, returnData: this.fetchUserSubscriptionType.bind(this), sessionType: this.state.sessionType, subcategoryId: this.state.subcategoryId, budle: bundleName, audioIndex: this.state.index });
+          this.props.navigation.navigate('DiveThruPlayer', { rowdata, bundleName, category: this.state.mainCategoryName, bundleId, returnData: this.fetchUserSubscriptionType.bind(this), sessionType: this.state.sessionType, subcategoryId: this.state.subcategoryId, budle: bundleName, audioIndex: this.state.index, onBeginClick: false });
         }
       } else if (this.state.membershipType === 'Paid') {
-        this.props.navigation.navigate('DiveThruPlayer', { rowdata, bundleName, category: this.state.mainCategoryName, bundleId, returnData: this.fetchUserSubscriptionType.bind(this), sessionType: this.state.sessionType, subcategoryId: this.state.subcategoryId, budle: bundleName, audioIndex: this.state.index });
+        this.props.navigation.navigate('DiveThruPlayer', { rowdata, bundleName, category: this.state.mainCategoryName, bundleId, returnData: this.fetchUserSubscriptionType.bind(this), sessionType: this.state.sessionType, subcategoryId: this.state.subcategoryId, budle: bundleName, audioIndex: this.state.index, onBeginClick: false });
       } else if (this.state.purchaseBundle === true) {
-        this.props.navigation.navigate('DiveThruPlayer', { rowdata, bundleName, category: this.state.mainCategoryName, bundleId, returnData: this.fetchUserSubscriptionType.bind(this), sessionType: this.state.sessionType, subcategoryId: this.state.subcategoryId, budle: bundleName, audioIndex: this.state.index });
+        this.props.navigation.navigate('DiveThruPlayer', { rowdata, bundleName, category: this.state.mainCategoryName, bundleId, returnData: this.fetchUserSubscriptionType.bind(this), sessionType: this.state.sessionType, subcategoryId: this.state.subcategoryId, budle: bundleName, audioIndex: this.state.index, onBeginClick: false });
       }
     }
   }
@@ -350,6 +352,7 @@ class SessionScreen extends Component {
   }
 
   sendMailIos(transactionId, price, token, productTitle, email) {
+    console.log('sendMailIos: ==> ' + email + ' ' + transactionId + ' ' + productTitle);
     fetch('http://34.215.40.163/sendPaymentEmailIosApp.php', {
       method: 'POST',
       body: JSON.stringify({
@@ -481,7 +484,19 @@ class SessionScreen extends Component {
                   </View>
                 }
 
-                {(this.state.membershipType === 'Paid' || this.state.individualBundlePurchase === true || this.state.isCategoryFree === true || this.state.isBundleFree === true || this.state.AccesstoCommon === 'all' || this.state.isAccesstoDeepDive === true || index === 0)
+                {/* {console.log('Session Screen this.state.membershipType: ' + this.state.membershipType)}
+                {console.log('Session Screen this.state.individualBundlePurchase: ' + this.state.individualBundlePurchase)}
+                {console.log('Session Screen this.state.isCategoryFree: ' + this.state.isCategoryFree)}
+                {console.log('Session Screen this.state.isBundleFree: ' + this.state.isBundleFree)}
+                {console.log('Session Screen this.state.AccesstoCommon: ' + this.state.AccesstoCommon)}
+                {console.log('Session Screen this.state.isAccesstoDeepDive: ' + this.state.isAccesstoDeepDive)} */}
+                {(this.state.membershipType === 'Paid'
+                  || this.state.individualBundlePurchase === true
+                  || this.state.isCategoryFree === true
+                  || this.state.isBundleFree === true
+                  || this.state.AccesstoCommon === 'all'
+                  || this.state.isAccesstoDeepDive === true
+                  || index === 0)
                   ? (
                     <View style={styles.timeContainer}>
                       <View style={styles.timeInnerContainer}>
@@ -491,6 +506,7 @@ class SessionScreen extends Component {
                               item.meditation_audio_time[index1] !== undefined
                               ?
                                 <Button
+                                  key={item.meditation_audio_time[index1]}
                                   primary
                                   title=""
                                   text={`${item.meditation_audio_time[index1]}${'\n'}min`}
@@ -518,7 +534,13 @@ class SessionScreen extends Component {
                           primary
                           title=""
                           text="Unlock the Dive Thru library"
-                          onPress={() => { this.props.navigation.navigate('SubscribeNowScreen', { onDescription: true }); }}
+                          onPress={() => {
+                            this.props.navigation.navigate('SubscribeNowScreen', {
+                              onDescription: true,
+                              onCategory: false,
+                              returnData: this.fetchUserSubscriptionType.bind(this),
+                            });
+                          }}
                           style={buttonStyles}
                         />
 
@@ -620,7 +642,7 @@ class SessionScreen extends Component {
 
 SessionScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
-  screenProps: PropTypes.object.isRequired,
+  // screenProps: PropTypes.object.isRequired,
 };
 
 export default SessionScreen;

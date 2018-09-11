@@ -127,6 +127,36 @@ class CategoryScreen extends Component {
     });
   }
 
+  onClickOfIntro(session) {
+    const rowdata = {
+      index: session.index,
+      budle_id: session.budle_id,
+      session_name: session.name,
+      session_img: session.img,
+      session_id: session.id,
+      session_description: session.description,
+      meditation_audio: session.meditation_audio,
+      meditation_audio_time: session.meditation_audio_time,
+      session_quote_description: session.session_quote_description,
+      session_quote_img: session.session_quote_img,
+    };
+
+    // console.log('rowdata->' + JSON.stringify(rowdata));
+    // console.log('sessionHalted->' + this.state.sessionHalted);
+    // console.log('AccesstoCommon->' + this.state.AccesstoCommon);
+    // console.log('categoryId->' + this.state.CategoryID);
+
+    this.props.screenProps.navigation.navigate('Player', {
+      returnData: this.fetchUserLastConversationData.bind(this),
+      rowdata,
+      sessionHalted: this.state.sessionHalted,
+      AccesstoCommon: this.state.AccesstoCommon,
+      CategoryID: this.state.CategoryID,
+      lastConversationId: this.state.last_conversation_id,
+      onCategory: true,
+    });
+  }
+
   onClickOfRowItem(id, name, index, type, catSubcriptionType) {
     if (type === 'session' && catSubcriptionType === 'Paid' && this.state.membershipType === 'Free') {
       if (index !== undefined) {
@@ -215,7 +245,6 @@ class CategoryScreen extends Component {
     let sessionData = [];
     if (this.state.categoryName === this.state.categoryAllData.cat_name) {
       if (this.state.categoryAllData.bundle) {
-        console.log('getSession bundle====> ');
         const categoryData = this.state.categoryAllData.bundle;
         categoryData.forEach((data) => {
           if (id === data.bundle_id) {
@@ -226,7 +255,6 @@ class CategoryScreen extends Component {
           }
         });
       } else if (this.state.categoryAllData.session) {
-        console.log('getSession bundle====> ');
         const categoryData = this.state.categoryAllData.session;
         const bundleName = this.state.categoryAllData.cat_name;
         const catId = this.state.categoryAllData.cat_Id;
@@ -273,10 +301,15 @@ class CategoryScreen extends Component {
           id: child.session_id,
           img: child.session_img,
           name: child.session_name,
+          description: child.session_description,
           index: i,
           type: 'session',
           cat_subcription_type: child.cat_subcription_type,
           isSessionAvailable: child.isSessionAvailable,
+          meditation_audio: child.meditation_audio,
+          meditation_audio_time: child.meditation_audio_time,
+          session_quote_description: child.session_quote_description,
+          session_quote_img: child.session_quote_img,
         });
       });
       this.setState({
@@ -289,7 +322,7 @@ class CategoryScreen extends Component {
       this.setState({
         categoryData,
         dataSource: this.state.dataSource.cloneWithRows(categoryData),
-        tabscreen: 'Category',
+        tabscreen: 'bundleCategory',
       });
     } else if (categoryAllData.SubCategory) {
       if (categoryAllData.SubCategory[0].session) {
@@ -420,10 +453,12 @@ class CategoryScreen extends Component {
                         if (Sessions) {
                           Arrsession = Sessions.split(',');
                           this.setState({ Arrsession, AccesstoCommon: Accessto });
-                        } else if (Bundles) {
+                        }
+                        if (Bundles) {
                           ArrBundle = Bundles.split(',');
                           this.setState({ ArrBundle, AccesstoCommon: Accessto });
-                        } else if (Categories) {
+                        }
+                        if (Categories) {
                           Arrcategory = Categories.split(',');
                           this.setState({ Arrcategory, AccesstoCommon: Accessto });
                         } else {
@@ -451,10 +486,12 @@ class CategoryScreen extends Component {
                         if (Sessions) {
                           Arrsession = Sessions.split(',');
                           this.setState({ Arrsession, AccesstoCommon: Accessto });
-                        } else if (Bundles) {
+                        }
+                        if (Bundles) {
                           ArrBundle = Bundles.split(',');
                           this.setState({ ArrBundle, AccesstoCommon: Accessto });
-                        } else if (Categories) {
+                        }
+                        if (Categories) {
                           Arrcategory = Categories.split(',');
                           this.setState({ Arrcategory, AccesstoCommon: Accessto });
                         } else {
@@ -803,6 +840,56 @@ class CategoryScreen extends Component {
                 });
               }
             }
+          } else if (child.key === '10 Day Intro Program') {
+            const arraySessionData = [];
+            const Active = child.val().active;
+            if (child.val().Session && Active === true) {
+              const CategoryName = child.val().category_name;
+              const CategoryID = child.val().category_id;
+              const CategoryDescription = child.val().category_description;
+              let streakVisitedSessionCount = 0;
+              let isSessionAvailable = false;
+              let arraySession = [];
+              this.setState({ CategoryID });
+              arraySession = child.val().Session ? child.val().Session : [];
+              Object.keys(arraySession).forEach((key, i) => {
+                const value = arraySession[key];
+                if (this.arrStreakHasData === true) {
+                  if (Object.keys(this.arrStreak).length > 0) {
+                    Object.keys(this.arrStreak).forEach((streakKey) => {
+                      let streakValue = [];
+                      streakValue = this.arrStreak[streakKey];
+                      if (CategoryID === streakKey) {
+                        streakVisitedSessionCount = Object.keys(streakValue.Session).length;
+                        if (streakVisitedSessionCount > 0) {
+                          isSessionAvailable = Object.keys(streakValue.Session).includes(value.session_id);
+                        }
+                      }
+                    });
+                  }
+                }
+                arraySessionData.push({
+                  index: i,
+                  isSessionAvailable,
+                  session_name: value.session_name,
+                  session_img: value.session_img,
+                  session_id: value.session_id,
+                  session_description: value.session_description,
+                  meditation_audio: value.meditation_audio,
+                  meditation_audio_time: value.meditation_audio_time,
+                  cat_subcription_type: child.val().session_subcription_type,
+                  session_quote_description: value.session_quote_description,
+                  session_quote_img: value.session_quote_img,
+                });
+              });
+              arrayCategory.push({
+                cat_Id: child.val().category_id,
+                cat_name: CategoryName,
+                cat_desc: CategoryDescription,
+                session: arraySessionData,
+                cat_subcription_type: child.val().session_subcription_type,
+              });
+            }
           }
         });
 
@@ -993,7 +1080,7 @@ class CategoryScreen extends Component {
       <TouchableOpacity
         onPress={() => { this.getSessionData(item, subCategoryname); }}
         activeOpacity={1}
-        key={item.bundle_name}
+        key={item.index}
       >
         <View>
           <ImageBackground
@@ -1008,7 +1095,7 @@ class CategoryScreen extends Component {
     );
   }
 
-  renderGridItem(rowdata) {
+  renderGridItemOld(rowdata) {
     // console.log('DiveThruScreen===> CategoryScreen renderGridItem');
     let lock = null;
     if (rowdata.index !== undefined) {
@@ -1089,16 +1176,63 @@ class CategoryScreen extends Component {
     );
   }
 
+  renderGridItem(rowdata) {
+    const lastconvoId = this.state.last_conversation_id;
+    let lock = null;
+    if (rowdata.index !== undefined) {
+      if (rowdata.index === 0 && rowdata.isSessionAvailable === false) {
+        lock = null;
+      } else if (rowdata.isSessionAvailable === true && rowdata.index === 0 && lastconvoId >= rowdata.index) {
+        lock = (
+          <Image
+            source={IC_DONE}
+            style={{ width: 20, height: 20, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
+          />
+        );
+      } else if (rowdata.isSessionAvailable === true && lastconvoId >= rowdata.index) {
+        lock = (
+          <Image
+            source={IC_DONE}
+            style={{ width: 20, height: 20, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
+          />
+        );
+      } else if (lastconvoId < rowdata.index) {
+        lock = (
+          <View>
+            <View style={{ backgroundColor: colors.black, opacity: 0.4, width: '100%', height: '100%' }} />
+            <Image
+              source={IC_LOCK}
+              style={{ width: 17, height: 17, position: 'absolute', bottom: 0, right: 0, marginBottom: 5, marginRight: 5 }}
+            />
+          </View>
+        );
+      }
+    }
+    return (
+      <TouchableOpacity onPress={() => { this.onClickOfIntro(rowdata); }} style={styles.gridItem} activeOpacity={1} disabled={lastconvoId < rowdata.index ? true : false}>
+        <View style={styles.gridItemImage}>
+          <ImageBackground
+            source={{ uri: rowdata.img }}
+            style={{ width: '100%', height: '100%' }}
+          >
+            <Text style={styles.gridItemText}>{rowdata.name}</Text>
+            {(rowdata.type === 'session' && rowdata.cat_subcription_type === 'Paid') || this.state.membershipType === 'Free' ? lock : null}
+          </ImageBackground>
+        </View>
+      </TouchableOpacity>
+    );
+  }
+
   renderBundleItem({ item }, subCategoryData) {
     // console.log('DiveThruScreen===> CategoryScreen renderBundleItem');
-    // this.setState({ item });
+    this.setState({ item });
     const lock = null;
 
     return (
       <TouchableOpacity
         onPress={() => { this.goToDiveThruPlayer(item, subCategoryData); }}
         activeOpacity={1}
-        key={item.session_name}
+        key={item.index}
       >
         <View>
           <ImageBackground
@@ -1172,7 +1306,7 @@ class CategoryScreen extends Component {
                       data={data.bundle}
                       style={styles.FlatListViewStyle}
                       renderItem={e => this.renderItem(e, data.subcategory_name)}
-                      keyExtractor={item => item}
+                      keyExtractor={item => item.index}
                       extraData={this.state}
                     />
                   </ScrollView>

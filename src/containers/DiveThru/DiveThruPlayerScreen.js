@@ -52,6 +52,8 @@ class DiveThruPlayerScreen extends Component {
       // meditation_audio_time: [],
       playermodalvisible: false,
       chatBox: 'As I read what I wrote, I was connected with...',
+      lastPlayedon: '',
+      daysInRow: 1,
       index: this.props.navigation.state.params ? this.props.navigation.state.params.audioIndex : 0,
     };
     this.duration = 0;
@@ -72,6 +74,7 @@ class DiveThruPlayerScreen extends Component {
     const sessionType = params ? params.sessionType : undefined;
     const subcategoryId = params ? params.subcategoryId : undefined;
     const membershipType = params ? params.membershipType : undefined;
+    const onBeginClick = params ? params.onBeginClick : undefined;
     this.setState({
       category_Id: catId,
       title: bundleName,
@@ -91,6 +94,7 @@ class DiveThruPlayerScreen extends Component {
       sessionId,
       sessionData,
       membershipType,
+      onBeginClick,
     });
     // this.state.sessionType = sessionType;
     // this.state.budle = budle;
@@ -118,7 +122,16 @@ class DiveThruPlayerScreen extends Component {
     let haltedSessionId = '';
     let halted = '';
     let haltedSlot = '';
-    AsyncStorage.getItem('user_id').then((value) => {
+    AsyncStorage.getItem('user_id').then(async (value) => {
+      try {
+        const lastDataPlay = await firebaseApp.database().ref(`Users/${value}`).once('value');
+        this.setState({
+          lastPlayedon: lastDataPlay.val().lastPlayed_on ? lastDataPlay.val().lastPlayed_on : '',
+          daysInRow: lastDataPlay.val().days_in_row ? lastDataPlay.val().days_in_row : 1,
+        });
+      } catch (error) {
+        console.log(error);
+      }
       if (value != null) {
         const ref = firebaseApp.database().ref('Users').child(value).child('sessionHalted');
         ref.once('value').then((dataSnapshot) => {
@@ -142,7 +155,7 @@ class DiveThruPlayerScreen extends Component {
             });
           }
 
-          if (this.state.category === 'Deep Dive') {
+          if (this.state.category === 'Deep Dive' && this.state.onBeginClick === false) {
             console.log(`${this.state.index}->didmount---timeButtonClicked->${this.state.meditation_audio}`);
             this.timeButtonClicked(this.state.index);
           }
@@ -227,9 +240,27 @@ class DiveThruPlayerScreen extends Component {
           const refcat = firebaseApp.database().ref(`/Category/${category}/SubCategory/${subcategoryId}/Bundle/${bundleId}/Session/`);
           refcat.once('value').then((dataSnapshot) => {
             if (dataSnapshot.exists()) {
-              const arrSessionId = [];
+              let i = 0;
+              let sessionData = [];
               dataSnapshot.forEach((child) => {
-                arrSessionId.push(child.key);
+                sessionData.push({
+                  index: i,
+                  budle_id: child.val().budle_id,
+                  meditation_audio: child.val().meditation_audio,
+                  meditation_audio_time: child.val().meditation_audio_time,
+                  session_description: child.val().session_description,
+                  session_id: child.val().session_id,
+                  session_img: child.val().session_img,
+                  session_name: child.val().session_name,
+                  session_quote_description: child.val().session_quote_description,
+                  session_quote_img: child.val().session_quote_img,
+                });
+                i++;
+              });
+              sessionData = this.sortAudioFiles(sessionData);
+              const arrSessionId = [];
+              sessionData.forEach((child) => {
+                arrSessionId.push(child.session_id);
               });
               Streak = arrSessionId.indexOf(sessionId) + 1;
               this.setState({ Streak });
@@ -252,6 +283,37 @@ class DiveThruPlayerScreen extends Component {
         }
       }
     });
+  }
+
+  sortAudioFiles = (item) => {
+    return item.sort(
+      (a, b) => {
+        const aMixed = this.normalizeMixedDataValue(a.session_name);
+        const bMixed = this.normalizeMixedDataValue(b.session_name);
+        return (aMixed < bMixed ? -1 : 1);
+      },
+    );
+  }
+
+  normalizeMixedDataValue = (value) => {
+    const padding = '000000000000000';
+    value = value.replace(/(\d+)((\.\d+)+)?/g,
+      ($0, integer, decimal, $3) => {
+        if (decimal !== $3) {
+          return (padding.slice(integer.length) + integer + decimal);
+        }
+
+        decimal = (decimal || '.0');
+        return (
+          padding.slice(integer.length) +
+          integer +
+          decimal +
+          padding.slice(decimal.length)
+        );
+      },
+    );
+
+    return (value);
   }
 
   polarToCartesian = (angle) => {
@@ -658,6 +720,14 @@ class DiveThruPlayerScreen extends Component {
   }
 
   updateTotalConversationInDB(value) {
+    const CurrentOnlyDate = Moment().format('YYYY-MM-DD');
+    let daysInRow = this.state.daysInRow;
+    const difference = Moment(CurrentOnlyDate).diff(this.state.lastPlayedon, 'days');
+    if (difference === 1) {
+      daysInRow = this.state.lastPlayedon !== '' ? this.state.daysInRow + 1 : 1;
+    } else if (difference > 1) {
+      daysInRow = 1;
+    }
     const meditationAudioTime = parseInt(this.state.meditation_audio_time[this.state.index], 10);
     const ref = firebaseApp.database().ref('Users').child(value);
     ref.once('value').then((dataSnapshot) => {
@@ -665,13 +735,18 @@ class DiveThruPlayerScreen extends Component {
         const totalConversation = dataSnapshot.val().completed_conversation;
         const totalCount = totalConversation + 1;
         const totalTime = dataSnapshot.val().total_time_divethru + meditationAudioTime;
-        ref.update({ completed_conversation: totalCount, total_time_divethru: totalTime });
+        ref.update({
+          days_in_row: daysInRow,
+          lastPlayed_on: CurrentOnlyDate,
+          completed_conversation: totalCount,
+          total_time_divethru: totalTime });
         // this.props.navigation.state.params.returnData();
         this.props.navigation.navigate('FinishedConversation', {
           quote_image: this.state.session_quote_img,
           quote_desc: this.state.session_quote_description,
           showsubscribe: false,
           onplayer: false,
+          onCategory: false,
         });
       }
     });

@@ -72,7 +72,6 @@ class BundleDescriptionScreen extends Component {
       newtype = 'session';
     }
 
-
     AsyncStorage.getItem('user_id').then((value) => {
       const ref = firebaseApp.database().ref().child(`Users/${value}/IndividualSubscription/${newtype}`);
       ref.on('value', ((dataSnapshot) => {
@@ -154,7 +153,7 @@ class BundleDescriptionScreen extends Component {
       for (let i = 0; i < products.length; i++) { // eslint-disable-line no-plusplus
         obj = products[0];
       }
-      console.log(`obj-->${obj}`);
+      // console.log(`obj-->${obj}`);
       return obj;
     } catch (err) {
       console.log(`CategoryScreen getItems err: ${err}`);
@@ -300,13 +299,25 @@ class BundleDescriptionScreen extends Component {
                   isAccesstoDeepDive: this.state.isAccesstoDeepDive,
                   individualBundlePurchase: this.state.individualBundlePurchase,
                   playStoreProduct: this.state.playStoreProduct,
+                  isBundleFree: this.state.isBundleFree,
                 });
             }}
             style={buttonStyles}
           />
         );
       } else if (this.state.categoryName === 'Quick Dive') {
-        if (this.state.membershipType === 'Paid' || this.state.individualBundlePurchase === true || this.state.isCategoryFree === true || this.state.isSessionFree === true || this.state.AccesstoCommon === 'all' || this.state.isAccesstoQuickDive === true) {
+        // console.log('Quick Dive 11membershipType: ' + this.state.membershipType);
+        // console.log('Quick Dive 11this.state.individualBundlePurchase: ' + this.state.individualBundlePurchase);
+        // console.log('Quick Dive 11this.state.isCategoryFree: ' + this.state.isCategoryFree);
+        // console.log('Quick Dive 11this.state.isSessionFree: ' + this.state.isSessionFree);
+        // console.log('Quick Dive 11AccesstoCommon: ' + this.state.AccesstoCommon);
+        // console.log('Quick Dive 11isAccesstoQuickDive: ' + this.state.isAccesstoQuickDive);
+        if (this.state.membershipType === 'Paid'
+        || this.state.individualBundlePurchase === true
+        || this.state.isCategoryFree === true
+        || this.state.isSessionFree === true
+        || this.state.AccesstoCommon === 'all'
+        || this.state.isAccesstoQuickDive === true) {
           return (
             <Button
               primary
@@ -324,6 +335,7 @@ class BundleDescriptionScreen extends Component {
                     budle: this.state.name,
                     audioIndex: '',
                     membershipType: this.state.membershipType,
+                    onBeginClick: false,
                   },
                   {
                     transitionSpec: { duration: 0 },
@@ -339,7 +351,7 @@ class BundleDescriptionScreen extends Component {
                 primary
                 title=""
                 text="Unlock the Dive Thru library"
-                onPress={() => { this.props.navigation.navigate('SubscribeNowScreen', { onDescription: true }); }}
+                onPress={() => { this.props.navigation.navigate('SubscribeNowScreen', { onDescription: true, onCategory: false }); }}
                 style={buttonStyles}
               />
               {/* <Text style={{ alignSelf: 'center' }}>OR</Text> */}

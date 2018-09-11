@@ -263,11 +263,11 @@ class DiveThruScreen extends Component {
         const labels = [];
         dataSnapshot.forEach((child) => {
           const Active = child.val().active;
-          if (child.key !== '10 Day Intro Program') {
-            if (Active === true) {
-              labels.push(child.key);
-            }
+          // if (child.key !== '10 Day Intro Program') {
+          if (Active === true) {
+            labels.push(child.key);
           }
+          // }
         });
 
         if (labels.length > 0) {

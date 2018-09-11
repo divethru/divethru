@@ -131,6 +131,9 @@ class HomeScreen extends Component {
       sessionProducts: [],
       sessionSubscriptionIds: [],
       bundleSubscriptionIds: [],
+      Maintitle: '',
+      lastAudio: 0,
+      remainAudio: 0,
     };
 
     this.onRefresh = false;
@@ -155,6 +158,7 @@ class HomeScreen extends Component {
   }
 
   async componentDidMount() {
+    // this.getAllCurrentstrickData();
     // this.willMount();
     const vals = [];
     const vals1 = [];
@@ -272,19 +276,476 @@ class HomeScreen extends Component {
     });
   };
 
+  getAllCurrentstrickData = () => {
+    // console.log('BEGIN:  getAllCurrentstrickData');
+    const userData = AsyncStorage.getItem('user_id').then((value) => {
+      if (value != null) {
+        // console.log('BEGIN:  getAllCurrentstrickData1111');
+        const refcat = firebaseApp.database().ref('Users').child(value).child('currentStreak');
+        // refcat.once('value').then((dataSnapshot) => {
+        refcat.on('value', (dataSnapshot) => {
+          // console.log('BEGIN:  getAllCurrentstrickData222');
+          if (dataSnapshot.exists()) {
+            dataSnapshot.forEach((child) => {
+              const catName = child.key;
+              this.setState({
+                catName,
+              });
+              if (child.key !== '10 Day Intro Program') {
+                if (child.val().Session) {
+                  const streaklen = Object.keys(child.val().Session).length;
+                  const currentStreak = child.val().streak;
+                  this.setState({
+                    streaklen,
+                    sessionType: 'Session',
+                    Maintitle: catName,
+                    currentStreak,
+                  });
+                  this.getDataFromCategory();
+                } else if (child.val().Bundle) {
+                  const bundleRry = child.val().Bundle;
+                  Object.keys(bundleRry).forEach((key1) => {
+                    const bundleId = key1;
+                    const value1 = bundleRry[key1];
+                    const sessions = value1.Session ? value1.Session : [];
+                    const streaklen = Object.keys(sessions).length;
+                    const currentStreak = child.val().streak;
+                    this.setState({
+                      streaklen,
+                      bundleId,
+                      sessionType: 'Bundle',
+                      // Maintitle: catName,
+                      currentStreak,
+                    });
+                    this.getDataFromCategory();
+                  });
+                } else if (child.val().SubCategory) {
+                  const arraySubCategory = child.val().SubCategory;
+                  Object.keys(arraySubCategory).forEach((key) => {
+                    const subcategoryId = key;
+                    const data = arraySubCategory[key];
+                    const bundleRry = data.Bundle ? data.Bundle : '';
+                    const sessionAry = data.Session ? data.Session : '';
+                    if (bundleRry !== undefined && bundleRry !== '') {
+                      Object.keys(bundleRry).forEach((key1) => {
+                        const bundleId = key1;
+                        const value1 = bundleRry[key1];
+                        const sessions = value1.Session ? value1.Session : [];
+                        const streaklen = Object.keys(sessions).length;
+                        const currentStreak = value1.streak;
+                        this.setState({
+                          streaklen,
+                          bundleId,
+                          subcategoryId,
+                          sessionType: 'SubCategoryBundle',
+                          // Maintitle: catName,
+                          currentStreak,
+                        });
+                        this.getDataFromCategory();
+                      });
+                    } else if (sessionAry !== undefined && sessionAry !== '') {
+                      const currentStreak = data.streak;
+                      const streaklen = Object.keys(sessionAry).length;
+                      this.setState({
+                        streaklen,
+                        subcategoryId,
+                        sessionType: 'SubCategorySession',
+                        // Maintitle: catName,
+                        currentStreak,
+                      });
+                      this.getDataFromCategory();
+                    }
+                  });
+                }
+              } else if (child.key === '10 Day Intro Program') {
+                if (child.val().Session) {
+                  const streaklen = Object.keys(child.val().Session).length;
+                  const currentStreak = child.val().streak;
+                  this.setState({
+                    streaklen,
+                    sessionType: '10DaySession',
+                    Maintitle: 'Intro Program',
+                    currentStreak,
+                  });
+                  this.getDataFromCategory();
+                }
+              }
+            });
+          } else {
+            // console.log('BEGIN:  getAllCurrentstrickData333');
+            this.setState({
+              Maintitle: 'Intro Program',
+              remainAudio: 10,
+            });
+          }
+        });
+      }
+    });
+  }
+
+  getDataFromCategory = () => {
+    // console.log('getDataFromCategory');
+    const category = this.state.catName;
+    const bundleId = this.state.bundleId;
+    const subcategoryId = this.state.subcategoryId;
+    if (this.state.sessionType === 'Bundle') {
+      const refcat = firebaseApp.database().ref(`/Category/${category}/Bundle`);
+      refcat.once('value').then((dataSnapshot) => {
+        if (dataSnapshot.exists()) {
+          dataSnapshot.forEach((child) => {
+            if (child.key === bundleId) {
+              if (child.val().Session) {
+                const len = Object.keys(child.val().Session).length;
+                const sessionData = child.val().Session;
+                this.setState({
+                  catlen: len,
+                  catSessions: sessionData,
+                  bundleName: child.val().bundle_name,
+                  Maintitle: child.val().bundle_name,
+                });
+              }
+            }
+          });
+        }
+        this.filterSessionAndGetLatestPlay();
+      });
+    } else if (this.state.sessionType === 'Session') {
+      const refcat = firebaseApp.database().ref(`/Category/${category}/Session`);
+      refcat.once('value').then((dataSnapshot) => {
+        if (dataSnapshot.exists()) {
+          const len = Object.keys(dataSnapshot.val()).length;
+          const sessionData = dataSnapshot;
+          this.setState({
+            catlen: len,
+            catSessions: sessionData,
+            bundleName: this.state.catName,
+          });
+        }
+        this.filterSessionAndGetLatestPlay();
+      });
+    } else if (this.state.sessionType === 'SubCategoryBundle') {
+      const refcat = firebaseApp.database().ref(`/Category/${category}/SubCategory/${subcategoryId}/Bundle`);
+      refcat.once('value').then((dataSnapshot) => {
+        if (dataSnapshot.exists()) {
+          dataSnapshot.forEach((child) => {
+            if (child.key === bundleId) {
+              if (child.val().Session !== '') {
+                const len = Object.keys(child.val().Session).length;
+                const sessionData = child.val().Session;
+                const bSubscriptionIds = this.state.bundleSubscriptionIds;
+                let arraySession = [];
+                Object.keys(sessionData).forEach((key2, i) => {
+                  const value2 = sessionData[key2];
+                  let isBundleFree = false;
+                  let isSessionFree = false;
+                  if (this.state.ArrBundle !== undefined && this.state.ArrBundle !== '') {
+                    isBundleFree = this.state.ArrBundle.includes(child.key);
+                  }
+                  if (isBundleFree === true) {
+                    isSessionFree = true;
+                  }
+
+                  arraySession.push({
+                    index: i,
+                    budle_id: value2.budle_id,
+                    meditation_audio: value2.meditation_audio,
+                    meditation_audio_time: value2.meditation_audio_time,
+                    session_description: value2.session_description,
+                    session_id: value2.session_id,
+                    session_img: value2.session_img,
+                    session_name: value2.session_name,
+                    session_quote_description: value2.session_quote_description,
+                    session_quote_img: value2.session_quote_img,
+                    isBundleFree,
+                    isSessionFree,
+                    bundleSubscription: !!bSubscriptionIds.includes(child.key),
+                  });
+                });
+                arraySession = this.sortAudioFiles(arraySession);
+                this.setState({
+                  catlen: len,
+                  catSessions: arraySession,
+                  bundleName: child.val().bundle_name,
+                  Maintitle: child.val().bundle_name,
+                  subcategoryId,
+                });
+              }
+            }
+          });
+        }
+        this.filterSessionAndGetLatestPlay();
+      });
+    } else if (this.state.sessionType === 'SubCategorySession') {
+      const refcat = firebaseApp.database().ref(`/Category/${category}/SubCategory/${subcategoryId}`);
+      refcat.once('value').then((dataSnapshot) => {
+        if (dataSnapshot.exists()) {
+          const subCategoryName = dataSnapshot.val().subcategory_name;
+          const sessionData = dataSnapshot.val().Session;
+          const len = Object.keys(sessionData).length;
+          const subscriptionIds = this.state.sessionSubscriptionIds;
+          const arraySession = [];
+          let i = 0;
+          Object.keys(sessionData).forEach((key) => {
+            let child = [];
+            child = sessionData[key];
+            let isSessionFree = false;
+            if (this.state.Arrsession !== undefined && this.state.Arrsession !== '') {
+              // isSessionFree = this.state.Arrsession.includes(sessionData.session_id);
+              isSessionFree = this.state.Arrsession.includes(child.session_id);
+            }
+            arraySession.push({
+              index: i,
+              budle_id: child.budle_id,
+              meditation_audio: child.meditation_audio,
+              meditation_audio_time: child.meditation_audio_time,
+              session_description: child.session_description,
+              session_id: child.session_id,
+              session_img: child.session_img,
+              session_name: child.session_name,
+              session_quote_description: child.session_quote_description,
+              session_quote_img: child.session_quote_img,
+              sessionSubscription: !!subscriptionIds.includes(child.session_id),
+              isSessionFree,
+            });
+            i++;
+          });
+          this.setState({
+            catlen: len,
+            catSessions: arraySession,
+            bundleName: this.state.catName,
+            Maintitle: subCategoryName,
+            subcategoryId,
+          });
+        }
+        this.filterSessionAndGetLatestPlay();
+      });
+    } else if (this.state.sessionType === '10DaySession') {
+      const refcat = firebaseApp.database().ref(`/Category/${category}/Session`);
+      refcat.once('value').then((dataSnapshot) => {
+        if (dataSnapshot.exists()) {
+          let i = 0;
+          const sessionData = [];
+          dataSnapshot.forEach((child) => {
+            sessionData.push({
+              index: i,
+              budle_id: child.val().budle_id,
+              meditation_audio: child.val().meditation_audio,
+              meditation_audio_time: child.val().meditation_audio_time,
+              session_description: child.val().session_description,
+              session_id: child.val().session_id,
+              session_img: child.val().session_img,
+              session_name: child.val().session_name,
+              session_quote_description: child.val().session_quote_description,
+              session_quote_img: child.val().session_quote_img,
+            });
+            i++;
+          });
+          const len = Object.keys(dataSnapshot.val()).length;
+          // const sessionData = dataSnapshot;
+          this.setState({
+            catlen: len,
+            catSessions: sessionData,
+            bundleName: this.state.catName,
+          });
+        }
+        this.filterSessionAndGetLatestPlay();
+      });
+    }
+  }
+
+  sortAudioFiles = (item) => {
+    return item.sort(
+      (a, b) => {
+        const aMixed = this.normalizeMixedDataValue(a.session_name);
+        const bMixed = this.normalizeMixedDataValue(b.session_name);
+        return (aMixed < bMixed ? -1 : 1);
+      },
+    );
+  }
+
+  normalizeMixedDataValue = (value) => {
+    const padding = '000000000000000';
+    value = value.replace(/(\d+)((\.\d+)+)?/g,
+      ($0, integer, decimal, $3) => {
+        if (decimal !== $3) {
+          return (padding.slice(integer.length) + integer + decimal);
+        }
+
+        decimal = (decimal || '.0');
+        return (
+          padding.slice(integer.length) +
+          integer +
+          decimal +
+          padding.slice(decimal.length)
+        );
+      },
+    );
+
+    return (value);
+  }
+
+  filterSessionAndGetLatestPlay() {
+    // console.log('filterSessionAndGetLatestPlay');
+    // console.log(`streaklen->${this.state.streaklen}`);
+    // console.log(`currentStreak->${this.state.currentStreak}`);
+    // console.log(`catlen->${this.state.catlen}`);
+    let playAudio = this.state.currentStreak;
+    const lastAudio = playAudio;
+    const remainAudio = this.state.catlen;
+    if (playAudio === remainAudio) {
+      playAudio = this.state.currentStreak - 1;
+    }
+    const sendSession = this.state.catSessions;
+    // console.log(`sendSession->${JSON.stringify(sendSession)}`);
+    const arrayNewSession = [];
+    if (this.state.sessionType === 'Session') {
+      sendSession.forEach((child) => {
+        arrayNewSession.push({
+          budle_id: child.val().budle_id,
+          meditation_audio: child.val().meditation_audio,
+          meditation_audio_time: child.val().meditation_audio_time,
+          session_description: child.val().session_description,
+          session_id: child.val().session_id,
+          session_img: child.val().session_img,
+          session_name: child.val().session_name,
+          session_quote_img: child.val().session_quote_img,
+          session_quote_description: child.val().session_quote_description,
+        });
+      });
+    } else if (this.state.sessionType === 'SubCategorySession' || this.state.sessionType === '10DaySession') {
+      sendSession.forEach((child) => {
+        arrayNewSession.push({
+          index: child.index,
+          budle_id: child.budle_id,
+          meditation_audio: child.meditation_audio,
+          meditation_audio_time: child.meditation_audio_time,
+          session_description: child.session_description,
+          session_id: child.session_id,
+          session_img: child.session_img,
+          session_name: child.session_name,
+          isSessionFree: child.isSessionFree,
+          sessionSubscription: child.sessionSubscription,
+          session_quote_img: child.session_quote_img,
+          session_quote_description: child.session_quote_description,
+        });
+      });
+    } else {
+      Object.keys(sendSession).forEach((key) => {
+        const value = sendSession[key];
+        arrayNewSession.push({
+          budle_id: value.budle_id,
+          meditation_audio: value.meditation_audio,
+          meditation_audio_time: value.meditation_audio_time,
+          session_description: value.session_description,
+          session_id: value.session_id,
+          session_img: value.session_img,
+          session_name: value.session_name,
+          isBundleFree: value.isBundleFree,
+          bundleSubscription: value.bundleSubscription,
+          session_quote_img: value.session_quote_img,
+          session_quote_description: value.session_quote_description,
+        });
+      });
+    }
+    let finalsession = '';
+    const temparr = arrayNewSession[playAudio];
+    // console.log(`playAudio-->${playAudio}`);
+    // console.log(`membershipType-->${this.state.membershipType}`);
+    // console.log(`sessionSubscription-->${temparr.sessionSubscription}`);
+    // console.log(`bundleSubscription-->${temparr.bundleSubscription}`);
+    // console.log(`isCategoryFree-->${this.state.isCategoryFree}`);
+    // console.log(`isSessionFree-->${temparr.isSessionFree}`);
+    // console.log(`isBundleFree-->${temparr.isBundleFree}`);
+    // console.log(`AccesstoCommon-->${this.state.AccesstoCommon}`);
+    // console.log(`isAccesstoDeepDive-->${this.state.isAccesstoDeepDive}`);
+    // console.log(`isAccesstoQuickDive-->${this.state.isAccesstoQuickDive}`);
+    // console.log(`arrayNewSession-->${JSON.stringify(arrayNewSession)}`);
+
+    if (this.state.catName !== '10 Day Intro Program') {
+      if (this.state.catName === 'Quick Dive') {
+        if (this.state.membershipType === 'Paid' || temparr.sessionSubscription === true || this.state.isCategoryFree === true || temparr.isSessionFree === true || this.state.AccesstoCommon === 'all' || this.state.isAccesstoQuickDive === true) {
+          finalsession = temparr;
+        } else {
+          finalsession = arrayNewSession[playAudio - 1];
+        }
+      } else if (this.state.catName === 'Deep Dive') {
+        if (this.state.membershipType === 'Paid' || temparr.bundleSubscription === true || this.state.isCategoryFree === true || temparr.isBundleFree === true || this.state.AccesstoCommon === 'all' || this.state.isAccesstoDeepDive === true) {
+          finalsession = temparr;
+        } else {
+          finalsession = arrayNewSession[playAudio - 1];
+        }
+      }
+    } else {
+      finalsession = arrayNewSession[playAudio];
+    }
+
+
+    // console.log(`lastAudio->${lastAudio}`);
+    // console.log(`remainAudio->${remainAudio}`);
+    // console.log(`finalsession->${JSON.stringify(finalsession)}`);
+    this.setState({
+      lastAudio,
+      remainAudio,
+      finalsession,
+    });
+  }
+
   onRefreshClicked() {
     this.onRefresh = true;
     this.setState({ refreshing: true });
     this.fetchUserLastConversationData().then(() => {
-      this.fetch10DayProgramData().then(() => {
-        this.fetchQuotesData().then(() => {
-          this.setState({ refreshing: false });
-          this.fetchAccessCodeData(() => {
-            // this.fetchCategoryWiseDataHome().then(() => {
-            // this.props.navigation.navigate('Home');
-            this.onRefresh = false;
+      this.setState({ refreshing: false });
+      this.getAllCurrentstrickData().then(() => {
+        this.fetch10DayProgramData().then(() => {
+          this.fetchQuotesData().then(() => {
             this.setState({ refreshing: false });
+            this.fetchAccessCodeData(() => {
+              // this.fetchCategoryWiseDataHome().then(() => {
+              // this.props.navigation.navigate('Home');
+              this.onRefresh = false;
+              this.setState({ refreshing: false });
+              // }).catch(() => { });
+            }).catch(() => { });
+          }).catch(() => { });
+        }).catch(() => { });
+      }).catch(() => { });
+    }).catch(() => { });
+  }
+
+  fetchUpdatedUser() {
+    StatusBar.setHidden(false);
+    this.setState({ loading: true });
+    const userData = AsyncStorage.getItem('user_id').then((value) => {
+      if (value != null) {
+        const refcat = firebaseApp.database().ref(`/Users/${value}`);
+        // eslint-disable-next-line no-unused-vars
+        refcat.on('value', (dataSnapshot) => {
+          this.willMount();
+        });
+      }
+    }).catch(() => { });
+    return userData;
+  }
+
+  willMount = () => {
+    // console.log('BEGIN:  willMount');
+    // StatusBar.setHidden(false);
+    // this.setState({ loading: true });
+    this.fetchUserLastConversationData().then(() => {
+      // console.log('BEGIN:  fetchUserLastConversationData');
+      this.fetch10DayProgramData().then(() => {
+        // console.log('BEGIN:  fetch10DayProgramData');
+        this.fetchQuotesData().then(() => {
+          // console.log('BEGIN:  fetchQuotesData');
+          this.fetchAccessCodeData().then(() => {
+            // console.log('BEGIN:  fetchAccessCodeData');
+            this.getAllCurrentstrickData().then(() => {
+              // console.log('BEGIN:  getAllCurrentstrickData');
+            // this.fetchCategoryWiseDataHome().then(() => {
+              this.setState({ loading: false });
+            // this.onRefreshClicked();
             // }).catch(() => { });
+            }).catch(() => { });
           }).catch(() => { });
         }).catch(() => { });
       }).catch(() => { });
@@ -292,6 +753,7 @@ class HomeScreen extends Component {
   }
 
   onBegin = () => {
+    console.log('BEGIN: onBegin: ' + this.state.session);
     AsyncStorage.getItem('user_id').then((value) => {
       if (value != null) {
         const ref = firebaseApp.database().ref('Users').child(value);
@@ -301,11 +763,12 @@ class HomeScreen extends Component {
           this.setState({ membershipType: membership });
           if (membership === 'Free') {
             if (this.state.session.length > 0) {
-              if (this.state.last_conversation_id === 10 && this.state.AccesstoCommon !== 'all') {
-                this.props.navigation.navigate('SubscribeNowScreen', { onDescription: false });
-              } else {
-                this.redirectToPlayer();
-              }
+              // if (this.state.last_conversation_id === 10 && this.state.AccesstoCommon !== 'all') {
+              //   this.props.navigation.navigate('SubscribeNowScreen', { onDescription: false });
+              // } else {
+              //   this.redirectToPlayer();
+              // }
+              this.redirectToPlayer();
             }
           } else {
             this.redirectToPlayer();
@@ -329,7 +792,7 @@ class HomeScreen extends Component {
         const categoryData = child.session;
         let keyindex = '';
         if (child.active === true) {
-          keyindex = mainindex;
+          keyindex = mainindex + 1;
         }
         categoryData.forEach((innerchild) => {
           arrData.push({
@@ -346,7 +809,7 @@ class HomeScreen extends Component {
         const categoryData = child.bundle;
         let keyindex = '';
         if (child.active === true) {
-          keyindex = mainindex;
+          keyindex = mainindex + 1;
         }
         categoryData.forEach((innerchild) => {
           arrData.push({
@@ -363,7 +826,7 @@ class HomeScreen extends Component {
         const categoryData = child.SubCategory;
         let keyindex = '';
         if (child.active === true) {
-          keyindex = mainindex;
+          keyindex = mainindex + 1;
         }
         categoryData.forEach((innerchild) => {
           arrData.push({
@@ -804,7 +1267,7 @@ class HomeScreen extends Component {
   }
 
   fetchAccessCodeData() {
-    AsyncStorage.getItem('user_id').then((value) => {
+    const userData = AsyncStorage.getItem('user_id').then((value) => {
       if (value != null) {
         const ref = firebaseApp.database().ref('Users').child(value);
         ref.once('value').then((dataSnapshot1) => {
@@ -895,10 +1358,12 @@ class HomeScreen extends Component {
           }
         });
       }
-    });
+    }).catch(() => { });
+    return userData;
   }
 
   fetchCategoryWiseDataHome() {
+    // console.log('BEGIN: fetchCategoryWiseDataHome');
     const subscriptionIds = this.state.sessionSubscriptionIds;
     const bSubscriptionIds = this.state.bundleSubscriptionIds;
     const ref = firebaseApp.database().ref('Category');
@@ -1208,6 +1673,9 @@ class HomeScreen extends Component {
                 active: Active,
               });
             }
+          } else if (child.key === '10 Day Intro Program') {
+            const CategoryID = child.val().category_id;
+            this.setState({ CategoryID });
           }
         });
         this.setState({ allData: arrayCategory });
@@ -1231,7 +1699,7 @@ class HomeScreen extends Component {
         const refcat = firebaseApp.database().ref(`/Users/${value}`);
         refcat.on('value', (dataSnapshot) => {
           const userData = dataSnapshot.val();
-          console.log(`Homescreen checkTagIsSelected skipTags: ${userData.skipTags}`);
+          // console.log(`Homescreen checkTagIsSelected skipTags: ${userData.skipTags}`);
           const userTags = userData.tags;
           const skipTag = userData.skipTags;
           // const visited = userData.visited;
@@ -1262,37 +1730,6 @@ class HomeScreen extends Component {
     }).catch((error) => {
       console.log(`Homescreen checkTagIsSelected Error: ${error}`);
     });
-  }
-
-  fetchUpdatedUser() {
-    StatusBar.setHidden(false);
-    this.setState({ loading: true });
-    const userData = AsyncStorage.getItem('user_id').then((value) => {
-      if (value != null) {
-        const refcat = firebaseApp.database().ref(`/Users/${value}`);
-        // eslint-disable-next-line no-unused-vars
-        refcat.on('value', (dataSnapshot) => {
-          this.willMount();
-        });
-      }
-    }).catch(() => { });
-    return userData;
-  }
-
-  willMount = () => {
-    // StatusBar.setHidden(false);
-    // this.setState({ loading: true });
-    this.fetchUserLastConversationData().then(() => {
-      this.fetch10DayProgramData().then(() => {
-        this.fetchQuotesData().then(() => {
-          this.fetchAccessCodeData(() => {
-            // this.fetchCategoryWiseDataHome().then(() => {
-            this.setState({ loading: false });
-            // }).catch(() => { });
-          }).catch(() => { });
-        }).catch(() => { });
-      }).catch(() => { });
-    }).catch(() => { });
   }
 
   review() {
@@ -1397,6 +1834,7 @@ class HomeScreen extends Component {
         this.setState({
           session: sessionData,
         });
+        // console.log('BEGIN: fetch10DayProgramData: ' + this.state.session);
       }
     }).catch(() => { });
   }
@@ -1416,26 +1854,81 @@ class HomeScreen extends Component {
     if (lastConversation === 10) {
       lastConversation = 9;
     }
-    const session = this.state.session[lastConversation];
-    const rowdata = {
-      session_name: session.session_name,
-      session_img: session.session_img,
-      session_id: session.session_id,
-      session_description: session.session_description,
-      meditation_audio: session.meditation_audio,
-      meditation_audio_time: session.meditation_audio_time,
-      last_conversation_id: this.state.last_conversation_id,
-      halted: this.state.halted,
-      session_quote_description: session.session_quote_description,
-      session_quote_img: session.session_quote_img,
-    };
-
-    this.props.navigation.navigate('Player', {
-      returnData: this.fetchUserLastConversationData.bind(this),
-      rowdata,
-      sessionHalted: this.state.sessionHalted,
-      AccesstoCommon: this.state.AccesstoCommon,
-    });
+    if (this.state.catName === '10 Day Intro Program') {
+      // const session = this.state.session[lastConversation];
+      // const rowdata = {
+      //   session_name: session.session_name,
+      //   session_img: session.session_img,
+      //   session_id: session.session_id,
+      //   session_description: session.session_description,
+      //   meditation_audio: session.meditation_audio,
+      //   meditation_audio_time: session.meditation_audio_time,
+      //   last_conversation_id: this.state.last_conversation_id,
+      //   halted: this.state.halted,
+      //   session_quote_description: session.session_quote_description,
+      //   session_quote_img: session.session_quote_img,
+      // };
+      let rowdata = [];
+      if (this.state.finalsession === undefined && this.state.lastAudio === 0) {
+        const session = this.state.session[this.state.lastAudio];
+        rowdata = {
+          index: 0,
+          budle_id: session.budle_id,
+          session_name: session.session_name,
+          session_img: session.session_img,
+          session_id: session.session_id,
+          session_description: session.session_description,
+          meditation_audio: session.meditation_audio,
+          meditation_audio_time: session.meditation_audio_time,
+          session_quote_description: session.session_quote_description,
+          session_quote_img: session.session_quote_img,
+        };
+      } else {
+        rowdata = this.state.finalsession;
+      }
+      this.props.navigation.navigate('Player', {
+        returnData: this.fetchUserLastConversationData.bind(this),
+        rowdata,
+        sessionHalted: this.state.sessionHalted,
+        AccesstoCommon: this.state.AccesstoCommon,
+        CategoryID: this.state.CategoryID,
+        lastConversationId: this.state.last_conversation_id,
+        onCategory: false,
+      });
+    } else {
+      const rowdata = this.state.finalsession;
+      const bundleName = this.state.bundleName;
+      const bundleId = this.state.bundleId;
+      if (this.state.catName === 'Deep Dive') {
+        this.props.navigation.navigate('DiveThruPlayer',
+          {
+            rowdata,
+            bundleName,
+            category: this.state.catName,
+            bundleId,
+            // returnData: this.fetchUserSubscriptionType.bind(this),
+            sessionType: this.state.sessionType,
+            subcategoryId: this.state.subcategoryId,
+            budle: bundleName,
+            audioIndex: '',
+            onBeginClick: true,
+          });
+      } else if (this.state.catName === 'Quick Dive') {
+        this.props.navigation.navigate('DiveThruPlayer',
+          {
+            rowdata,
+            bundleName: this.state.finalsession.session_name,
+            category: this.state.catName,
+            sessionId: this.state.finalsession.session_id,
+            sessionType: this.state.sessionType,
+            subcategoryId: this.state.subcategoryId,
+            budle: this.state.finalsession.session_name,
+            audioIndex: '',
+            membershipType: this.state.membershipType,
+            onBeginClick: true,
+          });
+      }
+    }
   }
 
   openPersonalizedModel(page) {
@@ -1758,14 +2251,29 @@ class HomeScreen extends Component {
 
   render() {
     const titles = this.state.tagsTitle;
-    let day = 0;
-    if (this.state.last_conversation_id <= 9) {
-      day = this.state.last_conversation_id + 1;
-    } else {
-      day = 10;
+    // console.log('rre lastAudio->' + this.state.lastAudio);
+    // console.log('rre remainAudio->' + this.state.remainAudio);
+    // console.log('rre Maintitle->' + this.state.Maintitle);
+
+    // let day = 0;
+    // if (this.state.last_conversation_id <= 9) {
+    //   day = this.state.last_conversation_id + 1;
+    // } else {
+    //   day = 10;
+    // }
+
+    // const progress = day / 10;
+    let progress = 0;
+    // if (this.state.catName === '10 Day Intro Program') {
+    //   progress = day / 10;
+    // } else if (this.state.lastAudio !== undefined && this.state.remainAudio !== undefined) {
+    //   progress = this.state.lastAudio / this.state.remainAudio;
+    // }
+
+    if (this.state.lastAudio !== undefined && this.state.remainAudio !== 0) {
+      progress = this.state.lastAudio / this.state.remainAudio;
     }
 
-    const progress = day / 10;
     return (
       <Spinner isLoading={this.state.loading}>
         <View style={styles.container}>
@@ -1837,9 +2345,14 @@ class HomeScreen extends Component {
                 source={dashboardBG}
                 style={styles.backImageOfIntroContainer}
               >
-                <Text style={styles.dayText}>{`Day ${day} of 10`}</Text>
-                <Text style={styles.introPrgText}>Intro Program</Text>
-
+                {/* <Text style={styles.dayText}>{`Day ${day} of 10`}</Text>
+                <Text style={styles.introPrgText}>Intro Program</Text> */}
+                <Text style={styles.dayText}>{`Day ${this.state.lastAudio} of `}{this.state.remainAudio}</Text>
+                {/* { this.state.catName === '10 Day Intro Program'
+                ? <Text style={styles.dayText}>{`Day ${day} of 10`}</Text>
+                : <Text style={styles.dayText}>{`Day ${this.state.lastAudio} of `}{this.state.remainAudio}</Text>
+                } */}
+                <Text style={styles.introPrgText}>{this.state.Maintitle}</Text>
                 <View>
                   <TouchableOpacity onPress={() => { this.onBegin(); }}>
                     <View style={styles.beginContainer}>
@@ -1986,7 +2499,7 @@ class HomeScreen extends Component {
                   primary
                   title=""
                   text="S U B S C R I B E  N O W"
-                  onPress={() => { this.props.navigation.navigate('SubscribeNowScreen'); }}
+                  onPress={() => { this.props.navigation.navigate('SubscribeNowScreen', { onDescription: false, onCategory: false }); }}
                   style={buttonStyles}
                 />
               </ImageBackground>

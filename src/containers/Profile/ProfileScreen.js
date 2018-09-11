@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Modal, Animated, Dimensions, Platform, Text, ListView, RefreshControl, TouchableOpacity, View, ImageBackground, AsyncStorage, Alert, Image, ScrollView } from 'react-native';
-import { Button } from 'react-native-material-ui';
+// import { Button } from 'react-native-material-ui';
 import RNIap from 'react-native-iap';
 import { CheckBox } from 'react-native-elements';
 import { GoogleSignin } from 'react-native-google-signin';
@@ -8,7 +8,7 @@ import { ScrollableTab, Tab, TabHeading, Tabs } from 'native-base';
 import PropTypes from 'prop-types';
 import Moment from 'moment';
 import { NavigationActions } from 'react-navigation';
-import Share from 'react-native-share';
+import Share, { ShareSheet, Button } from 'react-native-share';
 import ActivityIndicator from '../../components/ActivityIndicator';
 import styles, { nextButtonStyles } from '../../styles/profile';
 import backgroundImages from '../../assets/images/SessionPlayerBG.png';
@@ -66,8 +66,11 @@ class ProfileScreen extends Component {
       checkedItem: [],
       userTagsArray: undefined,
       isHidden: true,
+      daysInRow: 0,
+      lastPlayedon: '',
       imgTag: tag1,
       url: undefined,
+      shareModal: false,
     };
     this.heights = [500, 500];
   }
@@ -132,6 +135,14 @@ class ProfileScreen extends Component {
           const userTags = userData.tags;
           const AccessCode = userData.access_code;
           const url = userData.url;
+          const lastPlayedon = dataSnapshot.val().lastPlayed_on ? dataSnapshot.val().lastPlayed_on : '';
+          let daysInRow = dataSnapshot.val().days_in_row ? dataSnapshot.val().days_in_row : 0;
+
+          const CurrentOnlyDate = Moment().format('YYYY-MM-DD');
+          const difference = Moment(CurrentOnlyDate).diff(lastPlayedon, 'days');
+          if (difference > 1) {
+            daysInRow = 0;
+          }
 
           if (userTags === '' || userTags === undefined) {
             this.setState({
@@ -149,6 +160,8 @@ class ProfileScreen extends Component {
           this.setState({
             hideTags: false,
             url,
+            lastPlayedon,
+            daysInRow,
             AccessCode,
             profileName: `${userData.first_name} ${userData.last_name}`,
           });
@@ -163,6 +176,10 @@ class ProfileScreen extends Component {
       personalizedModal: false,
       checkedItem,
     });
+  }
+
+  onCancel() {
+    this.setState({ shareModal: false });
   }
 
   onRefreshClicked() {
@@ -230,15 +247,37 @@ class ProfileScreen extends Component {
   convertMinsToHrsMins(min) {
     const hours = Math.trunc(min / 60);
     const minutes = min % 60;
-    this.setState({ hourmin: (hours > 0) ? hours : minutes });
-
-    if (hours > 1) {
-      this.setState({ hourmintag: 'hrs' });
-    } else if (hours > 0) {
-      this.setState({ hourmintag: 'hr' });
+    if (hours > 0 && minutes > 0) {
+      this.setState({
+        hourmin: `${hours}:${minutes}`,
+        hourmintag: 'min',
+      });
+    } else if (hours > 1 && minutes === 0) {
+      this.setState({
+        hourmin: hours,
+        hourmintag: 'hrs',
+      });
+    } else if (hours > 0 && minutes === 0) {
+      this.setState({
+        hourmin: hours,
+        hourmintag: 'hr',
+      });
     } else {
-      this.setState({ hourmintag: 'min' });
+      this.setState({
+        hourmin: minutes,
+        hourmintag: 'min',
+      });
     }
+
+    // this.setState({ hourmin: (hours > 0) ? hours : minutes });
+
+    // if (hours > 1) {
+    //   this.setState({ hourmintag: 'hrs' });
+    // } else if (hours > 0) {
+    //   this.setState({ hourmintag: 'hr' });
+    // } else {
+    //   this.setState({ hourmintag: 'min' });
+    // }
   }
 
   getJournalData = () => {
@@ -246,7 +285,7 @@ class ProfileScreen extends Component {
       const refcat = firebaseApp.database().ref(`/Journal/${value}`);
       refcat.on('value', (dataSnapshot) => {
         if (dataSnapshot.exists()) {
-          const Journals = [];
+          let Journals = [];
           dataSnapshot.forEach((child) => {
             Journals.push({
               cat_name: child.val().category_name,
@@ -254,6 +293,8 @@ class ProfileScreen extends Component {
               text: child.val().journal_text,
             });
           });
+
+          Journals = Journals.reverse();
 
           if (Journals.length > 10) {
             this.setState({ loadmoreDisable: true });
@@ -546,36 +587,32 @@ class ProfileScreen extends Component {
   renderButton() {
     if (this.state.changeButton === true) {
       return (
-        <Button
-          accent
-          text="F I N I S H"
-          onPress={() => { this.closePersonalizedModal(); }}
-          upperCase={false}
-          style={nextButtonStyles}
-        />
+        // <Button
+        //   accent
+        //   text="F I N I S H"
+        //   onPress={() => { this.closePersonalizedModal(); }}
+        //   upperCase={false}
+        //   style={nextButtonStyles}
+        // />
+        <TouchableOpacity onPress={() => { this.closePersonalizedModal(); }} style={nextButtonStyles.container}>
+          <Text style={nextButtonStyles.text}>F I N I S H</Text>
+        </TouchableOpacity>
       );
     }
 
     return (
-      <Button
-        accent
-        text="N E X T"
-        onPress={() => { this.openPersonalizedModel(this.state.page + 1); }}
-        upperCase={false}
-        style={nextButtonStyles}
-      />
+      // <Button
+      //   accent
+      //   text="N E X T"
+      //   onPress={() => { this.openPersonalizedModel(this.state.page + 1); }}
+      //   upperCase={false}
+      //   style={nextButtonStyles}
+      // />
+      <TouchableOpacity onPress={() => { this.openPersonalizedModel(this.state.page + 1); }} style={nextButtonStyles.container}>
+        <Text style={nextButtonStyles.text}>N E X T</Text>
+      </TouchableOpacity>
     );
   }
-
-  inviteBuddy = async () => {
-    // const fullname = await AsyncStorage.getItem('full_name');
-    const body = `${this.state.profileName} invites you to DiveThru.`;
-    const shareOptions = {
-      message: body,
-      url: 'http://test.divethru.com/registration.php',
-    };
-    Share.open(shareOptions);
-  };
 
   isHidden() {
     this.setState({ isHidden: !this.state.isHidden });
@@ -619,14 +656,23 @@ class ProfileScreen extends Component {
             :
             null
         }
-        <TouchableOpacity style={styles.subViewStyle} onPress={() => this.isHidden(0)}>
+
+        <TouchableOpacity style={styles.subViewStyle} onPress={() => this.openPersonalizedModel(0)}>
+          <Text style={styles.subViewText}>Update Customized Feed</Text>
+
+          <Image
+            source={errow}
+            style={styles.errowImg}
+          />
+        </TouchableOpacity>
+
+        {/* <TouchableOpacity style={styles.subViewStyle} onPress={() => this.isHidden(0)}>
           <Text style={styles.subViewText}>Update Customized Feed</Text>
 
           <Image
             source={this.state.isHidden ? errow : downarrow}
             style={styles.errowImg}
           />
-
         </TouchableOpacity>
 
         <View style={this.state.isHidden ? styles.hideView : ''} >
@@ -657,7 +703,7 @@ class ProfileScreen extends Component {
 
             <View style={styles.boldSeperator} />
           </View>
-        </View>
+        </View> */}
 
 
         <TouchableOpacity style={styles.subViewStyle} onPress={() => { this.onLogout(); }}>
@@ -689,8 +735,8 @@ class ProfileScreen extends Component {
     >
       <View style={styles.container}>
         <Text style={[{ marginTop: '8%', color: '#9f5dbc' }, styles.upperBackgroundText]}>
-          {(this.state.streaklen)
-            ? this.state.streaklen
+          {(this.state.daysInRow)
+            ? this.state.daysInRow
             : 0
           }
         </Text>
@@ -739,7 +785,7 @@ class ProfileScreen extends Component {
           <TouchableOpacity
             style={styles.plusImgTouchView}
             onPress={() => {
-              this.inviteBuddy();
+                this.setState({ shareModal: true });
               // this.props.navigation.navigate('Invite');
             }}
           >
@@ -771,6 +817,34 @@ class ProfileScreen extends Component {
   );
 
   render() {
+     //  twitter icon
+    const TWITTER_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAABvFBMVEUAAAAA//8AnuwAnOsAneoAm+oAm+oAm+oAm+oAm+kAnuwAmf8An+0AqtUAku0AnesAm+oAm+oAnesAqv8An+oAnuoAneoAnOkAmOoAm+oAm+oAn98AnOoAm+oAm+oAmuoAm+oAmekAnOsAm+sAmeYAnusAm+oAnOoAme0AnOoAnesAp+0Av/8Am+oAm+sAmuoAn+oAm+oAnOoAgP8Am+sAm+oAmuoAm+oAmusAmucAnOwAm+oAmusAm+oAm+oAm+kAmusAougAnOsAmukAn+wAm+sAnesAmeoAnekAmewAm+oAnOkAl+cAm+oAm+oAmukAn+sAmukAn+0Am+oAmOoAmesAm+oAm+oAm+kAme4AmesAm+oAjuMAmusAmuwAm+kAm+oAmuoAsesAm+0Am+oAneoAm+wAmusAm+oAm+oAm+gAnewAm+oAle0Am+oAm+oAmeYAmeoAmukAoOcAmuoAm+oAm+wAmuoAneoAnOkAgP8Am+oAm+oAn+8An+wAmusAnuwAs+YAmegAm+oAm+oAm+oAmuwAm+oAm+kAnesAmuoAmukAm+sAnukAnusAm+oAmuoAnOsAmukAqv9m+G5fAAAAlHRSTlMAAUSj3/v625IuNwVVBg6Z//J1Axhft5ol9ZEIrP7P8eIjZJcKdOU+RoO0HQTjtblK3VUCM/dg/a8rXesm9vSkTAtnaJ/gom5GKGNdINz4U1hRRdc+gPDm+R5L0wnQnUXzVg04uoVSW6HuIZGFHd7WFDxHK7P8eIbFsQRhrhBQtJAKN0prnKLvjBowjn8igenQfkQGdD8A7wAAAXRJREFUSMdjYBgFo2AUDCXAyMTMwsrGzsEJ5nBx41HKw4smwMfPKgAGgkLCIqJi4nj0SkhKoRotLSMAA7Jy8gIKing0KwkIKKsgC6gKIAM1dREN3Jo1gSq0tBF8HV1kvax6+moG+DULGBoZw/gmAqjA1Ay/s4HA3MISyrdC1WtthC9ebGwhquzsHRxBfCdUzc74Y9UFrtDVzd3D0wtVszd+zT6+KKr9UDX749UbEBgULIAbhODVHCoQFo5bb0QkXs1RAvhAtDFezTGx+DTHEchD8Ql4NCcSyoGJYTj1siQRzL/JKeY4NKcSzvxp6RmSWPVmZhHWnI3L1TlEFDu5edj15hcQU2gVqmHTa1pEXJFXXFKKqbmM2ALTuLC8Ak1vZRXRxa1xtS6q3ppaYrXG1NWjai1taCRCG6dJU3NLqy+ak10DGImx07LNFCOk2js6iXVyVzcLai7s6SWlbnIs6rOIbi8ViOifIDNx0uTRynoUjIIRAgALIFStaR5YjgAAAABJRU5ErkJggg==';
+
+     //  facebook icon
+    const FACEBOOK_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAYFBMVEUAAAAAQIAAWpwAX5kAX5gAX5gAX5gAXJwAXpgAWZ8AX5gAXaIAX5gAXpkAVaoAX5gAXJsAX5gAX5gAYJkAYJkAXpoAX5gAX5gAX5kAXpcAX5kAX5gAX5gAX5YAXpoAYJijtTrqAAAAIHRSTlMABFis4vv/JL0o4QvSegbnQPx8UHWwj4OUgo7Px061qCrcMv8AAAB0SURBVEjH7dK3DoAwDEVRqum9BwL//5dIscQEEjFiCPhubziTbVkc98dsx/V8UGnbIIQjXRvFQMZJCnScAR3nxQNcIqrqRqWHW8Qd6cY94oGER8STMVioZsQLLnEXw1mMr5OqFdGGS378wxgzZvwO5jiz2wFnjxABOufdfQAAAABJRU5ErkJggg==';
+
+     //  gplus icon
+    const GOOGLE_PLUS_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAACQ1BMVEUAAAD/RDP/STX9Sjb+STT+SjX+SjX+SjX+STT/SzP/Sjb/SzX/VVX/SDb+SDP+SjX9RzT9STT9SjT+STX+SjT9SjT/SST/TTP+SjX+SjX/RDP/RzP+SjX+SjX/STf9SDX/SjX/TU3+Sjb+SjX/Qyz/Szb+SjX/TTP+SjX9STX+SjP/TTX9Szb+Szb/YCD/SzX/SzX+Sjb+STX/TTX/SzX/Szb/TDT+SjX9SzX/STf+TDX/SjT9SzX9Szb+SjX/SjX/SzX/STT9SjT9TDT+SDT/VQD9STX/STX9SjX+SjX9STX+SzT/UDD9Sjb+SjX9RzT/QED+SjT+SjX/XS7+SjX/Ui7/RC3+SjX/TTz/RzP+SjX/TTP/STf+SjX/STT/RjP+Sjb/SzX/Szz/Rjr/RzL+RzP+SjX/Szf/SjX9Sjb+SjX+Sjb+SjX+SjX+SjX/STf/SjT/SjT9SjX9SzT+RzT+STT/STT+SjX/STP/Tjf+SjX/Szb/SjX/STX9SjX/SjT/AAD/SjH/STb+SzX+Sjb+SjT9SDT+Sjb+SjX9STf9STT/SDX/TDf+STb/TjT/TjH+SjX+SDT/Sjb9SzX9RzX+TDT/TUD/STX+SjX+STX/VTn/QjH/SjX+SjX/Ri7+Szb/TTP+SjX/SDX/STT9SjX+SjX/SDL/TjT9Sjb/RjL+SjX9SzX/QED/TDT+SjX+SjX9STX/RjX/VSv/Rzb/STX/ORz/UDD9SzX+Sjb/STT9SzP+SzX+SjX+SjX9Szb/Ti//ZjPPn7DtAAAAwXRSTlMAD1uiy+j5/8FBZHQDY9zvnYSc5dGhBwr+1S0Zqu44mz4KtNkXY7Yo8YLcfp3bCGZ+sLhWaks2z4wO6VOklrtWRFSXos4DoD+D/ZnoEKasjwS7+gvfHC3kHmjtMlTXYjfZXBEWa+/nQRiK5u7c8vVGRWepp6+5eulQF/dfSHSQdQEfdrzguZzm+4KSQyW1JxrAvCaCiLYUc8nGCR9h6gvzFM41MZHhYDGYTMejCEDi3osdBj1+CSCWyGyp1PC3hUEF/yhErwAAAjFJREFUSMft1tdfE0EQB/ADJD+JKAomHoqKxhJLFCnSpdgIxobYgqhYaJKIHVQUsSFiBSuCvWPv3T/N2ZPD3EucvVcyL3sz2W8+l73ZvShKKEIxcCIsPGJQpAV9MThK1KzAEAaNHjosZviI2DgBR9psVrvCx6Ni1fjRNI5JIDx2nF5m4ejxsCRqVxMmknZMksGTVUzpu5zqJD1NAodNB2boyUzCrlnK7CSKOUCyGJOC4BSan6onaWLN5irpCIwgOAMBt5eZRVk2H+fQx7n92TzK8pT8AopCwCbGgiB4Pk1fsFDPFlG2mL9gRTTdnahnxcASDx/nq6SX6tkyYLnEo1qxknBJ2t9kVSlcq2WaZM1a0qXrtOv18Jbp9Q3l5Rv/39ubHKQ3V2xRtm7bXlkluyGra2qJ76jzwb/TxH721O9K3U1fsMfsgbCXcLFZvI+wL8ok3i/6+ECDOdxYJ/TBQ9Kw+nDTkRyHtodKjjbLyGMtx304cTKi8NRpoVutfJp5xgtv21ntxGw/J7T3PNdeuAhcuqxn9o5W0p1Ma78CpF/9lzdfI3ydiStobrjhIL4BRN7k4WRa3i5D5RbQ3cPDMcDtO4ZKGXCXedtuQL1nqNwHHjDxQ/rNGYbKI/gfM/ETwv6ngafSM3RwH3O7eK86Wzz9L582PO9lN9iLl6KpXr2uf9P7tvHde4e75oNEZ3/85NQ2hKUyzg/1c57klur68vXbd9XtdP34+et36C9WKAZo/AEHHmXeIIIUCQAAAABJRU5ErkJggg==';
+
+     //  email icon
+    const EMAIL_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAABC1BMVEUAAAA/Pz8/Pz9AQEA/Pz8/Pz8+Pj4+Pj4/Pz8/Pz8/Pz8/Pz8+Pj4+Pj4/Pz8/Pz8/Pz9AQEA+Pj5AQEA/Pz87Ozs7Ozs/Pz8+Pj47OztAQEA/Pz89PT01NTVBQUFBQUE/Pz8/Pz8+Pj4/Pz9BQUE+Pj4/Pz8/Pz89PT0+Pj4/Pz9BQUFAQEA9PT09PT0/Pz87Ozs9PT05OTk/Pz8+Pj4/Pz9AQEA/Pz8/Pz8/Pz8/Pz+AgIA+Pj4/Pz8/Pz9AQEA/Pz8/Pz8/Pz8/Pz8+Pj4/Pz8/Pz8/Pz9AQEA+Pj4/Pz8+Pj4/Pz85OTk/Pz8/Pz8/Pz8/Pz88PDw9PT0/Pz88PDw8PDw+Pj45OTlktUJVAAAAWXRSTlMA/7N4w+lCWvSx8etGX/XlnmRO7+1KY/fjOGj44DU7UvndMec/VvLbLj7YKyiJdu9O7jZ6Um1w7DnzWQJz+tpE6uY9t8D9QehAOt7PVRt5q6duEVDwSEysSPRjqHMAAAEfSURBVEjH7ZTXUgIxGEa/TwURUFyKYgMURLCvbe2gYAV7ff8nMRksgEDiKl7lXOxM5p8zO3s2CWAwGAx/CjXontzT25Y+pezxtpv2+xTygJ+BYOvh4BBDwx1lKxxhNNZqNjLK+JjVWUYsykj4+2h8gpNTUMkIBuhPNE+SKU7PQC3D62E60ziYzXIuBx0Z+XRTc9F5fgF6MhKNzWXnRejKWGJdc9GZy8AP3kyurH52Ju01XTkjvnldNN+Qi03RecthfFtPlrXz8rmzi739Ax7mUCjy6FhH/vjPonmqVD6pdT718excLX/tsItLeRAqtc7VLIsFlVy/t6+ub27v7t8XD490niy3p+rZpv3i+jy/Or+5SUrdvcNcywaDwfD/vAF2TBl+G6XvQwAAAABJRU5ErkJggg==';
+
+     //  more icon
+    const MORE_ICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8CAMAAAANIilAAAAAQlBMVEUAAABEREQ9PT0/Pz8/Pz9AQEA7OzszMzM/Pz8/Pz9FRUU/Pz8/Pz9VVVUAAAA/Pz8+Pj4/Pz8/Pz9BQUFAQEA/Pz+e9yGtAAAAFnRSTlMAD5bv9KgaFJ/yGv+zAwGltPH9LyD5QNQoVwAAAF5JREFUSMft0EkKwCAQRFHHqEnUON3/qkmDuHMlZlVv95GCRsYAAAD+xYVU+hhprHPWjDy1koJPx+L63L5XiJQx9PQPpZiOEz3n0qs2ylZ7lkyZ9oyXzl76MAAAgD1eJM8FMZg0rF4AAAAASUVORK5CYII=';
+
+    const shareOptions = {
+      message: 'Hi friend. I have been loving this new app called DiveThru. It helps you DiveThru what you go through.. Clever name, hey? Taking care of your mental wellbeing is cool, so I think you should use it. You can check it out at divethru.com or download it in the app store.',
+      url: 'http://divethru.com/',
+      subject: 'Invite friends', //  for email
+    };
+    const shareOptionsTwitter = {
+      message: 'The land of Twitter, I have been loving this new app called DiveThru. It helps you DiveThru what you go through.. Clever name, hey? Taking care of your mental wellbeing is cool, so I think you should use it. You can check it out at divethru.com or download it in the app store.',
+      url: 'http://divethru.com/',
+    };
+    const shareOptionsFacebook = {
+      message: 'Facebook, I have been loving this new app called DiveThru. It helps you DiveThru what you go through.. Clever name, hey? Taking care of your mental wellbeing is cool, so I think you should use it. You can check it out at divethru.com or download it in the app store.',
+      url: 'http://divethru.com/',
+    };
     const titles = this.state.tagsTitle;
     return (
       <View style={{ flex: 1 }}>
@@ -821,6 +895,70 @@ class ProfileScreen extends Component {
                 </View>
               </ImageBackground>
             </View>
+          </Modal>
+          <Modal
+            transparent
+            visible={this.state.shareModal}
+            supportedOrientations={['portrait', 'landscape']}
+            onRequestClose={() => { this.onCancel(); }}
+          >
+            <TouchableOpacity style={styles.sharecontainer} onPress={() => this.onCancel()}>
+              <View style={styles.innerContainer}>
+                <Button
+                  iconSrc={{ uri: TWITTER_ICON }}
+                  onPress={() => {
+                    this.onCancel();
+                    setTimeout(() => {
+                      Share.shareSingle(Object.assign(shareOptionsTwitter, {
+                        social: 'twitter',
+                      }));
+                    }, 300);
+                  }}
+                >Twitter</Button>
+                <Button
+                  iconSrc={{ uri: FACEBOOK_ICON }}
+                  onPress={() => {
+                    this.onCancel();
+                    setTimeout(() => {
+                      Share.shareSingle(Object.assign(shareOptionsFacebook, {
+                        social: 'facebook',
+                      }));
+                    }, 300);
+                  }}
+                >Facebook</Button>
+                <Button
+                  iconSrc={{ uri: GOOGLE_PLUS_ICON }}
+                  onPress={() => {
+                    this.onCancel();
+                    setTimeout(() => {
+                      Share.shareSingle(Object.assign(shareOptions, {
+                        social: 'googleplus',
+                      }));
+                    }, 300);
+                  }}
+                >Google +</Button>
+                <Button
+                  iconSrc={{ uri: EMAIL_ICON }}
+                  onPress={() => {
+                    this.onCancel();
+                    setTimeout(() => {
+                      Share.shareSingle(Object.assign(shareOptions, {
+                        social: 'email',
+                      }));
+                    }, 300);
+                  }}
+                >Email</Button>
+                <Button
+                  iconSrc={{ uri: MORE_ICON }}
+                  onPress={() => {
+                    this.onCancel();
+                    setTimeout(() => {
+                      Share.open(shareOptions);
+                    }, 300);
+                  }}
+                >More</Button>
+              </View>
+            </TouchableOpacity>
           </Modal>
 
           <ImageBackground

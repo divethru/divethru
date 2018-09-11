@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    padding: 10,
+    // padding: 10,
     backgroundColor: colors.white,
   },
   mainheadingtext: {
@@ -130,6 +130,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     height: '20%',
+    padding: 10,
   },
   innerContainer: {
     borderRadius: 8,

@@ -5,15 +5,17 @@ class Loader extends Component {
   render() {
     return (
       <View
-        style={{ height: '100%',
+        style={{
+          height: '100%',
           width: '100%',
           alignItems: 'center',
           position: 'absolute',
-        // backgroundColor: '#56565666',
+          backgroundColor: '#56565666',
           zIndex: 1,
-          justifyContent: 'center' }}
+          justifyContent: 'center',
+        }}
       >
-        <ActivityIndicator animating style={[{ height: 80, width: 80, backgroundColor: '#56565666', borderRadius: 10 }]} size="large" />
+        <ActivityIndicator animating style={[{ height: 80, width: 80, backgroundColor: '#565656', opacity: 0.8, borderRadius: 10 }]} size="large" />
       </View>
     );
   }

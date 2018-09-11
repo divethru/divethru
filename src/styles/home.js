@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#7dd3d5',
     paddingVertical: 8,
     paddingHorizontal: 40,
-    color: '#a25ad6',
+    // color: '#a25ad6',
   },
   popcontainer: {
     flex: 1,

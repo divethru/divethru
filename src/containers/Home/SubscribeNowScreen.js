@@ -23,6 +23,8 @@ import SessionPlayerBG from '../../assets/images/SessionPlayerBG.png';
 import styles from '../../styles/subscribeNow';
 import IC_CLOSE from '../../assets/images/ic_close.png';
 import firebaseApp from '../../components/constant';
+import Loader from '../../components/Loader';
+import { NavigationActions } from 'react-navigation';
 
 /*
 TODO:
@@ -54,6 +56,7 @@ class SubscribeNowScreen extends Component {
 
   constructor(props) {
     super(props);
+    this.isPurchaseClicked = true;
     this.state = {
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2,
@@ -69,6 +72,7 @@ class SubscribeNowScreen extends Component {
       activeUser: '',
       productSubs: [],
       modalVisible: false,
+      loader: false,
     };
 
     this.handlerButtonOnClick = this.handlerButtonOnClick.bind(this);
@@ -85,9 +89,10 @@ class SubscribeNowScreen extends Component {
 
     const { params } = this.props.navigation.state;
     const onDescription = params ? params.onDescription : undefined;
+    const onCategory = params ? params.onCategory : undefined;
 
     // eslint-disable-next-line react/no-did-mount-set-state
-    this.setState({ onDescription });
+    this.setState({ onDescription, onCategory });
   }
 
   getItems = async () => {
@@ -126,6 +131,7 @@ class SubscribeNowScreen extends Component {
 
   // eslint-disable-next-line no-unused-vars
   buySubscribeItem = async (sku, currency, price, title, productId) => {
+    console.log('buySubscribeItem 111');
     if (this.state.disabledClick === true) {
       this.setState({ modalVisible: true });
     } else {
@@ -134,61 +140,79 @@ class SubscribeNowScreen extends Component {
         if (sku === 'lifetime' || sku === 'com.divethru.divethru.lifetime') {
           purchaseResponse = await RNIap.buyProduct(sku);
         } else {
-          purchaseResponse = await RNIap.buySubscription(sku);
+          console.log('buySubscribeItem 222');
+          try {
+            if (this.isPurchaseClicked === true) {
+              this.isPurchaseClicked = false;
+              purchaseResponse = await RNIap.buySubscription(sku);
+              this.isPurchaseClicked = true;
+            }
+          } catch (err) {
+            console.log('buySubscribeItem ERROR=======>' + err);
+            this.isPurchaseClicked = true;
+          }
         }
 
-        const date = this.formatDate(new Date(Number(purchaseResponse.transactionDate)));
-        const transactionId = purchaseResponse.transactionId;
-        const subscriptionType = this.checkPackageName(purchaseResponse.productId);
-        const transactionReceipt = Platform.OS === 'ios' ? purchaseResponse.transactionReceipt : '';
-        const paymentType = Platform.OS === 'ios' ? 'App Store' : 'Play Store';
-        const originalTransactionIdentifier = Platform.OS === 'ios'
-          ? purchaseResponse.originalTransactionIdentifier
-          : '';
+        console.log('buySubscribeItem 333: ' + JSON.stringify(purchaseResponse));
+        if (purchaseResponse !== undefined) {
+          this.setState({ loader: true });
+          console.log('buySubscribeItem 444');
+          const date = this.formatDate(new Date(Number(purchaseResponse.transactionDate)));
+          console.log('buySubscribeItem 555');
+          const transactionId = purchaseResponse.transactionId;
+          const subscriptionType = this.checkPackageName(purchaseResponse.productId);
+          const transactionReceipt = Platform.OS === 'ios' ? purchaseResponse.transactionReceipt : '';
+          const paymentType = Platform.OS === 'ios' ? 'App Store' : 'Play Store';
+          const originalTransactionIdentifier = Platform.OS === 'ios'
+            ? purchaseResponse.originalTransactionIdentifier
+            : '';
 
-        AsyncStorage.getItem('user_id').then((value) => {
-          const storeRef = firebaseApp.database().ref().child(`Users/${value}/payment`);
-          const ref = firebaseApp.database().ref('Users').child(value);
-          ref.once('value', (snapshot) => {
-            const userData = snapshot.val();
-            const purchaseData = {
-              date,
-              transaction_id: transactionId,
-              subscription_type: subscriptionType,
-              payment_type: paymentType,
-              payment_status: 'verified',
-              email: userData.email,
-              name: userData.first_name,
-              price,
-              currency,
-              subscription: 'active',
-              transactionReceipt,
-              originalTransactionIdentifier,
-            };
-            if (Platform.OS === 'ios') {
-              this.sendMailIos(
-                transactionId, price, userData.device_token, subscriptionType, userData.email,
-              );
-            } else {
-              this.sendMail(
-                transactionId, price, userData.device_token, subscriptionType, userData.email,
-              );
-            }
-            const newPayment = storeRef.push();
-            newPayment.set(purchaseData);
-            const refUpdate = firebaseApp.database().ref('Users').child(value);
-            refUpdate.update({ membership_type: 'Paid' });
-            this.setState({
-              subscriptionStatus: true,
-              subscriptionPackage: subscriptionType.toLowerCase(),
-              disabledClick: true,
+          console.log('buySubscribeItem 666');
+          AsyncStorage.getItem('user_id').then((value) => {
+            const storeRef = firebaseApp.database().ref().child(`Users/${value}/payment`);
+            const ref = firebaseApp.database().ref('Users').child(value);
+            ref.once('value', (snapshot) => {
+              const userData = snapshot.val();
+              const purchaseData = {
+                date,
+                transaction_id: transactionId,
+                subscription_type: subscriptionType,
+                payment_type: paymentType,
+                payment_status: 'verified',
+                email: userData.email,
+                name: userData.first_name,
+                price,
+                currency,
+                subscription: 'active',
+                transactionReceipt,
+                originalTransactionIdentifier,
+              };
+              if (Platform.OS === 'ios') {
+                this.sendMailIos(
+                  transactionId, price, userData.device_token, subscriptionType, userData.email,
+                );
+              } else {
+                this.sendMail(
+                  transactionId, price, userData.device_token, subscriptionType, userData.email,
+                );
+              }
+              const newPayment = storeRef.push();
+              newPayment.set(purchaseData);
+              const refUpdate = firebaseApp.database().ref('Users').child(value);
+              refUpdate.update({ membership_type: 'Paid' });
+              this.setState({
+                subscriptionStatus: true,
+                subscriptionPackage: subscriptionType.toLowerCase(),
+                disabledClick: true,
+              });
+            }, (error) => {
+              console.log(`buySubscribeItem error: ${error}`);
             });
-          }, (error) => {
-            console.log(`buySubscribeItem error: ${error}`);
           });
-        });
+        }
       } catch (err) {
         console.log(`buySubscribeItem err: ${err}`);
+        this.isPurchaseClicked = true;
       }
     }
   }
@@ -222,19 +246,31 @@ class SubscribeNowScreen extends Component {
     })
       .then((response => response.json()))
       .then(() => {
-        this.setState({ isPaid: true });
+        this.setState({ isPaid: true, loader: false });
       })
       .done();
 
+    // if (this.state.onDescription === true) {
+    //   Promise.all([
+    //     this.props.navigation.dispatch(
+    //       this.props.navigation.navigate('Home'),
+    //     ),
+    //   ]).then(() => this.props.navigation.navigate('Home'))
+    //   .then(() => this.props.navigation.navigate('DiveThru'));
+    // } else {
+    //   this.props.navigation.navigate('Home');
+    // }
+
+    if (this.props.navigation.state.params.returnData !== undefined) {
+      this.props.navigation.state.params.returnData();
+    }
+    // this.props.navigation.goBack();
     if (this.state.onDescription === true) {
-      Promise.all([
-        this.props.navigation.dispatch(
-          this.props.navigation.navigate('Home'),
-        ),
-      ]).then(() => this.props.navigation.navigate('Home'))
-      .then(() => this.props.navigation.navigate('DiveThru'));
+      this.props.navigation.goBack();
+    } else if (this.state.onCategory === true) {
+      this.props.navigation.goBack();
     } else {
-      this.props.navigation.navigate('Home');
+      this.props.navigation.pop(4);
     }
   }
 
@@ -248,19 +284,32 @@ class SubscribeNowScreen extends Component {
     })
       .then((response => response.json()))
       .then(() => {
-        this.setState({ isPaid: true });
+        this.setState({ isPaid: true, loader: false });
       })
       .done();
 
+    // if (this.state.onDescription === true) {
+    //   Promise.all([
+    //     this.props.navigation.dispatch(
+    //       this.props.navigation.navigate('Home'),
+    //     ),
+    //   ]).then(() => this.props.navigation.navigate('Home'))
+    //   .then(() => this.props.navigation.navigate('DiveThru'));
+    // } else {
+    //   this.props.navigation.navigate('Home');
+    // }
+
+    if (this.props.navigation.state.params.returnData !== undefined) {
+      this.props.navigation.state.params.returnData();
+    }
+    // this.props.navigation.goBack();
+
     if (this.state.onDescription === true) {
-      Promise.all([
-        this.props.navigation.dispatch(
-          this.props.navigation.navigate('Home'),
-        ),
-      ]).then(() => this.props.navigation.navigate('Home'))
-      .then(() => this.props.navigation.navigate('DiveThru'));
+      this.props.navigation.goBack();
+    } else if (this.state.onCategory === true) {
+      this.props.navigation.goBack();
     } else {
-      this.props.navigation.navigate('Home');
+      this.props.navigation.pop(4);
     }
   }
 
@@ -480,16 +529,22 @@ class SubscribeNowScreen extends Component {
 
   CloseButtonClick() {
     if (this.state.onDescription === true) {
-      // alert('if');
-      Promise.all([
-        this.props.navigation.dispatch(
-          this.props.navigation.navigate('Home'),
-        ),
-      ]).then(() => this.props.navigation.navigate('Home'))
-      .then(() => this.props.navigation.navigate('DiveThru'));
+      // Promise.all([
+      //   this.props.navigation.dispatch(
+      //     this.props.navigation.navigate('Home'),
+      //   ),
+      // ]).then(() => this.props.navigation.navigate('Home'))
+      // .then(() => this.props.navigation.navigate('DiveThru'));
+      this.props.navigation.goBack();
+    } else if (this.state.onCategory === true) {
+      // this.props.navigation.navigate('DiveThru');
+      this.props.navigation.goBack();
     } else {
-      this.props.navigation.navigate('Home');
+      // this.props.navigation.navigate('Home');
+      this.props.navigation.pop(4);
     }
+    // console.log(this.state.onCategory + '....CloseButtonClick: ' + this.state.onDescription);
+    // this.props.navigation.goBack();
   }
 
   renderCategory(category) {
@@ -527,7 +582,12 @@ class SubscribeNowScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView>
+        {
+          this.state.loader === false
+          ? null
+          : <Loader />
+        }
+        <ScrollView style={{ padding: 10 }}>
           <TouchableOpacity
             style={styles.closebtn}
             onPress={() => { this.CloseButtonClick(); }}

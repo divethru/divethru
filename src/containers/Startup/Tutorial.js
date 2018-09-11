@@ -168,11 +168,11 @@ export default class Tutorial extends Component {
               // alert('failed to load the sound: ' + e);
               console.log('error loading track:', e);
             } else if (this.session !== null || this.session !== undefined) {
-              console.log('meditation_audio: ELSE IFFF');
+              // console.log('meditation_audio: ELSE IFFF');
               Sound.setCategory('Playback');
               this.setState({ isLoaded: true, isPlayerDisable: false });
             } else {
-              console.log('meditation_audio: ELSE');
+              // console.log('meditation_audio: ELSE');
             }
           });
         } else {
@@ -206,25 +206,29 @@ export default class Tutorial extends Component {
   }
 
   fetch10DayProgramData() {
-    const ref = firebaseApp.database().ref('Category').child('10 Day Intro Program').child('Session');
+    const ref = firebaseApp.database().ref('Category').child('10 Day Intro Program');
     ref.once('value').then((dataSnapshot) => {
       if (dataSnapshot.exists()) {
+        const ArrsessionData = dataSnapshot.val().Session;
         const sessionData = [];
         let sessionTime = '';
         let sessionId = '';
-        dataSnapshot.forEach((child) => {
+        const categoryId = dataSnapshot.val().category_id;
+        Object.keys(ArrsessionData).forEach((key) => {
+          let child = [];
+          child = ArrsessionData[key];
           sessionData.push({
-            session_name: child.val().session_name,
-            session_img: child.val().session_img,
-            session_id: child.val().session_id,
-            session_description: child.val().session_description,
-            meditation_audio: child.val().meditation_audio[0],
-            meditation_audio_time: child.val().meditation_audio_time[0],
+            session_name: child.session_name,
+            session_img: child.session_img,
+            session_id: child.session_id,
+            session_description: child.session_description,
+            meditation_audio: child.meditation_audio[0],
+            meditation_audio_time: child.meditation_audio_time[0],
           });
           sessionTime = sessionData[0].meditation_audio_time;
           sessionId = sessionData[0].session_id;
         });
-        this.setState({ session: sessionData, sessionTime, sessionId });
+        this.setState({ session: sessionData, sessionTime, sessionId, categoryId });
         // console.log('meditation_audio: ' + this.state.session[0].meditation_audio);
         // this.session = new Sound(this.state.session[0].meditation_audio, null, (e) => {
         //   if (e) {
@@ -366,10 +370,23 @@ export default class Tutorial extends Component {
     this.getCategoryWiseCurrentStreak();
     AsyncStorage.getItem('user_id').then((value) => {
       if (value != null) {
+        const refstreak = firebaseApp.database().ref('Users').child(value).child(`streak/${this.state.categoryId}/Session/${this.state.sessionId}`);
+        const meditationAudioTime = parseInt(this.state.sessionTime, 10);
+        refstreak.once('value').then((dataSnapshot) => {
+          if (dataSnapshot.exists()) {
+            const totalVisited = dataSnapshot.val().total_visited;
+            const totalCount = totalVisited + 1;
+            const totalTime = dataSnapshot.val().total_taken_time + meditationAudioTime;
+            refstreak.update({ total_visited: totalCount, total_taken_time: totalTime });
+          } else {
+            refstreak.update({ total_visited: 1, total_taken_time: meditationAudioTime });
+          }
+        });
+
         const ref = firebaseApp.database().ref('Users').child(value);
         ref.once('value').then((dataSnapshot) => {
           if (dataSnapshot.exists()) {
-            const meditationAudioTime = parseInt(this.state.sessionTime, 10);
+            // const meditationAudioTime = parseInt(this.state.sessionTime, 10);
             const totalConversation = dataSnapshot.val().completed_conversation;
             const lastConversationId = dataSnapshot.val().last_free_conversation_id;
             const totalTime = dataSnapshot.val().total_time_divethru + meditationAudioTime;

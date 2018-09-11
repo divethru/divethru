@@ -272,8 +272,8 @@ class EditProfile extends Component {
     console.log('ImagePicker onclick');
     const options = {
       quality: 1.0,
-      maxWidth: 100,
-      maxHeight: 100,
+      // maxWidth: 100,
+      // maxHeight: 100,
       storageOptions: {
         skipBackup: true,
       },

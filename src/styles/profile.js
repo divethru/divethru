@@ -261,6 +261,22 @@ const styles = StyleSheet.create({
     height: 20,
     width: 20,
   },
+  sharecontainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  innerContainer: {
+    bottom: 0,
+    position: 'absolute',
+    width: '100%',
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  close: {
+    height: 20,
+    width: 20,
+    alignSelf: 'flex-end',
+  },
 });
 
 export const buttonStyles = StyleSheet.create({
@@ -282,6 +298,8 @@ export const nextButtonStyles = StyleSheet.create({
   text: {
     fontSize: 20,
     color: 'white',
+    textAlign: 'center',
+    marginTop: 5,
   },
   container: {
     height: 40,

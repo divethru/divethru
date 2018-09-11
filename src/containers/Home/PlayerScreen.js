@@ -53,6 +53,8 @@ class PlayerScreen extends Component {
       progress: 0,
       modalVisible: false,
       isPlayerDisable: true,
+      lastPlayedon: '',
+      daysInRow: 1,
       playermodalvisible: false,
       chatBox: 'As I read what I wrote, I was connected with...',
     };
@@ -66,8 +68,11 @@ class PlayerScreen extends Component {
     const sessionData = params ? params.rowdata : undefined;
     const title = params.bundleName ? params.bundleName : '10 Day Intro Program';
     const category = params.category ? params.category : '10 Day Intro Program';
+    const CategoryID = params.CategoryID ? params.CategoryID : undefined;
     const lastAudioNo = params.lastAudioNo ? params.lastAudioNo : 0;
     const AccesstoCommon = params.AccesstoCommon ? params.AccesstoCommon : undefined;
+    const lastConversationId = params.lastConversationId ? params.lastConversationId : 0;
+    const onCategory = params.onCategory ? params.onCategory : undefined;
 
     this.setState({
       title,
@@ -79,10 +84,13 @@ class PlayerScreen extends Component {
       sessionTime: sessionData.meditation_audio_time,
       sessionAudio: sessionData.meditation_audio,
       lastAudioNo,
-      lastConversationId: sessionData.last_conversation_id,
+      lastConversationId,
       session_quote_description: sessionData.session_quote_description,
       session_quote_img: sessionData.session_quote_img,
       AccesstoCommon,
+      CategoryID,
+      currentAudioNo: sessionData.index,
+      onCategory,
     });
 
     this._panResponder = PanResponder.create({
@@ -209,8 +217,17 @@ class PlayerScreen extends Component {
     let haltedSessionId = '';
     let halted = '';
     let haltedSlot = '';
-    AsyncStorage.getItem('user_id').then((value) => {
+    AsyncStorage.getItem('user_id').then(async (value) => {
       if (value != null) {
+        try {
+          const lastDataPlay = await firebaseApp.database().ref(`Users/${value}`).once('value');
+          this.setState({
+            lastPlayedon: lastDataPlay.val().lastPlayed_on ? lastDataPlay.val().lastPlayed_on : '',
+            daysInRow: lastDataPlay.val().days_in_row ? lastDataPlay.val().days_in_row : 1,
+          });
+        } catch (error) {
+          console.log(error);
+        }
         const ref = firebaseApp.database().ref('Users').child(value).child('sessionHalted');
         ref.once('value').then((dataSnapshot) => {
           const sessionHalted = dataSnapshot.val();
@@ -232,12 +249,20 @@ class PlayerScreen extends Component {
             });
           }
         });
+        const refstr = firebaseApp.database().ref('Users').child(value).child(`streak/${this.state.CategoryID}`);
+        refstr.once('value').then((dataSnapshot) => {
+          let Arrstreak = [];
+          if (dataSnapshot.exists()) {
+            Arrstreak = dataSnapshot.val();
+          }
+          this.setState({ Arrstreak });
+        });
       }
     });
   }
 
   playAudio = (url, tryAgainCount) => {
-    console.log('Downloaded: start download: ' + tryAgainCount);
+    console.log(`Downloaded: start download: ${  tryAgainCount}`);
     RNFetchBlob
       .config({
         path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
@@ -250,9 +275,9 @@ class PlayerScreen extends Component {
         // console.log('Downloaded progress: ' + received + '   ' + total);
       })
       .then((res) => {
-        console.log('Downloaded res: ' + JSON.stringify(res));
+        console.log(`Downloaded res: ${  JSON.stringify(res)}`);
 
-        console.log("response info from download", res.respInfo.status, url);
+        console.log('response info from download', res.respInfo.status, url);
         this.setState({ isLoaded: true, isPlayerDisable: false });
         if (res.respInfo.status === 200) {
           // eslint-disable-next-line react/no-did-mount-set-state
@@ -261,11 +286,11 @@ class PlayerScreen extends Component {
           this.session = new Sound(res.data, Sound.DocumentDir, (e) => {
             console.log('Downloaded DONE: ');
             if (e) {
-              console.log('Downloaded File: ' + res.data);
-              alert('Downloaded failed to load the sound: ' + JSON.stringify(e));
-              console.log('Downloaded Error: ' + JSON.stringify(e));
+              console.log(`Downloaded File: ${  res.data}`);
+              alert(`Downloaded failed to load the sound: ${  JSON.stringify(e)}`);
+              console.log(`Downloaded Error: ${  JSON.stringify(e)}`);
             } else if (this.session !== null || this.session !== undefined) {
-              console.log('Downloaded success: FILE: ' + res.data);
+              console.log(`Downloaded success: FILE: ${  res.data}`);
               Sound.setCategory('Playback');
               if (this.state.halted > 0.0) {
                 this.setState({ isLoaded: true, isResume: true, isPlayerDisable: false });
@@ -282,11 +307,11 @@ class PlayerScreen extends Component {
         }
       })
       .catch((e) => {
-        console.log('Downloaded error: ' + e.toString());
+        console.log(`Downloaded error: ${  e.toString()}`);
 
         if (tryAgainCount < 2) {
           setTimeout(() => {
-            tryAgainCount = tryAgainCount + 1;
+            tryAgainCount += 1;
             this.playAudio(url, tryAgainCount);
           }, 2000);
         } else {
@@ -363,7 +388,7 @@ class PlayerScreen extends Component {
   }
 
   playAudioTimeButton = (url, tryAgainCount) => {
-    console.log('Downloaded: start download: ' + tryAgainCount);
+    console.log(`Downloaded: start download: ${  tryAgainCount}`);
     RNFetchBlob
       .config({
         path: `${RNFetchBlob.fs.dirs.DocumentDir}/abc.mp3`,
@@ -376,14 +401,14 @@ class PlayerScreen extends Component {
         // console.log('Downloaded progress: ' + received + '   ' + total);
       })
       .then((res) => {
-        console.log('Downloaded res: ' + JSON.stringify(res));
+        console.log(`Downloaded res: ${  JSON.stringify(res)}`);
 
-        console.log("response info from download", res.respInfo.status, url);
+        console.log('response info from download', res.respInfo.status, url);
         this.setState({ isLoaded: true, isPlayerDisable: false });
         if (res.respInfo.status === 200) {
           this.session = new Sound(res.data, Sound.DocumentDir, (e) => {
             if (e) {
-              alert('failed to load the sound: ' + e);
+              alert(`failed to load the sound: ${  e}`);
               console.log('error loading track:', e);
             } else {
               // eslint-disable-next-line no-lonely-if
@@ -403,11 +428,11 @@ class PlayerScreen extends Component {
         }
       })
       .catch((e) => {
-        console.log('Downloaded error: ' + e.toString());
+        console.log(`Downloaded error: ${  e.toString()}`);
 
         if (tryAgainCount < 2) {
           setTimeout(() => {
-            tryAgainCount = tryAgainCount + 1;
+            tryAgainCount += 1;
             this.playAudio(url, tryAgainCount);
           }, 2000);
         } else {
@@ -692,30 +717,74 @@ class PlayerScreen extends Component {
   updateUserDataForFreeProgram() {
     this.getCategoryWiseCurrentStreak();
     const sessionId = this.state.session_id;
+    const categoryId = this.state.CategoryID;
     AsyncStorage.getItem('user_id').then((value) => {
       this.setState({ playermodalvisible: false });
       if (value != null) {
-        const meditationAudioTime = parseInt(this.state.sessionTime, 10);
+        const refstreak = firebaseApp.database().ref('Users').child(value).child(`streak/${categoryId}/Session/${sessionId}`);
+        let meditationAudioTime = '';
+        if (Object.keys(this.state.sessionAudio).length > 1) {
+          console.log('if');
+          meditationAudioTime = parseInt(this.state.sessionTime[this.state.index], 10);
+        } else {
+          console.log('else');
+          meditationAudioTime = parseInt(this.state.sessionTime, 10);
+        }
+        refstreak.once('value').then((dataSnapshot) => {
+          if (dataSnapshot.exists()) {
+            const totalVisited = dataSnapshot.val().total_visited;
+            const totalCount = totalVisited + 1;
+            const totalTime = dataSnapshot.val().total_taken_time + meditationAudioTime;
+            refstreak.update({ total_visited: totalCount, total_taken_time: totalTime });
+          } else {
+            refstreak.update({ total_visited: 1, total_taken_time: meditationAudioTime });
+          }
+        });
+
         const ref = firebaseApp.database().ref('Users').child(value);
         ref.once('value').then((dataSnapshot) => {
           if (dataSnapshot.exists()) {
+            const CurrentOnlyDate = Moment().format('YYYY-MM-DD');
+            let daysInRow = this.state.daysInRow;
+            const difference = Moment(CurrentOnlyDate).diff(this.state.lastPlayedon, 'days');
+            if (difference === 1) {
+              daysInRow = this.state.lastPlayedon !== '' ? this.state.daysInRow + 1 : 1;
+            } else if (difference > 1) {
+              daysInRow = 1;
+            }
             const totalConversation = dataSnapshot.val().completed_conversation;
             const totalCount = totalConversation + 1;
             const totalTime = dataSnapshot.val().total_time_divethru + meditationAudioTime;
-            if (this.state.lastConversationId === 9) {
-              ref.update({
-                last_free_conversation_id: 0,
-                completed_conversation: totalCount,
-                total_time_divethru: totalTime,
-              });
-            } else {
-              ref.update({
-                last_free_conversation_id: this.state.lastConversationId + 1,
-                completed_conversation: totalCount,
-                total_time_divethru: totalTime,
-              });
-            }
+            console.log(`sessionTime-->${this.state.sessionTime}`);
+            console.log(`meditationAudioTime-->${meditationAudioTime}`);
+            console.log(`total_time_divethru-->${dataSnapshot.val().total_time_divethru}`);
+            console.log(`totalTime-->${totalTime}`);
+            console.log(`totalCount-->${totalCount}`);
 
+            // if (this.state.lastConversationId === 9) {
+            //   ref.update({
+            //     last_free_conversation_id: 0,
+            //     completed_conversation: totalCount,
+            //     total_time_divethru: totalTime,
+            //   });
+            // } else {
+            console.log(`Arrstreak->${this.state.Arrstreak.Session}`);
+            let isSessionAvailable = '';
+            if (this.state.Arrstreak.Session === undefined || this.state.Arrstreak.Session === '') {
+              isSessionAvailable = false;
+            } else {
+              isSessionAvailable = Object.keys(this.state.Arrstreak.Session).includes(sessionId);
+            }
+            console.log(`isSessionAvailable-->${isSessionAvailable}`);
+            ref.update({
+              last_free_conversation_id: isSessionAvailable === true ? this.state.lastConversationId : this.state.lastConversationId + 1,
+              completed_conversation: totalCount,
+              total_time_divethru: totalTime,
+              days_in_row: daysInRow,
+              lastPlayed_on: CurrentOnlyDate,
+            });
+            // }
+            console.log('success');
             const refRemove = firebaseApp.database().ref('Users').child(value).child(`sessionHalted/${sessionId}`);
             refRemove.remove();
             if (this.state.lastConversationId === 3
@@ -727,6 +796,7 @@ class PlayerScreen extends Component {
                   quote_desc: this.state.session_quote_description,
                   showsubscribe: true,
                   onplayer: true,
+                  onCategory: this.state.onCategory,
                 });
               } else {
                 this.props.navigation.navigate('FinishedConversation', {
@@ -734,14 +804,17 @@ class PlayerScreen extends Component {
                   quote_desc: this.state.session_quote_description,
                   showsubscribe: false,
                   onplayer: true,
+                  onCategory: this.state.onCategory,
                 });
               }
             } else {
+              console.log('ff else');
               this.props.navigation.navigate('FinishedConversation', {
                 quote_image: this.state.session_quote_img,
                 quote_desc: this.state.session_quote_description,
                 showsubscribe: false,
                 onplayer: true,
+                onCategory: this.state.onCategory,
               });
             }
           }

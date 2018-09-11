@@ -14,12 +14,12 @@ import CalenderReminderScreen from '../Reminder/CalenderReminderScreen';
 import SessionScreen from '../DiveThru/SessionScreen';
 import CategoryScreen from '../DiveThru/CategoryScreen';
 import FinishedConversation from '../Home/FinishedConversation';
-import ShareScreen from '../Home/ShareScreen';
+// import ShareScreen from '../Home/ShareScreen';
 import EditProfileScreen from '../Profile/EditProfile';
 import AccessCode from '../Startup/AccessCodeScreen';
-import SubCategoryDescriptionScreen from '../Home/SubCategoryDesc';
+// import SubCategoryDescriptionScreen from '../Home/SubCategoryDesc';
 import BundleDescriptionScreen from './BundleDescription';
-import SubCategoryScreen from '../DiveThru/SubCategoryScreen';
+// import SubCategoryScreen from '../DiveThru/SubCategoryScreen';
 
 // eslint-disable-next-line no-unused-vars
 const transitionConfig = () => {
@@ -40,7 +40,7 @@ const transitionConfig = () => {
 
       // return { transform: [{ translateX }] };
 
-      console.log('Routename: ' + sceneProps.scene.route.routeName);
+      // console.log('Routename: ' + sceneProps.scene.route.routeName);
       if (
         sceneProps.scene.route.routeName === 'DiveThruPlayer'
       // ) return CardStackStyleInterpolator.forFade(sceneProps);
@@ -61,11 +61,11 @@ const components = {
     CalenderReminderScreen: { screen: CalenderReminderScreen },
     DiveThruPlayer: { screen: DiveThruPlayerScreen },
     FinishedConversation: { screen: FinishedConversation },
-    ShareScreen: { screen: ShareScreen },
+    // ShareScreen: { screen: ShareScreen },
     AccessCode: { screen: AccessCode },
     BundleDescription: { screen: BundleDescriptionScreen },
     Session: { screen: SessionScreen },
-    SubCategory: { screen: SubCategoryScreen },
+    // SubCategory: { screen: SubCategoryScreen },
   }, {
     // headerMode: 'none',
   }) },
@@ -74,15 +74,16 @@ const components = {
     DiveThru: { screen: DiveThruScreen },
     CategoryScreen: { screen: CategoryScreen },
     Session: { screen: SessionScreen },
-    SubCategory: { screen: SubCategoryScreen },
+    // SubCategory: { screen: SubCategoryScreen },
     DiveThruPlayer: { screen: DiveThruPlayerScreen },
     SessionDescription: { screen: SessionDescriptionScreen },
-    SubCategoryDescription: { screen: SubCategoryDescriptionScreen },
+    // SubCategoryDescription: { screen: SubCategoryDescriptionScreen },
     BundleDescription: { screen: BundleDescriptionScreen },
     CalenderReminderScreen: { screen: CalenderReminderScreen },
     Player: { screen: PlayerScreen },
     FinishedConversation: { screen: FinishedConversation },
-    ShareScreen: { screen: ShareScreen },
+    // ShareScreen: { screen: ShareScreen },
+    SubscribeNowScreen: { screen: SubscribeNowScreen },
   }, {
     // transition: (fromRoute, toRoute) => {
     //   const routeNames = [fromRoute.SubCategory, toRoute.DiveThruPlayer];

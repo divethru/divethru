@@ -9,6 +9,7 @@ import {
     Image,
     PermissionsAndroid,
 } from 'react-native';
+import Moment from 'moment';
 import Share from 'react-native-share';
 import RNFetchBlob from 'react-native-fetch-blob';
 import firebaseApp from '../../components/constant';
@@ -34,6 +35,8 @@ class FinishedConversation extends Component {
       showsubscribe: '',
       onplayer: '',
       loader: true,
+      daysInRow: 0,
+      lastPlayedon: '',
     };
   }
 
@@ -43,14 +46,23 @@ class FinishedConversation extends Component {
     const quoteDesc = params.quote_desc ? params.quote_desc : '';
     const showsubscribe = params.showsubscribe ? params.showsubscribe : '';
     const onplayer = params.onplayer ? params.onplayer : '';
-
+    const onCategory = params.onCategory ? params.onCategory : '';
     AsyncStorage.getItem('user_id').then((value) => {
       firebaseApp.database().ref(`/Users/${value}`).once('value', (snapshot) => {
+        const lastPlayedon = snapshot.val().lastPlayed_on ? snapshot.val().lastPlayed_on : '';
+        let daysInRow = snapshot.val().days_in_row ? snapshot.val().days_in_row : 0;
+        const CurrentOnlyDate = Moment().format('YYYY-MM-DD');
+        const difference = Moment(CurrentOnlyDate).diff(lastPlayedon, 'days');
+        if (difference > 1) {
+          daysInRow = 0;
+        }
         this.setState({
           quoteImage,
           quoteDesc,
           showsubscribe,
           onplayer,
+          daysInRow,
+          onCategory,
           total_time: (snapshot.val().total_time_divethru),
           completed_convo: (snapshot.val().completed_conversation),
         });
@@ -90,24 +102,50 @@ class FinishedConversation extends Component {
   }
 
   convertMinsToHrsMins(min) {
+    console.log('min->' + min);
     const hours = Math.trunc(min / 60);
     const minutes = min % 60;
-    if (hours > 1) {
+    console.log('hours->' + hours);
+    console.log('minutes->' + minutes);
+    
+    if (hours > 0 && minutes > 0) {
       this.setState({
-        hourmin: (hours > 0) ? hours : minutes,
+        hourmin: `${hours}:${minutes}`,
+        hourmintag: 'min',
+      });
+    } else if (hours > 1 && minutes === 0) {
+      this.setState({
+        hourmin: hours,
         hourmintag: 'hrs',
       });
-    } else if (hours > 0) {
+    } else if (hours > 0 && minutes === 0) {
       this.setState({
-        hourmin: (hours > 0) ? hours : minutes,
+        hourmin: hours,
         hourmintag: 'hr',
       });
     } else {
       this.setState({
-        hourmin: (hours > 0) ? hours : minutes,
+        hourmin: minutes,
         hourmintag: 'min',
       });
     }
+
+    // if (hours > 1) {
+    //   this.setState({
+    //     hourmin: (hours > 0) ? hours : minutes,
+    //     hourmintag: 'hrs',
+    //   });
+    // } else if (hours > 0) {
+    //   this.setState({
+    //     hourmin: (hours > 0) ? hours : minutes,
+    //     hourmintag: 'hr',
+    //   });
+    // } else {
+    //   this.setState({
+    //     hourmin: (hours > 0) ? hours : minutes,
+    //     hourmintag: 'min',
+    //   });
+    // }
   }
 
   downloadFile(quoteImage) {
@@ -141,7 +179,7 @@ class FinishedConversation extends Component {
 
   restart() {
     if (this.state.showsubscribe === true) {
-      this.props.navigation.navigate('SubscribeNowScreen', { onDescription: false });
+      this.props.navigation.navigate('SubscribeNowScreen', { onDescription: false, onCategory: this.state.onCategory });
     } else if (this.state.onplayer === true) {
       this.props.navigation.pop(2);
     } else {
@@ -189,7 +227,7 @@ class FinishedConversation extends Component {
             <View style={styles.betweenView}>
               <View style={styles.betweenSubView}>
                 <View style={styles.betweenTimeView}>
-                  <Text style={styles.betweenViewEndText}>{this.state.completed_convo}</Text>
+                  <Text style={styles.betweenViewEndText}>{this.state.daysInRow}</Text>
 
                   <Text style={[styles.betweenViewEndText, { fontSize: 10, marginTop: 20 }]} />
                 </View>

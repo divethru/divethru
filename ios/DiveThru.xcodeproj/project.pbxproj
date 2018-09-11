@@ -46,8 +46,8 @@
 		2DCD954D1E0B4F2C00145EB5 /* DiveThruTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* DiveThruTests.m */; };
 		334C868B3FFA4099B4455CE1 /* rubicon-icon-font.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4716505968354CB4B8247AA8 /* rubicon-icon-font.ttf */; };
 		340801A42115D45900D22916 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 340801742115D44700D22916 /* libRCTContacts.a */; };
-		341BC63F213AB42600093FE2 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 341BC63E213AB42600093FE2 /* assets */; };
-		341BC641213AB43300093FE2 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 341BC640213AB43300093FE2 /* main.jsbundle */; };
+		341BC6A72142701000093FE2 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = 341BC6A62142701000093FE2 /* assets */; };
+		341BC6A92142701D00093FE2 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 341BC6A82142701D00093FE2 /* main.jsbundle */; };
 		341BE4C52124327100AF01AB /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 341BE48C2124324100AF01AB /* libBVLinearGradient.a */; };
 		341BE4CC2124332C00AF01AB /* libRCTOrientation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 341BE4CB2124331200AF01AB /* libRCTOrientation.a */; };
 		341BE4D3212434D000AF01AB /* libKCKeepAwake.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 341BE4D22124345700AF01AB /* libKCKeepAwake.a */; };
@@ -598,8 +598,8 @@
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		2FD45FCAA2B7ED8E092EA80D /* Pods-DiveThru.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DiveThru.debug.xcconfig"; path = "Pods/Target Support Files/Pods-DiveThru/Pods-DiveThru.debug.xcconfig"; sourceTree = "<group>"; };
 		340801682115D44700D22916 /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
-		341BC63E213AB42600093FE2 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
-		341BC640213AB43300093FE2 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
+		341BC6A62142701000093FE2 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ../assets; sourceTree = "<group>"; };
+		341BC6A82142701D00093FE2 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		341BE4842124324100AF01AB /* BVLinearGradient.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BVLinearGradient.xcodeproj; path = "../node_modules/react-native-linear-gradient/BVLinearGradient.xcodeproj"; sourceTree = "<group>"; };
 		341BE4C62124331200AF01AB /* RCTOrientation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTOrientation.xcodeproj; path = "../node_modules/react-native-orientation/iOS/RCTOrientation.xcodeproj"; sourceTree = "<group>"; };
 		341BE4CD2124345700AF01AB /* KCKeepAwake.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = KCKeepAwake.xcodeproj; path = "../node_modules/react-native-keep-awake/ios/KCKeepAwake.xcodeproj"; sourceTree = "<group>"; };
@@ -866,8 +866,8 @@
 		13B07FAE1A68108700A75B9A /* DiveThru */ = {
 			isa = PBXGroup;
 			children = (
-				341BC640213AB43300093FE2 /* main.jsbundle */,
-				341BC63E213AB42600093FE2 /* assets */,
+				341BC6A82142701D00093FE2 /* main.jsbundle */,
+				341BC6A62142701000093FE2 /* assets */,
 				342C65E220C91321000249AF /* GoogleService-Info.plist */,
 				99EDFF3E20592DCE00BB4B36 /* GoogleSdk */,
 				99F3E5D9204EBAA600DD4840 /* DiveThru.entitlements */,
@@ -2020,10 +2020,10 @@
 				995D382B201B3863005F51A4 /* FontAwesome.ttf in Resources */,
 				ECE87D6D16484DE39CD9FC69 /* Entypo.ttf in Resources */,
 				1F6394FBDA3F429DA9E1CD66 /* EvilIcons.ttf in Resources */,
-				341BC641213AB43300093FE2 /* main.jsbundle in Resources */,
+				341BC6A92142701D00093FE2 /* main.jsbundle in Resources */,
 				18D7EEBD46724EF39646C87D /* FontAwesome.ttf in Resources */,
 				A9848CC8519F43D3872B751C /* Foundation.ttf in Resources */,
-				341BC63F213AB42600093FE2 /* assets in Resources */,
+				341BC6A72142701000093FE2 /* assets in Resources */,
 				F6F0E8CB14FB4966999E1A67 /* Ionicons.ttf in Resources */,
 				827F2C45BD234EC19360961A /* MaterialIcons.ttf in Resources */,
 				EE7EA5AF8F904F3FB935256D /* Octicons.ttf in Resources */,
@@ -2418,8 +2418,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = DiveThru/DiveThru.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: DiveThru Inc. (KGA9Q7W43Z)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: DiveThru Inc. (KGA9Q7W43Z)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ankit Pansuriya (8PN5J8JBA7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ankit Pansuriya (8PN5J8JBA7)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -2458,8 +2458,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.divethru.divethru;
 				PRODUCT_NAME = DiveThru;
-				PROVISIONING_PROFILE = "2fad712c-f30f-4fe2-8515-44ef76831f72";
-				PROVISIONING_PROFILE_SPECIFIER = "DiveThru_production_profile_26-5-2018";
+				PROVISIONING_PROFILE = "66bbe710-d8c5-4feb-bd12-4d5c28f5df8f";
+				PROVISIONING_PROFILE_SPECIFIER = "DiveThru_dev_profile_4-6-2018";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -2470,8 +2470,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = DiveThru/DiveThru.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: DiveThru Inc. (KGA9Q7W43Z)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: DiveThru Inc. (KGA9Q7W43Z)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Ankit Pansuriya (8PN5J8JBA7)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Ankit Pansuriya (8PN5J8JBA7)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = KGA9Q7W43Z;
@@ -2509,8 +2509,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.divethru.divethru;
 				PRODUCT_NAME = DiveThru;
-				PROVISIONING_PROFILE = "2fad712c-f30f-4fe2-8515-44ef76831f72";
-				PROVISIONING_PROFILE_SPECIFIER = "DiveThru_production_profile_26-5-2018";
+				PROVISIONING_PROFILE = "66bbe710-d8c5-4feb-bd12-4d5c28f5df8f";
+				PROVISIONING_PROFILE_SPECIFIER = "DiveThru_dev_profile_4-6-2018";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
